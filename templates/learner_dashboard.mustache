@@ -1,0 +1,131 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/learner_dashboard
+
+    Overview of a learner at the top of the dashboard: the course to resume, the other courses in
+    progress, the next deadlines and the courses completed.
+
+    Example context (json):
+    {
+        "resume": {"id": 2, "name": "Safety at work", "url": "#", "image": "", "category": "Training", "hasprogress": true,
+            "progress": 40, "next": {"name": "Quiz 1", "url": "#"}, "action": "Continue", "actionurl": "#"},
+        "inprogress": [{"id": 3, "name": "First aid", "url": "#", "hasprogress": true, "progress": 10}],
+        "hasinprogress": true, "moreinprogress": false,
+        "deadlines": [{"name": "Report due", "course": "Safety at work", "date": "Monday 12 October", "url": "#"}],
+        "hasdeadlines": true,
+        "completed": [{"id": 4, "name": "Welcome", "url": "#", "datecompleted": "01/09/26"}],
+        "completedcount": 1, "hascompleted": true, "certificates": "#", "mycoursesurl": "#", "calendarurl": "#"
+    }
+}}
+<div class="epure-learner">
+    <div class="epure-learner-main">
+        {{#resume}}
+            <section class="epure-learner-resume" aria-labelledby="epure-learner-resume-title">
+                <div class="epure-learner-resume-image" style="background-image: url('{{image}}');"></div>
+                <div class="epure-learner-resume-body">
+                    <h2 class="epure-learner-heading" id="epure-learner-resume-title">{{#str}}learnerresume, theme_epure{{/str}}</h2>
+                    {{#category}}<p class="epure-learner-resume-category">{{category}}</p>{{/category}}
+                    <h3 class="epure-learner-resume-name"><a href="{{url}}">{{name}}</a></h3>
+                    {{#hasprogress}}
+                        <div class="epure-learner-progress">
+                            <div class="epure-learner-progress-label">
+                                <span>{{#str}}mycourses_progress, theme_epure{{/str}}</span><span>{{progress}} %</span>
+                            </div>
+                            <div class="progress" role="progressbar" aria-label="{{#str}}mycourses_progress, theme_epure{{/str}}"
+                                aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: {{progress}}%"></div>
+                            </div>
+                        </div>
+                    {{/hasprogress}}
+                    {{#next}}<p class="epure-learner-resume-next">{{#str}}mycourses_next, theme_epure{{/str}} {{name}}</p>{{/next}}
+                    <a class="btn btn-primary btn-lg epure-learner-resume-action" href="{{actionurl}}">
+                        {{action}}<span class="sr-only visually-hidden"> – {{name}}</span>
+                    </a>
+                </div>
+            </section>
+        {{/resume}}
+
+        {{#hasinprogress}}
+            <section class="epure-learner-block" aria-labelledby="epure-learner-inprogress-title">
+                <div class="epure-learner-block-head">
+                    <h2 class="epure-learner-heading" id="epure-learner-inprogress-title">{{#str}}learnerinprogress, theme_epure{{/str}}</h2>
+                    <a href="{{mycoursesurl}}">{{#str}}mycourses{{/str}}</a>
+                </div>
+                <ul class="epure-learner-courses">
+                    {{#inprogress}}
+                        <li>
+                            <a class="epure-learner-course-name" href="{{actionurl}}">{{name}}</a>
+                            {{#hasprogress}}
+                                <div class="progress" role="progressbar" aria-label="{{#str}}mycourses_progress, theme_epure{{/str}} – {{name}}"
+                                    aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: {{progress}}%"></div>
+                                </div>
+                                <span class="epure-learner-course-percent">{{progress}} %</span>
+                            {{/hasprogress}}
+                        </li>
+                    {{/inprogress}}
+                </ul>
+            </section>
+        {{/hasinprogress}}
+    </div>
+
+    <div class="epure-learner-side">
+        <section class="epure-learner-block" aria-labelledby="epure-learner-deadlines-title">
+            <div class="epure-learner-block-head">
+                <h2 class="epure-learner-heading" id="epure-learner-deadlines-title">{{#str}}learnerdeadlines, theme_epure{{/str}}</h2>
+                <a href="{{calendarurl}}">{{#str}}calendar, calendar{{/str}}</a>
+            </div>
+            {{#hasdeadlines}}
+                <ul class="epure-learner-deadlines">
+                    {{#deadlines}}
+                        <li>
+                            <span class="epure-learner-deadline-date">{{date}}</span>
+                            {{#url}}<a href="{{url}}">{{name}}</a>{{/url}}{{^url}}<span>{{name}}</span>{{/url}}
+                            <span class="epure-learner-deadline-course">{{course}}</span>
+                        </li>
+                    {{/deadlines}}
+                </ul>
+            {{/hasdeadlines}}
+            {{^hasdeadlines}}<p class="epure-learner-empty">{{#str}}learnernodeadlines, theme_epure{{/str}}</p>{{/hasdeadlines}}
+        </section>
+
+        <section class="epure-learner-block" aria-labelledby="epure-learner-completed-title">
+            <div class="epure-learner-block-head">
+                <h2 class="epure-learner-heading" id="epure-learner-completed-title">{{#str}}learnercompleted, theme_epure{{/str}}</h2>
+                {{#hascompleted}}<span class="epure-learner-count">{{completedcount}}</span>{{/hascompleted}}
+            </div>
+            {{#hascompleted}}
+                <ul class="epure-learner-completed">
+                    {{#completed}}
+                        <li>
+                            <i class="fa fa-circle-check" aria-hidden="true"></i>
+                            <a href="{{url}}">{{name}}</a>
+                            {{#datecompleted}}<span class="epure-learner-completed-date">{{datecompleted}}</span>{{/datecompleted}}
+                        </li>
+                    {{/completed}}
+                </ul>
+            {{/hascompleted}}
+            {{^hascompleted}}<p class="epure-learner-empty">{{#str}}learnernocompleted, theme_epure{{/str}}</p>{{/hascompleted}}
+            {{#certificates}}
+                <a class="btn btn-outline-primary epure-learner-certificates" href="{{certificates}}">
+                    <i class="fa fa-award" aria-hidden="true"></i>{{#str}}learnercertificates, theme_epure{{/str}}
+                </a>
+            {{/certificates}}
+        </section>
+    </div>
+</div>

@@ -56,3 +56,19 @@ Feature: Accessibility of the Épure theme
     Then I should see "Next: Welcome"
     And I should see "0/2" in the "General" "section"
     And the page should meet accessibility standards
+
+  Scenario: The dashboard shows the overview of the learner and meets accessibility standards
+    Given the following "courses" exist:
+      | fullname       | shortname | enablecompletion |
+      | Safety at work | SAFE      | 1                |
+    And the following "activities" exist:
+      | activity | course | name    | completion |
+      | page     | SAFE   | Welcome | 1          |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | learner1 | SAFE   | student |
+    When I log in as "learner1"
+    And I follow "Dashboard"
+    Then I should see "Pick up where you left off"
+    And I should see "Safety at work" in the ".epure-learner-resume" "css_element"
+    And the page should meet accessibility standards

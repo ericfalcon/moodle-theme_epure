@@ -79,6 +79,7 @@ Ces réglages s'appliquent aux utilisateurs rattachés à l'entreprise, et à l'
 | Couleur de marque | Code couleur libre, sélecteur de couleur, ou couleurs du logo de l'entreprise (pastilles et pipette, y compris pour un logo tout juste téléversé). Vide : la couleur du titre d'IOMAD, sinon celle du site. La palette accessible est recalculée. |
 | Couleur de l'en-tête | Comme le site, blanc, ou couleur de marque. |
 | Bannière des cours | Comme le site, affichée ou masquée, pour les utilisateurs de l'entreprise. |
+| Aperçu de l'apprenant sur le tableau de bord | Comme le site, affiché ou masqué. |
 | Logo pour l'en-tête en couleur | Facultatif : une version du logo lisible sur la couleur de marque de l'entreprise, souvent blanche sur fond transparent. |
 | Police | Comme le site, ou l'une des polices fournies. |
 
@@ -118,6 +119,17 @@ Avec IOMAD, la même page propose les mots « entreprise » et « département �
 ### Réglages avancés
 
 SCSS initial (pour redéfinir des variables) et SCSS ajouté à la fin de la feuille de style.
+
+## Tableau de bord de l'apprenant
+
+Pour un utilisateur qui suit des cours, le tableau de bord commence par un aperçu, au-dessus des blocs de Moodle :
+
+- **Reprendre où vous en étiez** : le dernier cours visité et pas encore terminé, avec son image, sa progression, sa prochaine activité et un bouton pour continuer ;
+- **En cours** : les autres cours en cours, avec leur progression, et un lien vers « Mes cours » ;
+- **À venir** : les prochaines échéances de tous ses cours (devoirs à rendre, tests qui ferment…) ;
+- **Terminé** : les cours terminés, avec leur date, et un lien vers ses attestations quand la plateforme en délivre (IOMAD, Certificate, Custom certificate).
+
+L'aperçu se désactive dans les réglages généraux du thème (« Aperçu de l'apprenant sur le tableau de bord ») ; avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche.
 
 ## Page de cours
 

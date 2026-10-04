@@ -93,13 +93,18 @@ class core_renderer extends \theme_boost\output\core_renderer {
 
     /**
      * Header of the page; on the page of a course, inside a banner with the image of the course and,
-     * depending on the role of the user, their progress or the figures of the course.
+     * depending on the role of the user, their progress or the figures of the course; on the dashboard,
+     * followed by the overview of the learner.
      *
      * @return string HTML.
      */
     public function full_header() {
         global $USER;
         $header = parent::full_header();
+        if (\theme_epure\learner_dashboard::applies($this->page)) {
+            $data = \theme_epure\learner_dashboard::export($this);
+            return $data ? $header . $this->render_from_template('theme_epure/learner_dashboard', $data) : $header;
+        }
         if (!\theme_epure\course_page::applies($this->page)) {
             return $header;
         }

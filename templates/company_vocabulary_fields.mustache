@@ -24,7 +24,7 @@
     Context variables required for this template:
     * marker - name of the field telling that the vocabulary fields were posted
     * languages - lang, name, concepts (name, label, options, custom, singular, plural, hasgender, masculine, feminine)
-    * brandcolor, sitebrandcolor, headerstyles, fonts, coursebanners - appearance of the company
+    * brandcolor, sitebrandcolor, headerstyles, fonts, coursebanners, learnerdashboards - appearance of the company
     * logocolours - context of theme_epure/logo_colours
 
     Example context (json):
@@ -33,6 +33,7 @@
         "headerstyles": [{"value": "", "label": "As the site (White)", "selected": true}],
         "fonts": [{"value": "", "label": "As the site (IBM Plex Sans)", "selected": true}],
         "coursebanners": [{"value": "", "label": "As the site (Shown)", "selected": true}],
+        "learnerdashboards": [{"value": "", "label": "As the site (Shown)", "selected": true}],
         "logocolours": {"id": "epure-company-logocolours", "inputid": "id_epure_brandcolor", "logourl": null},
         "languages": [{"lang": "fr", "name": "Français", "concepts": [{
             "name": "epure_vocab_fr_company", "label": "Les entreprises s'appellent",
@@ -104,6 +105,18 @@
                 {{#coursebanners}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/coursebanners}}
             </select>
             <p class="small text-muted mt-1 mb-0 w-100" id="id_epure_coursebanner_help">{{#str}}companycoursebanner_help, theme_epure{{/str}}</p>
+        </div>
+    </div>
+    <div class="form-group mb-3 row fitem">
+        <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+            <label class="mb-0" for="id_epure_learnerdashboard">{{#str}}learnerdashboard, theme_epure{{/str}}</label>
+        </div>
+        <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+            <select class="custom-select form-select" id="id_epure_learnerdashboard" name="epure_learnerdashboard"
+                aria-describedby="id_epure_learnerdashboard_help">
+                {{#learnerdashboards}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/learnerdashboards}}
+            </select>
+            <p class="small text-muted mt-1 mb-0 w-100" id="id_epure_learnerdashboard_help">{{#str}}companylearnerdashboard_help, theme_epure{{/str}}</p>
         </div>
     </div>
 

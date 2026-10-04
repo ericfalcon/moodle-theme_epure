@@ -112,6 +112,14 @@ if ($ADMIN->fulltree) {
         1
     ));
 
+    // Dashboard: overview of the learner above the blocks.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/learnerdashboard',
+        get_string('learnerdashboard', 'theme_epure'),
+        get_string('learnerdashboard_desc', 'theme_epure'),
+        1
+    ));
+
     // My courses page: courses split by role, with cards suited to each one.
     $page->add(new admin_setting_configcheckbox(
         'theme_epure/mycoursesbyrole',

@@ -37,15 +37,15 @@ class company_style {
     /** @var string[] Header styles. */
     public const HEADER_STYLES = ['light', 'brand'];
 
-    /** @var string[] Choices for the course banner. */
+    /** @var string[] Choices for the course banner and the overview of the learner on the dashboard. */
     public const COURSE_BANNERS = ['show', 'hide'];
 
     /**
      * Épure appearance of a company.
      *
      * @param int $companyid Company.
-     * @return array{brandcolor: string, headerstyle: string, font: string, coursebanner: string} Empty values when the
-     *     company uses the site setting.
+     * @return array{brandcolor: string, headerstyle: string, font: string, coursebanner: string, learnerdashboard: string}
+     *     Empty values when the company uses the site setting.
      */
     public static function settings(int $companyid): array {
         $json = get_config('theme_epure', 'companystyle_' . $companyid);
@@ -56,6 +56,8 @@ class company_style {
             'headerstyle' => in_array($values['headerstyle'] ?? '', self::HEADER_STYLES, true) ? $values['headerstyle'] : '',
             'font' => isset(fonts::all()[$values['font'] ?? '']) ? $values['font'] : '',
             'coursebanner' => in_array($values['coursebanner'] ?? '', self::COURSE_BANNERS, true) ? $values['coursebanner'] : '',
+            'learnerdashboard' => in_array($values['learnerdashboard'] ?? '', self::COURSE_BANNERS, true)
+                ? $values['learnerdashboard'] : '',
         ];
     }
 
@@ -63,7 +65,8 @@ class company_style {
      * Saves the Épure appearance of a company.
      *
      * @param int $companyid Company.
-     * @param array $values brandcolor, headerstyle, font and coursebanner; empty values mean the site setting.
+     * @param array $values brandcolor, headerstyle, font, coursebanner and learnerdashboard; empty values mean the
+     *     site setting.
      */
     public static function save_settings(int $companyid, array $values): void {
         $settings = [
@@ -71,6 +74,8 @@ class company_style {
             'headerstyle' => in_array($values['headerstyle'] ?? '', self::HEADER_STYLES, true) ? $values['headerstyle'] : '',
             'font' => isset(fonts::all()[$values['font'] ?? '']) ? $values['font'] : '',
             'coursebanner' => in_array($values['coursebanner'] ?? '', self::COURSE_BANNERS, true) ? $values['coursebanner'] : '',
+            'learnerdashboard' => in_array($values['learnerdashboard'] ?? '', self::COURSE_BANNERS, true)
+                ? $values['learnerdashboard'] : '',
         ];
         if (array_filter($settings)) {
             set_config('companystyle_' . $companyid, json_encode($settings), 'theme_epure');
@@ -104,6 +109,19 @@ class company_style {
             return $choice === 'show';
         }
         return get_config('theme_epure', 'coursebanner') !== '0';
+    }
+
+    /**
+     * Whether the dashboard shows the overview of the learner: the choice of the company of the user, else the site setting.
+     *
+     * @return bool
+     */
+    public static function learner_dashboard(): bool {
+        $company = self::current_company();
+        if ($company && ($choice = self::settings((int) $company->id)['learnerdashboard'])) {
+            return $choice === 'show';
+        }
+        return get_config('theme_epure', 'learnerdashboard') !== '0';
     }
 
     /**

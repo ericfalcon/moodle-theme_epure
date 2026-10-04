@@ -93,11 +93,12 @@ class company_form {
      */
     protected static function appearance_context(int $companyid): array {
         $settings = $companyid ? \theme_epure\company_style::settings($companyid)
-            : ['brandcolor' => '', 'headerstyle' => '', 'font' => '', 'coursebanner' => ''];
+            : ['brandcolor' => '', 'headerstyle' => '', 'font' => '', 'coursebanner' => '', 'learnerdashboard' => ''];
         $brand = self::posted('brandcolor', $settings['brandcolor']);
         $header = self::posted('headerstyle', $settings['headerstyle']);
         $font = self::posted('font', $settings['font']);
         $banner = self::posted('coursebanner', $settings['coursebanner']);
+        $dashboard = self::posted('learnerdashboard', $settings['learnerdashboard']);
         $logo = $companyid ? \theme_epure\company_style::logo_url($companyid) : null;
 
         $sitebrand = \theme_epure\palette::normalise(get_config('theme_epure', 'brandcolor'))
@@ -118,6 +119,13 @@ class company_form {
         $banners = [$option('', get_string('companysite', 'theme_epure', $sitebanner), $banner),
             $option('show', get_string('coursebannershow', 'theme_epure'), $banner),
             $option('hide', get_string('coursebannerhide', 'theme_epure'), $banner)];
+        $sitedashboard = get_string(
+            get_config('theme_epure', 'learnerdashboard') !== '0' ? 'coursebannershow' : 'coursebannerhide',
+            'theme_epure'
+        );
+        $dashboards = [$option('', get_string('companysite', 'theme_epure', $sitedashboard), $dashboard),
+            $option('show', get_string('coursebannershow', 'theme_epure'), $dashboard),
+            $option('hide', get_string('coursebannerhide', 'theme_epure'), $dashboard)];
         $fonts = [$option('', get_string('companysite', 'theme_epure', $sitefont), $font)];
         foreach (\theme_epure\fonts::all() as $key => $definition) {
             $fonts[] = $option($key, $definition['family'], $font);
@@ -129,6 +137,7 @@ class company_form {
             'headerstyles' => $headers,
             'fonts' => $fonts,
             'coursebanners' => $banners,
+            'learnerdashboards' => $dashboards,
             'logocolours' => [
                 'id' => 'epure-company-logocolours',
                 'inputid' => 'id_epure_brandcolor',
@@ -232,6 +241,7 @@ class company_form {
             'headerstyle' => optional_param(self::PREFIX . 'headerstyle', '', PARAM_ALPHA),
             'font' => optional_param(self::PREFIX . 'font', '', PARAM_ALPHANUMEXT),
             'coursebanner' => optional_param(self::PREFIX . 'coursebanner', '', PARAM_ALPHA),
+            'learnerdashboard' => optional_param(self::PREFIX . 'learnerdashboard', '', PARAM_ALPHA),
         ]);
         return true;
     }
