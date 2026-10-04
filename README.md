@@ -43,6 +43,18 @@ Toutes les polices sont servies par votre propre site. Le thème ne fait **aucun
 
 Le formulaire lui-même reste celui de Moodle : il suit chaque version (4.5, 5.0, 5.1) et les méthodes d'authentification configurées.
 
+### Avec IOMAD
+
+Épure applique l'apparence que vous définissez pour chaque entreprise dans IOMAD (Tableau de bord IOMAD › Modifier l'entreprise › Apparence) :
+
+| Réglage IOMAD de l'entreprise | Effet dans Épure |
+|---|---|
+| Couleur des titres (à défaut, couleur des liens) | Devient la couleur de marque de l'entreprise : la palette accessible est recalculée pour elle (en-tête, boutons, liens, contrastes AA). |
+| Logo de l'entreprise | Remplace le logo d'Épure pour les utilisateurs de l'entreprise. |
+| CSS personnalisé | Ajouté aux pages des utilisateurs de l'entreprise. |
+
+Ces réglages s'appliquent aux utilisateurs rattachés à l'entreprise, et à l'administrateur qui a sélectionné l'entreprise dans le tableau de bord IOMAD. Seuls les codes couleur hexadécimaux sont pris en compte. La couleur principale (fond de page) d'IOMAD n'est pas appliquée, pour préserver la lisibilité.
+
 ### Réglages avancés
 
 SCSS initial (pour redéfinir des variables) et SCSS ajouté à la fin de la feuille de style.

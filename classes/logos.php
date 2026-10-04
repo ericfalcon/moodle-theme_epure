@@ -51,7 +51,8 @@ class logos {
     }
 
     /**
-     * URL of the main logo: the theme logo, or the logo set in Appearance > Logos.
+     * URL of the main logo: the theme logo, the logo set in Appearance > Logos,
+     * or, with IOMAD, the logo of the company currently selected.
      *
      * @return moodle_url|null
      */
@@ -59,7 +60,12 @@ class logos {
         if ($url = self::url('logo')) {
             return $url;
         }
-        foreach (['logo', 'logocompact'] as $setting) {
+        $settings = ['logo', 'logocompact'];
+        if ($company = company_style::current_company()) {
+            $settings[] = 'logo' . $company->id;
+            $settings[] = 'logocompact' . $company->id;
+        }
+        foreach ($settings as $setting) {
             $file = (string) get_config('core_admin', $setting);
             if ($file !== '') {
                 return moodle_url::make_pluginfile_url(

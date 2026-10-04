@@ -35,6 +35,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return \moodle_url|false
      */
     public function get_compact_logo_url($maxwidth = 300, $maxheight = 300) {
+        // The logo of the user's IOMAD company comes first.
+        if ($url = $this->company_logo_url(['logocompact', 'logo'])) {
+            return $url;
+        }
         $theme = $this->page->theme;
         $settings = ($theme->settings->headerstyle ?? '') === 'brand' ? ['logoonbrand', 'logo'] : ['logo'];
         foreach ($settings as $setting) {
@@ -55,10 +59,60 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return \moodle_url|false
      */
     public function get_logo_url($maxwidth = null, $maxheight = 200) {
+        if ($url = $this->company_logo_url(['logo', 'logocompact'])) {
+            return $url;
+        }
         if ($url = $this->theme_file_url('logo')) {
             return $url;
         }
         return parent::get_logo_url($maxwidth, $maxheight);
+    }
+
+    /**
+     * Head of the page, with the appearance of the user's IOMAD company when there is one.
+     *
+     * The company styles depend on the user, so they are added to the page rather than to
+     * the cached theme stylesheet, as IOMAD's own theme does.
+     *
+     * @return string HTML
+     */
+    public function standard_head_html() {
+        $output = parent::standard_head_html();
+        $company = \theme_epure\company_style::current_company();
+        if ($company && ($css = \theme_epure\company_style::css($company)) !== '') {
+            $output .= \html_writer::tag('style', $css, ['id' => 'epure-company-style']);
+        }
+        return $output;
+    }
+
+    /**
+     * Logo of the user's IOMAD company, stored by IOMAD as core_admin/logo<id> and logocompact<id>.
+     *
+     * Resolved from the user's company, so it also works for company users, not only for
+     * administrators who selected a company.
+     *
+     * @param string[] $settings Settings to try, in order.
+     * @return \moodle_url|null
+     */
+    protected function company_logo_url(array $settings): ?\moodle_url {
+        $company = \theme_epure\company_style::current_company();
+        if (!$company) {
+            return null;
+        }
+        foreach ($settings as $setting) {
+            $file = (string) get_config('core_admin', $setting . $company->id);
+            if ($file !== '') {
+                return \moodle_url::make_pluginfile_url(
+                    \context_system::instance()->id,
+                    'core_admin',
+                    $setting . $company->id,
+                    '300x200/',
+                    theme_get_revision(),
+                    $file
+                );
+            }
+        }
+        return null;
     }
 
     /**
