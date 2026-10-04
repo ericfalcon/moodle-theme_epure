@@ -1127,7 +1127,8 @@ html.epure-a11y-motion *::after {
     width: 22rem;
     max-width: calc(100vw - 2rem);
     max-height: calc(100vh - 5rem);
-    overflow-y: auto;
+    // Only the choices scroll: the title and the reset button never cover them.
+    flex-direction: column;
     padding: 1rem;
     color: #1d2125;
     background: #fff;
@@ -1135,18 +1136,22 @@ html.epure-a11y-motion *::after {
     border-radius: var(--epure-radius-lg);
     box-shadow: var(--epure-shadow-hover);
 
+    &:not([hidden]) {
+        display: flex;
+    }
+
     &[hidden] {
         display: none;
     }
 }
 
+.epure-a11y-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
 .epure-a11y-head {
-    position: sticky;
-    top: -1rem;
-    z-index: 1;
-    margin-top: -1rem;
-    padding-top: 1rem;
-    background: #fff;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1175,6 +1180,7 @@ html.epure-a11y-motion *::after {
 }
 
 .epure-a11y-choice {
+    position: relative;
     margin: 0;
 
     input {
@@ -1213,12 +1219,8 @@ html.epure-a11y-motion *::after {
 }
 
 .epure-a11y-foot {
-    // The reset button stays in reach when large text makes the panel scroll.
-    position: sticky;
-    bottom: -1rem;
-    margin-bottom: -1rem;
-    padding: .75rem 0 1rem;
-    background: #fff;
+    // The reset button stays in reach when large text makes the choices scroll.
+    padding-top: .75rem;
     border-top: 1px solid var(--epure-border);
     display: flex;
     flex-wrap: wrap;
