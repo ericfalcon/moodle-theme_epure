@@ -949,6 +949,10 @@ summary:focus-visible {
     font-size: .875rem;
 }
 
+.epure-course-card-progress .progress {
+    width: 100%;
+}
+
 .epure-course-card-progress-label {
     display: flex;
     justify-content: space-between;
@@ -971,4 +975,10 @@ summary:focus-visible {
 .epure-course-card-action {
     align-self: flex-start;
     margin-top: auto;
+}
+
+.epure-mycourses-certificates {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
 }

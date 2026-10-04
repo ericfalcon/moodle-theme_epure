@@ -39,6 +39,12 @@
             {{#category}}<p class="epure-course-card-category">{{category}}</p>{{/category}}
             <h3 class="epure-course-card-title" id="epure-course-{{id}}"><a href="{{url}}">{{name}}</a></h3>
 
+            {{#available}}
+                <a class="btn btn-outline-primary epure-course-card-action" href="{{url}}">
+                    {{#str}}mycourses_discover, theme_epure{{/str}}<span class="sr-only visually-hidden"> – {{name}}</span>
+                </a>
+            {{/available}}
+            {{^available}}
             {{#teaching}}
                 <dl class="epure-course-card-figures">
                     <div><dt>{{#str}}mycourses_participants, theme_epure{{/str}}</dt><dd>{{participants}}</dd></div>
@@ -79,6 +85,7 @@
                     {{action}}<span class="sr-only visually-hidden"> – {{name}}</span>
                 </a>
             {{/teaching}}
+            {{/available}}
         </div>
     </article>
 </li>

@@ -231,6 +231,8 @@ const apply = async(region, colour) => {
     input.value = colour;
     input.dispatchEvent(new Event('input', {bubbles: true}));
     input.dispatchEvent(new Event('change', {bubbles: true}));
+    // Moodle's and IOMAD's colour pickers refresh their preview on key up.
+    input.dispatchEvent(new KeyboardEvent('keyup', {bubbles: true}));
     region.querySelectorAll('[data-colour]').forEach((button) => {
         button.setAttribute('aria-pressed', String(button.dataset.colour === colour));
     });
@@ -289,16 +291,17 @@ const pickColour = (img, e) => {
 };
 
 /**
- * Starts the extraction once the logo is loaded.
+ * Starts the extraction once the logo is loaded, and again each time the logo changes.
  *
  * @param {string} selector Selector of the logo colours region.
  */
 export const init = (selector) => {
     const region = document.querySelector(selector);
     const img = region?.querySelector('[data-region="logo"]');
-    if (!img) {
+    if (!img || region.dataset.initialised) {
         return;
     }
+    region.dataset.initialised = '1';
 
     const start = async() => {
         try {
@@ -309,14 +312,17 @@ export const init = (selector) => {
             return;
         }
         img.classList.add('epure-logocolours-pickable');
-        img.addEventListener('click', (e) => {
-            const colour = pickColour(img, e);
-            if (colour) {
-                apply(region, colour);
-            }
-        });
     };
 
+    img.addEventListener('click', (e) => {
+        if (!img.classList.contains('epure-logocolours-pickable')) {
+            return;
+        }
+        const colour = pickColour(img, e);
+        if (colour) {
+            apply(region, colour);
+        }
+    });
     region.addEventListener('click', (e) => {
         const button = e.target.closest('[data-colour]');
         if (button) {
@@ -324,9 +330,26 @@ export const init = (selector) => {
         }
     });
 
-    if (img.complete && img.naturalWidth) {
+    img.addEventListener('load', start);
+    if (img.getAttribute('src') && img.complete && img.naturalWidth) {
         start();
-    } else {
-        img.addEventListener('load', start, {once: true});
     }
+};
+
+/**
+ * Shows the colours of another logo, for example one just uploaded and not saved yet.
+ *
+ * @param {string} selector Selector of the logo colours region.
+ * @param {string} url URL of the logo.
+ */
+export const setLogo = (selector, url) => {
+    const region = document.querySelector(selector);
+    const img = region?.querySelector('[data-region="logo"]');
+    if (!img || img.getAttribute('src') === url) {
+        return;
+    }
+    region.querySelector('[data-region="content"]').hidden = false;
+    region.querySelector('[data-region="none"]').hidden = true;
+    img.classList.remove('epure-logocolours-pickable');
+    img.src = url;
 };

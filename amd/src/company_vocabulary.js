@@ -24,6 +24,8 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+import {init as initColours, setLogo} from 'theme_epure/logo_colours';
+
 /**
  * Shows the custom word fields of a choice when « Other word » is selected.
  *
@@ -63,4 +65,46 @@ export const init = () => {
         select.addEventListener('change', () => toggleCustom(select));
         toggleCustom(select);
     });
+};
+
+/**
+ * Moves the colours of the logo under the « Heading colour » field, and follows the logo uploaded in the form.
+ *
+ * @param {string} selector Selector of the logo colours region.
+ */
+export const initLogoColours = (selector) => {
+    const region = document.querySelector(selector);
+    const field = document.querySelector('[name="headingcolor"]');
+    const row = field?.closest('.fitem, .form-group');
+    if (!region || !row) {
+        // Without the colour field (theme not set to Épure for the company), nothing to propose.
+        region?.remove();
+        return;
+    }
+    region.dataset.input = field.id;
+    const element = row.querySelector('.felement');
+    if (element) {
+        element.append(region);
+    } else {
+        row.after(region);
+    }
+    initColours(selector);
+
+    // A logo uploaded in the form is not saved yet: its preview in the file manager gives its colours.
+    const manager = document.querySelector('[name="companylogo"]')?.closest('.fitem, .form-group');
+    if (!manager) {
+        return;
+    }
+    const follow = () => {
+        const preview = manager.querySelector('.fp-content img[src*="draftfile.php"], .fp-content img[src*="pluginfile.php"]');
+        if (preview) {
+            const url = new URL(preview.src, window.location.href);
+            url.searchParams.delete('preview');
+            url.searchParams.delete('oid');
+            setLogo(selector, url.toString());
+        }
+    };
+    // The file manager first shows a placeholder, then sets the preview address on the same image.
+    new MutationObserver(follow).observe(manager, {childList: true, subtree: true, attributes: true, attributeFilter: ['src']});
+    follow();
 };

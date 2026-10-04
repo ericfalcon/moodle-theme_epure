@@ -99,20 +99,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if (!$company) {
             return null;
         }
-        foreach ($settings as $setting) {
-            $file = (string) get_config('core_admin', $setting . $company->id);
-            if ($file !== '') {
-                return \moodle_url::make_pluginfile_url(
-                    \context_system::instance()->id,
-                    'core_admin',
-                    $setting . $company->id,
-                    '300x200/',
-                    theme_get_revision(),
-                    $file
-                );
-            }
-        }
-        return null;
+        return \theme_epure\company_style::logo_url((int) $company->id, $settings);
     }
 
     /**

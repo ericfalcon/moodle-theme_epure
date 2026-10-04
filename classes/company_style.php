@@ -43,6 +43,30 @@ class company_style {
     }
 
     /**
+     * Logo of a company, stored by IOMAD as core_admin/logo<id> and logocompact<id>.
+     *
+     * @param int $companyid Company.
+     * @param string[] $settings Settings to try, in order: logo, logocompact.
+     * @return \moodle_url|null
+     */
+    public static function logo_url(int $companyid, array $settings = ['logo', 'logocompact']): ?\moodle_url {
+        foreach ($settings as $setting) {
+            $file = (string) get_config('core_admin', $setting . $companyid);
+            if ($file !== '') {
+                return \moodle_url::make_pluginfile_url(
+                    \context_system::instance()->id,
+                    'core_admin',
+                    $setting . $companyid,
+                    '300x200/',
+                    theme_get_revision(),
+                    $file
+                );
+            }
+        }
+        return null;
+    }
+
+    /**
      * Company of the current user, or null on a standard Moodle site or without a company.
      *
      * @return \stdClass|null

@@ -44,6 +44,11 @@
                 <input type="search" class="form-control" id="epure-mycourses-search" data-action="search"
                     placeholder="{{#str}}mycourses_search, theme_epure{{/str}}" autocomplete="off">
             </div>
+            {{#downloadcerts}}
+                <a class="btn btn-secondary epure-mycourses-certificates" href="{{downloadcerts}}">
+                    <i class="fa fa-download" aria-hidden="true"></i> {{#str}}downloadcertificates, block_iomad_company_admin{{/str}}
+                </a>
+            {{/downloadcerts}}
             <div class="epure-mycourses-filters" role="group" aria-label="{{#str}}mycourses_filter, theme_epure{{/str}}">
                 {{#filters}}
                     <button type="button" class="epure-mycourses-filter" data-filter="{{value}}"
@@ -70,6 +75,6 @@
         {{/sections}}
     {{/hascourses}}
     {{^hascourses}}
-        <p class="epure-mycourses-none">{{#str}}nocourses, block_myoverview{{/str}}</p>
+        <p class="epure-mycourses-none">{{#str}}nocourses{{/str}}</p>
     {{/hascourses}}
 </div>

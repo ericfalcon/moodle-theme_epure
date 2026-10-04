@@ -85,5 +85,16 @@ class hook_callbacks {
             \theme_epure\vocabulary\company_form::context($companyid)
         ));
         $PAGE->requires->js_call_amd('theme_epure/company_vocabulary', 'init');
+
+        // Colours of the company logo, proposed under « Heading colour », the brand colour of the company in Épure.
+        $logo = $companyid ? company_style::logo_url($companyid) : null;
+        $hook->add_html($OUTPUT->render_from_template('theme_epure/logo_colours', [
+            'id' => 'epure-company-logocolours',
+            'inputid' => 'id_headingcolor',
+            'logourl' => $logo ? $logo->out(false) : null,
+            'help' => get_string('logocolours_company_help', 'theme_epure'),
+            'none' => get_string('logocolours_company_none', 'theme_epure'),
+        ]));
+        $PAGE->requires->js_call_amd('theme_epure/company_vocabulary', 'initLogoColours', ['#epure-company-logocolours']);
     }
 }

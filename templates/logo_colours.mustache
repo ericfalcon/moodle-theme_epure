@@ -23,6 +23,8 @@
     * id - Identifier of the region.
     * inputid - Identifier of the colour input to fill.
     * logourl - URL of the logo, or null when there is no logo.
+    * help - Optional help text, instead of the default one.
+    * none - Optional text shown when there is no logo, instead of the default one.
 
     Example context (json):
     {
@@ -32,15 +34,13 @@
     }
 }}
 <div class="epure-logocolours" id="{{id}}" data-input="{{inputid}}">
-    {{#logourl}}
+    <div data-region="content" {{^logourl}}hidden{{/logourl}}>
         <p class="epure-logocolours-title">{{#str}}logocolours, theme_epure{{/str}}</p>
-        <p class="small text-muted mb-2">{{#str}}logocolours_help, theme_epure{{/str}}</p>
+        <p class="small text-muted mb-2">{{#help}}{{help}}{{/help}}{{^help}}{{#str}}logocolours_help, theme_epure{{/str}}{{/help}}</p>
         <img src="{{logourl}}" alt="" class="epure-logocolours-logo" data-region="logo">
         <div class="epure-logocolours-swatches" data-region="swatches" role="group"
             aria-label="{{#str}}logocolours, theme_epure{{/str}}"></div>
         <p class="small mb-0" data-region="status" aria-live="polite"></p>
-    {{/logourl}}
-    {{^logourl}}
-        <p class="small text-muted mt-2 mb-0">{{#str}}logocolours_none, theme_epure{{/str}}</p>
-    {{/logourl}}
+    </div>
+    <p class="small text-muted mt-2 mb-0" data-region="none" {{#logourl}}hidden{{/logourl}}>{{#none}}{{none}}{{/none}}{{^none}}{{#str}}logocolours_none, theme_epure{{/str}}{{/none}}</p>
 </div>

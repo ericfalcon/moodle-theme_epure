@@ -53,9 +53,11 @@ class mycourses {
      *
      * @param \renderer_base $output Renderer, for the generated course images.
      * @param int|null $userid User, the current one by default.
+     * @param array $iomad With IOMAD's « My courses » block: available (courses the user can start,
+     *     each with id, fullname, url, image) and downloadcerts (address to download the certificates).
      * @return array
      */
-    public static function export(\renderer_base $output, ?int $userid = null): array {
+    public static function export(\renderer_base $output, ?int $userid = null, array $iomad = []): array {
         global $USER, $DB;
         $userid = $userid ?? (int) $USER->id;
         $user = \core_user::get_user($userid);
@@ -99,7 +101,34 @@ class mycourses {
                 'count' => count($sections[$role]),
             ];
         }
+        // IOMAD: the courses the user can start (company courses, licences), not enrolled yet.
+        $available = [];
+        foreach ($iomad['available'] ?? [] as $course) {
+            $course = (object) $course;
+            $name = format_string($course->fullname);
+            $available[] = [
+                'id' => (int) $course->id,
+                'name' => $name,
+                'sortname' => \core_text::strtolower($name),
+                'url' => (string) $course->url,
+                'image' => (string) $course->image,
+                'category' => (string) ($course->coursecategory ?? ''),
+                'status' => 'available',
+                'available' => true,
+                'rolename' => get_string('mycourses_availablebadge', 'theme_epure'),
+            ];
+        }
+        if ($available) {
+            $result[] = [
+                'role' => 'available',
+                'title' => get_string('mycourses_available', 'theme_epure', $coursesword),
+                'courses' => $available,
+                'count' => count($available),
+            ];
+        }
+
         return [
+            'downloadcerts' => $iomad['downloadcerts'] ?? null,
             'sections' => $result,
             'showheadings' => count($result) > 1,
             'hascourses' => !empty($result),
