@@ -1264,7 +1264,21 @@ html.epure-a11y-motion *::after {
     margin: 0;
 }
 
-// Footer of every page.
+// Footer of every page. It follows the page, so the drawers open beside the page must not cover it.
+@include media-breakpoint-up(lg) {
+    #page.drawers ~ .epure-footer {
+        transition: margin .2s;
+    }
+
+    #page.drawers.show-drawer-left ~ .epure-footer {
+        margin-left: $drawer-left-width;
+    }
+
+    #page.drawers.show-drawer-right ~ .epure-footer {
+        margin-right: $drawer-right-width;
+    }
+}
+
 .epure-footer {
     padding: 2rem 1rem 1.25rem;
     color: var(--epure-ink-muted);
