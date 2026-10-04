@@ -21,6 +21,8 @@ Administration du site › Apparence › Thèmes › Épure.
 | Police téléversée | Nom de la police et fichiers `.woff2` ou `.woff` (normal obligatoire, gras facultatif). Vérifiez que la licence de la police autorise l'usage sur un site web. |
 | Arrondis | Net, doux ou arrondi : cartes, boutons et champs. |
 
+Sous la couleur de marque, le thème propose les **couleurs du logo** enregistré : cliquez sur une pastille, ou directement sur un point du logo (pipette), puis enregistrez. Seuls les codes hexadécimaux sont acceptés, car la palette accessible en est calculée.
+
 Toutes les polices sont servies par votre propre site. Le thème ne fait **aucun appel à Google Fonts** ni à un autre service externe.
 
 ### En-tête
@@ -31,13 +33,23 @@ Toutes les polices sont servies par votre propre site. Le thème ne fait **aucun
 | Logo | Affiché dans l'en-tête et sur la page de connexion. Les fonds transparents sont pris en charge (SVG, PNG, WebP). Sans logo, ceux d'Apparence › Logos sont utilisés. |
 | Logo pour l'en-tête en couleur | Facultatif : une version lisible sur la couleur de marque, souvent blanche sur fond transparent. |
 
+### Page de connexion
+
+| Réglage | Effet |
+|---|---|
+| Disposition | Écran partagé : un visuel de la couleur de marque à côté du formulaire de Moodle (sur téléphone, seul le formulaire s'affiche). Ou formulaire centré. |
+| Accroche et texte d'accompagnement | Affichés sur le visuel. Sans accroche, une phrase par défaut est utilisée. |
+| Image de fond | Facultative. Un voile de la couleur de marque est posé dessus, avec l'opacité nécessaire pour que le texte reste lisible (contraste AA) quelle que soit l'image. |
+
+Le formulaire lui-même reste celui de Moodle : il suit chaque version (4.5, 5.0, 5.1) et les méthodes d'authentification configurées.
+
 ### Réglages avancés
 
 SCSS initial (pour redéfinir des variables) et SCSS ajouté à la fin de la feuille de style.
 
 ## Accessibilité
 
-Le thème vise les WCAG 2.2 niveau AA, le RGAA 4.1.2 et l'EN 301 549 : contrastes calculés, focus clavier toujours visible, lien d'évitement, cibles d'au moins 24 × 24 px, respect du réglage « réduire les animations ».
+Le thème vise les WCAG 2.2 niveau AA, le RGAA 4.1.2 et l'EN 301 549 : contrastes calculés, focus clavier toujours visible, lien d'évitement, cibles d'au moins 24 × 24 px, liens soulignés dans le texte, respect du réglage « réduire les animations ».
 
 Un thème ne rend pas une plateforme conforme à lui seul : les contenus des cours comptent aussi, et un audit manuel reste nécessaire avant de déclarer la conformité.
 

@@ -42,7 +42,7 @@ if ($ADMIN->fulltree) {
     if ($current['textadjusted']) {
         $description .= html_writer::tag('p', get_string('brandcolor_adjusted', 'theme_epure', $a));
     }
-    $setting = new admin_setting_configcolourpicker(
+    $setting = new theme_epure\admin\setting_brandcolour(
         'theme_epure/brandcolor',
         get_string('brandcolor', 'theme_epure'),
         $description,
@@ -128,6 +128,53 @@ if ($ADMIN->fulltree) {
         $setting->set_updatedcallback('theme_reset_all_caches');
         $page->add($setting);
     }
+
+    $settings->add($page);
+
+    // Login tab.
+    $page = new admin_settingpage('theme_epure_login', get_string('loginsettings', 'theme_epure'));
+
+    $setting = new admin_setting_configselect(
+        'theme_epure/loginlayout',
+        get_string('loginlayout', 'theme_epure'),
+        get_string('loginlayout_desc', 'theme_epure'),
+        'split',
+        [
+            'split' => get_string('loginlayoutsplit', 'theme_epure'),
+            'centered' => get_string('loginlayoutcentered', 'theme_epure'),
+        ]
+    );
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $page->add($setting);
+
+    $page->add(new admin_setting_configtext(
+        'theme_epure/logintagline',
+        get_string('logintagline', 'theme_epure'),
+        get_string('logintagline_desc', 'theme_epure'),
+        '',
+        PARAM_TEXT,
+        60
+    ));
+
+    $page->add(new admin_setting_configtext(
+        'theme_epure/logintext',
+        get_string('logintext', 'theme_epure'),
+        get_string('logintext_desc', 'theme_epure'),
+        '',
+        PARAM_TEXT,
+        80
+    ));
+
+    $setting = new admin_setting_configstoredfile(
+        'theme_epure/loginimage',
+        get_string('loginimage', 'theme_epure'),
+        get_string('loginimage_desc', 'theme_epure'),
+        'loginimage',
+        0,
+        ['maxfiles' => 1, 'accepted_types' => ['.jpg', '.jpeg', '.png', '.webp']]
+    );
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $page->add($setting);
 
     $settings->add($page);
 

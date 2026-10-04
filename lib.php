@@ -73,7 +73,7 @@ function theme_epure_get_font($theme): array {
  * @return bool
  */
 function theme_epure_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []) {
-    $fileareas = ['customfontregular', 'customfontbold', 'logo', 'logoonbrand'];
+    $fileareas = ['customfontregular', 'customfontbold', 'logo', 'logoonbrand', 'loginimage'];
     if ($context->contextlevel == CONTEXT_SYSTEM && in_array($filearea, $fileareas)) {
         $theme = theme_config::load('epure');
         // Fonts and logos are requested on every page, including the login page.
@@ -125,6 +125,7 @@ function theme_epure_get_pre_scss($theme) {
         'epure-brand-soft-2' => $light['soft2'],
         'epure-header-brand' => ($theme->settings->headerstyle ?? '') === 'brand' ? 'true' : 'false',
         'epure-on-brand-is-light' => $light['on'] === palette::SURFACE_LIGHT ? 'true' : 'false',
+        'epure-login-overlay' => 'rgba(' . implode(', ', palette::to_rgb($light['fill'])) . ', ' . $light['overlayalpha'] . ')',
         'epure-dark-brand' => $dark['fill'],
         'epure-dark-brand-hover' => $dark['hover'],
         'epure-dark-on-brand' => $dark['on'],

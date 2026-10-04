@@ -111,6 +111,25 @@ final class palette_test extends \basic_testcase {
         }
     }
 
+    #[\PHPUnit\Framework\Attributes\DataProvider('brand_provider')]
+    /**
+     * The veil over the login image keeps the text readable on any image, from black to white.
+     *
+     * @dataProvider brand_provider
+     * @param string $brand Brand colour.
+     */
+    public function test_login_overlay_keeps_text_readable(string $brand): void {
+        $p = palette::derive($brand);
+        $this->assertGreaterThanOrEqual(0.7, $p['overlayalpha']);
+        $this->assertLessThanOrEqual(0.95, $p['overlayalpha']);
+        if ($p['oncontrast'] >= palette::AA_TEXT + 0.2) {
+            foreach (['#000000', '#FFFFFF', '#808080'] as $image) {
+                $veiled = palette::mix($p['fill'], $image, 1 - $p['overlayalpha']);
+                $this->assertGreaterThanOrEqual(palette::AA_TEXT, palette::contrast($p['on'], $veiled));
+            }
+        }
+    }
+
     /**
      * A dark brand colour is used as is; a light one is adjusted for text.
      */

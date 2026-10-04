@@ -1,0 +1,46 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/logo_colours
+
+    Colours of the logo, proposed under the brand colour setting.
+
+    Context variables required for this template:
+    * id - Identifier of the region.
+    * inputid - Identifier of the colour input to fill.
+    * logourl - URL of the logo, or null when there is no logo.
+
+    Example context (json):
+    {
+        "id": "id_s_theme_epure_brandcolor_logocolours",
+        "inputid": "id_s_theme_epure_brandcolor",
+        "logourl": "https://example.com/pluginfile.php/1/theme_epure/logo/1/logo.png"
+    }
+}}
+<div class="epure-logocolours" id="{{id}}" data-input="{{inputid}}">
+    {{#logourl}}
+        <p class="epure-logocolours-title">{{#str}}logocolours, theme_epure{{/str}}</p>
+        <p class="small text-muted mb-2">{{#str}}logocolours_help, theme_epure{{/str}}</p>
+        <img src="{{logourl}}" alt="" class="epure-logocolours-logo" data-region="logo">
+        <div class="epure-logocolours-swatches" data-region="swatches" role="group"
+            aria-label="{{#str}}logocolours, theme_epure{{/str}}"></div>
+        <p class="small mb-0" data-region="status" aria-live="polite"></p>
+    {{/logourl}}
+    {{^logourl}}
+        <p class="small text-muted mt-2 mb-0">{{#str}}logocolours_none, theme_epure{{/str}}</p>
+    {{/logourl}}
+</div>

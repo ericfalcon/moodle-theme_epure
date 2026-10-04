@@ -173,7 +173,7 @@ class palette {
      * @param string|null $brand Brand colour; the default is used when it is not a valid colour.
      * @param bool $dark Whether to derive the dark mode variant.
      * @return array<string, string|float|bool> Keys: brand, fill, hover, on, text, soft, soft2,
-     *     textadjusted, oncontrast, textcontrast.
+     *     textadjusted, overlayalpha, oncontrast, textcontrast.
      */
     public static function derive(?string $brand, bool $dark = false): array {
         $brand = self::normalise($brand) ?? self::DEFAULT_BRAND;
@@ -195,6 +195,20 @@ class palette {
             $hover = self::mix($fill, '#000000', $on === self::SURFACE_LIGHT ? 0.14 : 0.08);
         }
 
+        // Opacity of the brand-coloured veil over the login image: the lowest that keeps the text
+        // readable (AA) whatever the image underneath, from pure black to pure white.
+        $overlay = 0.95;
+        for ($alpha = 0.7; $alpha <= 0.951; $alpha += 0.01) {
+            $worst = min(
+                self::contrast($on, self::mix($fill, '#000000', 1 - $alpha)),
+                self::contrast($on, self::mix($fill, '#FFFFFF', 1 - $alpha))
+            );
+            if ($worst >= self::AA_TEXT) {
+                $overlay = round($alpha, 2);
+                break;
+            }
+        }
+
         return [
             'brand' => $brand,
             'fill' => $fill,
@@ -204,6 +218,7 @@ class palette {
             'soft' => $soft,
             'soft2' => $soft2,
             'textadjusted' => $adjusted,
+            'overlayalpha' => $overlay,
             'oncontrast' => round(self::contrast($on, $fill), 2),
             'textcontrast' => round(self::contrast($text, $surface), 2),
         ];
