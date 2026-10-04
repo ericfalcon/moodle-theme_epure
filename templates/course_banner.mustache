@@ -23,7 +23,7 @@
     Example context (json):
     {
         "id": 2, "name": "Safety at work", "image": "", "category": "Training", "header": "<h1>Safety at work</h1>",
-        "learning": true, "teaching": false, "hasprogress": true, "progress": 40, "completed": false,
+        "learning": true, "haslearnerpanel": true, "teaching": false, "hasprogress": true, "progress": 40, "completed": false,
         "next": {"name": "Quiz 1", "url": "#"}, "action": "Continue", "actionurl": "#"
     }
 }}
@@ -33,7 +33,7 @@
         {{#category}}<p class="epure-course-banner-category">{{category}}</p>{{/category}}
         {{{header}}}
 
-        {{#learning}}
+        {{#haslearnerpanel}}
             <div class="epure-course-banner-panel">
                 <div class="epure-course-banner-status">
                     {{#hasprogress}}
@@ -62,7 +62,7 @@
                     </a>
                 {{/next}}
             </div>
-        {{/learning}}
+        {{/haslearnerpanel}}
 
         {{#teaching}}
             <div class="epure-course-banner-panel">

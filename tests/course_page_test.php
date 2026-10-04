@@ -82,7 +82,7 @@ final class course_page_test extends \advanced_testcase {
      * A learner gets their progress and the next activity; a teacher the figures; a visitor the course only.
      */
     public function test_export(): void {
-        global $PAGE;
+        global $DB, $PAGE;
         $this->resetAfterTest();
         [$course, $learner, $teacher] = $this->course();
         $output = $PAGE->get_renderer('core');
@@ -94,16 +94,27 @@ final class course_page_test extends \advanced_testcase {
         $this->assertSame(33, $data['progress']);
         $this->assertSame('Page 2', $data['next']['name']);
         $this->assertSame('<h1>Header</h1>', $data['header']);
+        $this->assertTrue($data['haslearnerpanel']);
 
         $this->setUser($teacher);
         $data = course_page::export($output, $course, '');
         $this->assertTrue($data['teaching']);
         $this->assertSame(1, $data['participants']);
 
+        // A teacher who switched to the role of a student previews the banner of a learner.
+        $this->setUser($teacher);
+        $context = \context_course::instance($course->id);
+        role_switch((int) $DB->get_field('role', 'id', ['shortname' => 'student']), $context);
+        $data = course_page::export($output, $course, '');
+        $this->assertTrue($data['learning']);
+        $this->assertSame('Page 1', $data['next']['name']);
+        role_switch(0, $context);
+
         $this->setUser($this->getDataGenerator()->create_user());
         $data = course_page::export($output, $course, '');
         $this->assertFalse($data['learning']);
         $this->assertFalse($data['teaching']);
+        $this->assertFalse($data['haslearnerpanel']);
         $this->assertArrayNotHasKey('progress', $data);
     }
 

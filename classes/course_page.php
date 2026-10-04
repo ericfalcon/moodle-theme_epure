@@ -58,7 +58,9 @@ class course_page {
         $user = \core_user::get_user($userid) ?: $USER;
         $context = \context_course::instance($course->id);
         $teaching = isloggedin() && !isguestuser() && mycourses::is_teaching($context, $userid);
-        $learning = !$teaching && isloggedin() && !isguestuser() && is_enrolled($context, $userid, '', true);
+        // A teacher who switched to the role of a learner previews the banner of a learner.
+        $learning = !$teaching && isloggedin() && !isguestuser()
+            && (is_enrolled($context, $userid, '', true) || is_role_switched($course->id));
 
         if ($teaching || $learning) {
             $data = mycourses::card($course, $context, $output, $user, $teaching);
@@ -71,6 +73,8 @@ class course_page {
         }
         $data['header'] = $header;
         $data['learning'] = $learning;
+        // Without completion tracking nor deadline, a learner has nothing more than the course itself.
+        $data['haslearnerpanel'] = $learning && (!empty($data['hasprogress']) || !empty($data['next']) || !empty($data['deadline']));
         $data['teaching'] = $teaching;
         return $data;
     }
