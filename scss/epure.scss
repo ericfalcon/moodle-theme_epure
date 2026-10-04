@@ -2023,6 +2023,85 @@ html.epure-a11y-motion *::after {
         color: var(--epure-ink-muted);
     }
 
+    // The arrow of the drop-down lists, drawn dark by Bootstrap.
+    .custom-select,
+    .form-select {
+        --bs-form-select-bg-img: url([[pix:theme|select-arrow-dark]]);
+        background-image: url([[pix:theme|select-arrow-dark]]);
+        background-repeat: no-repeat;
+        background-position: right .75rem center;
+        background-size: 16px 12px;
+    }
+
+    // Names of the files in the file manager.
+    .fp-iconview .fp-filename-field .fp-filename,
+    .fp-filename-field,
+    .fp-file .fp-filename {
+        color: var(--epure-ink);
+        background: transparent;
+    }
+
+    // Swagger UI of the web services (Site administration › Development): its own light styles.
+    .swagger-ui {
+        color: var(--epure-ink);
+
+        .info .title,
+        .info p,
+        .info li,
+        .info a,
+        .info .title small pre,
+        .opblock-tag,
+        .opblock .opblock-summary-path,
+        .opblock .opblock-summary-description,
+        .opblock-description-wrapper p,
+        .opblock-section-header h4,
+        .opblock-title_normal,
+        .parameter__name,
+        .parameter__type,
+        .parameter__in,
+        .response-col_status,
+        .response-col_description,
+        .response-col_links,
+        table thead tr th,
+        table thead tr td,
+        .model,
+        .model-title,
+        section.models h4,
+        .tab li,
+        label,
+        .markdown p,
+        .renderedMarkdown p,
+        .servers-title,
+        .models-control,
+        .model-box-control {
+            color: var(--epure-ink);
+        }
+
+        .scheme-container,
+        .opblock .opblock-section-header {
+            background-color: var(--epure-surface-raised);
+            box-shadow: none;
+        }
+
+        section.models,
+        section.models .model-container {
+            background-color: transparent;
+            border-color: var(--epure-border);
+        }
+
+        select,
+        input[type="text"],
+        textarea {
+            color: var(--epure-ink);
+            background-color: var(--epure-surface-raised);
+            border-color: #4b5463;
+        }
+
+        svg:not(.locked):not(.unlocked) {
+            fill: var(--epure-ink);
+        }
+    }
+
     .form-control:disabled,
     .form-control[readonly],
     .custom-select:disabled,
