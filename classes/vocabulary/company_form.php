@@ -93,12 +93,14 @@ class company_form {
      */
     protected static function appearance_context(int $companyid): array {
         $settings = $companyid ? \theme_epure\company_style::settings($companyid)
-            : ['brandcolor' => '', 'headerstyle' => '', 'font' => '', 'coursebanner' => '', 'learnerdashboard' => ''];
+            : ['brandcolor' => '', 'headerstyle' => '', 'font' => '', 'coursebanner' => '', 'learnerdashboard' => '',
+                'darkmode' => ''];
         $brand = self::posted('brandcolor', $settings['brandcolor']);
         $header = self::posted('headerstyle', $settings['headerstyle']);
         $font = self::posted('font', $settings['font']);
         $banner = self::posted('coursebanner', $settings['coursebanner']);
         $dashboard = self::posted('learnerdashboard', $settings['learnerdashboard']);
+        $darkmode = self::posted('darkmode', $settings['darkmode']);
         $logo = $companyid ? \theme_epure\company_style::logo_url($companyid) : null;
 
         $sitebrand = \theme_epure\palette::normalise(get_config('theme_epure', 'brandcolor'))
@@ -126,6 +128,12 @@ class company_form {
         $dashboards = [$option('', get_string('companysite', 'theme_epure', $sitedashboard), $dashboard),
             $option('show', get_string('coursebannershow', 'theme_epure'), $dashboard),
             $option('hide', get_string('coursebannerhide', 'theme_epure'), $dashboard)];
+        $sitedark = (string) get_config('theme_epure', 'darkmode');
+        $sitedark = get_string('darkmode' . (in_array($sitedark, ['auto', 'dark'], true) ? $sitedark : 'light'), 'theme_epure');
+        $darkmodes = [$option('', get_string('companysite', 'theme_epure', $sitedark), $darkmode)];
+        foreach (\theme_epure\company_style::DARK_MODES as $mode) {
+            $darkmodes[] = $option($mode, get_string('darkmode' . $mode, 'theme_epure'), $darkmode);
+        }
         $fonts = [$option('', get_string('companysite', 'theme_epure', $sitefont), $font)];
         foreach (\theme_epure\fonts::all() as $key => $definition) {
             $fonts[] = $option($key, $definition['family'], $font);
@@ -138,6 +146,7 @@ class company_form {
             'fonts' => $fonts,
             'coursebanners' => $banners,
             'learnerdashboards' => $dashboards,
+            'darkmodes' => $darkmodes,
             'logocolours' => [
                 'id' => 'epure-company-logocolours',
                 'inputid' => 'id_epure_brandcolor',
@@ -242,6 +251,7 @@ class company_form {
             'font' => optional_param(self::PREFIX . 'font', '', PARAM_ALPHANUMEXT),
             'coursebanner' => optional_param(self::PREFIX . 'coursebanner', '', PARAM_ALPHA),
             'learnerdashboard' => optional_param(self::PREFIX . 'learnerdashboard', '', PARAM_ALPHA),
+            'darkmode' => optional_param(self::PREFIX . 'darkmode', '', PARAM_ALPHA),
         ]);
         return true;
     }

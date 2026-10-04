@@ -39,17 +39,26 @@ const SWITCHES = ['spacing', 'contrast', 'underline', 'motion'];
 const read = (panel) => ({
     text: Number(panel.querySelector('[name="epure-a11y-text"]:checked')?.value || 100),
     font: panel.querySelector('[name="epure-a11y-font"]:checked')?.value || '',
+    scheme: panel.querySelector('[name="epure-a11y-scheme"]:checked')?.value || '',
     switches: Object.fromEntries(SWITCHES.map((name) => [name, panel.querySelector(`[name="epure-a11y-${name}"]`).checked])),
 });
 
 /**
  * Applies the choices to the page.
  *
- * @param {{text: number, font: string, switches: Object<string, boolean>}} choices Choices.
+ * @param {{text: number, font: string, scheme: string, switches: Object<string, boolean>}} choices Choices.
+ * @param {string} defaultScheme Scheme of the site or the company: light, dark or auto.
  */
-const applyToPage = (choices) => {
+const applyToPage = (choices, defaultScheme) => {
     const html = document.documentElement;
-    [...html.classList].filter((name) => name.startsWith('epure-a11y-')).forEach((name) => html.classList.remove(name));
+    [...html.classList].filter((name) => name.startsWith('epure-a11y-') || name.startsWith('epure-dark'))
+        .forEach((name) => html.classList.remove(name));
+    const scheme = choices.scheme || defaultScheme;
+    if (scheme === 'dark') {
+        html.classList.add('epure-dark');
+    } else if (scheme === 'auto') {
+        html.classList.add('epure-dark-auto');
+    }
     if (choices.text !== 100) {
         html.classList.add(`epure-a11y-text-${choices.text}`);
     }
@@ -71,6 +80,7 @@ const save = async(panel, choices) => {
     const preferences = [
         {type: 'theme_epure_a11y_text', value: String(choices.text)},
         {type: 'theme_epure_a11y_font', value: choices.font},
+        {type: 'theme_epure_a11y_scheme', value: choices.scheme},
         ...SWITCHES.map((name) => ({type: `theme_epure_a11y_${name}`, value: choices.switches[name] ? '1' : '0'})),
     ];
     const status = panel.querySelector('[data-region="status"]');
@@ -94,6 +104,7 @@ export const init = () => {
     region.dataset.initialised = '1';
     const toggle = region.querySelector('[data-action="toggle"]');
     const panel = region.querySelector('.epure-a11y-panel');
+    const defaultScheme = region.dataset.defaultScheme || 'light';
 
     const open = () => {
         panel.hidden = false;
@@ -138,17 +149,18 @@ export const init = () => {
 
     panel.addEventListener('change', () => {
         const choices = read(panel);
-        applyToPage(choices);
+        applyToPage(choices, defaultScheme);
         save(panel, choices);
     });
     region.querySelector('[data-action="reset"]').addEventListener('click', () => {
         panel.querySelector('[name="epure-a11y-text"][value="100"]').checked = true;
         panel.querySelector('[name="epure-a11y-font"][value=""]').checked = true;
+        panel.querySelector('[name="epure-a11y-scheme"][value=""]').checked = true;
         SWITCHES.forEach((name) => {
             panel.querySelector(`[name="epure-a11y-${name}"]`).checked = false;
         });
         const choices = read(panel);
-        applyToPage(choices);
+        applyToPage(choices, defaultScheme);
         save(panel, choices);
     });
 };

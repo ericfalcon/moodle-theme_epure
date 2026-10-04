@@ -153,6 +153,8 @@ class block_iomad_company_admin_renderer extends \block_iomad_company_admin\outp
         }
         return [
             'name' => $company ? format_string($company->name) : null,
+            // IOMAD's own word for a company, so that the vocabulary of the platform and of the company applies.
+            'label' => get_string('company', 'block_iomad_company_admin'),
             'logourl' => $logo ? $logo->out(false) : null,
             'onecompany' => !empty($companyselect->onecompany),
             'selectform' => $companyselect->selectform ?? '',

@@ -34,6 +34,9 @@ class a11y {
     /** @var string[] Reading fonts, besides the font of the theme (empty value). */
     public const FONTS = ['atkinson', 'opendyslexic'];
 
+    /** @var string[] Colour schemes a user can choose, besides the one of the site (empty value). */
+    public const SCHEMES = ['light', 'dark', 'auto'];
+
     /** @var string[] Preferences that are on or off. */
     public const SWITCHES = ['spacing', 'contrast', 'underline', 'motion'];
 
@@ -49,6 +52,8 @@ class a11y {
                 'choices' => self::TEXT_SIZES, 'permissioncallback' => $own],
             'theme_epure_a11y_font' => ['type' => PARAM_ALPHA, 'null' => NULL_NOT_ALLOWED, 'default' => '',
                 'choices' => array_merge([''], self::FONTS), 'permissioncallback' => $own],
+            'theme_epure_a11y_scheme' => ['type' => PARAM_ALPHA, 'null' => NULL_NOT_ALLOWED, 'default' => '',
+                'choices' => array_merge([''], self::SCHEMES), 'permissioncallback' => $own],
         ];
         foreach (self::SWITCHES as $switch) {
             $definitions['theme_epure_a11y_' . $switch] = ['type' => PARAM_INT, 'null' => NULL_NOT_ALLOWED,
@@ -60,15 +65,17 @@ class a11y {
     /**
      * Preferences of the current user.
      *
-     * @return array{text: int, font: string, spacing: bool, contrast: bool, underline: bool, motion: bool}
+     * @return array{text: int, font: string, scheme: string, spacing: bool, contrast: bool, underline: bool, motion: bool}
      */
     public static function preferences(): array {
         $enabled = isloggedin() && !isguestuser();
         $text = $enabled ? (int) get_user_preferences('theme_epure_a11y_text', 100) : 100;
         $font = $enabled ? (string) get_user_preferences('theme_epure_a11y_font', '') : '';
+        $scheme = $enabled ? (string) get_user_preferences('theme_epure_a11y_scheme', '') : '';
         $preferences = [
             'text' => in_array($text, self::TEXT_SIZES, true) ? $text : 100,
             'font' => in_array($font, self::FONTS, true) ? $font : '',
+            'scheme' => in_array($scheme, self::SCHEMES, true) ? $scheme : '',
         ];
         foreach (self::SWITCHES as $switch) {
             $preferences[$switch] = $enabled && (bool) get_user_preferences('theme_epure_a11y_' . $switch, 0);
@@ -95,7 +102,29 @@ class a11y {
                 $classes[] = 'epure-a11y-' . $switch;
             }
         }
+        if ($class = self::scheme_class($preferences['scheme'] ?: self::default_scheme())) {
+            $classes[] = $class;
+        }
         return implode(' ', $classes);
+    }
+
+    /**
+     * Colour scheme of the page when the user did not choose one: the one of their IOMAD company, else of the site.
+     *
+     * @return string light, dark or auto.
+     */
+    public static function default_scheme(): string {
+        return company_style::dark_mode();
+    }
+
+    /**
+     * Class of the html element for a colour scheme.
+     *
+     * @param string $scheme light, dark or auto.
+     * @return string The class, empty for the light scheme.
+     */
+    public static function scheme_class(string $scheme): string {
+        return ['dark' => 'epure-dark', 'auto' => 'epure-dark-auto'][$scheme] ?? '';
     }
 
     /**
@@ -117,11 +146,19 @@ class a11y {
             $fonts[] = ['value' => $font, 'label' => fonts::get($font)['family'], 'checked' => $font === $preferences['font'],
                 'class' => 'epure-a11y-sample-' . $font];
         }
+        $default = get_string('a11yscheme_' . self::default_scheme(), 'theme_epure');
+        $schemes = [['value' => '', 'label' => get_string('a11yscheme_site', 'theme_epure', $default),
+            'checked' => $preferences['scheme'] === '']];
+        foreach (self::SCHEMES as $scheme) {
+            $schemes[] = ['value' => $scheme, 'label' => get_string('a11yscheme_' . $scheme, 'theme_epure'),
+                'checked' => $scheme === $preferences['scheme']];
+        }
         $switches = [];
         foreach (self::SWITCHES as $switch) {
             $switches[] = ['name' => $switch, 'label' => get_string('a11y' . $switch, 'theme_epure'),
                 'help' => get_string('a11y' . $switch . '_help', 'theme_epure'), 'checked' => $preferences[$switch]];
         }
-        return ['sizes' => $sizes, 'fonts' => $fonts, 'switches' => $switches];
+        return ['sizes' => $sizes, 'fonts' => $fonts, 'schemes' => $schemes, 'switches' => $switches,
+            'defaultscheme' => self::default_scheme()];
     }
 }

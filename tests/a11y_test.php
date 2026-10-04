@@ -39,7 +39,8 @@ final class a11y_test extends \advanced_testcase {
         $this->assertSame('', a11y::html_classes());
         $this->setUser($this->getDataGenerator()->create_user());
         $this->assertSame('', a11y::html_classes());
-        $this->assertSame(['text' => 100, 'font' => '', 'spacing' => false, 'contrast' => false, 'underline' => false,
+        $this->assertSame(['text' => 100, 'font' => '', 'scheme' => '',
+            'spacing' => false, 'contrast' => false, 'underline' => false,
             'motion' => false], a11y::preferences());
     }
 
@@ -62,6 +63,16 @@ final class a11y_test extends \advanced_testcase {
         set_user_preference('theme_epure_a11y_text', 400);
         set_user_preference('theme_epure_a11y_font', 'comicsans');
         $this->assertSame('epure-a11y-contrast epure-a11y-motion', a11y::html_classes());
+
+        // Dark mode: the choice of the user, else the setting of the site.
+        set_config('darkmode', 'auto', 'theme_epure');
+        $this->assertStringContainsString('epure-dark-auto', a11y::html_classes());
+        set_user_preference('theme_epure_a11y_scheme', 'dark');
+        $this->assertStringEndsWith(' epure-dark', a11y::html_classes());
+        set_user_preference('theme_epure_a11y_scheme', 'light');
+        $this->assertStringNotContainsString('epure-dark', a11y::html_classes());
+        set_config('darkmode', 'light', 'theme_epure');
+        unset_user_preference('theme_epure_a11y_scheme');
 
         // Guests get the default display, whatever the guest account holds.
         $this->setGuestUser();

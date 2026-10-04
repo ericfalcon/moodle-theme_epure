@@ -91,6 +91,19 @@ if ($ADMIN->fulltree) {
     }
 
     $setting = new admin_setting_configselect(
+        'theme_epure/darkmode',
+        get_string('darkmode', 'theme_epure'),
+        get_string('darkmode_desc', 'theme_epure'),
+        'light',
+        [
+            'light' => get_string('darkmodelight', 'theme_epure'),
+            'auto' => get_string('darkmodeauto', 'theme_epure'),
+            'dark' => get_string('darkmodedark', 'theme_epure'),
+        ]
+    );
+    $page->add($setting);
+
+    $setting = new admin_setting_configselect(
         'theme_epure/radius',
         get_string('radius', 'theme_epure'),
         get_string('radius_desc', 'theme_epure'),

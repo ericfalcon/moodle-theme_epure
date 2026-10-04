@@ -37,6 +37,9 @@ class company_style {
     /** @var string[] Header styles. */
     public const HEADER_STYLES = ['light', 'brand'];
 
+    /** @var string[] Dark mode: never, following the device, always. */
+    public const DARK_MODES = ['light', 'auto', 'dark'];
+
     /** @var string[] Choices for the course banner and the overview of the learner on the dashboard. */
     public const COURSE_BANNERS = ['show', 'hide'];
 
@@ -44,8 +47,8 @@ class company_style {
      * Épure appearance of a company.
      *
      * @param int $companyid Company.
-     * @return array{brandcolor: string, headerstyle: string, font: string, coursebanner: string, learnerdashboard: string}
-     *     Empty values when the company uses the site setting.
+     * @return array{brandcolor: string, headerstyle: string, font: string, coursebanner: string, learnerdashboard: string,
+     *     darkmode: string} Empty values when the company uses the site setting.
      */
     public static function settings(int $companyid): array {
         $json = get_config('theme_epure', 'companystyle_' . $companyid);
@@ -58,6 +61,7 @@ class company_style {
             'coursebanner' => in_array($values['coursebanner'] ?? '', self::COURSE_BANNERS, true) ? $values['coursebanner'] : '',
             'learnerdashboard' => in_array($values['learnerdashboard'] ?? '', self::COURSE_BANNERS, true)
                 ? $values['learnerdashboard'] : '',
+            'darkmode' => in_array($values['darkmode'] ?? '', self::DARK_MODES, true) ? $values['darkmode'] : '',
         ];
     }
 
@@ -65,8 +69,8 @@ class company_style {
      * Saves the Épure appearance of a company.
      *
      * @param int $companyid Company.
-     * @param array $values brandcolor, headerstyle, font, coursebanner and learnerdashboard; empty values mean the
-     *     site setting.
+     * @param array $values brandcolor, headerstyle, font, coursebanner, learnerdashboard and darkmode; empty values
+     *     mean the site setting.
      */
     public static function save_settings(int $companyid, array $values): void {
         $settings = [
@@ -76,6 +80,7 @@ class company_style {
             'coursebanner' => in_array($values['coursebanner'] ?? '', self::COURSE_BANNERS, true) ? $values['coursebanner'] : '',
             'learnerdashboard' => in_array($values['learnerdashboard'] ?? '', self::COURSE_BANNERS, true)
                 ? $values['learnerdashboard'] : '',
+            'darkmode' => in_array($values['darkmode'] ?? '', self::DARK_MODES, true) ? $values['darkmode'] : '',
         ];
         if (array_filter($settings)) {
             set_config('companystyle_' . $companyid, json_encode($settings), 'theme_epure');
@@ -122,6 +127,20 @@ class company_style {
             return $choice === 'show';
         }
         return get_config('theme_epure', 'learnerdashboard') !== '0';
+    }
+
+    /**
+     * Dark mode of the pages when the user did not choose: the one of the company of the user, else the site setting.
+     *
+     * @return string light (never dark), auto (dark when the device asks for it) or dark (always).
+     */
+    public static function dark_mode(): string {
+        $company = self::current_company();
+        if ($company && ($mode = self::settings((int) $company->id)['darkmode'])) {
+            return $mode;
+        }
+        $mode = (string) get_config('theme_epure', 'darkmode');
+        return in_array($mode, self::DARK_MODES, true) ? $mode : 'light';
     }
 
     /**
@@ -240,6 +259,7 @@ class company_style {
         $css = '';
         if ($brand = self::brand_colour($company)) {
             $p = palette::derive($brand);
+            $d = palette::derive($brand, true);
             $light = $p['on'] === palette::SURFACE_LIGHT;
             $rgb = implode(', ', palette::to_rgb($p['fill']));
             $css .= ':root{' .
@@ -250,6 +270,14 @@ class company_style {
                 "--epure-brand-soft:{$p['soft']};" .
                 "--epure-brand-soft-2:{$p['soft2']};" .
                 "--epure-focus:{$p['text']};" .
+                "--epure-header-bg:{$p['fill']};" .
+                "--epure-header-on:{$p['on']};" .
+                "--epure-dark-brand:{$d['fill']};" .
+                "--epure-dark-brand-hover:{$d['hover']};" .
+                "--epure-dark-on-brand:{$d['on']};" .
+                "--epure-dark-brand-text:{$d['text']};" .
+                "--epure-dark-brand-soft:{$d['soft']};" .
+                "--epure-dark-brand-soft-2:{$d['soft2']};" .
                 "--epure-login-overlay:rgba({$rgb}, {$p['overlayalpha']});" .
                 '--epure-header-hover:' . ($light ? 'rgba(0, 0, 0, .18)' : 'rgba(255, 255, 255, .3)') . ';' .
                 '--epure-header-toggler-filter:' . ($light ? 'brightness(0) invert(1)' : 'none') . ';' .
@@ -298,6 +326,11 @@ class company_style {
             $url = new \moodle_url('/course/index.php', ['categoryid' => $category->id]);
         }
         $name = $category->get_formatted_name();
-        return ['url' => $url->out(false), 'name' => $name, 'label' => get_string('iomadcompanycategory', 'theme_epure', $name)];
+        return ['url' => $url->out(false), 'name' => $name, 'label' => get_string(
+            'iomadcompanycategory',
+            'theme_epure',
+            // The core words for course categories, so that the vocabulary of the platform applies.
+            (object) ['categories' => get_string('coursecategories'), 'name' => $name]
+        )];
     }
 }

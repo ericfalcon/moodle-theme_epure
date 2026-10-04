@@ -23,10 +23,11 @@
     {
         "sizes": [{"value": 100, "label": "Normal", "checked": true}],
         "fonts": [{"value": "", "label": "Font of the site", "checked": true}],
+        "schemes": [{"value": "", "label": "As the site (Light)", "checked": true}], "defaultscheme": "light",
         "switches": [{"name": "spacing", "label": "More text spacing", "help": "Lines, words and letters further apart.", "checked": false}]
     }
 }}
-<div class="epure-a11y" data-region="epure-a11y">
+<div class="epure-a11y" data-region="epure-a11y" data-default-scheme="{{defaultscheme}}">
     <button type="button" class="btn nav-link epure-a11y-toggle" data-action="toggle" aria-expanded="false"
         aria-controls="epure-a11y-panel" title="{{#str}}a11ypanel, theme_epure{{/str}} (Alt+A)">
         <span aria-hidden="true">Aa</span>
@@ -60,6 +61,17 @@
                         <span class="{{class}}">{{label}}</span>
                     </label>
                 {{/fonts}}
+            </div>
+        </fieldset>
+        <fieldset class="epure-a11y-group">
+            <legend>{{#str}}a11yscheme, theme_epure{{/str}}</legend>
+            <div class="epure-a11y-choices">
+                {{#schemes}}
+                    <label class="epure-a11y-choice">
+                        <input type="radio" name="epure-a11y-scheme" value="{{value}}" {{#checked}}checked{{/checked}}>
+                        <span>{{label}}</span>
+                    </label>
+                {{/schemes}}
             </div>
         </fieldset>
         <fieldset class="epure-a11y-group">

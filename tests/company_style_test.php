@@ -84,10 +84,10 @@ final class company_style_test extends \advanced_testcase {
         $this->assertSame('#36195F', company_style::brand_colour($company));
 
         company_style::save_settings(12, ['brandcolor' => '1c6e73', 'headerstyle' => 'brand', 'font' => 'lexend',
-            'coursebanner' => 'hide', 'learnerdashboard' => 'show']);
+            'coursebanner' => 'hide', 'learnerdashboard' => 'show', 'darkmode' => 'auto']);
         $this->assertSame(
             ['brandcolor' => '#1C6E73', 'headerstyle' => 'brand', 'font' => 'lexend', 'coursebanner' => 'hide',
-                'learnerdashboard' => 'show'],
+                'learnerdashboard' => 'show', 'darkmode' => 'auto'],
             company_style::settings(12)
         );
         $this->assertSame('#1C6E73', company_style::brand_colour($company));
@@ -98,9 +98,10 @@ final class company_style_test extends \advanced_testcase {
 
         // Invalid values are ignored; nothing left means the settings of the site.
         company_style::save_settings(12, ['brandcolor' => 'rouge', 'headerstyle' => 'pink', 'font' => 'comic',
-            'coursebanner' => 'maybe', 'learnerdashboard' => 'never']);
+            'coursebanner' => 'maybe', 'learnerdashboard' => 'never', 'darkmode' => 'dim']);
         $this->assertSame(
-            ['brandcolor' => '', 'headerstyle' => '', 'font' => '', 'coursebanner' => '', 'learnerdashboard' => ''],
+            ['brandcolor' => '', 'headerstyle' => '', 'font' => '', 'coursebanner' => '', 'learnerdashboard' => '',
+                'darkmode' => ''],
             company_style::settings(12)
         );
         $this->assertFalse(get_config('theme_epure', 'companystyle_12'));

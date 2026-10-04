@@ -80,6 +80,7 @@ Ces réglages s'appliquent aux utilisateurs rattachés à l'entreprise, et à l'
 | Couleur de l'en-tête | Comme le site, blanc, ou couleur de marque. |
 | Bannière des cours | Comme le site, affichée ou masquée, pour les utilisateurs de l'entreprise. |
 | Aperçu de l'apprenant sur le tableau de bord | Comme le site, affiché ou masqué. |
+| Mode sombre | Comme le site, jamais, automatique selon l'appareil, ou toujours. |
 | Logo pour l'en-tête en couleur | Facultatif : une version du logo lisible sur la couleur de marque de l'entreprise, souvent blanche sur fond transparent. |
 | Police | Comme le site, ou l'une des polices fournies. |
 
@@ -119,6 +120,12 @@ Avec IOMAD, la même page propose les mots « entreprise » et « département �
 ### Réglages avancés
 
 SCSS initial (pour redéfinir des variables) et SCSS ajouté à la fin de la feuille de style.
+
+## Mode sombre
+
+Le réglage **Mode sombre** (réglages généraux du thème) vaut *Jamais*, *Automatique, selon l'appareil* ou *Toujours*. Avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche. Chaque utilisateur peut aussi choisir son affichage dans ses préférences (bouton « Aa ») : comme le site, clair, sombre, ou selon son appareil.
+
+Les couleurs sombres sont calculées à partir de la couleur de marque, avec les mêmes contrastes AA ; l'en-tête aux couleurs de la marque garde sa couleur. Les pages de Moodle et d'IOMAD (tableaux de bord, cours, formulaires, menus, tableaux) passent en sombre ; l'éditeur de texte garde l'apparence de son propre thème.
 
 ## Tableau de bord de l'apprenant
 

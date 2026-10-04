@@ -21,13 +21,13 @@
     in each one, the actions as cards grouped by intention.
 
     Context variables required for this template:
-    * company - name, logourl, category (url, label), onecompany, selectform (HTML), suspended (HTML)
+    * company - name, label, logourl, category (url, label), onecompany, selectform (HTML), suspended (HTML)
     * tabs - tabs of IOMAD: category, selected, icon, label
     * panes - category, selected, showheadings, groups (id, label, items: url, label, icon)
 
     Example context (json):
     {
-        "company": {"name": "Clinique des Tilleuls", "logourl": "", "onecompany": true,
+        "company": {"name": "Clinique des Tilleuls", "label": "Company", "logourl": "", "onecompany": true,
             "category": {"url": "#", "label": "Course categories: Clinique des Tilleuls"} },
         "tabs": [{"category": "CompanyAdmin", "selected": true, "icon": "fa-building", "label": "Companies"}],
         "panes": [{"category": "CompanyAdmin", "selected": true, "showheadings": true, "groups": [
@@ -44,7 +44,7 @@
                     <img src="{{company.logourl}}" alt="" class="epure-iomad-company-logo">
                 {{/company.logourl}}
                 <div>
-                    <p class="epure-iomad-company-label">{{#str}}iomadselectedcompany, theme_epure{{/str}}</p>
+                    <p class="epure-iomad-company-label">{{company.label}}</p>
                     <p class="epure-iomad-company-name">{{company.name}}</p>
                     {{#company.category}}
                         <p class="epure-iomad-company-category">
