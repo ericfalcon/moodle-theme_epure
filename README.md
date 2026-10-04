@@ -78,6 +78,7 @@ Ces réglages s'appliquent aux utilisateurs rattachés à l'entreprise, et à l'
 |---|---|
 | Couleur de marque | Code couleur libre, sélecteur de couleur, ou couleurs du logo de l'entreprise (pastilles et pipette, y compris pour un logo tout juste téléversé). Vide : la couleur du titre d'IOMAD, sinon celle du site. La palette accessible est recalculée. |
 | Couleur de l'en-tête | Comme le site, blanc, ou couleur de marque. |
+| Bannière des cours | Comme le site, affichée ou masquée, pour les utilisateurs de l'entreprise. |
 | Logo pour l'en-tête en couleur | Facultatif : une version du logo lisible sur la couleur de marque de l'entreprise, souvent blanche sur fond transparent. |
 | Police | Comme le site, ou l'une des polices fournies. |
 
@@ -126,7 +127,7 @@ En tête de chaque cours, une **bannière** reprend l'image du cours (ou un moti
 - **enseignant** : les participants, les apprenants actifs cette semaine, les devoirs à corriger, et des accès directs (participants, notes, paramètres) ;
 - **visiteur** (invité, utilisateur non inscrit) : l'image, la catégorie et le titre seulement.
 
-Pour l'apprenant, le titre de chaque section indique combien de ses activités il a terminées (« 2/5 », coche une fois la section terminée). La bannière se désactive dans les réglages généraux du thème (« Bannière des cours »).
+Pour l'apprenant, le titre de chaque section indique combien de ses activités il a terminées (« 2/5 », coche une fois la section terminée). La bannière se désactive dans les réglages généraux du thème (« Bannière des cours ») ; avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche.
 
 ## Accessibilité
 

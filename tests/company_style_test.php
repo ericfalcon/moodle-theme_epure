@@ -83,8 +83,12 @@ final class company_style_test extends \advanced_testcase {
         $company = (object) ['id' => 12, 'headingcolor' => '#36195F', 'linkcolor' => '', 'customcss' => ''];
         $this->assertSame('#36195F', company_style::brand_colour($company));
 
-        company_style::save_settings(12, ['brandcolor' => '1c6e73', 'headerstyle' => 'brand', 'font' => 'lexend']);
-        $this->assertSame(['brandcolor' => '#1C6E73', 'headerstyle' => 'brand', 'font' => 'lexend'], company_style::settings(12));
+        company_style::save_settings(12, ['brandcolor' => '1c6e73', 'headerstyle' => 'brand', 'font' => 'lexend',
+            'coursebanner' => 'hide']);
+        $this->assertSame(
+            ['brandcolor' => '#1C6E73', 'headerstyle' => 'brand', 'font' => 'lexend', 'coursebanner' => 'hide'],
+            company_style::settings(12)
+        );
         $this->assertSame('#1C6E73', company_style::brand_colour($company));
         $css = company_style::css($company);
         $this->assertStringContainsString('--epure-brand:#1C6E73', $css);
@@ -92,8 +96,12 @@ final class company_style_test extends \advanced_testcase {
         $this->assertStringContainsString('font-family: "Lexend"', $css);
 
         // Invalid values are ignored; nothing left means the settings of the site.
-        company_style::save_settings(12, ['brandcolor' => 'rouge', 'headerstyle' => 'pink', 'font' => 'comic']);
-        $this->assertSame(['brandcolor' => '', 'headerstyle' => '', 'font' => ''], company_style::settings(12));
+        company_style::save_settings(12, ['brandcolor' => 'rouge', 'headerstyle' => 'pink', 'font' => 'comic',
+            'coursebanner' => 'maybe']);
+        $this->assertSame(
+            ['brandcolor' => '', 'headerstyle' => '', 'font' => '', 'coursebanner' => ''],
+            company_style::settings(12)
+        );
         $this->assertFalse(get_config('theme_epure', 'companystyle_12'));
         $this->assertSame('#36195F', company_style::brand_colour($company));
     }

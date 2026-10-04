@@ -31,7 +31,8 @@ namespace theme_epure;
  */
 class course_page {
     /**
-     * Whether a page is the main page of a course (or of one of its sections) that gets the banner.
+     * Whether a page is the main page of a course (or of one of its sections) that gets the banner:
+     * as chosen for the IOMAD company of the user, else in the theme settings.
      *
      * @param \moodle_page $page Page.
      * @return bool
@@ -39,7 +40,7 @@ class course_page {
     public static function applies(\moodle_page $page): bool {
         return str_starts_with((string) $page->pagetype, 'course-view-')
             && !empty($page->course->id) && (int) $page->course->id !== (int) SITEID
-            && get_config('theme_epure', 'coursebanner') !== '0';
+            && company_style::course_banner();
     }
 
     /**

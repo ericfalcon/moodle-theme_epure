@@ -86,17 +86,18 @@ class company_form {
     }
 
     /**
-     * Context of the Épure appearance fields: brand colour, colours of the logo, header, font.
+     * Context of the Épure appearance fields: brand colour, colours of the logo, header, font, course banner.
      *
      * @param int $companyid Company edited, 0 for a new company.
      * @return array
      */
     protected static function appearance_context(int $companyid): array {
         $settings = $companyid ? \theme_epure\company_style::settings($companyid)
-            : ['brandcolor' => '', 'headerstyle' => '', 'font' => ''];
+            : ['brandcolor' => '', 'headerstyle' => '', 'font' => '', 'coursebanner' => ''];
         $brand = self::posted('brandcolor', $settings['brandcolor']);
         $header = self::posted('headerstyle', $settings['headerstyle']);
         $font = self::posted('font', $settings['font']);
+        $banner = self::posted('coursebanner', $settings['coursebanner']);
         $logo = $companyid ? \theme_epure\company_style::logo_url($companyid) : null;
 
         $sitebrand = \theme_epure\palette::normalise(get_config('theme_epure', 'brandcolor'))
@@ -110,6 +111,13 @@ class company_form {
         $headers = [$option('', get_string('companysite', 'theme_epure', $siteheader), $header),
             $option('light', get_string('headerstylelight', 'theme_epure'), $header),
             $option('brand', get_string('headerstylebrand', 'theme_epure'), $header)];
+        $sitebanner = get_string(
+            get_config('theme_epure', 'coursebanner') !== '0' ? 'coursebannershow' : 'coursebannerhide',
+            'theme_epure'
+        );
+        $banners = [$option('', get_string('companysite', 'theme_epure', $sitebanner), $banner),
+            $option('show', get_string('coursebannershow', 'theme_epure'), $banner),
+            $option('hide', get_string('coursebannerhide', 'theme_epure'), $banner)];
         $fonts = [$option('', get_string('companysite', 'theme_epure', $sitefont), $font)];
         foreach (\theme_epure\fonts::all() as $key => $definition) {
             $fonts[] = $option($key, $definition['family'], $font);
@@ -120,6 +128,7 @@ class company_form {
             'sitebrandcolor' => $sitebrand,
             'headerstyles' => $headers,
             'fonts' => $fonts,
+            'coursebanners' => $banners,
             'logocolours' => [
                 'id' => 'epure-company-logocolours',
                 'inputid' => 'id_epure_brandcolor',
@@ -222,6 +231,7 @@ class company_form {
             'brandcolor' => optional_param(self::PREFIX . 'brandcolor', '', PARAM_TEXT),
             'headerstyle' => optional_param(self::PREFIX . 'headerstyle', '', PARAM_ALPHA),
             'font' => optional_param(self::PREFIX . 'font', '', PARAM_ALPHANUMEXT),
+            'coursebanner' => optional_param(self::PREFIX . 'coursebanner', '', PARAM_ALPHA),
         ]);
         return true;
     }
