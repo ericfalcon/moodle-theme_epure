@@ -22,6 +22,7 @@
 
     Context variables required for this template:
     * company - name, label, logourl, category (url, label), onecompany, selectform (HTML), suspended (HTML)
+    * hasfigures, figures - key figures of the company: key, label, value, detail, url
     * tabs - tabs of IOMAD: category, selected, icon, label
     * panes - category, selected, showheadings, groups (id, label, items: url, label, icon)
 
@@ -29,6 +30,8 @@
     {
         "company": {"name": "Clinique des Tilleuls", "label": "Company", "logourl": "", "onecompany": true,
             "category": {"url": "#", "label": "Course categories: Clinique des Tilleuls"} },
+        "hasfigures": true,
+        "figures": [{"key": "users", "label": "Users", "value": 24, "detail": "10 active this week", "url": "#"}],
         "tabs": [{"category": "CompanyAdmin", "selected": true, "icon": "fa-building", "label": "Companies"}],
         "panes": [{"category": "CompanyAdmin", "selected": true, "showheadings": true, "groups": [
             {"id": "g1", "label": "Create", "items": [{"url": "#", "label": "Create company", "icon": "fa-building"}]},
@@ -61,6 +64,20 @@
             </div>
         {{/company.onecompany}}
     </div>
+
+    {{#hasfigures}}
+        <ul class="epure-iomad-figures" aria-label="{{#str}}iomadfigures, theme_epure{{/str}}">
+            {{#figures}}
+                <li class="epure-iomad-figure epure-iomad-figure-{{key}}">
+                    <a href="{{url}}">
+                        <span class="epure-iomad-figure-label">{{label}}</span>
+                        <span class="epure-iomad-figure-value">{{value}}</span>
+                        {{#detail}}<span class="epure-iomad-figure-detail">{{detail}}</span>{{/detail}}
+                    </a>
+                </li>
+            {{/figures}}
+        </ul>
+    {{/hasfigures}}
 
     <div class="iomad_company_admin">
         <div class="nav nav-tabs" role="tablist">

@@ -75,6 +75,8 @@ class block_iomad_company_admin_renderer extends \block_iomad_company_admin\outp
         }, $data['panes']);
         $data['company'] = $this->company_header($data['companyselect'] ?? null);
         $data['company']['category'] = $category;
+        $data['figures'] = $company ? \theme_epure\iomad_figures::export((int) $company->id) : [];
+        $data['hasfigures'] = !empty($data['figures']);
         return $this->render_from_template('theme_epure/iomad_dashboard', $data);
     }
 
