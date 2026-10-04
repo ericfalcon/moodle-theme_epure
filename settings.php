@@ -30,6 +30,12 @@ if ($ADMIN->fulltree) {
     // General tab: identity, typography and shape.
     $page = new admin_settingpage('theme_epure_general', get_string('generalsettings', 'theme_epure'));
 
+    $page->add(new admin_setting_heading(
+        'theme_epure/vocabularylink',
+        '',
+        get_string('vocabularylink', 'theme_epure', (new moodle_url('/theme/epure/vocabulary.php'))->out())
+    ));
+
     // Brand colour, with the contrast the theme reaches for the current value.
     $current = theme_epure\palette::derive(get_config('theme_epure', 'brandcolor') ?: null);
     $a = (object) [
@@ -203,3 +209,10 @@ if ($ADMIN->fulltree) {
 
     $settings->add($page);
 }
+
+// Vocabulary of the platform: a page of its own, as applying it rewrites the language strings.
+$ADMIN->add('themes', new admin_externalpage(
+    'theme_epure_vocabulary',
+    new lang_string('vocabulary', 'theme_epure'),
+    new moodle_url('/theme/epure/vocabulary.php')
+));

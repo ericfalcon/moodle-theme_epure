@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="theme/epure/db" VERSION="20261005" COMMENT="XMLDB file for Moodle theme/epure"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="theme_epure_vocab" COMMENT="Language strings rewritten by the vocabulary feature, to keep the administrator's own customisations and to revert">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="lang" TYPE="char" LENGTH="30" NOTNULL="true" SEQUENCE="false" COMMENT="Language code"/>
+        <FIELD NAME="component" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Component of the string"/>
+        <FIELD NAME="stringid" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Identifier of the string"/>
+        <FIELD NAME="value" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Text written in the language customisation"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="langcomponent" UNIQUE="false" FIELDS="lang, component"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>
