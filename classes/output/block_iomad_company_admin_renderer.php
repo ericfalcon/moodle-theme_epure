@@ -62,8 +62,19 @@ class block_iomad_company_admin_renderer extends \block_iomad_company_admin\outp
      */
     public function render_adminblock(\block_iomad_company_admin\output\adminblock $adminblock) {
         $data = $adminblock->export_for_template($this);
-        $data['panes'] = array_map(fn($pane) => $this->group_pane((array) $pane), $data['panes']);
+        $company = company_style::current_company();
+        $category = $company ? company_style::company_category($company) : null;
+        $data['panes'] = array_map(function ($pane) use ($category) {
+            $pane = (array) $pane;
+            // The course category of the company leads the actions on courses.
+            if ($category && ($pane['category'] ?? '') === 'CourseAdmin') {
+                array_unshift($pane['items'], ['url' => $category['url'], 'action' => $category['label'],
+                    'icon' => 'fa-folder-open', 'iconsmall' => '']);
+            }
+            return $this->group_pane($pane);
+        }, $data['panes']);
         $data['company'] = $this->company_header($data['companyselect'] ?? null);
+        $data['company']['category'] = $category;
         return $this->render_from_template('theme_epure/iomad_dashboard', $data);
     }
 

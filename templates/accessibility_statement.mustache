@@ -1,0 +1,80 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/accessibility_statement
+
+    Accessibility statement in the French format (RGAA): compliance status, test results,
+    content that is not accessible, how the statement was made, feedback and remedies.
+
+    Example context (json):
+    {
+        "published": true, "entity": "Clinique des Tilleuls", "site": "Campus", "siteurl": "#",
+        "status": "partially compliant", "statusphrase": "is partially compliant",
+        "hasaudit": true, "rate": "75 %", "auditor": "Example", "auditdate": "October 2026",
+        "statementdate": "4 October 2026", "noncompliant": "<p>Some PDF documents</p>",
+        "derogations": "", "disproportionate": "", "contact": "support@example.com"
+    }
+}}
+<article class="epure-a11y-statement">
+    <h2>{{#str}}a11ystatement, theme_epure{{/str}}</h2>
+    {{^published}}
+        <p>{{#str}}a11ystatement_unpublished, theme_epure{{/str}}</p>
+    {{/published}}
+    {{#published}}
+        <p>{{#str}}a11ystatement_intro, theme_epure, {{entity}}{{/str}}</p>
+        <p>{{#str}}a11ystatement_scope, theme_epure{{/str}} <a href="{{siteurl}}">{{site}}</a>.</p>
+
+        <h3>{{#str}}a11ystatement_compliance, theme_epure{{/str}}</h3>
+        <p>{{site}} {{statusphrase}}.</p>
+
+        {{#hasaudit}}
+            <h3>{{#str}}a11ystatement_results, theme_epure{{/str}}</h3>
+            <p>{{#str}}a11ystatement_rate, theme_epure, {{rate}}{{/str}}</p>
+            {{#auditor}}<p>{{#str}}a11ystatement_auditor, theme_epure, {{auditor}}{{/str}}{{#auditdate}} ({{auditdate}}){{/auditdate}}</p>{{/auditor}}
+        {{/hasaudit}}
+
+        {{#noncompliant}}
+            <h3>{{#str}}a11ystatement_inaccessible, theme_epure{{/str}}</h3>
+            <h4>{{#str}}a11ystatement_noncompliant, theme_epure{{/str}}</h4>
+            {{{noncompliant}}}
+        {{/noncompliant}}
+        {{#derogations}}
+            <h4>{{#str}}a11ystatement_derogations, theme_epure{{/str}}</h4>
+            {{{derogations}}}
+        {{/derogations}}
+        {{#disproportionate}}
+            <h4>{{#str}}a11ystatement_disproportionate, theme_epure{{/str}}</h4>
+            {{{disproportionate}}}
+        {{/disproportionate}}
+
+        <h3>{{#str}}a11ystatement_made, theme_epure{{/str}}</h3>
+        {{#statementdate}}<p>{{#str}}a11ystatement_date, theme_epure, {{statementdate}}{{/str}}</p>{{/statementdate}}
+        <p>{{#str}}a11ystatement_technologies, theme_epure{{/str}}</p>
+
+        <h3>{{#str}}a11ystatement_feedback, theme_epure{{/str}}</h3>
+        <p>{{#str}}a11ystatement_feedback_text, theme_epure{{/str}}</p>
+        <div class="epure-a11y-statement-contact">{{{contact}}}</div>
+
+        <h3>{{#str}}a11ystatement_remedies, theme_epure{{/str}}</h3>
+        <p>{{#str}}a11ystatement_remedies_text, theme_epure{{/str}}</p>
+        <ul>
+            <li><a href="https://formulaire.defenseurdesdroits.fr/">{{#str}}a11ystatement_remedy_form, theme_epure{{/str}}</a></li>
+            <li><a href="https://www.defenseurdesdroits.fr/saisir/delegues">{{#str}}a11ystatement_remedy_delegate, theme_epure{{/str}}</a></li>
+            <li>{{#str}}a11ystatement_remedy_mail, theme_epure{{/str}}</li>
+        </ul>
+    {{/published}}
+</article>

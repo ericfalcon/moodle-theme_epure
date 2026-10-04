@@ -67,7 +67,7 @@ Ces réglages s'appliquent aux utilisateurs rattachés à l'entreprise, et à l'
 
 **Tableau de bord IOMAD** : le tableau de bord d'IOMAD garde ses actions, ses onglets et ses droits, mais Épure en change la présentation :
 
-- l'entreprise sélectionnée en en-tête, avec son logo, et le sélecteur d'entreprise à côté ;
+- l'entreprise sélectionnée en en-tête, avec son logo, un accès direct à sa catégorie de cours et à ses sous-catégories (page de gestion pour qui gère les cours, liste des cours sinon), lien repris en tête de l'onglet Cours, et le sélecteur d'entreprise à côté ;
 - des onglets sobres, soulignés de la couleur de marque, qui défilent sur mobile ;
 - les actions en cartes, **regroupées par intention** dans chaque onglet : Créer, Paramétrer, Gérer, Importer et exporter, Suivre ;
 - la palette de l'entreprise à la place des couleurs fixes d'IOMAD, et des onglets accessibles aux lecteurs d'écran.
@@ -122,6 +122,19 @@ SCSS initial (pour redéfinir des variables) et SCSS ajouté à la fin de la feu
 
 Le thème vise les WCAG 2.2 niveau AA, le RGAA 4.1.2 et l'EN 301 549 : contrastes calculés, focus clavier toujours visible, lien d'évitement, cibles d'au moins 24 × 24 px, liens soulignés dans le texte, respect du réglage « réduire les animations ».
 
+**Préférences d'affichage.** Le bouton **Aa** de l'en-tête (raccourci Alt + A) ouvre un panneau où chaque utilisateur connecté choisit :
+
+- la taille du texte : petite, normale, grande ou très grande (90, 100, 115 ou 130 %) ;
+- une police de lecture : celle du site, Atkinson Hyperlegible ou OpenDyslexic ;
+- un texte plus espacé (valeurs du critère WCAG 1.4.12), un contraste renforcé, des liens soulignés, des animations réduites.
+
+Le changement est immédiat, puis enregistré dans les préférences de son profil Moodle : il vaut sur toutes les pages et tous ses appareils, dès le premier affichage. Les visiteurs non connectés et les invités ont l'affichage par défaut. Ces préférences sont déclarées à l'API de confidentialité et exportées avec les données de l'utilisateur.
+
+**Déclaration d'accessibilité.** L'onglet **Accessibilité** des réglages du thème la remplit au format français (RGAA) : état de conformité, entité, taux de conformité, auditeur et date de l'audit, non-conformités, dérogations, contenus non soumis, contact (par défaut, le courriel du support). Tant qu'aucun état n'est choisi, rien n'est publié. Une fois l'état choisi :
+
+- la déclaration est publiée à l'adresse `/theme/epure/accessibility.php`, lisible sans compte, avec les voies de recours auprès du Défenseur des droits ;
+- la mention « Accessibilité : partiellement conforme » (selon l'état) apparaît en bas de chaque page, et un lien dans le pied de page.
+
 Un thème ne rend pas une plateforme conforme à lui seul : les contenus des cours comptent aussi, et un audit manuel reste nécessaire avant de déclarer la conformité.
 
 ## Développement
@@ -132,7 +145,10 @@ Tests :
 
 ```
 vendor/bin/phpunit --testsuite theme_epure_testsuite
+vendor/bin/behat --config <behat_dataroot>/behatrun/behat/behat.yml --tags @theme_epure
 ```
+
+Les tests Behat passent l'audit axe-core de Moodle (« the page should meet accessibility standards ») sur le tableau de bord, le panneau des préférences et la déclaration d'accessibilité.
 
 ## Licence
 

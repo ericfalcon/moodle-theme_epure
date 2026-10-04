@@ -30,6 +30,14 @@ $callbacks = [
         'callback' => [\theme_epure\hook_callbacks::class, 'after_config'],
     ],
     [
+        'hook' => \core\hook\output\before_html_attributes::class,
+        'callback' => [\theme_epure\hook_callbacks::class, 'before_html_attributes'],
+    ],
+    [
+        'hook' => \core\hook\output\after_standard_main_region_html_generation::class,
+        'callback' => [\theme_epure\hook_callbacks::class, 'after_standard_main_region_html_generation'],
+    ],
+    [
         'hook' => \core\hook\output\before_footer_html_generation::class,
         'callback' => [\theme_epure\hook_callbacks::class, 'before_footer_html_generation'],
     ],

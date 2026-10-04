@@ -16,23 +16,50 @@
 
 namespace theme_epure\privacy;
 
+use core_privacy\local\metadata\collection;
+use core_privacy\local\request\writer;
+
 /**
  * Privacy provider for theme_epure.
  *
- * The theme does not store any personal data yet. User display preferences
- * will be declared here when they are introduced.
+ * The theme stores the display preferences of each user (button « Aa »), as user preferences.
  *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class provider implements \core_privacy\local\metadata\null_provider {
+class provider implements
+    \core_privacy\local\metadata\provider,
+    \core_privacy\local\request\user_preference_provider {
     /**
-     * Returns the language string identifier explaining why this plugin stores no data.
+     * Describes the data stored by the theme.
      *
-     * @return string
+     * @param collection $collection Collection to add to.
+     * @return collection
      */
-    public static function get_reason(): string {
-        return 'privacy:metadata';
+    public static function get_metadata(collection $collection): collection {
+        foreach (array_keys(\theme_epure\a11y::definitions()) as $name) {
+            $collection->add_user_preference($name, 'privacy:metadata:preference:' . substr($name, strlen('theme_epure_')));
+        }
+        return $collection;
+    }
+
+    /**
+     * Exports the display preferences of a user.
+     *
+     * @param int $userid User id.
+     */
+    public static function export_user_preferences(int $userid) {
+        foreach (array_keys(\theme_epure\a11y::definitions()) as $name) {
+            $value = get_user_preferences($name, null, $userid);
+            if ($value !== null) {
+                writer::export_user_preference(
+                    'theme_epure',
+                    $name,
+                    $value,
+                    get_string('privacy:metadata:preference:' . substr($name, strlen('theme_epure_')), 'theme_epure')
+                );
+            }
+        }
     }
 }

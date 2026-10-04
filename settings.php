@@ -192,6 +192,50 @@ if ($ADMIN->fulltree) {
 
     $settings->add($page);
 
+    // Accessibility tab: statement of the platform, in the French format (RGAA).
+    $page = new admin_settingpage('theme_epure_a11y', get_string('a11ysettings', 'theme_epure'));
+
+    $statementurl = theme_epure\accessibility_statement::url()->out();
+    $page->add(new admin_setting_heading(
+        'theme_epure/a11yheading',
+        '',
+        get_string('a11ysettings_desc', 'theme_epure', html_writer::link($statementurl, $statementurl))
+    ));
+
+    $statuses = ['' => get_string('a11ystatus_unpublished', 'theme_epure')];
+    foreach (theme_epure\accessibility_statement::STATUSES as $status) {
+        $statuses[$status] = get_string('a11ystatus_' . $status, 'theme_epure');
+    }
+    $page->add(new admin_setting_configselect(
+        'theme_epure/a11ystatus',
+        get_string('a11ystatus', 'theme_epure'),
+        get_string('a11ystatus_desc', 'theme_epure'),
+        '',
+        $statuses
+    ));
+
+    foreach (['a11yentity', 'a11yrate', 'a11yauditor', 'a11yauditdate', 'a11ystatementdate'] as $name) {
+        $page->add(new admin_setting_configtext(
+            'theme_epure/' . $name,
+            get_string($name, 'theme_epure'),
+            get_string($name . '_desc', 'theme_epure'),
+            '',
+            PARAM_TEXT
+        ));
+    }
+
+    foreach (theme_epure\accessibility_statement::TEXTS as $name) {
+        $page->add(new admin_setting_configtextarea(
+            'theme_epure/a11y' . $name,
+            get_string('a11y' . $name, 'theme_epure'),
+            get_string('a11y' . $name . '_desc', 'theme_epure'),
+            '',
+            PARAM_RAW
+        ));
+    }
+
+    $settings->add($page);
+
     // Advanced tab: raw SCSS.
     $page = new admin_settingpage('theme_epure_advanced', get_string('advancedsettings', 'theme_epure'));
 

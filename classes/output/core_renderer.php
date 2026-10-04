@@ -92,6 +92,37 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
 
     /**
+     * Output of the plugins in the header, with the button « Aa » of the display preferences first.
+     *
+     * @return string HTML.
+     */
+    public function navbar_plugin_output() {
+        $output = parent::navbar_plugin_output();
+        // The preferences are saved in the profile: guests and visitors who are not logged in do not get them.
+        if (isloggedin() && !isguestuser() && !during_initial_install()) {
+            $this->page->requires->js_call_amd('theme_epure/a11y_panel', 'init');
+            $output = $this->render_from_template('theme_epure/a11y_panel', \theme_epure\a11y::panel_context()) . $output;
+        }
+        return $output;
+    }
+
+    /**
+     * Footer links, with the accessibility statement when it is published.
+     *
+     * @return string HTML.
+     */
+    public function standard_footer_html() {
+        $output = parent::standard_footer_html();
+        if (\theme_epure\accessibility_statement::enabled()) {
+            $output .= \html_writer::div(\html_writer::link(
+                \theme_epure\accessibility_statement::url(),
+                get_string('a11ystatement', 'theme_epure')
+            ), 'epure-a11y-footer-link');
+        }
+        return $output;
+    }
+
+    /**
      * Attributes of the body element, with the class of the brand-coloured header when it applies.
      *
      * The header style is the one of the IOMAD company of the user, else the theme setting.

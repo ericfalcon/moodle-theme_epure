@@ -1,0 +1,80 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/a11y_panel
+
+    Button « Aa » of the header and its panel of display preferences, saved in the profile of the user.
+
+    Example context (json):
+    {
+        "sizes": [{"value": 100, "label": "Normal", "checked": true}],
+        "fonts": [{"value": "", "label": "Font of the site", "checked": true}],
+        "switches": [{"name": "spacing", "label": "More text spacing", "help": "Lines, words and letters further apart.", "checked": false}]
+    }
+}}
+<div class="epure-a11y" data-region="epure-a11y">
+    <button type="button" class="btn nav-link epure-a11y-toggle" data-action="toggle" aria-expanded="false"
+        aria-controls="epure-a11y-panel" title="{{#str}}a11ypanel, theme_epure{{/str}} (Alt+A)">
+        <span aria-hidden="true">Aa</span>
+        <span class="sr-only visually-hidden">{{#str}}a11ypanel, theme_epure{{/str}}</span>
+    </button>
+    <div class="epure-a11y-panel" id="epure-a11y-panel" role="dialog" aria-labelledby="epure-a11y-title" hidden>
+        <div class="epure-a11y-head">
+            <h2 class="epure-a11y-title" id="epure-a11y-title">{{#str}}a11ypanel, theme_epure{{/str}}</h2>
+            <button type="button" class="btn btn-link epure-a11y-close" data-action="close">
+                <i class="fa fa-xmark" aria-hidden="true"></i><span class="sr-only visually-hidden">{{#str}}closebuttontitle{{/str}}</span>
+            </button>
+        </div>
+        <fieldset class="epure-a11y-group">
+            <legend>{{#str}}a11ytext, theme_epure{{/str}}</legend>
+            <div class="epure-a11y-choices">
+                {{#sizes}}
+                    <label class="epure-a11y-choice">
+                        <input type="radio" name="epure-a11y-text" value="{{value}}" {{#checked}}checked{{/checked}}>
+                        <span>{{label}}</span>
+                    </label>
+                {{/sizes}}
+            </div>
+        </fieldset>
+        <fieldset class="epure-a11y-group">
+            <legend>{{#str}}a11yfont, theme_epure{{/str}}</legend>
+            <div class="epure-a11y-choices">
+                {{#fonts}}
+                    <label class="epure-a11y-choice">
+                        <input type="radio" name="epure-a11y-font" value="{{value}}" {{#checked}}checked{{/checked}}>
+                        <span class="{{class}}">{{label}}</span>
+                    </label>
+                {{/fonts}}
+            </div>
+        </fieldset>
+        <fieldset class="epure-a11y-group">
+            <legend>{{#str}}a11yreading, theme_epure{{/str}}</legend>
+            {{#switches}}
+                <div class="form-check epure-a11y-switch">
+                    <input type="checkbox" class="form-check-input" id="epure-a11y-{{name}}" name="epure-a11y-{{name}}"
+                        aria-describedby="epure-a11y-{{name}}-help" {{#checked}}checked{{/checked}}>
+                    <label class="form-check-label" for="epure-a11y-{{name}}">{{label}}</label>
+                    <p class="epure-a11y-help" id="epure-a11y-{{name}}-help">{{help}}</p>
+                </div>
+            {{/switches}}
+        </fieldset>
+        <div class="epure-a11y-foot">
+            <button type="button" class="btn btn-secondary" data-action="reset">{{#str}}a11yreset, theme_epure{{/str}}</button>
+            <p class="epure-a11y-status" data-region="status" aria-live="polite"></p>
+        </div>
+    </div>
+</div>

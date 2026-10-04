@@ -86,4 +86,49 @@ class hook_callbacks {
         ));
         $PAGE->requires->js_call_amd('theme_epure/company_vocabulary', 'init');
     }
+
+    /**
+     * Adds the classes of the display preferences of the user to the html element.
+     *
+     * @param \core\hook\output\before_html_attributes $hook The hook.
+     */
+    public static function before_html_attributes(\core\hook\output\before_html_attributes $hook): void {
+        if (during_initial_install() || !self::epure_page()) {
+            return;
+        }
+        if ($classes = a11y::html_classes()) {
+            $hook->add_attribute('class', $classes);
+        }
+    }
+
+    /**
+     * Adds the accessibility mention under the main region: « Accessibility: partially compliant ».
+     *
+     * French law (RGAA) asks for it on every page; it links to the accessibility statement.
+     *
+     * @param \core\hook\output\after_standard_main_region_html_generation $hook The hook.
+     */
+    public static function after_standard_main_region_html_generation(
+        \core\hook\output\after_standard_main_region_html_generation $hook
+    ): void {
+        global $OUTPUT;
+        if (during_initial_install() || !self::epure_page() || !accessibility_statement::enabled()) {
+            return;
+        }
+        $hook->add_html($OUTPUT->render_from_template('theme_epure/a11y_mention', accessibility_statement::mention()));
+    }
+
+    /**
+     * Whether the page is displayed with Épure (the hooks also run for the other themes).
+     *
+     * @return bool
+     */
+    protected static function epure_page(): bool {
+        global $PAGE;
+        try {
+            return $PAGE->theme->name === 'epure' || in_array('epure', $PAGE->theme->parents ?? [], true);
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
 }

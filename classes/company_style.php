@@ -240,4 +240,27 @@ class company_style {
         }
         return $css;
     }
+
+    /**
+     * Direct access to the course category of a company, with its subcategories, for those who may see it.
+     *
+     * Those who manage courses in it get the management page, the others the list of its courses.
+     *
+     * @param object $company Company, with its course category.
+     * @return array|null Address, label and name of the category, or null.
+     */
+    public static function company_category(object $company): ?array {
+        $category = empty($company->category) ? null : \core_course_category::get((int) $company->category, IGNORE_MISSING);
+        if (!$category) {
+            return null;
+        }
+        $context = \context_coursecat::instance($category->id);
+        if (has_any_capability(['moodle/category:manage', 'moodle/course:create', 'moodle/course:update'], $context)) {
+            $url = new \moodle_url('/course/management.php', ['categoryid' => $category->id]);
+        } else {
+            $url = new \moodle_url('/course/index.php', ['categoryid' => $category->id]);
+        }
+        $name = $category->get_formatted_name();
+        return ['url' => $url->out(false), 'name' => $name, 'label' => get_string('iomadcompanycategory', 'theme_epure', $name)];
+    }
 }

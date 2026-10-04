@@ -103,6 +103,12 @@ function theme_epure_get_main_scss_content($theme) {
     global $CFG;
 
     $scss = theme_epure_get_font($theme)[0];
+    // Reading fonts of the display preferences: woff2 files are only downloaded when a user chooses one.
+    foreach (\theme_epure\a11y::FONTS as $key) {
+        if ($key !== ($theme->settings->font ?? null)) {
+            $scss .= fonts::font_face_scss($key);
+        }
+    }
     $scss .= file_get_contents($CFG->dirroot . '/theme/boost/scss/preset/default.scss');
     $scss .= file_get_contents($CFG->dirroot . '/theme/epure/scss/epure.scss');
     return $scss;
@@ -176,4 +182,13 @@ function theme_epure_get_extra_scss($theme) {
 function theme_epure_get_precompiled_css() {
     global $CFG;
     return file_get_contents($CFG->dirroot . '/theme/boost/style/moodle.css');
+}
+
+/**
+ * User preferences of the theme: the display preferences of the button « Aa ».
+ *
+ * @return array[]
+ */
+function theme_epure_user_preferences(): array {
+    return \theme_epure\a11y::definitions();
 }
