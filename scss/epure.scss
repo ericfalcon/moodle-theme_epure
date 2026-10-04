@@ -1,0 +1,280 @@
+// Épure — styles added after Boost's default preset.
+//
+// Rules here only use classes shared by Bootstrap 4 (Moodle 4.5) and Bootstrap 5
+// (Moodle 5.x), or classes prefixed with "epure-". Colours come from the palette
+// computed in PHP (see classes/palette.php), never from literals.
+
+// Design tokens, exposed as CSS custom properties for templates and custom CSS.
+:root {
+    --epure-brand: #{$epure-brand};
+    --epure-brand-hover: #{$epure-brand-hover};
+    --epure-on-brand: #{$epure-on-brand};
+    --epure-brand-text: #{$epure-brand-text};
+    --epure-brand-soft: #{$epure-brand-soft};
+    --epure-brand-soft-2: #{$epure-brand-soft-2};
+    --epure-dark-brand: #{$epure-dark-brand};
+    --epure-dark-brand-hover: #{$epure-dark-brand-hover};
+    --epure-dark-on-brand: #{$epure-dark-on-brand};
+    --epure-dark-brand-text: #{$epure-dark-brand-text};
+    --epure-dark-brand-soft: #{$epure-dark-brand-soft};
+    --epure-radius-sm: #{$border-radius-sm};
+    --epure-radius: #{$border-radius};
+    --epure-radius-lg: #{$border-radius-lg};
+    --epure-border: #e2e5ea;
+    --epure-surface-muted: #f5f6f8;
+    --epure-shadow: 0 1px 2px rgba(16, 22, 32, .06), 0 2px 8px rgba(16, 22, 32, .05);
+    --epure-shadow-hover: 0 4px 10px rgba(16, 22, 32, .08), 0 14px 32px -12px rgba(16, 22, 32, .18);
+    --epure-focus: #{$epure-brand-text};
+}
+
+// Typography.
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    font-weight: 600;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+}
+
+// Links keep an accessible colour and show their underline on hover.
+a:hover,
+a:focus {
+    text-underline-offset: .2em;
+}
+
+// Visible keyboard focus everywhere (WCAG 2.4.7 and 2.4.11).
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible,
+[tabindex]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
+    outline: 2px solid var(--epure-focus);
+    outline-offset: 2px;
+    box-shadow: none;
+}
+
+// Skip links: Moodle's "Skip to main content" becomes a clear button when focused.
+.sr-only-focusable:focus,
+.sr-only-focusable:active,
+.visually-hidden-focusable:focus,
+.visually-hidden-focusable:focus-within {
+    position: fixed !important;
+    top: .75rem;
+    left: .75rem;
+    z-index: 2000;
+    width: auto !important;
+    height: auto !important;
+    padding: .625rem 1rem !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    clip: auto !important;
+    white-space: normal;
+    color: var(--epure-on-brand) !important;
+    background: var(--epure-brand);
+    border-radius: var(--epure-radius);
+    font-weight: 600;
+    box-shadow: var(--epure-shadow-hover);
+}
+
+// Buttons: the text colour on the brand fill is computed for contrast,
+// instead of Bootstrap's own threshold.
+.btn {
+    font-weight: 500;
+    border-radius: var(--epure-radius);
+}
+
+.btn-primary,
+.btn-primary:disabled,
+.btn-primary.disabled {
+    color: var(--epure-on-brand);
+    background-color: var(--epure-brand);
+    border-color: var(--epure-brand);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active {
+    color: var(--epure-on-brand);
+    background-color: var(--epure-brand-hover);
+    border-color: var(--epure-brand-hover);
+}
+
+.btn-outline-primary {
+    color: var(--epure-brand-text);
+    border-color: var(--epure-brand-text);
+}
+
+.btn-outline-primary:hover {
+    color: var(--epure-on-brand);
+    background-color: var(--epure-brand);
+    border-color: var(--epure-brand);
+}
+
+// Minimum target size for small controls (WCAG 2.5.8).
+.btn-sm,
+.btn-icon,
+.page-link {
+    min-height: 24px;
+    min-width: 24px;
+}
+
+// Form fields.
+.form-control,
+.custom-select,
+.form-select {
+    border-radius: var(--epure-radius);
+}
+
+.form-control:focus,
+.custom-select:focus,
+.form-select:focus {
+    border-color: var(--epure-brand-text);
+    box-shadow: 0 0 0 3px var(--epure-brand-soft-2);
+}
+
+// Cards: a light border and a soft shadow instead of a heavy frame.
+.card {
+    border-color: var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+}
+
+.card .card-img-top,
+.card .card-img {
+    border-top-left-radius: var(--epure-radius-lg);
+    border-top-right-radius: var(--epure-radius-lg);
+}
+
+.dashboard-card {
+    overflow: hidden;
+    transition: box-shadow .2s ease, transform .2s ease;
+
+    &:hover {
+        box-shadow: var(--epure-shadow-hover);
+        transform: translateY(-2px);
+    }
+}
+
+// Progress bars use the brand colour.
+.progress-bar {
+    background-color: var(--epure-brand);
+}
+
+// Header and primary navigation: a quiet white bar with a brand underline on the active item.
+.navbar.fixed-top {
+    border-bottom: 1px solid var(--epure-border);
+    box-shadow: none;
+}
+
+.primary-navigation .navigation .nav-link.active,
+.primary-navigation .navigation .nav-link[aria-current="true"] {
+    border-bottom-color: var(--epure-brand);
+}
+
+.moremenu .nav-link:hover,
+.moremenu .nav-link:focus {
+    border-bottom-color: var(--epure-brand-soft-2);
+}
+
+// Logos may have a transparent background: never paint behind them.
+.navbar .navbar-brand .logo,
+#loginlogo,
+.login-logo img {
+    background: transparent;
+}
+
+// Brand-coloured header (Header > Header colour). Only the bar itself and its own
+// controls change colour; the dropdowns and popovers it opens keep the normal colours.
+@if $epure-header-brand {
+    .navbar.fixed-top,
+    .navbar.fixed-top.bg-white {
+        background-color: var(--epure-brand) !important;
+        border-bottom-color: transparent;
+    }
+
+    .navbar.fixed-top .navbar-brand,
+    .navbar.fixed-top .primary-navigation .navigation .nav-link,
+    .navbar.fixed-top .popover-region-toggle,
+    .navbar.fixed-top .popover-region-toggle .icon,
+    .navbar.fixed-top .usermenu > .dropdown > .dropdown-toggle,
+    .navbar.fixed-top .editmode-switch-form label,
+    .navbar.fixed-top .navbar-toggler {
+        color: var(--epure-on-brand) !important;
+    }
+
+    .navbar.fixed-top .primary-navigation .navigation .nav-link.active,
+    .navbar.fixed-top .primary-navigation .navigation .nav-link[aria-current="true"] {
+        border-bottom-color: var(--epure-on-brand);
+    }
+
+    .navbar.fixed-top .primary-navigation .navigation .nav-link:hover {
+        border-bottom-color: currentColor;
+    }
+
+    .navbar.fixed-top a:focus-visible,
+    .navbar.fixed-top button:focus-visible,
+    .navbar.fixed-top [tabindex]:focus-visible,
+    .navbar.fixed-top input:focus-visible {
+        outline-color: var(--epure-on-brand);
+    }
+
+    @if $epure-on-brand-is-light {
+        // The hamburger icon is a dark image in Bootstrap's light navbar.
+        .navbar.fixed-top .navbar-toggler-icon {
+            filter: brightness(0) invert(1);
+        }
+
+        .navbar.fixed-top .divider {
+            border-color: rgba(255, 255, 255, .35);
+        }
+    } @else {
+        .navbar.fixed-top .divider {
+            border-color: rgba(0, 0, 0, .2);
+        }
+    }
+}
+
+// Secondary navigation tabs.
+.secondary-navigation .navigation .nav-tabs .nav-link.active {
+    border-bottom-color: var(--epure-brand);
+}
+
+// Page background and main region.
+#page.drawers {
+    background-color: var(--epure-surface-muted);
+}
+
+#page-header .page-header-headings h1 {
+    font-size: 1.75rem;
+}
+
+// Badges and tags.
+.badge-primary,
+.bg-primary {
+    color: var(--epure-on-brand);
+}
+
+// Respect the system setting to reduce motion (WCAG 2.3.3).
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .dashboard-card:hover {
+        transform: none;
+    }
+}

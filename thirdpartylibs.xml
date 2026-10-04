@@ -1,0 +1,275 @@
+<?xml version="1.0"?>
+<libraries>
+  <library>
+    <location>fonts/ibm-plex-sans-latin-400-normal.woff2</location>
+    <name>IBM Plex Sans 400</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/ibm-plex-sans-latin-500-normal.woff2</location>
+    <name>IBM Plex Sans 500</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/ibm-plex-sans-latin-600-normal.woff2</location>
+    <name>IBM Plex Sans 600</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/ibm-plex-sans-latin-700-normal.woff2</location>
+    <name>IBM Plex Sans 700</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/LICENSE-ibm-plex-sans.txt</location>
+    <name>IBM Plex Sans licence</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/inter-latin-400-normal.woff2</location>
+    <name>Inter 400</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/inter-latin-500-normal.woff2</location>
+    <name>Inter 500</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/inter-latin-600-normal.woff2</location>
+    <name>Inter 600</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/inter-latin-700-normal.woff2</location>
+    <name>Inter 700</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/LICENSE-inter.txt</location>
+    <name>Inter licence</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/source-sans-3-latin-400-normal.woff2</location>
+    <name>Source Sans 3 400</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/source-sans-3-latin-500-normal.woff2</location>
+    <name>Source Sans 3 500</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/source-sans-3-latin-600-normal.woff2</location>
+    <name>Source Sans 3 600</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/source-sans-3-latin-700-normal.woff2</location>
+    <name>Source Sans 3 700</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/LICENSE-source-sans-3.txt</location>
+    <name>Source Sans 3 licence</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/figtree-latin-400-normal.woff2</location>
+    <name>Figtree 400</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/figtree-latin-500-normal.woff2</location>
+    <name>Figtree 500</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/figtree-latin-600-normal.woff2</location>
+    <name>Figtree 600</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/figtree-latin-700-normal.woff2</location>
+    <name>Figtree 700</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/LICENSE-figtree.txt</location>
+    <name>Figtree licence</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/lato-latin-400-normal.woff2</location>
+    <name>Lato 400</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/lato-latin-700-normal.woff2</location>
+    <name>Lato 700</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/LICENSE-lato.txt</location>
+    <name>Lato licence</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/atkinson-hyperlegible-latin-400-normal.woff2</location>
+    <name>Atkinson Hyperlegible 400</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/atkinson-hyperlegible-latin-700-normal.woff2</location>
+    <name>Atkinson Hyperlegible 700</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/LICENSE-atkinson-hyperlegible.txt</location>
+    <name>Atkinson Hyperlegible licence</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/lexend-latin-400-normal.woff2</location>
+    <name>Lexend 400</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/lexend-latin-500-normal.woff2</location>
+    <name>Lexend 500</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/lexend-latin-600-normal.woff2</location>
+    <name>Lexend 600</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/lexend-latin-700-normal.woff2</location>
+    <name>Lexend 700</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/LICENSE-lexend.txt</location>
+    <name>Lexend licence</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/opendyslexic-latin-400-normal.woff2</location>
+    <name>OpenDyslexic 400</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/opendyslexic-latin-700-normal.woff2</location>
+    <name>OpenDyslexic 700</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+  <library>
+    <location>fonts/LICENSE-opendyslexic.txt</location>
+    <name>OpenDyslexic licence</name>
+    <version>5.3.0</version>
+    <license>OFL</license>
+    <licenseversion>1.1</licenseversion>
+    <repository>https://github.com/fontsource/font-files</repository>
+  </library>
+</libraries>
