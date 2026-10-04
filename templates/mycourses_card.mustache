@@ -27,65 +27,63 @@
         "tograde": 3, "hastograde": true, "gradeurl": "#", "links": [{"label": "Participants", "url": "#", "icon": "fa-users"}]
     }
 }}
-<li class="epure-mycourses-item" data-status="{{status}}" data-name="{{sortname}} {{category}}">
-    <article class="epure-course-card {{#teaching}}epure-course-card-teaching{{/teaching}}" aria-labelledby="epure-course-{{id}}">
-        <div class="epure-course-card-image" style="background-image: url('{{image}}');"></div>
-        <div class="epure-course-card-body">
-            <div class="epure-course-card-meta">
-                <span class="epure-course-card-role">{{rolename}}</span>
-                {{#favourite}}<span class="epure-course-card-star"><i class="fa fa-star" aria-hidden="true"></i><span class="sr-only visually-hidden">{{#str}}favourites, block_myoverview{{/str}}</span></span>{{/favourite}}
-                {{#hidden}}<span class="epure-course-card-hidden">{{#str}}hiddenfromstudents{{/str}}</span>{{/hidden}}
-            </div>
-            {{#category}}<p class="epure-course-card-category">{{category}}</p>{{/category}}
-            <h3 class="epure-course-card-title" id="epure-course-{{id}}"><a href="{{url}}">{{name}}</a></h3>
-
-            {{#available}}
-                <a class="btn btn-outline-primary epure-course-card-action" href="{{url}}">
-                    {{#str}}mycourses_discover, theme_epure{{/str}}<span class="sr-only visually-hidden"> – {{name}}</span>
-                </a>
-            {{/available}}
-            {{^available}}
-            {{#teaching}}
-                <dl class="epure-course-card-figures">
-                    <div><dt>{{#str}}mycourses_participants, theme_epure{{/str}}</dt><dd>{{participants}}</dd></div>
-                    <div><dt>{{#str}}mycourses_active, theme_epure{{/str}}</dt><dd>{{active}}</dd></div>
-                    <div class="{{#hastograde}}epure-course-card-alert{{/hastograde}}">
-                        <dt>{{#str}}mycourses_tograde, theme_epure{{/str}}</dt>
-                        <dd>{{#hastograde}}<a href="{{gradeurl}}">{{tograde}}</a>{{/hastograde}}{{^hastograde}}0{{/hastograde}}</dd>
-                    </div>
-                </dl>
-                <ul class="epure-course-card-links">
-                    {{#links}}
-                        <li><a href="{{url}}"><i class="fa {{icon}}" aria-hidden="true"></i>{{label}}<span class="sr-only visually-hidden"> – {{name}}</span></a></li>
-                    {{/links}}
-                </ul>
-            {{/teaching}}
-
-            {{^teaching}}
-                {{#hasprogress}}
-                    <div class="epure-course-card-progress">
-                        <div class="epure-course-card-progress-label">
-                            <span>{{#str}}mycourses_progress, theme_epure{{/str}}</span>
-                            <span>{{#completed}}{{#str}}mycourses_completed, theme_epure{{/str}}{{/completed}}{{^completed}}{{progress}} %{{/completed}}</span>
-                        </div>
-                        <div class="progress" role="progressbar" aria-label="{{#str}}mycourses_progress, theme_epure{{/str}}"
-                            aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar" style="width: {{progress}}%"></div>
-                        </div>
-                    </div>
-                {{/hasprogress}}
-                {{#next}}
-                    <p class="epure-course-card-next">{{#str}}mycourses_next, theme_epure{{/str}} <a href="{{url}}">{{name}}</a></p>
-                {{/next}}
-                {{#deadline}}
-                    <p class="epure-course-card-deadline"><i class="fa fa-calendar" aria-hidden="true"></i>
-                        {{#url}}<a href="{{url}}">{{name}}</a>{{/url}}{{^url}}{{name}}{{/url}} – {{date}}</p>
-                {{/deadline}}
-                <a class="btn {{#completed}}btn-outline-primary{{/completed}}{{^completed}}btn-primary{{/completed}} epure-course-card-action" href="{{actionurl}}">
-                    {{action}}<span class="sr-only visually-hidden"> – {{name}}</span>
-                </a>
-            {{/teaching}}
-            {{/available}}
+<article class="epure-course-card {{#teaching}}epure-course-card-teaching{{/teaching}}" aria-labelledby="epure-course-{{id}}">
+    <div class="epure-course-card-image" style="background-image: url('{{image}}');"></div>
+    <div class="epure-course-card-body">
+        <div class="epure-course-card-meta">
+            <span class="epure-course-card-role">{{rolename}}</span>
+            {{#favourite}}<span class="epure-course-card-star"><i class="fa fa-star" aria-hidden="true"></i><span class="sr-only visually-hidden">{{#str}}favourites, block_myoverview{{/str}}</span></span>{{/favourite}}
+            {{#hidden}}<span class="epure-course-card-hidden">{{#str}}hiddenfromstudents{{/str}}</span>{{/hidden}}
         </div>
-    </article>
-</li>
+        {{#category}}<p class="epure-course-card-category">{{category}}</p>{{/category}}
+        <h3 class="epure-course-card-title" id="epure-course-{{id}}"><a href="{{url}}">{{name}}</a></h3>
+
+        {{#available}}
+            <a class="btn btn-outline-primary epure-course-card-action" href="{{url}}">
+                {{#str}}mycourses_discover, theme_epure{{/str}}<span class="sr-only visually-hidden"> – {{name}}</span>
+            </a>
+        {{/available}}
+        {{^available}}
+        {{#teaching}}
+            <dl class="epure-course-card-figures">
+                <div><dt>{{#str}}mycourses_participants, theme_epure{{/str}}</dt><dd>{{participants}}</dd></div>
+                <div><dt>{{#str}}mycourses_active, theme_epure{{/str}}</dt><dd>{{active}}</dd></div>
+                <div class="{{#hastograde}}epure-course-card-alert{{/hastograde}}">
+                    <dt>{{#str}}mycourses_tograde, theme_epure{{/str}}</dt>
+                    <dd>{{#hastograde}}<a href="{{gradeurl}}">{{tograde}}</a>{{/hastograde}}{{^hastograde}}0{{/hastograde}}</dd>
+                </div>
+            </dl>
+            <ul class="epure-course-card-links">
+                {{#links}}
+                    <li><a href="{{url}}"><i class="fa {{icon}}" aria-hidden="true"></i>{{label}}<span class="sr-only visually-hidden"> – {{name}}</span></a></li>
+                {{/links}}
+            </ul>
+        {{/teaching}}
+
+        {{^teaching}}
+            {{#hasprogress}}
+                <div class="epure-course-card-progress">
+                    <div class="epure-course-card-progress-label">
+                        <span>{{#str}}mycourses_progress, theme_epure{{/str}}</span>
+                        <span>{{#completed}}{{#str}}mycourses_completed, theme_epure{{/str}}{{/completed}}{{^completed}}{{progress}} %{{/completed}}</span>
+                    </div>
+                    <div class="progress" role="progressbar" aria-label="{{#str}}mycourses_progress, theme_epure{{/str}}"
+                        aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar" style="width: {{progress}}%"></div>
+                    </div>
+                </div>
+            {{/hasprogress}}
+            {{#next}}
+                <p class="epure-course-card-next">{{#str}}mycourses_next, theme_epure{{/str}} <a href="{{url}}">{{name}}</a></p>
+            {{/next}}
+            {{#deadline}}
+                <p class="epure-course-card-deadline"><i class="fa fa-calendar" aria-hidden="true"></i>
+                    {{#url}}<a href="{{url}}">{{name}}</a>{{/url}}{{^url}}{{name}}{{/url}} – {{date}}</p>
+            {{/deadline}}
+            <a class="btn {{#completed}}btn-outline-primary{{/completed}}{{^completed}}btn-primary{{/completed}} epure-course-card-action" href="{{actionurl}}">
+                {{action}}<span class="sr-only visually-hidden"> – {{name}}</span>
+            </a>
+        {{/teaching}}
+        {{/available}}
+    </div>
+</article>

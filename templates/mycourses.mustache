@@ -67,7 +67,9 @@
                 {{/showheadings}}
                 <ul class="epure-mycourses-grid">
                     {{#courses}}
-                        {{> theme_epure/mycourses_card }}
+                        <li class="epure-mycourses-item" data-status="{{status}}" data-name="{{sortname}} {{category}}">
+                            {{> theme_epure/mycourses_card }}
+                        </li>
                     {{/courses}}
                 </ul>
                 <p class="epure-mycourses-empty" data-region="empty" hidden>{{#str}}mycourses_nomatch, theme_epure{{/str}}</p>
