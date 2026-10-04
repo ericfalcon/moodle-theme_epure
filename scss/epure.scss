@@ -227,6 +227,7 @@ summary:focus-visible {
     .navbar.fixed-top .popover-region-toggle .icon,
     .navbar.fixed-top .usermenu > .dropdown > .dropdown-toggle,
     .navbar.fixed-top .editmode-switch-form label,
+    .navbar.fixed-top .simplesearchform .btn-open,
     .navbar.fixed-top .navbar-toggler {
         color: var(--epure-on-brand);
     }
@@ -254,6 +255,8 @@ summary:focus-visible {
     .navbar.fixed-top .primary-navigation .navigation .nav-link:focus,
     .navbar.fixed-top .popover-region-toggle:hover,
     .navbar.fixed-top .popover-region-toggle:focus,
+    .navbar.fixed-top .simplesearchform .btn-open:hover,
+    .navbar.fixed-top .simplesearchform .btn-open:focus,
     .navbar.fixed-top .usermenu > .dropdown > .dropdown-toggle:hover,
     .navbar.fixed-top .usermenu > .dropdown > .dropdown-toggle:focus,
     .navbar.fixed-top .companymenu > .dropdown > .btn:hover,
