@@ -216,3 +216,12 @@ $ADMIN->add('themes', new admin_externalpage(
     new lang_string('vocabulary', 'theme_epure'),
     new moodle_url('/theme/epure/vocabulary.php')
 ));
+
+// Words for companies and departments, for all IOMAD companies and for each one.
+if (theme_epure\company_style::iomad_installed()) {
+    $ADMIN->add('themes', new admin_externalpage(
+        'theme_epure_companyvocabulary',
+        new lang_string('companyvocabulary', 'theme_epure'),
+        new moodle_url('/theme/epure/company_vocabulary.php')
+    ));
+}

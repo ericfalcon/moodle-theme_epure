@@ -29,7 +29,7 @@ class terms {
     /** @var string[] Objects whose name can be chosen for the whole platform. */
     public const CONCEPTS = ['course', 'student', 'teacher'];
 
-    /** @var string[] IOMAD objects, whose name is set by the companion plugin local_epure. */
+    /** @var string[] IOMAD objects, whose name is chosen for all companies and for each one, see {@see company}. */
     public const IOMAD_CONCEPTS = ['company', 'department'];
 
     /** @var string[] Languages the vocabulary can be rewritten in. */
@@ -53,7 +53,7 @@ class terms {
     /**
      * Objects whose name can be chosen for the whole platform with the theme.
      *
-     * The IOMAD objects are set by the companion plugin local_epure, for the platform and for each company.
+     * The IOMAD objects are chosen apart, for all companies and for each one, see {@see company}.
      *
      * @return string[]
      */

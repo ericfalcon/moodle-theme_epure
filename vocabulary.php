@@ -64,6 +64,10 @@ if ($data = $form->get_data()) {
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('vocabulary', 'theme_epure'));
 echo html_writer::tag('p', get_string('vocabintro', 'theme_epure'));
+if (core_plugin_manager::instance()->get_plugin_info('local_epure')) {
+    // The former companion plugin applies its own copy of the words: it must be uninstalled.
+    echo $OUTPUT->notification(get_string('localepureinstalled', 'theme_epure'), 'warning', false);
+}
 
 $languages = manager::languages();
 if (!$languages) {

@@ -70,5 +70,40 @@ function xmldb_theme_epure_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026100600, 'theme', 'epure');
     }
 
+    if ($oldversion < 2026100700) {
+        // The words for companies and departments move from local_epure to the theme, which no longer
+        // needs the companion plugin. Words chosen for each company (local_epure 0.3) are kept.
+        $local = get_config('local_epure');
+        foreach (['companies', 'companyrev'] as $name) {
+            if (isset($local->$name) && get_config('theme_epure', $name) === false) {
+                set_config($name, $local->$name, 'theme_epure');
+            }
+        }
+        $platform = [];
+        $iomadwords = false;
+        foreach ($local as $name => $value) {
+            if (preg_match('/^company_\d+$/', $name) && get_config('theme_epure', $name) === false) {
+                set_config($name, $value, 'theme_epure');
+            } else if (preg_match('/^vocab_(fr|en)_(company|department)(_singular|_plural|_gender)?$/', $name, $m)) {
+                // Words chosen for the whole platform: they become the words of all companies (company 0).
+                $platform[$name] = $value;
+                $iomadwords = $iomadwords || ($m[3] === '' && $value !== \theme_epure\vocabulary\terms::DEFAULTS[$m[1]][$m[2]]);
+            }
+        }
+        if ($iomadwords && get_config('theme_epure', 'company_0') === false) {
+            \theme_epure\vocabulary\company::save(0, $platform);
+        }
+
+        // Version 0.3 of local_epure wrote those platform words in the language pack: applying the vocabulary of
+        // the theme again, which leaves them to the string manager, removes them.
+        if ($iomadwords) {
+            foreach (\theme_epure\vocabulary\manager::languages() as $lang) {
+                \theme_epure\vocabulary\manager::apply($lang);
+            }
+        }
+
+        upgrade_plugin_savepoint(true, 2026100700, 'theme', 'epure');
+    }
+
     return true;
 }
