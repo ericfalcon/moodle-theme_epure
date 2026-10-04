@@ -74,7 +74,8 @@ class course_page {
         $data['header'] = $header;
         $data['learning'] = $learning;
         // Without completion tracking nor deadline, a learner has nothing more than the course itself.
-        $data['haslearnerpanel'] = $learning && (!empty($data['hasprogress']) || !empty($data['next']) || !empty($data['deadline']));
+        $data['haslearnerpanel'] = $learning
+            && (!empty($data['hasprogress']) || !empty($data['next']) || !empty($data['deadline']));
         $data['teaching'] = $teaching;
         return $data;
     }
