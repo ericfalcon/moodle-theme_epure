@@ -1,4 +1,4 @@
-@theme @theme_epure @javascript
+@theme @theme_epure @javascript @accessibility
 Feature: Accessibility of the Épure theme
   In order to use the platform whatever my needs
   As a user
