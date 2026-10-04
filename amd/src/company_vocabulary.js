@@ -62,11 +62,45 @@ export const init = () => {
     }
     region.hidden = false;
     initColour(region);
+    hideIomadColours(form, region);
 
     region.querySelectorAll('[data-epure-vocab-choice]').forEach((select) => {
         select.addEventListener('change', () => toggleCustom(select));
         toggleCustom(select);
     });
+};
+
+/**
+ * Hides IOMAD's colour fields while the company uses Épure, whose brand colour replaces them.
+ *
+ * IOMAD's heading, main and link colours only serve IOMAD's themes. They are shown again when
+ * another theme is chosen for the company. A heading colour already saved is copied into the
+ * Épure brand colour when that one is empty, so that the colour in use stays visible.
+ *
+ * @param {HTMLFormElement} form The company form.
+ * @param {HTMLElement} region The Épure fields.
+ */
+const hideIomadColours = (form, region) => {
+    const rows = ['headingcolor', 'maincolor', 'linkcolor']
+        .map((name) => form.querySelector(`[name="${name}"]`)?.closest('.fitem, .form-group'))
+        .filter((row) => row);
+    const theme = form.querySelector('select[name="theme"], input[name="theme"]');
+    if (!rows.length || !theme) {
+        return;
+    }
+    const code = region.querySelector('#id_epure_brandcolor');
+    const heading = form.querySelector('[name="headingcolor"]');
+    if (code && heading && code.value.trim() === '' && /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.test(heading.value.trim())) {
+        code.value = heading.value.trim();
+        code.dispatchEvent(new Event('change', {bubbles: true}));
+    }
+    const update = () => {
+        rows.forEach((row) => {
+            row.hidden = theme.value === 'epure';
+        });
+    };
+    theme.addEventListener('change', update);
+    update();
 };
 
 /**
