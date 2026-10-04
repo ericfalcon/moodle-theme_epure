@@ -240,6 +240,30 @@ summary:focus-visible {
         border-bottom-color: currentColor;
     }
 
+    // IOMAD company switcher (block_iomad_company_admin) in the header.
+    .navbar.fixed-top .companymenu > .dropdown > .btn,
+    .navbar.fixed-top .companymenu > .dropdown > .companybutton,
+    .navbar.fixed-top .companymenu .companybutton {
+        color: var(--epure-on-brand);
+    }
+
+    // Boost paints hovered and focused header items light grey, which hides light text.
+    // The brand colour is darkened instead (or lightened under dark text), which keeps
+    // or raises the contrast of the text.
+    .navbar.fixed-top .primary-navigation .navigation .nav-link:hover,
+    .navbar.fixed-top .primary-navigation .navigation .nav-link:focus,
+    .navbar.fixed-top .popover-region-toggle:hover,
+    .navbar.fixed-top .popover-region-toggle:focus,
+    .navbar.fixed-top .usermenu > .dropdown > .dropdown-toggle:hover,
+    .navbar.fixed-top .usermenu > .dropdown > .dropdown-toggle:focus,
+    .navbar.fixed-top .companymenu > .dropdown > .btn:hover,
+    .navbar.fixed-top .companymenu > .dropdown > .btn:focus,
+    .navbar.fixed-top .navbar-brand:hover,
+    .navbar.fixed-top .navbar-brand:focus {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-header-hover);
+    }
+
     .navbar.fixed-top a:focus-visible,
     .navbar.fixed-top button:focus-visible,
     .navbar.fixed-top [tabindex]:focus-visible,
@@ -248,6 +272,10 @@ summary:focus-visible {
     }
 
     @if $epure-on-brand-is-light {
+        :root {
+            --epure-header-hover: rgba(0, 0, 0, .18);
+        }
+
         // The hamburger icon is a dark image in Bootstrap's light navbar.
         .navbar.fixed-top .navbar-toggler-icon {
             filter: brightness(0) invert(1);
@@ -259,6 +287,10 @@ summary:focus-visible {
     }
 
     @if not $epure-on-brand-is-light {
+        :root {
+            --epure-header-hover: rgba(255, 255, 255, .3);
+        }
+
         .navbar.fixed-top .divider {
             border-color: rgba(0, 0, 0, .2);
         }
