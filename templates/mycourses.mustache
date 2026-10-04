@@ -1,0 +1,75 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/mycourses
+
+    The « My courses » page of Épure: the courses the user teaches and the courses the user
+    takes, in two sections, with a search and filters by status.
+
+    Context variables required for this template:
+    * hascourses, showheadings
+    * filters - value, label, selected
+    * sections - role, title, count, courses (see theme_epure/mycourses_card)
+
+    Example context (json):
+    {
+        "hascourses": true, "showheadings": true,
+        "filters": [{"value": "all", "label": "All", "selected": true}],
+        "sections": [{"role": "learning", "title": "Courses I take", "count": 1, "courses": [{
+            "id": 2, "name": "Safety", "url": "#", "image": "", "category": "Training", "status": "inprogress",
+            "teaching": false, "rolename": "Student", "hasprogress": true, "progress": 40, "action": "Continue", "actionurl": "#"
+        }]}]
+    }
+}}
+<div class="epure-mycourses" data-region="epure-mycourses">
+    {{#hascourses}}
+        <div class="epure-mycourses-toolbar">
+            <div class="epure-mycourses-search">
+                <label class="sr-only visually-hidden" for="epure-mycourses-search">{{#str}}mycourses_search, theme_epure{{/str}}</label>
+                <span class="epure-mycourses-search-icon" aria-hidden="true"><i class="fa fa-search"></i></span>
+                <input type="search" class="form-control" id="epure-mycourses-search" data-action="search"
+                    placeholder="{{#str}}mycourses_search, theme_epure{{/str}}" autocomplete="off">
+            </div>
+            <div class="epure-mycourses-filters" role="group" aria-label="{{#str}}mycourses_filter, theme_epure{{/str}}">
+                {{#filters}}
+                    <button type="button" class="epure-mycourses-filter" data-filter="{{value}}"
+                        aria-pressed="{{#selected}}true{{/selected}}{{^selected}}false{{/selected}}">{{label}}</button>
+                {{/filters}}
+            </div>
+        </div>
+        <p class="sr-only visually-hidden" aria-live="polite" data-region="status"></p>
+
+        {{#sections}}
+            <section class="epure-mycourses-section" data-role="{{role}}" {{#showheadings}}aria-labelledby="epure-mycourses-{{role}}"{{/showheadings}}>
+                {{#showheadings}}
+                    <h2 class="epure-mycourses-section-title" id="epure-mycourses-{{role}}">
+                        {{title}} <span class="epure-mycourses-count" data-region="count">{{count}}</span>
+                    </h2>
+                {{/showheadings}}
+                <ul class="epure-mycourses-grid">
+                    {{#courses}}
+                        {{> theme_epure/mycourses_card }}
+                    {{/courses}}
+                </ul>
+                <p class="epure-mycourses-empty" data-region="empty" hidden>{{#str}}mycourses_nomatch, theme_epure{{/str}}</p>
+            </section>
+        {{/sections}}
+    {{/hascourses}}
+    {{^hascourses}}
+        <p class="epure-mycourses-none">{{#str}}nocourses, block_myoverview{{/str}}</p>
+    {{/hascourses}}
+</div>

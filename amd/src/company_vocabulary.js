@@ -41,12 +41,15 @@ const toggleCustom = (select) => {
  */
 export const init = () => {
     const region = document.querySelector('[data-region="epure-company-vocabulary"]');
-    const form = document.querySelector('form.mform');
+    // The company form, and not another form of the page (IOMAD can show a company selector above it).
+    const anchor = document.querySelector('#id_appearancecontainer, #id_appearance, [name="headingcolor"], [name="shortname"]');
+    const form = anchor?.closest('form') || document.querySelector('form.mform[action*="company_edit_form"]');
     if (!region || !form) {
         return;
     }
-    const appearance = form.querySelector('#id_appearancecontainer');
-    const buttons = form.querySelector('#fgroup_id_buttonar, [data-fieldtype="group"]:last-of-type');
+    const appearance = form.querySelector('#id_appearancecontainer')
+        || form.querySelector('#id_appearance')?.querySelector('.fcontainer');
+    const buttons = form.querySelector('#fgroup_id_buttonar');
     if (appearance) {
         appearance.append(region);
     } else if (buttons) {

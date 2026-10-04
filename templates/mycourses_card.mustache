@@ -1,0 +1,84 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/mycourses_card
+
+    Card of a course on the « My courses » page: progress and next activity for a course the
+    user takes, figures and links for a course the user teaches.
+
+    Example context (json):
+    {
+        "id": 2, "name": "Safety at work", "url": "#", "image": "", "category": "Training", "status": "inprogress",
+        "favourite": true, "teaching": true, "rolename": "Teacher", "participants": 24, "active": 10,
+        "tograde": 3, "hastograde": true, "gradeurl": "#", "links": [{"label": "Participants", "url": "#", "icon": "fa-users"}]
+    }
+}}
+<li class="epure-mycourses-item" data-status="{{status}}" data-name="{{sortname}} {{category}}">
+    <article class="epure-course-card {{#teaching}}epure-course-card-teaching{{/teaching}}" aria-labelledby="epure-course-{{id}}">
+        <div class="epure-course-card-image" style="background-image: url('{{image}}');"></div>
+        <div class="epure-course-card-body">
+            <div class="epure-course-card-meta">
+                <span class="epure-course-card-role">{{rolename}}</span>
+                {{#favourite}}<span class="epure-course-card-star"><i class="fa fa-star" aria-hidden="true"></i><span class="sr-only visually-hidden">{{#str}}favourites, block_myoverview{{/str}}</span></span>{{/favourite}}
+                {{#hidden}}<span class="epure-course-card-hidden">{{#str}}hiddenfromstudents{{/str}}</span>{{/hidden}}
+            </div>
+            {{#category}}<p class="epure-course-card-category">{{category}}</p>{{/category}}
+            <h3 class="epure-course-card-title" id="epure-course-{{id}}"><a href="{{url}}">{{name}}</a></h3>
+
+            {{#teaching}}
+                <dl class="epure-course-card-figures">
+                    <div><dt>{{#str}}mycourses_participants, theme_epure{{/str}}</dt><dd>{{participants}}</dd></div>
+                    <div><dt>{{#str}}mycourses_active, theme_epure{{/str}}</dt><dd>{{active}}</dd></div>
+                    <div class="{{#hastograde}}epure-course-card-alert{{/hastograde}}">
+                        <dt>{{#str}}mycourses_tograde, theme_epure{{/str}}</dt>
+                        <dd>{{#hastograde}}<a href="{{gradeurl}}">{{tograde}}</a>{{/hastograde}}{{^hastograde}}0{{/hastograde}}</dd>
+                    </div>
+                </dl>
+                <ul class="epure-course-card-links">
+                    {{#links}}
+                        <li><a href="{{url}}"><i class="fa {{icon}}" aria-hidden="true"></i>{{label}}<span class="sr-only visually-hidden"> – {{name}}</span></a></li>
+                    {{/links}}
+                </ul>
+            {{/teaching}}
+
+            {{^teaching}}
+                {{#hasprogress}}
+                    <div class="epure-course-card-progress">
+                        <div class="epure-course-card-progress-label">
+                            <span>{{#str}}mycourses_progress, theme_epure{{/str}}</span>
+                            <span>{{#completed}}{{#str}}mycourses_completed, theme_epure{{/str}}{{/completed}}{{^completed}}{{progress}} %{{/completed}}</span>
+                        </div>
+                        <div class="progress" role="progressbar" aria-label="{{#str}}mycourses_progress, theme_epure{{/str}}"
+                            aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: {{progress}}%"></div>
+                        </div>
+                    </div>
+                {{/hasprogress}}
+                {{#next}}
+                    <p class="epure-course-card-next">{{#str}}mycourses_next, theme_epure{{/str}} <a href="{{url}}">{{name}}</a></p>
+                {{/next}}
+                {{#deadline}}
+                    <p class="epure-course-card-deadline"><i class="fa fa-calendar" aria-hidden="true"></i>
+                        {{#url}}<a href="{{url}}">{{name}}</a>{{/url}}{{^url}}{{name}}{{/url}} – {{date}}</p>
+                {{/deadline}}
+                <a class="btn {{#completed}}btn-outline-primary{{/completed}}{{^completed}}btn-primary{{/completed}} epure-course-card-action" href="{{actionurl}}">
+                    {{action}}<span class="sr-only visually-hidden"> – {{name}}</span>
+                </a>
+            {{/teaching}}
+        </div>
+    </article>
+</li>

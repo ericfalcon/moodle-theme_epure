@@ -25,6 +25,16 @@ Sous la couleur de marque, le thème propose les **couleurs du logo** enregistr�
 
 Toutes les polices sont servies par votre propre site. Le thème ne fait **aucun appel à Google Fonts** ni à un autre service externe.
 
+### Page Mes cours
+
+Les cours que vous **animez** et ceux que vous **suivez** sont présentés en deux sections (« Formations que j'anime », « Formations que je suis », avec vos mots de vocabulaire). Avec un seul rôle, la page affiche une liste unique.
+
+| Carte d'un cours suivi | Carte d'un cours animé |
+|---|---|
+| Progression, prochaine activité à faire, prochaine échéance, bouton Commencer / Continuer / Revoir, mention Terminé | Bandeau et badge de rôle, participants, apprenants actifs cette semaine, devoirs à corriger, accès directs Participants, Notes, Paramètres |
+
+Une recherche (insensible aux accents) et des filtres En cours, À venir, Passés complètent la page. Les cours favoris viennent en premier, puis les plus récemment consultés ; les cours que vous avez masqués restent masqués. Un enseignant est reconnu à sa capacité de voir toutes les notes du cours (`moodle/grade:viewall`). Réglage « Mes cours par rôle » (Réglages généraux) : décochez pour retrouver le bloc de Moodle.
+
 ### En-tête
 
 | Réglage | Effet |

@@ -104,6 +104,14 @@ if ($ADMIN->fulltree) {
     $setting->set_updatedcallback('theme_reset_all_caches');
     $page->add($setting);
 
+    // My courses page: courses split by role, with cards suited to each one.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/mycoursesbyrole',
+        get_string('mycoursesbyrole', 'theme_epure'),
+        get_string('mycoursesbyrole_desc', 'theme_epure'),
+        1
+    ));
+
     $settings->add($page);
 
     // Header tab: colour and logos.
