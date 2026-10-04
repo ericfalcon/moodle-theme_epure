@@ -43,51 +43,73 @@ class company_style {
     /** @var string[] Choices for the course banner and the overview of the learner on the dashboard. */
     public const COURSE_BANNERS = ['show', 'hide'];
 
+    /** @var string[] Footer settings a company can set instead of those of the site. */
+    public const FOOTER_FIELDS = ['footertext', 'footerlegalurl', 'footerprivacyurl', 'footercontacturl', 'footerlinks'];
+
     /**
      * Épure appearance of a company.
      *
      * @param int $companyid Company.
-     * @return array{brandcolor: string, headerstyle: string, font: string, coursebanner: string, learnerdashboard: string,
-     *     darkmode: string} Empty values when the company uses the site setting.
+     * @return array<string, string> brandcolor, headerstyle, font, coursebanner, learnerdashboard, darkmode and the
+     *     footer fields ({@see self::FOOTER_FIELDS}). Empty values when the company uses the site setting.
      */
     public static function settings(int $companyid): array {
         $json = get_config('theme_epure', 'companystyle_' . $companyid);
         $values = $json ? json_decode($json, true) : [];
-        $values = is_array($values) ? $values : [];
-        return [
-            'brandcolor' => (string) (palette::normalise($values['brandcolor'] ?? null) ?? ''),
-            'headerstyle' => in_array($values['headerstyle'] ?? '', self::HEADER_STYLES, true) ? $values['headerstyle'] : '',
-            'font' => isset(fonts::all()[$values['font'] ?? '']) ? $values['font'] : '',
-            'coursebanner' => in_array($values['coursebanner'] ?? '', self::COURSE_BANNERS, true) ? $values['coursebanner'] : '',
-            'learnerdashboard' => in_array($values['learnerdashboard'] ?? '', self::COURSE_BANNERS, true)
-                ? $values['learnerdashboard'] : '',
-            'darkmode' => in_array($values['darkmode'] ?? '', self::DARK_MODES, true) ? $values['darkmode'] : '',
-        ];
+        return self::clean(is_array($values) ? $values : []);
     }
 
     /**
      * Saves the Épure appearance of a company.
      *
      * @param int $companyid Company.
-     * @param array $values brandcolor, headerstyle, font, coursebanner, learnerdashboard and darkmode; empty values
-     *     mean the site setting.
+     * @param array $values Values of {@see self::settings()}; empty values mean the site setting.
      */
     public static function save_settings(int $companyid, array $values): void {
-        $settings = [
-            'brandcolor' => (string) (palette::normalise($values['brandcolor'] ?? null) ?? ''),
-            'headerstyle' => in_array($values['headerstyle'] ?? '', self::HEADER_STYLES, true) ? $values['headerstyle'] : '',
-            'font' => isset(fonts::all()[$values['font'] ?? '']) ? $values['font'] : '',
-            'coursebanner' => in_array($values['coursebanner'] ?? '', self::COURSE_BANNERS, true) ? $values['coursebanner'] : '',
-            'learnerdashboard' => in_array($values['learnerdashboard'] ?? '', self::COURSE_BANNERS, true)
-                ? $values['learnerdashboard'] : '',
-            'darkmode' => in_array($values['darkmode'] ?? '', self::DARK_MODES, true) ? $values['darkmode'] : '',
-        ];
+        $settings = self::clean($values);
         if (array_filter($settings)) {
             set_config('companystyle_' . $companyid, json_encode($settings), 'theme_epure');
         } else {
             unset_config('companystyle_' . $companyid, 'theme_epure');
         }
         self::reset();
+    }
+
+    /**
+     * Keeps the valid settings of a company only.
+     *
+     * @param array $values Values.
+     * @return array<string, string>
+     */
+    protected static function clean(array $values): array {
+        $choice = fn(string $name, array $choices) => in_array($values[$name] ?? '', $choices, true) ? $values[$name] : '';
+        $settings = [
+            'brandcolor' => (string) (palette::normalise($values['brandcolor'] ?? null) ?? ''),
+            'headerstyle' => $choice('headerstyle', self::HEADER_STYLES),
+            'font' => isset(fonts::all()[$values['font'] ?? '']) ? $values['font'] : '',
+            'coursebanner' => $choice('coursebanner', self::COURSE_BANNERS),
+            'learnerdashboard' => $choice('learnerdashboard', self::COURSE_BANNERS),
+            'darkmode' => $choice('darkmode', self::DARK_MODES),
+        ];
+        foreach (self::FOOTER_FIELDS as $name) {
+            $value = trim((string) ($values[$name] ?? ''));
+            $settings[$name] = str_ends_with($name, 'url') ? clean_param($value, PARAM_URL) : $value;
+        }
+        return $settings;
+    }
+
+    /**
+     * A footer setting: the one of the company of the user when it has one, else the one of the site.
+     *
+     * @param string $name One of {@see self::FOOTER_FIELDS}.
+     * @return string
+     */
+    public static function footer_setting(string $name): string {
+        $company = self::current_company();
+        if ($company && ($value = self::settings((int) $company->id)[$name] ?? '') !== '') {
+            return $value;
+        }
+        return trim((string) get_config('theme_epure', $name));
     }
 
     /**

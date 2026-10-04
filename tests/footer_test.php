@@ -17,6 +17,7 @@
 namespace theme_epure;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(footer::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(company_style::class)]
 /**
  * Tests for the footer of the pages.
  *
@@ -25,6 +26,7 @@ namespace theme_epure;
  * @copyright  2026 Eric Falcon
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \theme_epure\footer
+ * @covers     \theme_epure\company_style
  */
 final class footer_test extends \advanced_testcase {
     /**
@@ -58,5 +60,21 @@ final class footer_test extends \advanced_testcase {
         $this->assertTrue(footer::enabled());
         set_config('footer', '0', 'theme_epure');
         $this->assertFalse(footer::enabled());
+    }
+
+    /**
+     * The settings of a company keep the footer values, the addresses cleaned.
+     */
+    public function test_company_values(): void {
+        $this->resetAfterTest();
+        company_style::save_settings(7, ['footertext' => ' Campus de Lyon ', 'footerlegalurl' => 'javascript:alert(1)',
+            'footercontacturl' => 'https://example.org/contact']);
+        $settings = company_style::settings(7);
+        $this->assertSame('Campus de Lyon', $settings['footertext']);
+        $this->assertSame('', $settings['footerlegalurl']);
+        $this->assertSame('https://example.org/contact', $settings['footercontacturl']);
+        // Without IOMAD or a company, the site values are used.
+        set_config('footertext', 'Site', 'theme_epure');
+        $this->assertSame('Site', company_style::footer_setting('footertext'));
     }
 }

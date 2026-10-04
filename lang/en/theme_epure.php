@@ -127,6 +127,7 @@ $string['companyappearance_desc'] = 'Brand colour, header and font of this compa
 $string['companybrandcolor_help'] = 'A hex colour code, for example #2559A8; pick it from the colours of the logo below, or with the colour picker. Empty: the heading colour of the company, else the colour of the site ({$a}). The theme adjusts the shades to keep the contrasts accessible.';
 $string['companycoursebanner_help'] = 'At the top of each course, for the users of the company: image, progress and « Continue » button for learners, figures and direct links for teachers.';
 $string['companydarkmode_help'] = 'For the users of the company who have not chosen a display in their preferences.';
+$string['companyfooter_desc'] = 'Footer of the pages for the users of the company. An empty field takes the value of the site, shown in grey. Other links: one per line, as label|address.';
 $string['companyformvocabulary'] = 'Vocabulary';
 $string['companyformvocabulary_desc'] = 'Words used for « company » and « department » on every page, for the users of this company. By default, those chosen for all companies (Épure: vocabulary).';
 $string['companylearnerdashboard_help'] = 'At the top of the dashboard, for the learners of the company: course to resume, courses in progress, deadlines, courses completed.';

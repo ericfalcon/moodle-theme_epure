@@ -88,7 +88,7 @@ final class company_style_test extends \advanced_testcase {
         $this->assertSame(
             ['brandcolor' => '#1C6E73', 'headerstyle' => 'brand', 'font' => 'lexend', 'coursebanner' => 'hide',
                 'learnerdashboard' => 'show', 'darkmode' => 'auto'],
-            company_style::settings(12)
+            array_diff_key(company_style::settings(12), array_flip(company_style::FOOTER_FIELDS))
         );
         $this->assertSame('#1C6E73', company_style::brand_colour($company));
         $css = company_style::css($company);
@@ -101,7 +101,7 @@ final class company_style_test extends \advanced_testcase {
             'coursebanner' => 'maybe', 'learnerdashboard' => 'never', 'darkmode' => 'dim']);
         $this->assertSame(
             ['brandcolor' => '', 'headerstyle' => '', 'font' => '', 'coursebanner' => '', 'learnerdashboard' => '',
-                'darkmode' => ''],
+                'darkmode' => ''] + array_fill_keys(company_style::FOOTER_FIELDS, ''),
             company_style::settings(12)
         );
         $this->assertFalse(get_config('theme_epure', 'companystyle_12'));

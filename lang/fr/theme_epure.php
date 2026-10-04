@@ -127,6 +127,7 @@ $string['companyappearance_desc'] = 'Couleur de marque, en-tête et police de ce
 $string['companybrandcolor_help'] = 'Un code couleur hexadécimal, par exemple #2559A8 ; choisissez-le parmi les couleurs du logo ci-dessous, ou avec le sélecteur. Vide : la couleur du titre de l\'entreprise, sinon la couleur du site ({$a}). Le thème ajuste les nuances pour garder des contrastes accessibles.';
 $string['companycoursebanner_help'] = 'En tête de chaque cours, pour les utilisateurs de l’entreprise : image, progression et bouton « Continuer » pour les apprenants, chiffres et accès directs pour les enseignants.';
 $string['companydarkmode_help'] = 'Pour les utilisateurs de l’entreprise qui n’ont pas choisi d’affichage dans leurs préférences.';
+$string['companyfooter_desc'] = 'Pied de page des pages pour les utilisateurs de l’entreprise. Un champ vide reprend la valeur du site, affichée en gris. Autres liens : un par ligne, sous la forme libellé|adresse.';
 $string['companyformvocabulary'] = 'Vocabulaire';
 $string['companyformvocabulary_desc'] = 'Mots utilisés pour « entreprise » et « département » sur toutes les pages, pour les utilisateurs de cette entreprise. Par défaut, ceux choisis pour toutes les entreprises (Épure : vocabulaire).';
 $string['companylearnerdashboard_help'] = 'En tête du tableau de bord, pour les apprenants de l’entreprise : cours à reprendre, cours en cours, échéances, cours terminés.';

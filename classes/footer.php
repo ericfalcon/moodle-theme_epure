@@ -19,7 +19,8 @@ namespace theme_epure;
 /**
  * Footer of every page: the site, a text of the administrator, the legal links and the accessibility mention.
  *
- * Links left empty in the settings are found from Moodle when it can: the site policies for privacy,
+ * Each IOMAD company can set its own text and links, else those of the site are used. Links left
+ * empty in the settings are found from Moodle when it can: the site policies for privacy,
  * the support form for contact. The accessibility link and mention appear once the statement is published.
  *
  * @package    theme_epure
@@ -42,10 +43,10 @@ class footer {
      * @return array
      */
     public static function export(): array {
-        $config = get_config('theme_epure');
+        $setting = [company_style::class, 'footer_setting'];
         $context = \context_system::instance();
         $site = format_string(get_site()->fullname, true, ['context' => $context]);
-        $text = trim((string) ($config->footertext ?? ''));
+        $text = $setting('footertext');
 
         $links = [];
         $add = function (string $label, ?string $url) use (&$links) {
@@ -53,17 +54,17 @@ class footer {
                 $links[] = ['label' => $label, 'url' => $url];
             }
         };
-        $add(get_string('footerlegal', 'theme_epure'), self::url($config->footerlegalurl ?? ''));
-        $add(get_string('footerprivacy', 'theme_epure'), self::url($config->footerprivacyurl ?? '') ?? self::privacy_url());
+        $add(get_string('footerlegal', 'theme_epure'), self::url($setting('footerlegalurl')));
+        $add(get_string('footerprivacy', 'theme_epure'), self::url($setting('footerprivacyurl')) ?? self::privacy_url());
         if (accessibility_statement::enabled()) {
             $add(get_string('a11ymention', 'theme_epure', get_string(
                 'a11ystatus_' . accessibility_statement::status(),
                 'theme_epure'
             )), accessibility_statement::url()->out(false));
         }
-        $add(get_string('footercontact', 'theme_epure'), self::url($config->footercontacturl ?? '') ?? self::contact_url());
+        $add(get_string('footercontact', 'theme_epure'), self::url($setting('footercontacturl')) ?? self::contact_url());
         // Links of the administrator, one per line: label|address.
-        foreach (preg_split('/\R/', (string) ($config->footerlinks ?? '')) as $line) {
+        foreach (preg_split('/\R/', $setting('footerlinks')) as $line) {
             $parts = array_map('trim', explode('|', $line, 2));
             if (count($parts) === 2 && $parts[0] !== '') {
                 $add(format_string($parts[0], true, ['context' => $context]), self::url($parts[1]));

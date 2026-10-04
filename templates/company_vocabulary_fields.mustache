@@ -25,6 +25,7 @@
     * marker - name of the field telling that the vocabulary fields were posted
     * languages - lang, name, concepts (name, label, options, custom, singular, plural, hasgender, masculine, feminine)
     * brandcolor, sitebrandcolor, headerstyles, fonts, coursebanners, learnerdashboards, darkmodes - appearance of the company
+    * footer - footer fields of the company: name, label, value, multiline, placeholder (value of the site)
     * logocolours - context of theme_epure/logo_colours
 
     Example context (json):
@@ -35,6 +36,7 @@
         "coursebanners": [{"value": "", "label": "As the site (Shown)", "selected": true}],
         "learnerdashboards": [{"value": "", "label": "As the site (Shown)", "selected": true}],
         "darkmodes": [{"value": "", "label": "As the site (Never)", "selected": true}],
+        "footer": [{"name": "footerlegalurl", "label": "Legal notice", "value": "", "multiline": false, "placeholder": ""}],
         "logocolours": {"id": "epure-company-logocolours", "inputid": "id_epure_brandcolor", "logourl": null},
         "languages": [{"lang": "fr", "name": "Français", "concepts": [{
             "name": "epure_vocab_fr_company", "label": "Les entreprises s'appellent",
@@ -132,6 +134,26 @@
             <p class="small text-muted mt-1 mb-0 w-100" id="id_epure_learnerdashboard_help">{{#str}}companylearnerdashboard_help, theme_epure{{/str}}</p>
         </div>
     </div>
+
+    <h3 class="epure-company-vocabulary-title mt-4">{{#str}}footersettings, theme_epure{{/str}}</h3>
+    <p class="epure-company-vocabulary-desc">{{#str}}companyfooter_desc, theme_epure{{/str}}</p>
+    {{#footer}}
+        <div class="form-group mb-3 row fitem">
+            <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                <label class="mb-0" for="id_epure_{{name}}">{{label}}</label>
+            </div>
+            <div class="col-md-9 felement">
+                {{#multiline}}
+                    <textarea class="form-control" id="id_epure_{{name}}" name="epure_{{name}}" rows="3"
+                        placeholder="{{placeholder}}">{{value}}</textarea>
+                {{/multiline}}
+                {{^multiline}}
+                    <input type="url" class="form-control" id="id_epure_{{name}}" name="epure_{{name}}" value="{{value}}"
+                        placeholder="{{placeholder}}">
+                {{/multiline}}
+            </div>
+        </div>
+    {{/footer}}
 
     <h3 class="epure-company-vocabulary-title mt-4">{{#str}}companyformvocabulary, theme_epure{{/str}}</h3>
     <p class="epure-company-vocabulary-desc">{{#str}}companyformvocabulary_desc, theme_epure{{/str}}</p>

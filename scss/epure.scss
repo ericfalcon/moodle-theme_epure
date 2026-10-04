@@ -1849,6 +1849,9 @@ html.epure-a11y-motion *::after {
     .dimmed_text,
     .text-secondary,
     .form-text,
+    .componentname,
+    .versionnumber,
+    .requiredby,
     .activity-dates,
     .activity-information {
         color: var(--epure-ink-muted) !important; // stylelint-disable-line declaration-no-important
@@ -1964,9 +1967,24 @@ html.epure-a11y-motion *::after {
         --bs-table-bg: transparent;
     }
 
+    // Boost paints the even rows of Moodle's tables white.
+    .table tbody tr:nth-of-type(even),
+    .generaltable tbody tr:nth-of-type(even),
+    table.flexible tbody tr:nth-of-type(even),
+    .table thead .sticky-column,
+    .generaltable thead .sticky-column {
+        background-color: transparent;
+    }
+
     .table-striped tbody tr:nth-of-type(odd),
-    .generaltable tbody tr:nth-of-type(odd) {
-        background-color: rgba(255, 255, 255, .03);
+    .generaltable tbody tr:nth-of-type(odd),
+    table.flexible tbody tr:nth-of-type(odd),
+    tbody tr:nth-of-type(odd) .sticky-column {
+        background-color: rgba(255, 255, 255, .04);
+    }
+
+    tbody tr:nth-of-type(even) .sticky-column {
+        background-color: var(--epure-surface);
     }
 
     .table-hover tbody tr:hover,
@@ -2061,6 +2079,22 @@ html.epure-a11y-motion *::after {
     .courseindex .courseindex-link,
     .courseindex .courseindex-chevron {
         color: var(--epure-ink);
+    }
+
+    .courseindex .courseindex-item:hover .courseindex-link,
+    .courseindex .courseindex-item:focus .courseindex-link {
+        color: var(--epure-ink);
+    }
+
+    .courseindex .courseindex-item:hover,
+    .courseindex .courseindex-item:focus {
+        background-color: var(--epure-surface-raised);
+    }
+
+    // Selected text: the colours of the browser can be pale on dark surfaces.
+    ::selection {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand);
     }
 
     .courseindex .courseindex-item.pageitem {
@@ -2160,6 +2194,36 @@ html.epure-a11y-motion *::after {
             color: var(--epure-on-brand);
             background-color: var(--epure-brand);
         }
+    }
+
+    // Suggestions of the autocomplete fields, such as the company selector of IOMAD.
+    .form-autocomplete-suggestions li {
+        color: var(--epure-ink);
+        background-color: transparent;
+    }
+
+    .form-autocomplete-suggestions li:hover,
+    .form-autocomplete-suggestions li[aria-selected="true"] {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand);
+    }
+
+    // Red texts and links (deletion, errors): lightened for the dark surfaces.
+    .text-danger,
+    .uninstall a,
+    .error,
+    .form-control-feedback.invalid-feedback,
+    .invalid-feedback {
+        color: #ff8f85 !important; // stylelint-disable-line declaration-no-important
+    }
+
+    // Badges on light colours keep their dark text.
+    .badge.text-dark,
+    .badge.bg-warning,
+    .badge-warning,
+    .badge.bg-light,
+    .badge-light {
+        color: #1d2125 !important; // stylelint-disable-line declaration-no-important
     }
 
     // Grey badges, such as the items chosen in an autocomplete field.

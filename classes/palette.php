@@ -37,6 +37,9 @@ class palette {
     /** @var string Surface colour in dark mode. */
     public const SURFACE_DARK = '#171B22';
 
+    /** @var string Lightest surface of the dark mode: striped table rows, menus and fields on hover. */
+    public const RAISED_DARK = '#2C333F';
+
     /** @var string Dark ink used on light fills. */
     public const INK = '#111418';
 
@@ -186,8 +189,13 @@ class palette {
         $soft = $dark ? self::mix($surface, $brand, 0.2) : self::mix($brand, '#FFFFFF', 0.9);
         $soft2 = $dark ? self::mix($surface, $brand, 0.32) : self::mix($brand, '#FFFFFF', 0.8);
 
-        // Brand-coloured text must stay readable on the most tinted background it is drawn on.
-        [$text, $adjusted] = self::towards($brand, $dark ? '#FFFFFF' : '#000000', $soft2, self::AA_TEXT);
+        // Brand-coloured text must stay readable on the most tinted background it is drawn on; in dark
+        // mode, also on the lightest grey surfaces (striped rows, menus and fields on hover).
+        $against = $soft2;
+        if ($dark && self::luminance(self::RAISED_DARK) > self::luminance($soft2)) {
+            $against = self::RAISED_DARK;
+        }
+        [$text, $adjusted] = self::towards($brand, $dark ? '#FFFFFF' : '#000000', $against, self::AA_TEXT);
 
         if ($dark) {
             $hover = self::mix($fill, '#FFFFFF', 0.12);

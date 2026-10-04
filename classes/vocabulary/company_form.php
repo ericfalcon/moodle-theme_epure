@@ -93,8 +93,8 @@ class company_form {
      */
     protected static function appearance_context(int $companyid): array {
         $settings = $companyid ? \theme_epure\company_style::settings($companyid)
-            : ['brandcolor' => '', 'headerstyle' => '', 'font' => '', 'coursebanner' => '', 'learnerdashboard' => '',
-                'darkmode' => ''];
+            : array_fill_keys(['brandcolor', 'headerstyle', 'font', 'coursebanner', 'learnerdashboard', 'darkmode'], '')
+                + array_fill_keys(\theme_epure\company_style::FOOTER_FIELDS, '');
         $brand = self::posted('brandcolor', $settings['brandcolor']);
         $header = self::posted('headerstyle', $settings['headerstyle']);
         $font = self::posted('font', $settings['font']);
@@ -147,6 +147,14 @@ class company_form {
             'coursebanners' => $banners,
             'learnerdashboards' => $dashboards,
             'darkmodes' => $darkmodes,
+            'footer' => array_map(fn($name) => [
+                'name' => $name,
+                'label' => get_string($name === 'footerlinks' ? 'footerlinksetting' : $name, 'theme_epure'),
+                'value' => self::posted($name, $settings[$name]),
+                'multiline' => in_array($name, ['footertext', 'footerlinks'], true),
+                // The value of the site, used while the company has none.
+                'placeholder' => trim((string) get_config('theme_epure', $name)),
+            ], \theme_epure\company_style::FOOTER_FIELDS),
             'logocolours' => [
                 'id' => 'epure-company-logocolours',
                 'inputid' => 'id_epure_brandcolor',
@@ -252,7 +260,10 @@ class company_form {
             'coursebanner' => optional_param(self::PREFIX . 'coursebanner', '', PARAM_ALPHA),
             'learnerdashboard' => optional_param(self::PREFIX . 'learnerdashboard', '', PARAM_ALPHA),
             'darkmode' => optional_param(self::PREFIX . 'darkmode', '', PARAM_ALPHA),
-        ]);
+        ] + array_combine(\theme_epure\company_style::FOOTER_FIELDS, array_map(
+            fn($name) => optional_param(self::PREFIX . $name, '', PARAM_RAW),
+            \theme_epure\company_style::FOOTER_FIELDS
+        )));
         return true;
     }
 }
