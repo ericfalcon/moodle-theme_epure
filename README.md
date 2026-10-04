@@ -118,6 +118,16 @@ Avec IOMAD, la même page propose les mots « entreprise » et « département �
 
 SCSS initial (pour redéfinir des variables) et SCSS ajouté à la fin de la feuille de style.
 
+## Page de cours
+
+En tête de chaque cours, une **bannière** reprend l'image du cours (ou un motif généré), sa catégorie et son titre, avec le fil d'Ariane et les actions habituelles de Moodle. Ensuite, selon le rôle :
+
+- **apprenant** : sa progression, la prochaine activité à faire, la prochaine échéance, et un bouton **Continuer** qui y mène ;
+- **enseignant** : les participants, les apprenants actifs cette semaine, les devoirs à corriger, et des accès directs (participants, notes, paramètres) ;
+- **visiteur** (invité, utilisateur non inscrit) : l'image, la catégorie et le titre seulement.
+
+Pour l'apprenant, le titre de chaque section indique combien de ses activités il a terminées (« 2/5 », coche une fois la section terminée). La bannière se désactive dans les réglages généraux du thème (« Bannière des cours »).
+
 ## Accessibilité
 
 Le thème vise les WCAG 2.2 niveau AA, le RGAA 4.1.2 et l'EN 301 549 : contrastes calculés, focus clavier toujours visible, lien d'évitement, cibles d'au moins 24 × 24 px, liens soulignés dans le texte, respect du réglage « réduire les animations ».

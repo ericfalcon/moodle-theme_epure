@@ -104,6 +104,14 @@ if ($ADMIN->fulltree) {
     $setting->set_updatedcallback('theme_reset_all_caches');
     $page->add($setting);
 
+    // Course page: banner with the image, the progress or the figures of the course.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/coursebanner',
+        get_string('coursebanner', 'theme_epure'),
+        get_string('coursebanner_desc', 'theme_epure'),
+        1
+    ));
+
     // My courses page: courses split by role, with cards suited to each one.
     $page->add(new admin_setting_configcheckbox(
         'theme_epure/mycoursesbyrole',

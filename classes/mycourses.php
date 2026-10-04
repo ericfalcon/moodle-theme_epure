@@ -151,7 +151,7 @@ class mycourses {
      * @param bool $teaching Whether the user teaches the course.
      * @return array
      */
-    protected static function card(
+    public static function card(
         \stdClass $course,
         \context_course $context,
         \renderer_base $output,

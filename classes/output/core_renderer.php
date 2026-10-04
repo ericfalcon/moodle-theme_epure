@@ -92,6 +92,29 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
 
     /**
+     * Header of the page; on the page of a course, inside a banner with the image of the course and,
+     * depending on the role of the user, their progress or the figures of the course.
+     *
+     * @return string HTML.
+     */
+    public function full_header() {
+        global $USER;
+        $header = parent::full_header();
+        if (!\theme_epure\course_page::applies($this->page)) {
+            return $header;
+        }
+        $course = $this->page->course;
+        $data = \theme_epure\course_page::export($this, $course, $header);
+        if ($data['learning'] && !$this->page->user_is_editing()) {
+            $sections = \theme_epure\course_page::sections($course, (int) $USER->id);
+            if ($sections) {
+                $this->page->requires->js_call_amd('theme_epure/course_page', 'init', [$sections]);
+            }
+        }
+        return $this->render_from_template('theme_epure/course_banner', $data);
+    }
+
+    /**
      * Output of the plugins in the header, with the button « Aa » of the display preferences first.
      *
      * @return string HTML.

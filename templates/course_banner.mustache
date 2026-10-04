@@ -1,0 +1,85 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/course_banner
+
+    Banner of a course page: the image and the category of the course around the header of the
+    page, then the progress of a learner (with a button to continue) or the figures of a teacher.
+
+    Example context (json):
+    {
+        "id": 2, "name": "Safety at work", "image": "", "category": "Training", "header": "<h1>Safety at work</h1>",
+        "learning": true, "teaching": false, "hasprogress": true, "progress": 40, "completed": false,
+        "next": {"name": "Quiz 1", "url": "#"}, "action": "Continue", "actionurl": "#"
+    }
+}}
+<div class="epure-course-banner {{#learning}}epure-course-banner-learning{{/learning}} {{#teaching}}epure-course-banner-teaching{{/teaching}}">
+    <div class="epure-course-banner-image" style="background-image: url('{{image}}');"></div>
+    <div class="epure-course-banner-body">
+        {{#category}}<p class="epure-course-banner-category">{{category}}</p>{{/category}}
+        {{{header}}}
+
+        {{#learning}}
+            <div class="epure-course-banner-panel">
+                <div class="epure-course-banner-status">
+                    {{#hasprogress}}
+                        <div class="epure-course-banner-progress">
+                            <div class="epure-course-banner-progress-label">
+                                <span>{{#str}}mycourses_progress, theme_epure{{/str}}</span>
+                                <span>{{#completed}}{{#str}}mycourses_completed, theme_epure{{/str}}{{/completed}}{{^completed}}{{progress}} %{{/completed}}</span>
+                            </div>
+                            <div class="progress" role="progressbar" aria-label="{{#str}}mycourses_progress, theme_epure{{/str}}"
+                                aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: {{progress}}%"></div>
+                            </div>
+                        </div>
+                    {{/hasprogress}}
+                    {{#next}}
+                        <p class="epure-course-banner-next">{{#str}}mycourses_next, theme_epure{{/str}} <a href="{{url}}">{{name}}</a></p>
+                    {{/next}}
+                    {{#deadline}}
+                        <p class="epure-course-banner-deadline"><i class="fa fa-calendar" aria-hidden="true"></i>
+                            {{#url}}<a href="{{url}}">{{name}}</a>{{/url}}{{^url}}{{name}}{{/url}} – {{date}}</p>
+                    {{/deadline}}
+                </div>
+                {{#next}}
+                    <a class="btn btn-primary btn-lg epure-course-banner-action" href="{{url}}">
+                        {{action}}<span class="sr-only visually-hidden"> – {{name}}</span>
+                    </a>
+                {{/next}}
+            </div>
+        {{/learning}}
+
+        {{#teaching}}
+            <div class="epure-course-banner-panel">
+                <dl class="epure-course-banner-figures">
+                    <div><dt>{{#str}}mycourses_participants, theme_epure{{/str}}</dt><dd>{{participants}}</dd></div>
+                    <div><dt>{{#str}}mycourses_active, theme_epure{{/str}}</dt><dd>{{active}}</dd></div>
+                    <div class="{{#hastograde}}epure-course-banner-alert{{/hastograde}}">
+                        <dt>{{#str}}mycourses_tograde, theme_epure{{/str}}</dt>
+                        <dd>{{#hastograde}}<a href="{{gradeurl}}">{{tograde}}</a>{{/hastograde}}{{^hastograde}}0{{/hastograde}}</dd>
+                    </div>
+                </dl>
+                <ul class="epure-course-banner-links">
+                    {{#links}}
+                        <li><a href="{{url}}"><i class="fa {{icon}}" aria-hidden="true"></i>{{label}}</a></li>
+                    {{/links}}
+                </ul>
+            </div>
+        {{/teaching}}
+    </div>
+</div>

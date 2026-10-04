@@ -38,3 +38,21 @@ Feature: Accessibility of the Épure theme
     Then I should see "Accessibility statement" in the "region-main" "region"
     And I should see "Clinique des Tilleuls is committed"
     And the page should meet accessibility standards
+
+  Scenario: The course page shows the progress of the learner and meets accessibility standards
+    Given the following config values are set as admin:
+      | enablecompletion | 1 |
+    And the following "courses" exist:
+      | fullname          | shortname | enablecompletion |
+      | Safety at work    | SAFE      | 1                |
+    And the following "activities" exist:
+      | activity | course | name    | completion |
+      | page     | SAFE   | Welcome | 1          |
+      | page     | SAFE   | Risks   | 1          |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | learner1 | SAFE   | student |
+    When I am on the "Safety at work" "course" page logged in as "learner1"
+    Then I should see "Next: Welcome"
+    And I should see "0/2" in the "General" "section"
+    And the page should meet accessibility standards
