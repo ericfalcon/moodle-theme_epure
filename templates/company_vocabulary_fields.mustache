@@ -1,0 +1,90 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/company_vocabulary_fields
+
+    Vocabulary fields of an IOMAD company, moved into the Appearance section of IOMAD's company
+    form by the AMD module theme_epure/company_vocabulary, and posted with that form.
+
+    Context variables required for this template:
+    * marker - name of the field telling that the vocabulary fields were posted
+    * languages - lang, name, concepts (name, label, options, custom, singular, plural, hasgender, masculine, feminine)
+
+    Example context (json):
+    {
+        "marker": "epure_vocab",
+        "languages": [{"lang": "fr", "name": "Français", "concepts": [{
+            "name": "epure_vocab_fr_company", "label": "Les entreprises s'appellent",
+            "options": [{"value": "", "label": "Comme la plateforme (entreprises)", "selected": true},
+                {"value": "custom", "label": "Autre mot…", "selected": false}],
+            "custom": false, "singular": "", "plural": "", "hasgender": true, "masculine": true, "feminine": false
+        }]}]
+    }
+}}
+<div class="epure-company-vocabulary" data-region="epure-company-vocabulary" hidden>
+    <input type="hidden" name="{{marker}}" value="1">
+    <h3 class="epure-company-vocabulary-title">{{#str}}companyformvocabulary, theme_epure{{/str}}</h3>
+    <p class="epure-company-vocabulary-desc">{{#str}}companyformvocabulary_desc, theme_epure{{/str}}</p>
+    {{#languages}}
+        <h4 class="epure-company-vocabulary-lang">{{name}}</h4>
+        {{#concepts}}
+            <div class="form-group mb-3 row fitem">
+                <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                    <label class="mb-0" for="id_{{name}}">{{label}}</label>
+                </div>
+                <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                    <select class="custom-select form-select" id="id_{{name}}" name="{{name}}" data-epure-vocab-choice>
+                        {{#options}}
+                            <option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>
+                        {{/options}}
+                    </select>
+                </div>
+            </div>
+            <div data-epure-vocab-custom="id_{{name}}" {{^custom}}hidden{{/custom}}>
+                <div class="form-group mb-3 row fitem">
+                    <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                        <label class="mb-0" for="id_{{name}}_singular">{{#str}}vocabsingular, theme_epure{{/str}}</label>
+                    </div>
+                    <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                        <input type="text" class="form-control" id="id_{{name}}_singular" name="{{name}}_singular" value="{{singular}}" size="24">
+                    </div>
+                </div>
+                <div class="form-group mb-3 row fitem">
+                    <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                        <label class="mb-0" for="id_{{name}}_plural">{{#str}}vocabplural, theme_epure{{/str}}</label>
+                    </div>
+                    <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                        <input type="text" class="form-control" id="id_{{name}}_plural" name="{{name}}_plural" value="{{plural}}" size="24">
+                    </div>
+                </div>
+                {{#hasgender}}
+                    <div class="form-group mb-3 row fitem">
+                        <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                            <label class="mb-0" for="id_{{name}}_gender">{{#str}}vocabgender, theme_epure{{/str}}</label>
+                        </div>
+                        <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                            <select class="custom-select form-select" id="id_{{name}}_gender" name="{{name}}_gender">
+                                <option value="m" {{#masculine}}selected{{/masculine}}>{{#str}}vocabmasculine, theme_epure{{/str}}</option>
+                                <option value="f" {{#feminine}}selected{{/feminine}}>{{#str}}vocabfeminine, theme_epure{{/str}}</option>
+                            </select>
+                        </div>
+                    </div>
+                {{/hasgender}}
+            </div>
+        {{/concepts}}
+    {{/languages}}
+</div>

@@ -23,6 +23,7 @@ use theme_epure\vocabulary\terms;
 #[\PHPUnit\Framework\Attributes\CoversClass(vocabulary\company::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(string_manager::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(hook_callbacks::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(vocabulary\company_form::class)]
 /**
  * Tests for the vocabulary of IOMAD companies.
  *
@@ -33,6 +34,7 @@ use theme_epure\vocabulary\terms;
  * @covers     \theme_epure\vocabulary\company
  * @covers     \theme_epure\string_manager
  * @covers     \theme_epure\hook_callbacks
+ * @covers     \theme_epure\vocabulary\company_form
  */
 final class company_vocabulary_test extends \advanced_testcase {
     /**
@@ -86,14 +88,16 @@ final class company_vocabulary_test extends \advanced_testcase {
         // Strings without the words of the company do not change.
         $this->assertSame('Add a new course', $manager->get_string('addnewcourse', 'moodle', null, 'en'));
 
-        // A string of the theme names a company: the IOMAD strings are not installed on standard Moodle.
-        $this->assertSame('Client', $manager->get_string('companyvocabcompany', 'theme_epure', null, 'en'));
+        // A string of core names a company: the IOMAD strings are not installed on standard Moodle.
+        $this->assertSame('Client internal', $manager->get_string('siteorganisationtype:companyinternal', 'hub', null, 'en'));
+        // The strings of the theme describe the vocabulary itself: they keep the original words.
+        $this->assertSame('Companies are called', $manager->get_string('vocab_company', 'theme_epure', null, 'en'));
 
         // A user without company sees the words of all companies, here those of the language pack.
         $manager->fakecompany = 0;
-        $this->assertSame('Company', $manager->get_string('companyvocabcompany', 'theme_epure', null, 'en'));
+        $this->assertSame('Company internal', $manager->get_string('siteorganisationtype:companyinternal', 'hub', null, 'en'));
         company::save(0, [terms::setting('en', 'company') => 'agency']);
-        $this->assertSame('Agency', $manager->get_string('companyvocabcompany', 'theme_epure', null, 'en'));
+        $this->assertSame('Agency internal', $manager->get_string('siteorganisationtype:companyinternal', 'hub', null, 'en'));
     }
 
     /**
@@ -109,5 +113,37 @@ final class company_vocabulary_test extends \advanced_testcase {
         hook_callbacks::after_config(new \core\hook\after_config());
         $this->assertArrayNotHasKey('customstringmanager', $CFG->config_php_settings);
         $this->assertTrue(hook_callbacks::string_manager_available());
+    }
+
+    /**
+     * The vocabulary posted with IOMAD's company form is saved for the company; nothing without the fields or the sesskey.
+     */
+    public function test_company_form(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $post = [
+            'epure_vocab_en_company' => 'client',
+            'epure_vocab_en_department' => 'custom',
+            'epure_vocab_en_department_singular' => 'squad',
+            'epure_vocab_en_department_plural' => 'squads',
+        ];
+
+        // Without the marker field, the form had no vocabulary fields: nothing changes.
+        $_POST = $post + ['sesskey' => sesskey()];
+        $this->assertFalse(vocabulary\company_form::save_from_request(5));
+        $this->assertSame([], company::ids());
+
+        $_POST = $post + ['sesskey' => sesskey(), 'epure_vocab' => 1];
+        $this->assertTrue(vocabulary\company_form::save_from_request(5));
+        $this->assertSame([5], company::ids());
+        $this->assertSame('Edit client', company::rewriter(5, 'en')->rewrite('Edit company'));
+        $this->assertSame('New squad', company::rewriter(5, 'en')->rewrite('New department'));
+
+        // The form shows the saved choices.
+        $_POST = [];
+        $context = vocabulary\company_form::context(5);
+        $english = array_values(array_filter($context['languages'], fn($l) => $l['lang'] === 'en'))[0];
+        $this->assertTrue($english['concepts'][1]['custom']);
+        $this->assertSame('squads', $english['concepts'][1]['plural']);
     }
 }

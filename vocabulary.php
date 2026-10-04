@@ -28,18 +28,38 @@ define('NO_OUTPUT_BUFFERING', true);
 require(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
+use theme_epure\form\vocabulary_form;
+use theme_epure\vocabulary\company;
 use theme_epure\vocabulary\manager;
 use theme_epure\vocabulary\terms;
 
 admin_externalpage_setup('theme_epure_vocabulary');
 
+// With IOMAD, the words for companies and departments of all companies are chosen here too; each
+// company can choose its own in its form (Edit company › Appearance).
+$iomad = \theme_epure\company_style::iomad_installed();
+$concepts = $iomad ? array_merge(terms::CONCEPTS, terms::IOMAD_CONCEPTS) : terms::CONCEPTS;
+$values = array_merge(
+    array_filter((array) get_config('theme_epure'), fn($name) => str_starts_with($name, 'vocab_'), ARRAY_FILTER_USE_KEY),
+    $iomad ? company::values(0) : []
+);
+
 $pageurl = new moodle_url('/theme/epure/vocabulary.php');
-$form = new \theme_epure\form\vocabulary_form($pageurl);
+$form = new vocabulary_form($pageurl, ['concepts' => $concepts, 'values' => $values]);
 $translations = get_string_manager()->get_list_of_translations(true);
 
 if ($data = $form->get_data()) {
-    foreach (\theme_epure\form\vocabulary_form::values_from($data, terms::concepts()) as $name => $value) {
-        set_config($name, $value, 'theme_epure');
+    $iomadvalues = [];
+    foreach (vocabulary_form::values_from($data, $concepts) as $name => $value) {
+        if (preg_match('/^vocab_[a-z]+_(' . implode('|', terms::IOMAD_CONCEPTS) . ')(_|$)/', $name)) {
+            $iomadvalues[$name] = $value;
+        } else {
+            set_config($name, $value, 'theme_epure');
+        }
+    }
+    if ($iomad) {
+        // Applied when the strings are loaded, by the string manager, not in the language pack.
+        company::save(0, $iomadvalues);
     }
 
     echo $OUTPUT->header();
@@ -64,6 +84,9 @@ if ($data = $form->get_data()) {
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('vocabulary', 'theme_epure'));
 echo html_writer::tag('p', get_string('vocabintro', 'theme_epure'));
+if ($iomad && !\theme_epure\hook_callbacks::string_manager_available()) {
+    echo $OUTPUT->notification(get_string('companyvocabunavailable', 'theme_epure'), 'warning', false);
+}
 if (core_plugin_manager::instance()->get_plugin_info('local_epure')) {
     // The former companion plugin applies its own copy of the words: it must be uninstalled.
     echo $OUTPUT->notification(get_string('localepureinstalled', 'theme_epure'), 'warning', false);

@@ -1,0 +1,48 @@
+<?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+namespace theme_epure;
+
+use theme_epure\vocabulary\company_form;
+
+/**
+ * Event observers of theme_epure.
+ *
+ * @package    theme_epure
+ * @copyright  2026 Eric Falcon
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class observer {
+    /**
+     * Saves the vocabulary posted with IOMAD's company form, once IOMAD saved the company.
+     *
+     * @param \core\event\base $event block_iomad_company_admin\event\company_created or company_updated.
+     */
+    public static function company_saved(\core\event\base $event): void {
+        global $CFG;
+        $companyid = (int) $event->objectid;
+        if (!$companyid || !company_style::iomad_installed()) {
+            return;
+        }
+        require_once($CFG->dirroot . '/local/iomad/lib/iomad.php');
+        // The fields are only shown to the users who can change the appearance of the company.
+        $context = \core\context\company::instance($companyid);
+        if (!\iomad::has_capability('block/iomad_company_admin:company_edit_appearance', $context)) {
+            return;
+        }
+        company_form::save_from_request($companyid);
+    }
+}

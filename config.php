@@ -49,3 +49,8 @@ $THEME->usescourseindex = true;
 $THEME->activityheaderconfig = [
     'notitle' => true,
 ];
+
+// IOMAD shows the logo and colour fields of a company (Edit company › Appearance) only for the
+// themes that declare themselves IOMAD themes. Épure applies them, so it declares itself one.
+// Moodle without IOMAD ignores this setting.
+$THEME->isiomadtheme = true;

@@ -26,10 +26,8 @@ use theme_epure\vocabulary\terms;
 /**
  * Choice of the words used for the objects of the platform, in each language.
  *
- * Custom data: concepts (objects to choose, by default those of the platform), values (setting
- * name => value, by default the settings of the theme), companyid (for the words of IOMAD companies,
- * 0 for all companies), platformvalues (settings of all companies, inherited by a company) and
- * resetlabel (label of the button that restores the default words).
+ * Custom data: concepts (objects to choose, by default those of the platform) and values (setting
+ * name => value, by default the settings of the theme).
  *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
@@ -45,15 +43,7 @@ class vocabulary_form extends \moodleform {
         $presets = terms::presets();
         $concepts = $this->_customdata['concepts'] ?? terms::concepts();
         $values = $this->_customdata['values'] ?? null;
-        // A company (but not the platform, company 0) inherits the words of the platform by default.
-        $inherit = !empty($this->_customdata['companyid']);
         $value = fn(string $name) => (string) ($values === null ? get_config('theme_epure', $name) : ($values[$name] ?? ''));
-        $platformvalues = $this->_customdata['platformvalues'] ?? null;
-
-        if (isset($this->_customdata['companyid'])) {
-            $mform->addElement('hidden', 'companyid', $this->_customdata['companyid']);
-            $mform->setType('companyid', PARAM_INT);
-        }
 
         foreach (manager::languages() as $lang) {
             $mform->addElement('header', 'lang_' . $lang, $translations[$lang]);
@@ -68,13 +58,8 @@ class vocabulary_form extends \moodleform {
                         : $term['singular'] . ' / ' . $term['plural'];
                 }
                 $options[terms::CUSTOM] = get_string('vocabcustom', 'theme_epure');
-                if ($inherit) {
-                    $platform = terms::chosen($lang, $concept, $platformvalues)
-                        ?? $presets[$lang][$concept][terms::DEFAULTS[$lang][$concept]];
-                    $options = ['' => get_string('vocabplatform', 'theme_epure', $platform['plural'])] + $options;
-                }
                 $mform->addElement('select', $name, get_string('vocab_' . $concept, 'theme_epure'), $options);
-                $mform->setDefault($name, $value($name) ?: ($inherit ? '' : terms::DEFAULTS[$lang][$concept]));
+                $mform->setDefault($name, $value($name) ?: terms::DEFAULTS[$lang][$concept]);
 
                 foreach (['singular', 'plural'] as $form) {
                     $field = terms::setting($lang, $concept, $form);
@@ -137,16 +122,15 @@ class vocabulary_form extends \moodleform {
      *
      * @param \stdClass $data Submitted data.
      * @param string[] $concepts Objects of the form.
-     * @param bool $inherit Whether the default is the word of the platform (for a company).
      * @return array<string, string>
      */
-    public static function values_from(\stdClass $data, array $concepts, bool $inherit = false): array {
+    public static function values_from(\stdClass $data, array $concepts): array {
         $reset = !empty($data->resetbutton);
         $values = [];
         foreach (manager::languages() as $lang) {
             foreach ($concepts as $concept) {
                 $name = terms::setting($lang, $concept);
-                $values[$name] = $reset ? ($inherit ? '' : terms::DEFAULTS[$lang][$concept]) : (string) $data->$name;
+                $values[$name] = $reset ? terms::DEFAULTS[$lang][$concept] : (string) $data->$name;
                 foreach (['singular', 'plural', 'gender'] as $suffix) {
                     $field = terms::setting($lang, $concept, $suffix);
                     if (!$reset && isset($data->$field)) {

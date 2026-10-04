@@ -701,3 +701,25 @@ summary:focus-visible {
     font-weight: 500;
     line-height: 1.35;
 }
+
+// Vocabulary fields added to the IOMAD company form, inside its Appearance section.
+.epure-company-vocabulary {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--epure-border);
+}
+
+.epure-company-vocabulary-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.epure-company-vocabulary-desc {
+    color: $gray-700;
+}
+
+.epure-company-vocabulary-lang {
+    margin: 1.25rem 0 .75rem;
+    font-size: 1rem;
+    font-weight: 600;
+}

@@ -57,4 +57,33 @@ class hook_callbacks {
         $custom = ltrim((string) ($CFG->config_php_settings['customstringmanager'] ?? ''), '\\');
         return $custom === '' || $custom === string_manager::class;
     }
+
+    /**
+     * Adds the vocabulary fields to the IOMAD company form (Create company and Edit company).
+     *
+     * @param \core\hook\output\before_footer_html_generation $hook The hook.
+     */
+    public static function before_footer_html_generation(\core\hook\output\before_footer_html_generation $hook): void {
+        global $CFG, $PAGE, $OUTPUT;
+        if (
+            $PAGE->pagetype !== 'blocks-iomad_company_admin-company_edit_form' || !company_style::iomad_installed()
+                || during_initial_install()
+        ) {
+            return;
+        }
+        require_once($CFG->dirroot . '/local/iomad/lib/iomad.php');
+        $companyid = 0;
+        if (!optional_param('createnew', 0, PARAM_INT)) {
+            $companyid = max(0, (int) \iomad::get_my_companyid(\context_system::instance(), false));
+        }
+        $context = $companyid ? \core\context\company::instance($companyid) : \context_system::instance();
+        if (!\iomad::has_capability('block/iomad_company_admin:company_edit_appearance', $context)) {
+            return;
+        }
+        $hook->add_html($OUTPUT->render_from_template(
+            'theme_epure/company_vocabulary_fields',
+            \theme_epure\vocabulary\company_form::context($companyid)
+        ));
+        $PAGE->requires->js_call_amd('theme_epure/company_vocabulary', 'init');
+    }
 }

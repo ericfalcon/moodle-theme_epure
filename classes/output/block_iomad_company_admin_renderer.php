@@ -33,7 +33,7 @@ use theme_epure\company_style;
  */
 class block_iomad_company_admin_renderer extends \block_iomad_company_admin\output\renderer {
     /** @var string[] Intentions, in their display order. */
-    public const INTENTS = ['create', 'manage', 'configure', 'transfer', 'follow'];
+    public const INTENTS = ['create', 'configure', 'manage', 'transfer', 'follow'];
 
     /** @var array<string, string> Intention of an action, from the small icon IOMAD gives it. */
     protected const ICON_INTENTS = [

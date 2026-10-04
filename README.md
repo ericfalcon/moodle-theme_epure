@@ -59,12 +59,12 @@ Ces réglages s'appliquent aux utilisateurs rattachés à l'entreprise, et à l'
 
 - l'entreprise sélectionnée en en-tête, avec son logo, et le sélecteur d'entreprise à côté ;
 - des onglets sobres, soulignés de la couleur de marque, qui défilent sur mobile ;
-- les actions en cartes, **regroupées par intention** dans chaque onglet : Créer, Gérer, Paramétrer, Importer et exporter, Suivre ;
+- les actions en cartes, **regroupées par intention** dans chaque onglet : Créer, Paramétrer, Gérer, Importer et exporter, Suivre ;
 - la palette de l'entreprise à la place des couleurs fixes d'IOMAD, et des onglets accessibles aux lecteurs d'écran.
 
-**Vocabulaire des entreprises** (Administration du site › Présentation › Thèmes › Épure : vocabulaire des entreprises) : choisissez les mots pour « entreprise » et « département », en français et en anglais, pour toutes les entreprises et, au besoin, pour chacune (« client » et « équipe » pour l'une, « agence » et « service » pour une autre). Une entreprise sans mots propres utilise ceux de toutes les entreprises. Les règles de grammaire du vocabulaire s'appliquent : « Modifier l'entreprise » devient « Modifier le client », « Afficher les entreprises suspendues » « Afficher les clients suspendus ».
+**Tout se règle dans la fiche de l'entreprise** (Tableau de bord IOMAD › Créer une entreprise ou Modifier l'entreprise › Apparence) : le logo, la couleur (couleur des titres) et le **vocabulaire** de l'entreprise, c'est-à-dire ses mots pour « entreprise » et « département », en français et en anglais (« client » et « équipe » pour l'une, « agence » et « service » pour une autre). Épure se déclare thème IOMAD pour qu'IOMAD affiche ces champs. Les mots pour toutes les entreprises se choisissent sur la page Épure : vocabulaire ; une entreprise sans mots propres utilise ceux-là.
 
-Les paquets de langue étant communs à tout le site, ces mots sont appliqués au chargement des chaînes par un gestionnaire de chaînes que le thème active à chaque page (le mécanisme `$CFG->customstringmanager` de Moodle), avec un cache par entreprise. **Aucune modification de `config.php` n'est nécessaire.** Il n'est activé que si des mots sont choisis ; si `config.php` définit déjà un autre gestionnaire de chaînes, celui-ci est conservé et la page l'indique.
+Les paquets de langue étant communs à tout le site, ces mots sont appliqués au chargement des chaînes par un gestionnaire de chaînes que le thème active à chaque page (le mécanisme `$CFG->customstringmanager` de Moodle), avec un cache par entreprise. **Aucune modification de `config.php` n'est nécessaire.** Il n'est activé que si des mots sont choisis ; si `config.php` définit déjà un autre gestionnaire de chaînes, celui-ci est conservé et la page Épure : vocabulaire l'indique.
 
 ### Vocabulaire
 
@@ -93,7 +93,7 @@ Fonctionnement :
 
 Après l'installation d'une nouvelle version de Moodle ou d'un paquet de langue, appliquez à nouveau le vocabulaire pour couvrir les nouvelles chaînes.
 
-Avec IOMAD, les mots « entreprise » et « département » se règlent à part, pour toutes les entreprises et pour chacune : voir la section IOMAD.
+Avec IOMAD, la même page propose les mots « entreprise » et « département » pour toutes les entreprises ; chaque entreprise peut choisir les siens dans sa fiche (voir la section IOMAD).
 
 ### Réglages avancés
 

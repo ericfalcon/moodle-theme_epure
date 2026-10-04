@@ -29,4 +29,8 @@ $callbacks = [
         'hook' => \core\hook\after_config::class,
         'callback' => [\theme_epure\hook_callbacks::class, 'after_config'],
     ],
+    [
+        'hook' => \core\hook\output\before_footer_html_generation::class,
+        'callback' => [\theme_epure\hook_callbacks::class, 'before_footer_html_generation'],
+    ],
 ];
