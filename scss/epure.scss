@@ -603,7 +603,9 @@ body.epure-header-brand .navbar.fixed-top .divider {
     flex-wrap: nowrap;
     gap: .25rem;
     margin-bottom: 1.5rem;
+    // Scrolls sideways on narrow screens; the underline of the active tab must not add a vertical scrollbar.
     overflow-x: auto;
+    overflow-y: hidden;
     border-bottom: 1px solid var(--epure-border);
     scrollbar-width: thin;
 }
