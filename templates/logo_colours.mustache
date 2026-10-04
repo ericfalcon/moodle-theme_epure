@@ -37,7 +37,7 @@
     <div data-region="content" {{^logourl}}hidden{{/logourl}}>
         <p class="epure-logocolours-title">{{#str}}logocolours, theme_epure{{/str}}</p>
         <p class="small text-muted mb-2">{{#help}}{{help}}{{/help}}{{^help}}{{#str}}logocolours_help, theme_epure{{/str}}{{/help}}</p>
-        <img src="{{logourl}}" alt="" class="epure-logocolours-logo" data-region="logo">
+        {{#logourl}}<img src="{{logourl}}" alt="" class="epure-logocolours-logo" data-region="logo">{{/logourl}}
         <div class="epure-logocolours-swatches" data-region="swatches" role="group"
             aria-label="{{#str}}logocolours, theme_epure{{/str}}"></div>
         <p class="small mb-0" data-region="status" aria-live="polite"></p>

@@ -293,17 +293,20 @@ const pickColour = (img, e) => {
 /**
  * Starts the extraction once the logo is loaded, and again each time the logo changes.
  *
+ * The listeners are set on the region, so that a logo added later (see {@link setLogo}) works the same way.
+ *
  * @param {string} selector Selector of the logo colours region.
  */
 export const init = (selector) => {
     const region = document.querySelector(selector);
-    const img = region?.querySelector('[data-region="logo"]');
-    if (!img || region.dataset.initialised) {
+    if (!region || region.dataset.initialised) {
         return;
     }
     region.dataset.initialised = '1';
+    const logo = () => region.querySelector('[data-region="logo"]');
 
     const start = async() => {
+        const img = logo();
         try {
             await renderSwatches(region, extractColours(img));
         } catch (error) {
@@ -314,24 +317,29 @@ export const init = (selector) => {
         img.classList.add('epure-logocolours-pickable');
     };
 
-    img.addEventListener('click', (e) => {
-        if (!img.classList.contains('epure-logocolours-pickable')) {
-            return;
-        }
-        const colour = pickColour(img, e);
-        if (colour) {
-            apply(region, colour);
-        }
-    });
     region.addEventListener('click', (e) => {
         const button = e.target.closest('[data-colour]');
         if (button) {
             apply(region, button.dataset.colour);
+            return;
+        }
+        const img = logo();
+        if (img && e.target === img && img.classList.contains('epure-logocolours-pickable')) {
+            const colour = pickColour(img, e);
+            if (colour) {
+                apply(region, colour);
+            }
         }
     });
+    // The load event does not bubble: it is caught on its way down.
+    region.addEventListener('load', (e) => {
+        if (e.target === logo()) {
+            start();
+        }
+    }, true);
 
-    img.addEventListener('load', start);
-    if (img.getAttribute('src') && img.complete && img.naturalWidth) {
+    const img = logo();
+    if (img && img.complete && img.naturalWidth) {
         start();
     }
 };
@@ -344,9 +352,19 @@ export const init = (selector) => {
  */
 export const setLogo = (selector, url) => {
     const region = document.querySelector(selector);
-    const img = region?.querySelector('[data-region="logo"]');
-    if (!img || img.getAttribute('src') === url) {
+    if (!region) {
         return;
+    }
+    let img = region.querySelector('[data-region="logo"]');
+    if (img && img.getAttribute('src') === url) {
+        return;
+    }
+    if (!img) {
+        img = document.createElement('img');
+        img.alt = '';
+        img.className = 'epure-logocolours-logo';
+        img.dataset.region = 'logo';
+        region.querySelector('[data-region="swatches"]').before(img);
     }
     region.querySelector('[data-region="content"]').hidden = false;
     region.querySelector('[data-region="none"]').hidden = true;
