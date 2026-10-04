@@ -128,11 +128,16 @@ final class a11y_test extends \advanced_testcase {
         $this->assertSame(get_string('a11ystatus_partial', 'theme_epure'), $statement['status']);
         $this->assertStringContainsString('<li>Some PDF documents</li>', $statement['noncompliant']);
         $this->assertSame('', $statement['derogations']);
+        $this->assertCount(accessibility_statement::MEASURES, $statement['measures']);
         // Without a contact, the support email is given, else the support form.
         set_config('supportemail', 'support@example.com');
         $this->assertStringContainsString('mailto:support@example.com', accessibility_statement::export()['contact']);
         set_config('supportemail', '');
         $this->assertStringContainsString('contactsitesupport.php', accessibility_statement::export()['contact']);
+
+        // An email address entered as contact becomes a link.
+        set_config('a11ycontact', 'Écrire à eric@example.fr', 'theme_epure');
+        $this->assertStringContainsString('href="mailto:eric@example.fr"', accessibility_statement::export()['contact']);
 
         set_config('a11ystatus', 'other', 'theme_epure');
         $this->assertFalse(accessibility_statement::enabled());

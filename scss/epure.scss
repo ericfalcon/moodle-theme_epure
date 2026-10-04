@@ -60,6 +60,7 @@ a:focus {
 // with some brand colours, the link colour is close to the text colour.
 p a:not(.btn),
 .footer-section a:not(.btn),
+.epure-a11y-statement a:not(.btn),
 .text_to_html a:not(.btn) {
     text-decoration: underline;
     text-underline-offset: .15em;
@@ -244,7 +245,8 @@ body.epure-header-brand .navbar.fixed-top .usermenu > .dropdown > .dropdown-togg
 body.epure-header-brand .navbar.fixed-top .editmode-switch-form label,
 body.epure-header-brand .navbar.fixed-top .simplesearchform .btn-open,
 body.epure-header-brand .navbar.fixed-top .navbar-toggler,
-body.epure-header-brand .navbar.fixed-top .epure-a11y-toggle {
+body.epure-header-brand .navbar.fixed-top .epure-a11y-toggle,
+body.epure-header-brand .navbar.fixed-top .langmenu .dropdown-toggle {
     color: var(--epure-on-brand);
 }
 
@@ -280,7 +282,9 @@ body.epure-header-brand .navbar.fixed-top .companymenu > .dropdown > .btn:focus,
 body.epure-header-brand .navbar.fixed-top .navbar-brand:hover,
 body.epure-header-brand .navbar.fixed-top .navbar-brand:focus,
 body.epure-header-brand .navbar.fixed-top .epure-a11y-toggle:hover,
-body.epure-header-brand .navbar.fixed-top .epure-a11y-toggle:focus {
+body.epure-header-brand .navbar.fixed-top .epure-a11y-toggle:focus,
+body.epure-header-brand .navbar.fixed-top .langmenu .dropdown-toggle:hover,
+body.epure-header-brand .navbar.fixed-top .langmenu .dropdown-toggle:focus {
     color: var(--epure-on-brand);
     background-color: var(--epure-header-hover);
 }
@@ -1243,6 +1247,10 @@ html.epure-a11y-motion *::after {
 
 .epure-a11y-statement {
     max-width: 50rem;
+}
+
+.epure-a11y-statement-contact {
+    margin-bottom: 1.5rem;
 }
 
 // Course page: banner at the top of the course.

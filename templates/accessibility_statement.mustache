@@ -26,7 +26,8 @@
         "status": "partially compliant", "statusphrase": "is partially compliant",
         "hasaudit": true, "rate": "75 %", "auditor": "Example", "auditdate": "October 2026",
         "statementdate": "4 October 2026", "noncompliant": "<p>Some PDF documents</p>",
-        "derogations": "", "disproportionate": "", "contact": "support@example.com"
+        "derogations": "", "disproportionate": "", "contact": "support@example.com",
+        "measures": ["Every function can be used with the keyboard."]
     }
 }}
 <article class="epure-a11y-statement">
@@ -46,6 +47,12 @@
             <p>{{#str}}a11ystatement_rate, theme_epure, {{rate}}{{/str}}</p>
             {{#auditor}}<p>{{#str}}a11ystatement_auditor, theme_epure, {{auditor}}{{/str}}{{#auditdate}} ({{auditdate}}){{/auditdate}}</p>{{/auditor}}
         {{/hasaudit}}
+
+        <h3>{{#str}}a11ystatement_measures, theme_epure{{/str}}</h3>
+        <p>{{#str}}a11ystatement_measures_intro, theme_epure{{/str}}</p>
+        <ul>
+            {{#measures}}<li>{{.}}</li>{{/measures}}
+        </ul>
 
         {{#noncompliant}}
             <h3>{{#str}}a11ystatement_inaccessible, theme_epure{{/str}}</h3>

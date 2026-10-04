@@ -30,6 +30,9 @@ class accessibility_statement {
     /** @var string[] Compliance statuses, as defined by the RGAA. */
     public const STATUSES = ['none', 'partial', 'full'];
 
+    /** @var int Number of accessibility measures of the theme, strings a11ystatement_measure_01 and following. */
+    public const MEASURES = 10;
+
     /** @var string[] Free text settings of the statement. */
     public const TEXTS = ['noncompliant', 'derogations', 'disproportionate', 'contact'];
 
@@ -85,6 +88,10 @@ class accessibility_statement {
         $texts = [];
         foreach (self::TEXTS as $name) {
             $value = trim((string) ($config->{'a11y' . $name} ?? ''));
+            if ($name === 'contact') {
+                // Email addresses written as such become links (Markdown automatic links).
+                $value = preg_replace('/(?<![<\w.@:\/])([\w.+-]+@[\w-]+(?:\.[\w-]+)+)(?![\w>])/u', '<$1>', $value);
+            }
             $texts[$name] = $value === '' ? '' : format_text($value, FORMAT_MARKDOWN, ['context' => \context_system::instance()]);
         }
         $rate = trim((string) ($config->a11yrate ?? ''));
@@ -104,6 +111,10 @@ class accessibility_statement {
             'derogations' => $texts['derogations'],
             'disproportionate' => $texts['disproportionate'],
             'contact' => $texts['contact'] ?: self::default_contact(),
+            'measures' => array_map(
+                fn($i) => get_string(sprintf('a11ystatement_measure_%02d', $i), 'theme_epure'),
+                range(1, self::MEASURES)
+            ),
         ];
     }
 
