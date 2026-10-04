@@ -37,6 +37,7 @@ $string['companyappearance_desc'] = 'Couleur de marque, en-tête et police de ce
 $string['companybrandcolor_help'] = 'Un code couleur hexadécimal, par exemple #2559A8 ; choisissez-le parmi les couleurs du logo ci-dessous, ou avec le sélecteur. Vide : la couleur du titre de l\'entreprise, sinon la couleur du site ({$a}). Le thème ajuste les nuances pour garder des contrastes accessibles.';
 $string['companyformvocabulary'] = 'Vocabulaire';
 $string['companyformvocabulary_desc'] = 'Mots utilisés pour « entreprise » et « département » sur toutes les pages, pour les utilisateurs de cette entreprise. Par défaut, ceux choisis pour toutes les entreprises (Épure : vocabulaire).';
+$string['companylogoonbrand_help'] = 'Facultatif : une version du logo de l\'entreprise lisible sur sa couleur de marque, souvent blanche sur fond transparent (SVG, PNG, WebP ou JPG). Affichée dans l\'en-tête quand il prend la couleur de marque.';
 $string['companysite'] = 'Comme le site ({$a})';
 $string['companyvocabunavailable'] = 'config.php définit un autre gestionnaire de chaînes ($CFG->customstringmanager) : le vocabulaire des entreprises ne peut pas s\'appliquer. Retirez cette ligne, ou contactez le développeur de ce gestionnaire.';
 $string['configtitle'] = 'Épure';

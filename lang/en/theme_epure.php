@@ -37,6 +37,7 @@ $string['companyappearance_desc'] = 'Brand colour, header and font of this compa
 $string['companybrandcolor_help'] = 'A hex colour code, for example #2559A8; pick it from the colours of the logo below, or with the colour picker. Empty: the heading colour of the company, else the colour of the site ({$a}). The theme adjusts the shades to keep the contrasts accessible.';
 $string['companyformvocabulary'] = 'Vocabulary';
 $string['companyformvocabulary_desc'] = 'Words used for « company » and « department » on every page, for the users of this company. By default, those chosen for all companies (Épure: vocabulary).';
+$string['companylogoonbrand_help'] = 'Optional: a version of the company logo readable on its brand colour, often white on a transparent background (SVG, PNG, WebP or JPG). Shown in the header when it has the brand colour.';
 $string['companysite'] = 'As the site ({$a})';
 $string['companyvocabunavailable'] = 'config.php sets another custom string manager ($CFG->customstringmanager): the vocabulary of the companies cannot be applied. Remove that line, or contact the developer of that string manager.';
 $string['configtitle'] = 'Épure';

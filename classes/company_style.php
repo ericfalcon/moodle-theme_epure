@@ -122,6 +122,36 @@ class company_style {
     }
 
     /**
+     * Logo of a company for the brand-coloured header, set in its Épure appearance.
+     *
+     * @param int $companyid Company.
+     * @return \moodle_url|null
+     */
+    public static function logo_onbrand_url(int $companyid): ?\moodle_url {
+        $context = \context_system::instance();
+        $files = get_file_storage()->get_area_files(
+            $context->id,
+            'theme_epure',
+            'companylogoonbrand',
+            $companyid,
+            'timemodified DESC',
+            false
+        );
+        if (!$file = reset($files)) {
+            return null;
+        }
+        // The time of the file in the address makes browsers fetch a new logo, as the file is cached for long.
+        return \moodle_url::make_pluginfile_url(
+            $context->id,
+            'theme_epure',
+            'companylogoonbrand',
+            $companyid,
+            '/' . $file->get_timemodified() . '/',
+            $file->get_filename()
+        );
+    }
+
+    /**
      * Company of the current user, or null on a standard Moodle site or without a company.
      *
      * @return \stdClass|null

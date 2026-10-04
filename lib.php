@@ -73,6 +73,16 @@ function theme_epure_get_font($theme): array {
  * @return bool
  */
 function theme_epure_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []) {
+    // Logo of an IOMAD company for the brand-coloured header: item = company, then a revision, then the file name.
+    if ($context->contextlevel == CONTEXT_SYSTEM && $filearea === 'companylogoonbrand' && count($args) >= 3) {
+        $companyid = (int) array_shift($args);
+        $filename = array_pop($args);
+        $file = get_file_storage()->get_file($context->id, 'theme_epure', 'companylogoonbrand', $companyid, '/', $filename);
+        if ($file && !$file->is_directory()) {
+            send_stored_file($file, YEARSECS, 0, $forcedownload, ['cacheability' => 'public'] + $options);
+        }
+        send_file_not_found();
+    }
     $fileareas = ['customfontregular', 'customfontbold', 'logo', 'logoonbrand', 'loginimage'];
     if ($context->contextlevel == CONTEXT_SYSTEM && in_array($filearea, $fileareas)) {
         $theme = theme_config::load('epure');

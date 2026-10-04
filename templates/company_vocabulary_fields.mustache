@@ -73,6 +73,18 @@
     </div>
     <div class="form-group mb-3 row fitem">
         <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+            <span class="mb-0" id="id_epure_logoonbrand_label">{{#str}}logoonbrand, theme_epure{{/str}}</span>
+        </div>
+        <div class="col-md-9 felement" role="group" aria-labelledby="id_epure_logoonbrand_label">
+            {{#logoonbrand}}
+                {{{html}}}
+                <input type="hidden" name="epure_logoonbrand" id="id_epure_logoonbrand" value="{{draftid}}">
+            {{/logoonbrand}}
+            <p class="small text-muted mt-1 mb-0">{{#str}}companylogoonbrand_help, theme_epure{{/str}}</p>
+        </div>
+    </div>
+    <div class="form-group mb-3 row fitem">
+        <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
             <label class="mb-0" for="id_epure_font">{{#str}}font, theme_epure{{/str}}</label>
         </div>
         <div class="col-md-9 d-flex flex-wrap align-items-start felement">

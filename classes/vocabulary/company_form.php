@@ -115,6 +115,7 @@ class company_form {
             $fonts[] = $option($key, $definition['family'], $font);
         }
         return [
+            'logoonbrand' => self::logo_onbrand_manager($companyid),
             'brandcolor' => $brand,
             'sitebrandcolor' => $sitebrand,
             'headerstyles' => $headers,
@@ -138,6 +139,47 @@ class company_form {
      */
     protected static function posted(string $name, string $default): string {
         return trim(optional_param(self::PREFIX . $name, $default, PARAM_TEXT));
+    }
+
+    /** @var array Options of the file area of the logo for the brand-coloured header. */
+    protected const LOGO_OPTIONS = ['subdirs' => 0, 'maxfiles' => 1, 'accepted_types' => ['.svg', '.png', '.webp', '.jpg']];
+
+    /**
+     * File manager of the logo for the brand-coloured header, with the logo saved for the company.
+     *
+     * @param int $companyid Company edited, 0 for a new company.
+     * @return array HTML of the file manager, and the draft area posted with the form.
+     */
+    protected static function logo_onbrand_manager(int $companyid): array {
+        global $CFG, $PAGE;
+        require_once($CFG->libdir . '/filelib.php');
+        require_once($CFG->dirroot . '/repository/lib.php');
+        require_once($CFG->libdir . '/form/filemanager.php');
+        $context = \context_system::instance();
+
+        // Displayed again after an error: the draft area posted keeps the files chosen.
+        $draftid = optional_param(self::PREFIX . 'logoonbrand', 0, PARAM_INT);
+        if (!$draftid) {
+            // Without a draft area, Moodle creates one and copies the saved logo into it.
+            file_prepare_draft_area(
+                $draftid,
+                $context->id,
+                'theme_epure',
+                'companylogoonbrand',
+                $companyid ?: null,
+                self::LOGO_OPTIONS
+            );
+        }
+        $options = (object) (self::LOGO_OPTIONS + [
+            'itemid' => $draftid,
+            'maxbytes' => 0,
+            'context' => $context,
+            'return_types' => FILE_INTERNAL,
+            'target' => 'id_epure_logoonbrand',
+            'mainfile' => false,
+        ]);
+        $manager = new \form_filemanager($options);
+        return ['html' => $PAGE->get_renderer('core', 'files')->render($manager), 'draftid' => $draftid];
     }
 
     /**
@@ -166,6 +208,16 @@ class company_form {
             }
         }
         company::save($companyid, $values);
+        if ($draftid = optional_param(self::PREFIX . 'logoonbrand', 0, PARAM_INT)) {
+            file_save_draft_area_files(
+                $draftid,
+                \context_system::instance()->id,
+                'theme_epure',
+                'companylogoonbrand',
+                $companyid,
+                self::LOGO_OPTIONS
+            );
+        }
         \theme_epure\company_style::save_settings($companyid, [
             'brandcolor' => optional_param(self::PREFIX . 'brandcolor', '', PARAM_TEXT),
             'headerstyle' => optional_param(self::PREFIX . 'headerstyle', '', PARAM_ALPHA),

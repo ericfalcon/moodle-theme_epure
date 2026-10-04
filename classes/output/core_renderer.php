@@ -35,7 +35,14 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return \moodle_url|false
      */
     public function get_compact_logo_url($maxwidth = 300, $maxheight = 300) {
-        // The logo of the user's IOMAD company comes first.
+        // The logo of the user's IOMAD company comes first: its version for the brand-coloured header when it applies.
+        $company = \theme_epure\company_style::current_company();
+        if (
+            $company && \theme_epure\company_style::header_style() === 'brand'
+                && ($url = \theme_epure\company_style::logo_onbrand_url((int) $company->id))
+        ) {
+            return $url;
+        }
         if ($url = $this->company_logo_url(['logocompact', 'logo'])) {
             return $url;
         }
