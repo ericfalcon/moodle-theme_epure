@@ -16,6 +16,7 @@
 
 namespace theme_epure;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(palette::class)]
 /**
  * Tests for the accessible palette.
  *
@@ -25,7 +26,6 @@ namespace theme_epure;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \theme_epure\palette
  */
-#[\PHPUnit\Framework\Attributes\CoversClass(palette::class)]
 final class palette_test extends \basic_testcase {
     /**
      * Valid and invalid colour inputs.
@@ -46,6 +46,7 @@ final class palette_test extends \basic_testcase {
         ];
     }
 
+    #[\PHPUnit\Framework\Attributes\DataProvider('normalise_provider')]
     /**
      * Test colour normalisation.
      *
@@ -53,7 +54,6 @@ final class palette_test extends \basic_testcase {
      * @param string|null $input Raw value.
      * @param string|null $expected Normalised value.
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('normalise_provider')]
     public function test_normalise(?string $input, ?string $expected): void {
         $this->assertSame($expected, palette::normalise($input));
     }
@@ -86,13 +86,13 @@ final class palette_test extends \basic_testcase {
         ];
     }
 
+    #[\PHPUnit\Framework\Attributes\DataProvider('brand_provider')]
     /**
      * Every derived palette meets the WCAG AA ratios, in light and dark mode.
      *
      * @dataProvider brand_provider
      * @param string $brand Brand colour.
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('brand_provider')]
     public function test_derive_meets_aa(string $brand): void {
         foreach ([false, true] as $dark) {
             $p = palette::derive($brand, $dark);
