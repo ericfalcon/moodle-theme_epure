@@ -26,14 +26,26 @@
 
 import {getString} from 'core/str';
 
-/** Size of the downscaled image used for the analysis, in pixels. */
-const SAMPLE_SIZE = 72;
+/** Size of the downscaled image used for the analysis, in pixels: large enough to keep thin lettering. */
+const SAMPLE_SIZE = 256;
 
 /** Maximum number of colours proposed. */
 const MAX_COLOURS = 5;
 
 /** Minimum share of the analysed pixels for a colour to be proposed. */
 const MIN_SHARE = 0.03;
+
+/**
+ * Minimum share for an accent colour: thin lettering or a small emblem covers few
+ * pixels but often carries the second colour of the brand.
+ */
+const MIN_ACCENT_SHARE = 0.003;
+
+/** Saturation from which a colour can be an accent. */
+const ACCENT_SATURATION = 0.3;
+
+/** Number of hue sectors used to group the accent colours. */
+const HUE_SECTORS = 24;
 
 /** Minimum distance between two proposed colours, in RGB units. */
 const MIN_DISTANCE = 60;
@@ -63,6 +75,40 @@ const lightnessSaturation = (r, g, b) => {
 };
 
 /**
+ * Hue of a colour, in degrees.
+ *
+ * @param {number} r Red, 0 to 255.
+ * @param {number} g Green, 0 to 255.
+ * @param {number} b Blue, 0 to 255.
+ * @returns {number} Between 0 and 360.
+ */
+const hue = (r, g, b) => {
+    const max = Math.max(r, g, b);
+    const d = max - Math.min(r, g, b);
+    if (d === 0) {
+        return 0;
+    }
+    let h;
+    if (max === r) {
+        h = ((g - b) / d) % 6;
+    } else if (max === g) {
+        h = (b - r) / d + 2;
+    } else {
+        h = (r - g) / d + 4;
+    }
+    return (h * 60 + 360) % 360;
+};
+
+/**
+ * Distance between two colours, in RGB units.
+ *
+ * @param {number[]} a First colour.
+ * @param {number[]} b Second colour.
+ * @returns {number}
+ */
+const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+
+/**
  * Draws an image on a canvas.
  *
  * @param {HTMLImageElement} img Loaded image.
@@ -82,8 +128,9 @@ const draw = (img, width, height) => {
 /**
  * Extracts the main colours of an image.
  *
- * Transparent pixels and near-white or near-black backgrounds are ignored, colours
- * are grouped by similarity, and vivid colours come first.
+ * Transparent pixels and near-white or near-black backgrounds are ignored. The
+ * colours covering the largest areas come first, then the vivid accent colours,
+ * even when they cover few pixels (thin lettering, small emblem).
  *
  * @param {HTMLImageElement} img Loaded image.
  * @returns {string[]} Hex colours.
@@ -95,8 +142,7 @@ export const extractColours = (img) => {
     const context = draw(img, width * ratio, height * ratio);
     const data = context.getImageData(0, 0, context.canvas.width, context.canvas.height).data;
 
-    const buckets = new Map();
-    let total = 0;
+    const pixels = [];
     for (let i = 0; i < data.length; i += 4) {
         const [r, g, b, a] = [data[i], data[i + 1], data[i + 2], data[i + 3]];
         if (a < 160) {
@@ -106,22 +152,26 @@ export const extractColours = (img) => {
         if (l > 0.93 || l < 0.06) {
             continue;
         }
-        // Colours are grouped in steps of 16 per channel.
-        const key = `${Math.floor(r / 16)},${Math.floor(g / 16)},${Math.floor(b / 16)}`;
-        const bucket = buckets.get(key) || {n: 0, r: 0, g: 0, b: 0, s: 0};
+        pixels.push({rgb: [r, g, b], s});
+    }
+    const total = pixels.length;
+
+    // Main colours: grouped in steps of 16 per channel, the largest areas first.
+    const buckets = new Map();
+    pixels.forEach(({rgb, s}) => {
+        const key = rgb.map((value) => Math.floor(value / 16)).join(',');
+        const bucket = buckets.get(key) || {n: 0, sum: [0, 0, 0], s: 0};
         bucket.n++;
-        bucket.r += r;
-        bucket.g += g;
-        bucket.b += b;
+        rgb.forEach((value, i) => {
+            bucket.sum[i] += value;
+        });
         bucket.s += s;
         buckets.set(key, bucket);
-        total++;
-    }
-
+    });
     const candidates = [...buckets.values()]
         .filter((bucket) => bucket.n >= total * MIN_SHARE)
         .map((bucket) => ({
-            rgb: [bucket.r / bucket.n, bucket.g / bucket.n, bucket.b / bucket.n],
+            rgb: bucket.sum.map((value) => value / bucket.n),
             saturation: bucket.s / bucket.n,
             score: bucket.n * (0.25 + bucket.s / bucket.n),
         }))
@@ -129,18 +179,38 @@ export const extractColours = (img) => {
 
     const picked = [];
     candidates.forEach((candidate) => {
-        if (picked.length >= MAX_COLOURS) {
-            return;
-        }
-        const far = picked.every((other) => Math.hypot(
-            candidate.rgb[0] - other.rgb[0],
-            candidate.rgb[1] - other.rgb[1],
-            candidate.rgb[2] - other.rgb[2]
-        ) > MIN_DISTANCE);
-        if (far) {
+        if (picked.length < MAX_COLOURS && picked.every((other) => distance(candidate.rgb, other.rgb) > MIN_DISTANCE)) {
             picked.push(candidate);
         }
     });
+
+    // Accent colours: vivid pixels far from the main colours, grouped by hue. Anti-aliased
+    // edges blend into greyish tones, which the saturation threshold leaves out.
+    const accents = new Map();
+    pixels.forEach(({rgb, s}) => {
+        if (s < ACCENT_SATURATION || !picked.every((other) => distance(rgb, other.rgb) > MIN_DISTANCE)) {
+            return;
+        }
+        const key = Math.floor(hue(...rgb) / (360 / HUE_SECTORS));
+        const accent = accents.get(key) || {n: 0, sum: [0, 0, 0], s: 0};
+        // The most saturated pixels, the cores of the strokes, weigh most.
+        const weight = s * s;
+        accent.n++;
+        accent.s += weight;
+        rgb.forEach((value, i) => {
+            accent.sum[i] += value * weight;
+        });
+        accents.set(key, accent);
+    });
+    [...accents.values()]
+        .filter((accent) => accent.n >= total * MIN_ACCENT_SHARE)
+        .sort((x, y) => y.n - x.n)
+        .forEach((accent) => {
+            const candidate = {rgb: accent.sum.map((value) => value / accent.s), saturation: 1, score: accent.n};
+            if (picked.length < MAX_COLOURS && picked.every((other) => distance(candidate.rgb, other.rgb) > MIN_DISTANCE)) {
+                picked.push(candidate);
+            }
+        });
 
     return picked
         .sort((x, y) => Number(y.saturation > 0.2) - Number(x.saturation > 0.2) || y.score - x.score)
