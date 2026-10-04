@@ -94,7 +94,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @param string[] $settings Settings to try, in order.
      * @return \moodle_url|null
      */
-    protected function company_logo_url(array $settings): ?\moodle_url {
+    public function company_logo_url(array $settings): ?\moodle_url {
         $company = \theme_epure\company_style::current_company();
         if (!$company) {
             return null;

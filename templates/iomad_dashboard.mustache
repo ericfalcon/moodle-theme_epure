@@ -1,0 +1,90 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/iomad_dashboard
+
+    The IOMAD dashboard, restyled: the selected company, then the tabs of IOMAD with,
+    in each one, the actions as cards grouped by intention.
+
+    Context variables required for this template:
+    * company - name, logourl, onecompany, selectform (HTML), suspended (HTML)
+    * tabs - tabs of IOMAD: category, selected, icon, label
+    * panes - category, selected, showheadings, groups (id, label, items: url, label, icon)
+
+    Example context (json):
+    {
+        "company": {"name": "Clinique des Tilleuls", "logourl": "", "onecompany": true},
+        "tabs": [{"category": "CompanyAdmin", "selected": true, "icon": "fa-building", "label": "Companies"}],
+        "panes": [{"category": "CompanyAdmin", "selected": true, "showheadings": true, "groups": [
+            {"id": "g1", "label": "Create", "items": [{"url": "#", "label": "Create company", "icon": "fa-building"}]},
+            {"id": "g2", "label": "Manage", "items": [{"url": "#", "label": "Manage departments", "icon": "fa-users"}]}
+        ]}]
+    }
+}}
+<div class="epure-iomad-dashboard">
+    <div class="epure-iomad-company">
+        {{#company.name}}
+            <div class="epure-iomad-company-identity">
+                {{#company.logourl}}
+                    <img src="{{company.logourl}}" alt="" class="epure-iomad-company-logo">
+                {{/company.logourl}}
+                <div>
+                    <p class="epure-iomad-company-label">{{#str}}iomadselectedcompany, theme_epure{{/str}}</p>
+                    <p class="epure-iomad-company-name">{{company.name}}</p>
+                </div>
+            </div>
+        {{/company.name}}
+        {{^company.onecompany}}
+            <div class="epure-iomad-company-select">
+                {{{company.selectform}}}
+                <div class="epure-iomad-company-suspended">{{{company.suspended}}}</div>
+            </div>
+        {{/company.onecompany}}
+    </div>
+
+    <div class="iomad_company_admin">
+        <div class="nav nav-tabs" role="tablist">
+            {{#tabs}}
+                <a class="nav-link {{#selected}}active{{/selected}}" id="{{category}}-tab" href="#{{category}}"
+                    data-toggle="tab" data-bs-toggle="tab" role="tab" aria-controls="{{category}}"
+                    aria-selected="{{#selected}}true{{/selected}}{{^selected}}false{{/selected}}"
+                    ><i class="fa {{icon}}" aria-hidden="true"></i>{{label}}</a>
+            {{/tabs}}
+        </div>
+        <div class="tab-content" id="iomadDashboardTabContent">
+            {{#panes}}
+                <div class="tab-pane epure-iomad-pane {{#selected}}active{{/selected}}" id="{{category}}" role="tabpanel" aria-labelledby="{{category}}-tab">
+                    {{#groups}}
+                        <section class="epure-iomad-group" {{#showheadings}}aria-labelledby="{{id}}"{{/showheadings}}>
+                            {{#showheadings}}<h3 class="epure-iomad-group-title" id="{{id}}">{{label}}</h3>{{/showheadings}}
+                            <ul class="epure-iomad-actions">
+                                {{#items}}
+                                    <li>
+                                        <a class="epure-iomad-action" href="{{url}}">
+                                            <span class="epure-iomad-action-icon" aria-hidden="true"><i class="fa {{icon}}"></i></span>
+                                            <span class="epure-iomad-action-label">{{label}}</span>
+                                        </a>
+                                    </li>
+                                {{/items}}
+                            </ul>
+                        </section>
+                    {{/groups}}
+                </div>
+            {{/panes}}
+        </div>
+    </div>
+</div>

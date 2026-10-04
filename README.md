@@ -55,6 +55,13 @@ Le formulaire lui-même reste celui de Moodle : il suit chaque version (4.5, 5.0
 
 Ces réglages s'appliquent aux utilisateurs rattachés à l'entreprise, et à l'administrateur qui a sélectionné l'entreprise dans le tableau de bord IOMAD. Seuls les codes couleur hexadécimaux sont pris en compte. La couleur principale (fond de page) d'IOMAD n'est pas appliquée, pour préserver la lisibilité.
 
+**Tableau de bord IOMAD** : le tableau de bord d'IOMAD garde ses actions, ses onglets et ses droits, mais Épure en change la présentation :
+
+- l'entreprise sélectionnée en en-tête, avec son logo, et le sélecteur d'entreprise à côté ;
+- des onglets sobres, soulignés de la couleur de marque, qui défilent sur mobile ;
+- les actions en cartes, **regroupées par intention** dans chaque onglet : Créer, Gérer, Paramétrer, Importer et exporter, Suivre ;
+- la palette de l'entreprise à la place des couleurs fixes d'IOMAD, et des onglets accessibles aux lecteurs d'écran.
+
 **Vocabulaire des entreprises** (Administration du site › Présentation › Thèmes › Épure : vocabulaire des entreprises) : choisissez les mots pour « entreprise » et « département », en français et en anglais, pour toutes les entreprises et, au besoin, pour chacune (« client » et « équipe » pour l'une, « agence » et « service » pour une autre). Une entreprise sans mots propres utilise ceux de toutes les entreprises. Les règles de grammaire du vocabulaire s'appliquent : « Modifier l'entreprise » devient « Modifier le client », « Afficher les entreprises suspendues » « Afficher les clients suspendus ».
 
 Les paquets de langue étant communs à tout le site, ces mots sont appliqués au chargement des chaînes par un gestionnaire de chaînes que le thème active à chaque page (le mécanisme `$CFG->customstringmanager` de Moodle), avec un cache par entreprise. **Aucune modification de `config.php` n'est nécessaire.** Il n'est activé que si des mots sont choisis ; si `config.php` définit déjà un autre gestionnaire de chaînes, celui-ci est conservé et la page l'indique.
