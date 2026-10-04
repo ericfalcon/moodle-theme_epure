@@ -16,6 +16,7 @@
 
 namespace theme_epure;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(company_style::class)]
 /**
  * Tests for the appearance of IOMAD companies.
  *
@@ -25,7 +26,6 @@ namespace theme_epure;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \theme_epure\company_style
  */
-#[\PHPUnit\Framework\Attributes\CoversClass(company_style::class)]
 final class company_style_test extends \basic_testcase {
     /**
      * The header colour of the company is its brand colour; the link colour is the fallback.
