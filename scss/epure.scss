@@ -34,11 +34,20 @@ body {
     text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3, h4, h5, h6,
-.h1, .h2, .h3, .h4, .h5, .h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
     font-weight: 600;
     letter-spacing: -.01em;
-    text-wrap: balance;
 }
 
 // Links keep an accessible colour and show their underline on hover.
@@ -62,22 +71,23 @@ summary:focus-visible {
 }
 
 // Skip links: Moodle's "Skip to main content" becomes a clear button when focused.
+// Bootstrap only hides these links while they are not focused, so no !important is needed.
 .sr-only-focusable:focus,
 .sr-only-focusable:active,
 .visually-hidden-focusable:focus,
 .visually-hidden-focusable:focus-within {
-    position: fixed !important;
+    position: fixed;
     top: .75rem;
     left: .75rem;
     z-index: 2000;
-    width: auto !important;
-    height: auto !important;
-    padding: .625rem 1rem !important;
-    margin: 0 !important;
-    overflow: visible !important;
-    clip: auto !important;
+    width: auto;
+    height: auto;
+    padding: .625rem 1rem;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
     white-space: normal;
-    color: var(--epure-on-brand) !important;
+    color: var(--epure-on-brand);
     background: var(--epure-brand);
     border-radius: var(--epure-radius);
     font-weight: 600;
@@ -197,7 +207,8 @@ summary:focus-visible {
 @if $epure-header-brand {
     .navbar.fixed-top,
     .navbar.fixed-top.bg-white {
-        background-color: var(--epure-brand) !important;
+        // Bootstrap's .bg-white utility uses !important.
+        background-color: var(--epure-brand) !important; // stylelint-disable-line declaration-no-important
         border-bottom-color: transparent;
     }
 
@@ -208,7 +219,7 @@ summary:focus-visible {
     .navbar.fixed-top .usermenu > .dropdown > .dropdown-toggle,
     .navbar.fixed-top .editmode-switch-form label,
     .navbar.fixed-top .navbar-toggler {
-        color: var(--epure-on-brand) !important;
+        color: var(--epure-on-brand);
     }
 
     .navbar.fixed-top .primary-navigation .navigation .nav-link.active,
@@ -236,7 +247,9 @@ summary:focus-visible {
         .navbar.fixed-top .divider {
             border-color: rgba(255, 255, 255, .35);
         }
-    } @else {
+    }
+
+    @if not $epure-on-brand-is-light {
         .navbar.fixed-top .divider {
             border-color: rgba(0, 0, 0, .2);
         }
@@ -264,14 +277,13 @@ summary:focus-visible {
 }
 
 // Respect the system setting to reduce motion (WCAG 2.3.3).
+// !important is needed to win over the transitions set by Moodle and Bootstrap components.
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
     *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: .01ms !important;
-        scroll-behavior: auto !important;
+        transition: none !important; // stylelint-disable-line declaration-no-important
+        scroll-behavior: auto !important; // stylelint-disable-line declaration-no-important
     }
 
     .dashboard-card:hover {
