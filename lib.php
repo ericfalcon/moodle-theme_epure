@@ -117,6 +117,10 @@ function theme_epure_get_pre_scss($theme) {
         'border-radius-sm' => $radius[0],
         'border-radius' => $radius[1],
         'border-radius-lg' => $radius[2],
+        // Every page uses the full width of the administration pages: Boost narrows the front
+        // page, the dashboard, My courses and the course pages to 830 or 1120 px.
+        'course-content-maxwidth' => 'none',
+        'medium-content-maxwidth' => 'none',
         'epure-brand' => $light['fill'],
         'epure-brand-hover' => $light['hover'],
         'epure-on-brand' => $light['on'],
