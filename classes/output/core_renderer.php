@@ -39,8 +39,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if ($url = $this->company_logo_url(['logocompact', 'logo'])) {
             return $url;
         }
-        $theme = $this->page->theme;
-        $settings = ($theme->settings->headerstyle ?? '') === 'brand' ? ['logoonbrand', 'logo'] : ['logo'];
+        $settings = \theme_epure\company_style::header_style() === 'brand' ? ['logoonbrand', 'logo'] : ['logo'];
         foreach ($settings as $setting) {
             if ($url = $this->theme_file_url($setting)) {
                 return $url;
@@ -83,6 +82,24 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $output .= \html_writer::tag('style', $css, ['id' => 'epure-company-style']);
         }
         return $output;
+    }
+
+    /**
+     * Attributes of the body element, with the class of the brand-coloured header when it applies.
+     *
+     * The header style is the one of the IOMAD company of the user, else the theme setting.
+     *
+     * @param string|array $additionalclasses Extra classes.
+     * @return string
+     */
+    public function body_attributes($additionalclasses = []) {
+        if (!is_array($additionalclasses)) {
+            $additionalclasses = explode(' ', (string) $additionalclasses);
+        }
+        if (\theme_epure\company_style::header_style() === 'brand') {
+            $additionalclasses[] = 'epure-header-brand';
+        }
+        return parent::body_attributes($additionalclasses);
     }
 
     /**

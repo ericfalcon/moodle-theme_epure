@@ -53,13 +53,15 @@ export const init = () => {
         || form.querySelector('#id_appearance')?.querySelector('.fcontainer');
     const buttons = form.querySelector('#fgroup_id_buttonar');
     if (appearance) {
-        appearance.append(region);
+        // First in the Appearance section: the Épure settings of the company come before IOMAD's own.
+        appearance.prepend(region);
     } else if (buttons) {
         buttons.before(region);
     } else {
         form.append(region);
     }
     region.hidden = false;
+    initColour(region);
 
     region.querySelectorAll('[data-epure-vocab-choice]').forEach((select) => {
         select.addEventListener('change', () => toggleCustom(select));
@@ -68,27 +70,44 @@ export const init = () => {
 };
 
 /**
- * Moves the colours of the logo under the « Heading colour » field, and follows the logo uploaded in the form.
+ * Keeps the colour picker and the colour code in step, and proposes the colours of the logo.
  *
- * @param {string} selector Selector of the logo colours region.
+ * @param {HTMLElement} region The Épure fields.
  */
-export const initLogoColours = (selector) => {
-    const region = document.querySelector(selector);
-    const field = document.querySelector('[name="headingcolor"]');
-    const row = field?.closest('.fitem, .form-group');
-    if (!region || !row) {
-        // Without the colour field (theme not set to Épure for the company), nothing to propose.
-        region?.remove();
+const initColour = (region) => {
+    const code = region.querySelector('#id_epure_brandcolor');
+    const picker = region.querySelector('[data-action="pick-colour"]');
+    if (!code || !picker) {
         return;
     }
-    region.dataset.input = field.id;
-    const element = row.querySelector('.felement');
-    if (element) {
-        element.append(region);
-    } else {
-        row.after(region);
-    }
-    initColours(selector);
+    const valid = (value) => /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value.trim());
+    const full = (value) => {
+        let hex = value.trim().replace('#', '');
+        if (hex.length === 3) {
+            hex = hex.split('').map((c) => c + c).join('');
+        }
+        return '#' + hex.toUpperCase();
+    };
+    picker.addEventListener('input', () => {
+        code.value = picker.value.toUpperCase();
+        code.removeAttribute('aria-invalid');
+    });
+    // The colours of the logo and the eyedropper fill the code: the picker follows.
+    const sync = () => {
+        const value = code.value;
+        if (value.trim() === '') {
+            code.removeAttribute('aria-invalid');
+        } else if (valid(value)) {
+            code.removeAttribute('aria-invalid');
+            picker.value = full(value).toLowerCase();
+        } else {
+            code.setAttribute('aria-invalid', 'true');
+        }
+    };
+    code.addEventListener('input', sync);
+    code.addEventListener('change', sync);
+
+    initColours('#epure-company-logocolours');
 
     // A logo uploaded in the form is not saved yet: its preview in the file manager gives its colours.
     const manager = document.querySelector('[name="companylogo"]')?.closest('.fitem, .form-group');
@@ -101,7 +120,7 @@ export const initLogoColours = (selector) => {
             const url = new URL(preview.src, window.location.href);
             url.searchParams.delete('preview');
             url.searchParams.delete('oid');
-            setLogo(selector, url.toString());
+            setLogo('#epure-company-logocolours', url.toString());
         }
     };
     // The file manager first shows a placeholder, then sets the preview address on the same image.

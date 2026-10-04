@@ -19,9 +19,11 @@ namespace theme_epure;
 /**
  * Appearance of the current IOMAD company.
  *
- * IOMAD stores, for each company, a header colour, a main colour, a link colour,
- * custom CSS and a logo. Épure applies them on top of its own settings: the company
- * colour becomes the brand colour, and the accessible palette is computed for it.
+ * Each company can have its own Épure appearance, set in its IOMAD form (Edit company ›
+ * Appearance › Épure): brand colour, header colour and font, stored in the theme settings as
+ * companystyle_<id> (JSON). IOMAD's own settings are used too: its heading colour (or link
+ * colour) is the brand colour when the company has no Épure brand colour, and its logo and
+ * custom CSS are applied. The accessible palette is computed for the company colour.
  * On a standard Moodle site, without IOMAD, nothing changes.
  *
  * @package    theme_epure
@@ -31,6 +33,59 @@ namespace theme_epure;
 class company_style {
     /** @var \stdClass|false|null Company record of the current user, cached for the request. */
     protected static $company = null;
+
+    /** @var string[] Header styles. */
+    public const HEADER_STYLES = ['light', 'brand'];
+
+    /**
+     * Épure appearance of a company.
+     *
+     * @param int $companyid Company.
+     * @return array{brandcolor: string, headerstyle: string, font: string} Empty values when the company uses the site setting.
+     */
+    public static function settings(int $companyid): array {
+        $json = get_config('theme_epure', 'companystyle_' . $companyid);
+        $values = $json ? json_decode($json, true) : [];
+        $values = is_array($values) ? $values : [];
+        return [
+            'brandcolor' => (string) (palette::normalise($values['brandcolor'] ?? null) ?? ''),
+            'headerstyle' => in_array($values['headerstyle'] ?? '', self::HEADER_STYLES, true) ? $values['headerstyle'] : '',
+            'font' => isset(fonts::all()[$values['font'] ?? '']) ? $values['font'] : '',
+        ];
+    }
+
+    /**
+     * Saves the Épure appearance of a company.
+     *
+     * @param int $companyid Company.
+     * @param array $values brandcolor, headerstyle and font; empty values mean the site setting.
+     */
+    public static function save_settings(int $companyid, array $values): void {
+        $settings = [
+            'brandcolor' => (string) (palette::normalise($values['brandcolor'] ?? null) ?? ''),
+            'headerstyle' => in_array($values['headerstyle'] ?? '', self::HEADER_STYLES, true) ? $values['headerstyle'] : '',
+            'font' => isset(fonts::all()[$values['font'] ?? '']) ? $values['font'] : '',
+        ];
+        if (array_filter($settings)) {
+            set_config('companystyle_' . $companyid, json_encode($settings), 'theme_epure');
+        } else {
+            unset_config('companystyle_' . $companyid, 'theme_epure');
+        }
+        self::reset();
+    }
+
+    /**
+     * Header style of the current page: the one of the company of the user, else the site setting.
+     *
+     * @return string light or brand.
+     */
+    public static function header_style(): string {
+        $company = self::current_company();
+        if ($company && ($style = self::settings((int) $company->id)['headerstyle'])) {
+            return $style;
+        }
+        return get_config('theme_epure', 'headerstyle') === 'brand' ? 'brand' : 'light';
+    }
 
     /**
      * Whether IOMAD is installed.
@@ -94,7 +149,7 @@ class company_style {
     }
 
     /**
-     * Brand colour of a company: its header colour, or else its link colour.
+     * Brand colour of a company: its Épure brand colour, else its IOMAD heading colour, else its link colour.
      *
      * Colours that are not hex codes are ignored, because the palette is computed from hex values.
      *
@@ -102,7 +157,10 @@ class company_style {
      * @return string|null
      */
     public static function brand_colour(\stdClass $company): ?string {
-        return palette::normalise($company->headingcolor ?? null) ?? palette::normalise($company->linkcolor ?? null);
+        $own = self::settings((int) ($company->id ?? 0))['brandcolor'];
+        return ($own !== '' ? $own : null)
+            ?? palette::normalise($company->headingcolor ?? null)
+            ?? palette::normalise($company->linkcolor ?? null);
     }
 
     /**
@@ -127,13 +185,23 @@ class company_style {
                 "--epure-focus:{$p['text']};" .
                 "--epure-login-overlay:rgba({$rgb}, {$p['overlayalpha']});" .
                 '--epure-header-hover:' . ($light ? 'rgba(0, 0, 0, .18)' : 'rgba(255, 255, 255, .3)') . ';' .
+                '--epure-header-toggler-filter:' . ($light ? 'brightness(0) invert(1)' : 'none') . ';' .
+                '--epure-header-divider:' . ($light ? 'rgba(255, 255, 255, .35)' : 'rgba(0, 0, 0, .2)') . ';' .
                 '}';
             // Colours compiled into Bootstrap rules, which do not use the custom properties.
             $css .= 'a{color:var(--epure-brand-text);}' .
                 '.btn-link{color:var(--epure-brand-text);}' .
                 '.text-primary{color:var(--epure-brand-text) !important;}' .
                 '.bg-primary,.badge-primary{background-color:var(--epure-brand) !important;color:var(--epure-on-brand);}' .
-                '.navbar.fixed-top .navbar-toggler-icon{filter:' . ($light ? 'brightness(0) invert(1)' : 'none') . ';}';
+                '.btn-primary{background-color:var(--epure-brand);border-color:var(--epure-brand);color:var(--epure-on-brand);}' .
+                '.btn-primary:hover,.btn-primary:focus{background-color:var(--epure-brand-hover);' .
+                'border-color:var(--epure-brand-hover);color:var(--epure-on-brand);}';
+        }
+        // The font of the company: its faces, then the font of the text.
+        if ($font = self::settings((int) ($company->id ?? 0))['font']) {
+            global $PAGE;
+            $css .= fonts::font_face_css($font, fn($file) => $PAGE->theme->font_url($file, 'theme')->out(false));
+            $css .= 'body,.tooltip,.popover{font-family:' . fonts::stack($font) . ';}';
         }
         if (!empty($company->customcss)) {
             // The custom CSS of the company, as IOMAD's own theme applies it. A closing style

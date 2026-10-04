@@ -211,93 +211,91 @@ summary:focus-visible {
     background: transparent;
 }
 
-// Brand-coloured header (Header > Header colour). Only the bar itself and its own
-// controls change colour; the dropdowns and popovers it opens keep the normal colours.
-@if $epure-header-brand {
-    .navbar.fixed-top,
-    .navbar.fixed-top.bg-white {
-        // Bootstrap's .bg-white utility uses !important.
-        background-color: var(--epure-brand) !important; // stylelint-disable-line declaration-no-important
-        border-bottom-color: transparent;
-    }
-
-    .navbar.fixed-top .navbar-brand,
-    .navbar.fixed-top .primary-navigation .navigation .nav-link,
-    .navbar.fixed-top .popover-region-toggle,
-    .navbar.fixed-top .popover-region-toggle .icon,
-    .navbar.fixed-top .usermenu > .dropdown > .dropdown-toggle,
-    .navbar.fixed-top .editmode-switch-form label,
-    .navbar.fixed-top .simplesearchform .btn-open,
-    .navbar.fixed-top .navbar-toggler {
-        color: var(--epure-on-brand);
-    }
-
-    .navbar.fixed-top .primary-navigation .navigation .nav-link.active,
-    .navbar.fixed-top .primary-navigation .navigation .nav-link[aria-current="true"] {
-        border-bottom-color: var(--epure-on-brand);
-    }
-
-    .navbar.fixed-top .primary-navigation .navigation .nav-link:hover {
-        border-bottom-color: currentColor;
-    }
-
-    // IOMAD company switcher (block_iomad_company_admin) in the header.
-    .navbar.fixed-top .companymenu > .dropdown > .btn,
-    .navbar.fixed-top .companymenu > .dropdown > .companybutton,
-    .navbar.fixed-top .companymenu .companybutton {
-        color: var(--epure-on-brand);
-    }
-
-    // Boost paints hovered and focused header items light grey, which hides light text.
-    // The brand colour is darkened instead (or lightened under dark text), which keeps
-    // or raises the contrast of the text.
-    .navbar.fixed-top .primary-navigation .navigation .nav-link:hover,
-    .navbar.fixed-top .primary-navigation .navigation .nav-link:focus,
-    .navbar.fixed-top .popover-region-toggle:hover,
-    .navbar.fixed-top .popover-region-toggle:focus,
-    .navbar.fixed-top .simplesearchform .btn-open:hover,
-    .navbar.fixed-top .simplesearchform .btn-open:focus,
-    .navbar.fixed-top .usermenu > .dropdown > .dropdown-toggle:hover,
-    .navbar.fixed-top .usermenu > .dropdown > .dropdown-toggle:focus,
-    .navbar.fixed-top .companymenu > .dropdown > .btn:hover,
-    .navbar.fixed-top .companymenu > .dropdown > .btn:focus,
-    .navbar.fixed-top .navbar-brand:hover,
-    .navbar.fixed-top .navbar-brand:focus {
-        color: var(--epure-on-brand);
-        background-color: var(--epure-header-hover);
-    }
-
-    .navbar.fixed-top a:focus-visible,
-    .navbar.fixed-top button:focus-visible,
-    .navbar.fixed-top [tabindex]:focus-visible,
-    .navbar.fixed-top input:focus-visible {
-        outline-color: var(--epure-on-brand);
-    }
-
+// Brand-coloured header (Header > Header colour, or the setting of an IOMAD company). Only the
+// bar itself and its own controls change colour; the dropdowns and popovers it opens keep the
+// normal colours. The page gets the class epure-header-brand from the renderer, so that each
+// IOMAD company can choose its own header; colours that depend on the brand colour come from
+// custom properties, set below for the site and by the style of the company.
+:root {
     @if $epure-on-brand-is-light {
-        :root {
-            --epure-header-hover: rgba(0, 0, 0, .18);
-        }
-
-        // The hamburger icon is a dark image in Bootstrap's light navbar.
-        .navbar.fixed-top .navbar-toggler-icon {
-            filter: brightness(0) invert(1);
-        }
-
-        .navbar.fixed-top .divider {
-            border-color: rgba(255, 255, 255, .35);
-        }
+        --epure-header-hover: rgba(0, 0, 0, .18);
+        --epure-header-toggler-filter: brightness(0) invert(1);
+        --epure-header-divider: rgba(255, 255, 255, .35);
     }
-
     @if not $epure-on-brand-is-light {
-        :root {
-            --epure-header-hover: rgba(255, 255, 255, .3);
-        }
-
-        .navbar.fixed-top .divider {
-            border-color: rgba(0, 0, 0, .2);
-        }
+        --epure-header-hover: rgba(255, 255, 255, .3);
+        --epure-header-toggler-filter: none;
+        --epure-header-divider: rgba(0, 0, 0, .2);
     }
+}
+
+body.epure-header-brand .navbar.fixed-top,
+body.epure-header-brand .navbar.fixed-top.bg-white {
+    // Bootstrap's .bg-white utility uses !important.
+    background-color: var(--epure-brand) !important; // stylelint-disable-line declaration-no-important
+    border-bottom-color: transparent;
+}
+
+body.epure-header-brand .navbar.fixed-top .navbar-brand,
+body.epure-header-brand .navbar.fixed-top .primary-navigation .navigation .nav-link,
+body.epure-header-brand .navbar.fixed-top .popover-region-toggle,
+body.epure-header-brand .navbar.fixed-top .popover-region-toggle .icon,
+body.epure-header-brand .navbar.fixed-top .usermenu > .dropdown > .dropdown-toggle,
+body.epure-header-brand .navbar.fixed-top .editmode-switch-form label,
+body.epure-header-brand .navbar.fixed-top .simplesearchform .btn-open,
+body.epure-header-brand .navbar.fixed-top .navbar-toggler {
+    color: var(--epure-on-brand);
+}
+
+body.epure-header-brand .navbar.fixed-top .primary-navigation .navigation .nav-link.active,
+body.epure-header-brand .navbar.fixed-top .primary-navigation .navigation .nav-link[aria-current="true"] {
+    border-bottom-color: var(--epure-on-brand);
+}
+
+body.epure-header-brand .navbar.fixed-top .primary-navigation .navigation .nav-link:hover {
+    border-bottom-color: currentColor;
+}
+
+// IOMAD company switcher (block_iomad_company_admin) in the header.
+body.epure-header-brand .navbar.fixed-top .companymenu > .dropdown > .btn,
+body.epure-header-brand .navbar.fixed-top .companymenu > .dropdown > .companybutton,
+body.epure-header-brand .navbar.fixed-top .companymenu .companybutton {
+    color: var(--epure-on-brand);
+}
+
+// Boost paints hovered and focused header items light grey, which hides light text.
+// The brand colour is darkened instead (or lightened under dark text), which keeps
+// or raises the contrast of the text.
+body.epure-header-brand .navbar.fixed-top .primary-navigation .navigation .nav-link:hover,
+body.epure-header-brand .navbar.fixed-top .primary-navigation .navigation .nav-link:focus,
+body.epure-header-brand .navbar.fixed-top .popover-region-toggle:hover,
+body.epure-header-brand .navbar.fixed-top .popover-region-toggle:focus,
+body.epure-header-brand .navbar.fixed-top .simplesearchform .btn-open:hover,
+body.epure-header-brand .navbar.fixed-top .simplesearchform .btn-open:focus,
+body.epure-header-brand .navbar.fixed-top .usermenu > .dropdown > .dropdown-toggle:hover,
+body.epure-header-brand .navbar.fixed-top .usermenu > .dropdown > .dropdown-toggle:focus,
+body.epure-header-brand .navbar.fixed-top .companymenu > .dropdown > .btn:hover,
+body.epure-header-brand .navbar.fixed-top .companymenu > .dropdown > .btn:focus,
+body.epure-header-brand .navbar.fixed-top .navbar-brand:hover,
+body.epure-header-brand .navbar.fixed-top .navbar-brand:focus {
+    color: var(--epure-on-brand);
+    background-color: var(--epure-header-hover);
+}
+
+body.epure-header-brand .navbar.fixed-top a:focus-visible,
+body.epure-header-brand .navbar.fixed-top button:focus-visible,
+body.epure-header-brand .navbar.fixed-top [tabindex]:focus-visible,
+body.epure-header-brand .navbar.fixed-top input:focus-visible {
+    outline-color: var(--epure-on-brand);
+}
+
+// The hamburger icon is a dark image in Bootstrap's light navbar.
+body.epure-header-brand .navbar.fixed-top .navbar-toggler-icon {
+    filter: var(--epure-header-toggler-filter);
+}
+
+body.epure-header-brand .navbar.fixed-top .divider {
+    border-color: var(--epure-header-divider);
 }
 
 // Secondary navigation tabs.
@@ -981,4 +979,28 @@ summary:focus-visible {
     display: inline-flex;
     align-items: center;
     gap: .375rem;
+}
+
+.epure-company-colour {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.epure-company-colour-picker {
+    width: 2.75rem;
+    height: 2.375rem;
+    padding: .125rem;
+    background: transparent;
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius);
+}
+
+.epure-company-colour-code {
+    width: 8rem;
+    font-family: SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.epure-company-colour-code[aria-invalid="true"] {
+    border-color: $danger;
 }

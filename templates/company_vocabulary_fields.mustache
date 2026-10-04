@@ -17,16 +17,22 @@
 {{!
     @template theme_epure/company_vocabulary_fields
 
-    Vocabulary fields of an IOMAD company, moved into the Appearance section of IOMAD's company
-    form by the AMD module theme_epure/company_vocabulary, and posted with that form.
+    Épure fields of an IOMAD company (brand colour with the colours of the logo, header, font,
+    vocabulary), moved into the Appearance section of IOMAD's company form by the AMD module
+    theme_epure/company_vocabulary, and posted with that form.
 
     Context variables required for this template:
     * marker - name of the field telling that the vocabulary fields were posted
     * languages - lang, name, concepts (name, label, options, custom, singular, plural, hasgender, masculine, feminine)
+    * brandcolor, sitebrandcolor, headerstyles, fonts - appearance of the company
+    * logocolours - context of theme_epure/logo_colours
 
     Example context (json):
     {
-        "marker": "epure_vocab",
+        "marker": "epure_vocab", "brandcolor": "", "sitebrandcolor": "#2559A8",
+        "headerstyles": [{"value": "", "label": "As the site (White)", "selected": true}],
+        "fonts": [{"value": "", "label": "As the site (IBM Plex Sans)", "selected": true}],
+        "logocolours": {"id": "epure-company-logocolours", "inputid": "id_epure_brandcolor", "logourl": null},
         "languages": [{"lang": "fr", "name": "Français", "concepts": [{
             "name": "epure_vocab_fr_company", "label": "Les entreprises s'appellent",
             "options": [{"value": "", "label": "Comme la plateforme (entreprises)", "selected": true},
@@ -37,7 +43,46 @@
 }}
 <div class="epure-company-vocabulary" data-region="epure-company-vocabulary" hidden>
     <input type="hidden" name="{{marker}}" value="1">
-    <h3 class="epure-company-vocabulary-title">{{#str}}companyformvocabulary, theme_epure{{/str}}</h3>
+    <h3 class="epure-company-vocabulary-title">{{#str}}companyappearance, theme_epure{{/str}}</h3>
+    <p class="epure-company-vocabulary-desc">{{#str}}companyappearance_desc, theme_epure{{/str}}</p>
+    <div class="form-group mb-3 row fitem">
+        <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+            <label class="mb-0" for="id_epure_brandcolor">{{#str}}brandcolor, theme_epure{{/str}}</label>
+        </div>
+        <div class="col-md-9 felement">
+            <div class="epure-company-colour">
+                <input type="color" class="epure-company-colour-picker" value="{{#brandcolor}}{{brandcolor}}{{/brandcolor}}{{^brandcolor}}{{sitebrandcolor}}{{/brandcolor}}"
+                    aria-label="{{#str}}brandcolor, theme_epure{{/str}}" data-action="pick-colour">
+                <input type="text" class="form-control epure-company-colour-code" id="id_epure_brandcolor" name="epure_brandcolor"
+                    value="{{brandcolor}}" placeholder="{{sitebrandcolor}}" size="10" maxlength="7"
+                    pattern="#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})" aria-describedby="id_epure_brandcolor_help" autocomplete="off">
+            </div>
+            <p class="small text-muted mt-1 mb-0" id="id_epure_brandcolor_help">{{#str}}companybrandcolor_help, theme_epure, {{sitebrandcolor}}{{/str}}</p>
+            {{#logocolours}}{{> theme_epure/logo_colours }}{{/logocolours}}
+        </div>
+    </div>
+    <div class="form-group mb-3 row fitem">
+        <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+            <label class="mb-0" for="id_epure_headerstyle">{{#str}}headerstyle, theme_epure{{/str}}</label>
+        </div>
+        <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+            <select class="custom-select form-select" id="id_epure_headerstyle" name="epure_headerstyle">
+                {{#headerstyles}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/headerstyles}}
+            </select>
+        </div>
+    </div>
+    <div class="form-group mb-3 row fitem">
+        <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+            <label class="mb-0" for="id_epure_font">{{#str}}font, theme_epure{{/str}}</label>
+        </div>
+        <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+            <select class="custom-select form-select" id="id_epure_font" name="epure_font">
+                {{#fonts}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/fonts}}
+            </select>
+        </div>
+    </div>
+
+    <h3 class="epure-company-vocabulary-title mt-4">{{#str}}companyformvocabulary, theme_epure{{/str}}</h3>
     <p class="epure-company-vocabulary-desc">{{#str}}companyformvocabulary_desc, theme_epure{{/str}}</p>
     {{#languages}}
         <h4 class="epure-company-vocabulary-lang">{{name}}</h4>

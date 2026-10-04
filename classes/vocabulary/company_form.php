@@ -17,7 +17,8 @@
 namespace theme_epure\vocabulary;
 
 /**
- * The vocabulary fields added to the IOMAD company form (Create company and Edit company).
+ * The Épure fields added to the IOMAD company form (Create company and Edit company): appearance
+ * (brand colour, header, font) and vocabulary.
  *
  * IOMAD's form has no extension point: the fields are rendered at the end of the page and moved
  * into the Appearance section by the AMD module theme_epure/company_vocabulary. They are posted
@@ -81,7 +82,51 @@ class company_form {
             }
             $languages[] = ['lang' => $lang, 'name' => $translations[$lang], 'concepts' => $concepts];
         }
-        return ['marker' => self::MARKER, 'languages' => $languages];
+        return ['marker' => self::MARKER, 'languages' => $languages] + self::appearance_context($companyid);
+    }
+
+    /**
+     * Context of the Épure appearance fields: brand colour, colours of the logo, header, font.
+     *
+     * @param int $companyid Company edited, 0 for a new company.
+     * @return array
+     */
+    protected static function appearance_context(int $companyid): array {
+        $settings = $companyid ? \theme_epure\company_style::settings($companyid)
+            : ['brandcolor' => '', 'headerstyle' => '', 'font' => ''];
+        $brand = self::posted('brandcolor', $settings['brandcolor']);
+        $header = self::posted('headerstyle', $settings['headerstyle']);
+        $font = self::posted('font', $settings['font']);
+        $logo = $companyid ? \theme_epure\company_style::logo_url($companyid) : null;
+
+        $sitebrand = \theme_epure\palette::normalise(get_config('theme_epure', 'brandcolor'))
+            ?? \theme_epure\palette::DEFAULT_BRAND;
+        $siteheader = get_config('theme_epure', 'headerstyle') === 'brand'
+            ? get_string('headerstylebrand', 'theme_epure') : get_string('headerstylelight', 'theme_epure');
+        $sitefont = \theme_epure\fonts::get(get_config('theme_epure', 'font') ?: null)['family'];
+
+        $option = fn(string $value, string $label, string $current) => ['value' => $value, 'label' => $label,
+            'selected' => $value === $current];
+        $headers = [$option('', get_string('companysite', 'theme_epure', $siteheader), $header),
+            $option('light', get_string('headerstylelight', 'theme_epure'), $header),
+            $option('brand', get_string('headerstylebrand', 'theme_epure'), $header)];
+        $fonts = [$option('', get_string('companysite', 'theme_epure', $sitefont), $font)];
+        foreach (\theme_epure\fonts::all() as $key => $definition) {
+            $fonts[] = $option($key, $definition['family'], $font);
+        }
+        return [
+            'brandcolor' => $brand,
+            'sitebrandcolor' => $sitebrand,
+            'headerstyles' => $headers,
+            'fonts' => $fonts,
+            'logocolours' => [
+                'id' => 'epure-company-logocolours',
+                'inputid' => 'id_epure_brandcolor',
+                'logourl' => $logo ? $logo->out(false) : null,
+                'help' => get_string('logocolours_company_help', 'theme_epure'),
+                'none' => get_string('logocolours_company_none', 'theme_epure'),
+            ],
+        ];
     }
 
     /**
@@ -121,6 +166,11 @@ class company_form {
             }
         }
         company::save($companyid, $values);
+        \theme_epure\company_style::save_settings($companyid, [
+            'brandcolor' => optional_param(self::PREFIX . 'brandcolor', '', PARAM_TEXT),
+            'headerstyle' => optional_param(self::PREFIX . 'headerstyle', '', PARAM_ALPHA),
+            'font' => optional_param(self::PREFIX . 'font', '', PARAM_ALPHANUMEXT),
+        ]);
         return true;
     }
 }

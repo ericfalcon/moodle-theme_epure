@@ -86,19 +86,30 @@ class fonts {
      * @return string
      */
     public static function font_face_scss(?string $key): string {
+        return self::font_face_css($key, fn($file) => "[[font:theme|{$file}]]");
+    }
+
+    /**
+     * Font face rules of a bundled font, with the addresses of its files.
+     *
+     * @param string|null $key Font key.
+     * @param callable $url Address of a font file, from its file name.
+     * @return string
+     */
+    public static function font_face_css(?string $key, callable $url): string {
         $font = self::get($key);
-        $scss = '';
+        $css = '';
         foreach ($font['weights'] as $weight) {
             $file = $font['file'] . '-latin-' . $weight . '-normal.woff2';
-            $scss .= "@font-face {\n" .
+            $css .= "@font-face {\n" .
                 "  font-family: \"{$font['family']}\";\n" .
                 "  font-style: normal;\n" .
                 "  font-weight: {$weight};\n" .
                 "  font-display: swap;\n" .
-                "  src: url('[[font:theme|{$file}]]') format('woff2');\n" .
+                "  src: url('" . $url($file) . "') format('woff2');\n" .
                 "}\n";
         }
-        return $scss;
+        return $css;
     }
 
     /**

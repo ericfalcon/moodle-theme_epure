@@ -26,7 +26,7 @@ namespace theme_epure;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \theme_epure\company_style
  */
-final class company_style_test extends \basic_testcase {
+final class company_style_test extends \advanced_testcase {
     /**
      * The header colour of the company is its brand colour; the link colour is the fallback.
      */
@@ -73,5 +73,28 @@ final class company_style_test extends \basic_testcase {
         $css = company_style::css((object) ['customcss' => '.x{color:red}</style><script>alert(1)</script>']);
         $this->assertStringContainsString('.x{color:red}', $css);
         $this->assertStringNotContainsString('</style', $css);
+    }
+
+    /**
+     * The Épure settings of a company: its brand colour comes before IOMAD's heading colour, and its font is applied.
+     */
+    public function test_company_settings(): void {
+        $this->resetAfterTest();
+        $company = (object) ['id' => 12, 'headingcolor' => '#36195F', 'linkcolor' => '', 'customcss' => ''];
+        $this->assertSame('#36195F', company_style::brand_colour($company));
+
+        company_style::save_settings(12, ['brandcolor' => '1c6e73', 'headerstyle' => 'brand', 'font' => 'lexend']);
+        $this->assertSame(['brandcolor' => '#1C6E73', 'headerstyle' => 'brand', 'font' => 'lexend'], company_style::settings(12));
+        $this->assertSame('#1C6E73', company_style::brand_colour($company));
+        $css = company_style::css($company);
+        $this->assertStringContainsString('--epure-brand:#1C6E73', $css);
+        $this->assertStringContainsString('--epure-header-toggler-filter:', $css);
+        $this->assertStringContainsString('font-family: "Lexend"', $css);
+
+        // Invalid values are ignored; nothing left means the settings of the site.
+        company_style::save_settings(12, ['brandcolor' => 'rouge', 'headerstyle' => 'pink', 'font' => 'comic']);
+        $this->assertSame(['brandcolor' => '', 'headerstyle' => '', 'font' => ''], company_style::settings(12));
+        $this->assertFalse(get_config('theme_epure', 'companystyle_12'));
+        $this->assertSame('#36195F', company_style::brand_colour($company));
     }
 }
