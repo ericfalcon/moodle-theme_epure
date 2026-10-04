@@ -17,7 +17,8 @@
 namespace theme_epure;
 
 /**
- * Key figures of an IOMAD company, at the top of IOMAD's dashboard.
+ * Key figures: of an IOMAD company at the top of IOMAD's dashboard, or of the whole platform at the top of
+ * the dashboard of its managers on a Moodle without IOMAD.
  *
  * Users (and those active this week), courses, licences used out of those allocated, and courses
  * completed over the last 30 days. Each figure leads to the page of IOMAD where it is managed.
@@ -30,6 +31,77 @@ namespace theme_epure;
 class iomad_figures {
     /** @var int Period of the completions counted, in days. */
     public const COMPLETION_DAYS = 30;
+
+    /**
+     * Whether the dashboard shows the key figures of the platform: on a Moodle without IOMAD (with IOMAD,
+     * the figures of the company are on IOMAD's dashboard), to those who can see the reports of the site.
+     *
+     * @param \moodle_page $page Page.
+     * @return bool
+     */
+    public static function site_applies(\moodle_page $page): bool {
+        return $page->pagetype === 'my-index' && !company_style::iomad_installed()
+            && has_capability('moodle/site:viewreports', \context_system::instance());
+    }
+
+    /**
+     * Key figures of the whole platform, for a Moodle without IOMAD.
+     *
+     * @return array[] Figures, each with key, label, value, detail and url.
+     */
+    public static function site(): array {
+        global $DB, $CFG;
+        $now = time();
+        $url = fn(string $path) => (new \moodle_url($path))->out(false);
+        $users = $DB->get_record_sql(
+            "SELECT COUNT(1) AS total, SUM(CASE WHEN lastaccess > :since THEN 1 ELSE 0 END) AS active
+               FROM {user}
+              WHERE deleted = 0 AND suspended = 0 AND id <> :guest AND confirmed = 1",
+            ['since' => $now - WEEKSECS, 'guest' => $CFG->siteguest]
+        );
+        $courses = $DB->get_record_sql(
+            "SELECT COUNT(1) AS total, SUM(visible) AS visible FROM {course} WHERE id <> :site",
+            ['site' => SITEID]
+        );
+        return [
+            [
+                'key' => 'users',
+                'label' => get_string('users'),
+                'value' => (int) $users->total,
+                'detail' => get_string('iomadfigures_active', 'theme_epure', (int) $users->active),
+                'url' => $url('/admin/user.php'),
+            ],
+            [
+                'key' => 'courses',
+                'label' => get_string('courses'),
+                'value' => (int) $courses->total,
+                'detail' => get_string('sitefigures_visible', 'theme_epure', (int) $courses->visible),
+                'url' => $url('/course/management.php'),
+            ],
+            [
+                'key' => 'enrolments',
+                'label' => get_string('sitefigures_enrolments', 'theme_epure'),
+                'value' => $DB->count_records_sql(
+                    "SELECT COUNT(1) FROM {user_enrolments} ue JOIN {enrol} e ON e.id = ue.enrolid
+                      WHERE ue.status = 0 AND e.status = 0 AND (ue.timeend = 0 OR ue.timeend > :now)",
+                    ['now' => $now]
+                ),
+                'detail' => '',
+                'url' => '',
+            ],
+            [
+                'key' => 'completions',
+                'label' => get_string('iomadfigures_completions', 'theme_epure'),
+                'value' => $DB->count_records_select(
+                    'course_completions',
+                    'timecompleted > :since',
+                    ['since' => $now - self::COMPLETION_DAYS * DAYSECS]
+                ),
+                'detail' => get_string('iomadfigures_days', 'theme_epure', self::COMPLETION_DAYS),
+                'url' => '',
+            ],
+        ];
+    }
 
     /**
      * Context of the key figures of a company, for the template theme_epure/iomad_dashboard.

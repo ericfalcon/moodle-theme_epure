@@ -305,6 +305,20 @@ body.epure-header-brand .navbar.fixed-top input:focus-visible {
     outline-color: var(--epure-header-on);
 }
 
+// Edit mode switch, once on: its track is filled with the brand colour by Bootstrap, the colour of the bar.
+body.epure-header-brand .navbar.fixed-top .editmode-switch-form {
+    label {
+        color: var(--epure-header-on) !important; // stylelint-disable-line declaration-no-important
+        opacity: 1;
+    }
+
+    .custom-control-input:checked ~ .custom-control-label::before,
+    .form-check-input:checked {
+        background-color: rgba(0, 0, 0, .4);
+        border-color: var(--epure-header-on);
+    }
+}
+
 // The hamburger icon is a dark image in Bootstrap's light navbar.
 body.epure-header-brand .navbar.fixed-top .navbar-toggler-icon {
     filter: var(--epure-header-toggler-filter);
@@ -499,7 +513,8 @@ body.epure-header-brand .navbar.fixed-top .divider {
     .pagelayout-login #page-wrapper #page.epure-login-split {
         grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
 
-        .login-logo {
+        // Only the image: the heading of the page, read by screen readers, stays.
+        .login-logo #logoimage {
             display: none;
         }
     }
@@ -1249,6 +1264,60 @@ html.epure-a11y-motion *::after {
     margin: 0;
 }
 
+// Footer of every page.
+.epure-footer {
+    padding: 2rem 1rem 1.25rem;
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+    background-color: var(--epure-surface);
+    border-top: 1px solid var(--epure-border);
+}
+
+.epure-footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1.5rem 3rem;
+    max-width: 75rem;
+    margin: 0 auto;
+}
+
+.epure-footer-site {
+    margin: 0 0 .25rem;
+    color: var(--epure-ink);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.epure-footer-text p {
+    margin: 0;
+}
+
+.epure-footer-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.epure-footer-nav a {
+    display: inline-block;
+    min-height: 1.5rem;
+    color: var(--epure-ink);
+    text-decoration: underline;
+    text-underline-offset: .2em;
+}
+
+.epure-footer-copyright {
+    max-width: 75rem;
+    margin: 1.5rem auto 0;
+    padding-top: 1rem;
+    font-size: .8125rem;
+    border-top: 1px solid var(--epure-border);
+}
+
 // Accessibility mention, under the page, at the bottom of every page.
 .epure-a11y-mention {
     margin: 0;
@@ -1845,8 +1914,15 @@ html.epure-a11y-motion *::after {
         border-color: var(--epure-border);
     }
 
-    .breadcrumb {
+    .breadcrumb,
+    .page-header-headings {
         background-color: transparent !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .calendarmonth td.clickable:hover,
+    .calendarmonth td.today,
+    .calendarmonth td.weekend {
+        background-color: var(--epure-surface-raised);
     }
 
     .modal-header,
@@ -1999,6 +2075,93 @@ html.epure-a11y-motion *::after {
         background-color: var(--epure-surface-raised);
     }
 
+    // Alerts: dark tinted backgrounds, with light text and headings of their own colour.
+    .alert {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .alert-heading {
+            color: inherit !important; // stylelint-disable-line declaration-no-important
+        }
+    }
+
+    .alert-info {
+        color: #bfe6f1;
+        background-color: #0f2e38;
+        border-color: #1f5566;
+    }
+
+    .alert-success {
+        color: #c4ecd0;
+        background-color: #12301d;
+        border-color: #23573a;
+    }
+
+    .alert-warning {
+        color: #f5e2b8;
+        background-color: #352a10;
+        border-color: #63501f;
+    }
+
+    .alert-danger {
+        color: #f6c9cc;
+        background-color: #3a1519;
+        border-color: #6b2a31;
+    }
+
+    .alert a:not(.btn) {
+        color: inherit !important; // stylelint-disable-line declaration-no-important
+        text-decoration: underline;
+    }
+
+    // Descriptions of the activities and other boxes of Moodle.
+    .activity-description,
+    .box.generalbox,
+    .generalbox,
+    .description-inner {
+        color: var(--epure-ink);
+        background-color: var(--epure-surface-muted) !important; // stylelint-disable-line declaration-no-important
+        border-color: var(--epure-border);
+    }
+
+    // Toolbar of the Atto editor (Moodle 4.5); TinyMCE keeps the look of its own skin.
+    .editor_atto_toolbar,
+    .editor_atto_toolbar .atto_group,
+    .editor_atto_toolbar button,
+    .editor_atto_menu {
+        color: var(--epure-ink);
+        background-color: var(--epure-surface-raised);
+        border-color: var(--epure-border);
+    }
+
+    .editor_atto_toolbar button:hover,
+    .editor_atto_toolbar button:focus,
+    .editor_atto_toolbar button.highlight {
+        background-color: #2c333f;
+    }
+
+    .block-add,
+    .btn.block-add {
+        color: var(--epure-brand-text);
+        background-color: var(--epure-surface-raised);
+        border-color: var(--epure-border);
+    }
+
+    // « Add an activity or resource » and « Add section », in edit mode.
+    .btn.add-content {
+        color: var(--epure-brand-text);
+        background-color: var(--epure-brand-soft);
+
+        &:hover,
+        &:focus {
+            color: var(--epure-on-brand);
+            background-color: var(--epure-brand);
+        }
+    }
+
     // Grey badges, such as the items chosen in an autocomplete field.
     .badge-secondary,
     .badge.bg-secondary,
@@ -2068,7 +2231,14 @@ html.epure-dark {
     }
 }
 
-// IOMAD dashboard: key figures of the company.
+// Key figures: of the company on IOMAD's dashboard, of the platform on the dashboard of its managers.
+@include media-breakpoint-up(md) {
+    .epure-site-figures {
+        margin-right: .9375rem;
+        margin-left: .9375rem;
+    }
+}
+
 .epure-iomad-figures {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
@@ -2078,7 +2248,8 @@ html.epure-dark {
     list-style: none;
 }
 
-.epure-iomad-figure a {
+.epure-iomad-figure a,
+.epure-iomad-figure-box {
     display: flex;
     flex-direction: column;
     gap: .125rem;
@@ -2090,12 +2261,12 @@ html.epure-dark {
     border: 1px solid var(--epure-border);
     border-radius: var(--epure-radius-lg);
     box-shadow: var(--epure-shadow);
+}
 
-    &:hover,
-    &:focus {
-        border-color: var(--epure-brand);
-        box-shadow: var(--epure-shadow-hover);
-    }
+.epure-iomad-figure a:hover,
+.epure-iomad-figure a:focus {
+    border-color: var(--epure-brand);
+    box-shadow: var(--epure-shadow-hover);
 }
 
 .epure-iomad-figure-label {

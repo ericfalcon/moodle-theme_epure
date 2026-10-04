@@ -102,9 +102,8 @@ class hook_callbacks {
     }
 
     /**
-     * Adds the accessibility mention under the main region: « Accessibility: partially compliant ».
-     *
-     * French law (RGAA) asks for it on every page; it links to the accessibility statement.
+     * Adds the footer under the page: the site, the legal links and the accessibility mention
+     * (« Accessibility: partially compliant »), which French law (RGAA) asks for on every page.
      *
      * @param \core\hook\output\after_standard_main_region_html_generation $hook The hook.
      */
@@ -112,10 +111,14 @@ class hook_callbacks {
         \core\hook\output\after_standard_main_region_html_generation $hook
     ): void {
         global $OUTPUT;
-        if (during_initial_install() || !self::epure_page() || !accessibility_statement::enabled()) {
+        if (during_initial_install() || !self::epure_page()) {
             return;
         }
-        $hook->add_html($OUTPUT->render_from_template('theme_epure/a11y_mention', accessibility_statement::mention()));
+        if (footer::enabled()) {
+            $hook->add_html($OUTPUT->render_from_template('theme_epure/footer', footer::export()));
+        } else if (accessibility_statement::enabled()) {
+            $hook->add_html($OUTPUT->render_from_template('theme_epure/a11y_mention', accessibility_statement::mention()));
+        }
     }
 
     /**

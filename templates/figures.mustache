@@ -1,0 +1,39 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/figures
+
+    Key figures, of an IOMAD company or of the platform. Each one leads to its page when it has one.
+
+    Example context (json):
+    {
+        "label": "Key figures",
+        "figures": [{"key": "users", "label": "Users", "value": 24, "detail": "10 active this week", "url": "#"},
+            {"key": "completions", "label": "Completions", "value": 3, "detail": "over 30 days", "url": ""}]
+    }
+}}
+<ul class="epure-iomad-figures" aria-label="{{label}}">
+    {{#figures}}
+        <li class="epure-iomad-figure epure-iomad-figure-{{key}}">
+            {{#url}}<a href="{{url}}">{{/url}}{{^url}}<div class="epure-iomad-figure-box">{{/url}}
+                <span class="epure-iomad-figure-label">{{label}}</span>
+                <span class="epure-iomad-figure-value">{{value}}</span>
+                {{#detail}}<span class="epure-iomad-figure-detail">{{detail}}</span>{{/detail}}
+            {{#url}}</a>{{/url}}{{^url}}</div>{{/url}}
+        </li>
+    {{/figures}}
+</ul>

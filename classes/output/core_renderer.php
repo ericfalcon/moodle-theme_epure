@@ -101,6 +101,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
     public function full_header() {
         global $USER;
         $header = parent::full_header();
+        if (\theme_epure\iomad_figures::site_applies($this->page)) {
+            $header .= \html_writer::div($this->render_from_template('theme_epure/figures', [
+                'label' => get_string('sitefigures', 'theme_epure'),
+                'figures' => \theme_epure\iomad_figures::site(),
+            ]), 'epure-site-figures');
+        }
         if (\theme_epure\learner_dashboard::applies($this->page)) {
             $data = \theme_epure\learner_dashboard::export($this);
             return $data ? $header . $this->render_from_template('theme_epure/learner_dashboard', $data) : $header;
@@ -141,7 +147,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
      */
     public function standard_footer_html() {
         $output = parent::standard_footer_html();
-        if (\theme_epure\accessibility_statement::enabled()) {
+        // The footer of Épure already has the link; without it, the link goes in Moodle's footer.
+        if (\theme_epure\accessibility_statement::enabled() && !\theme_epure\footer::enabled()) {
             $output .= \html_writer::div(\html_writer::link(
                 \theme_epure\accessibility_statement::url(),
                 get_string('a11ystatement', 'theme_epure')
@@ -183,6 +190,21 @@ class core_renderer extends \theme_boost\output\core_renderer {
             return null;
         }
         return \theme_epure\company_style::logo_url((int) $company->id, $settings);
+    }
+
+    /**
+     * Footer of the login page, which has no main region hook: the same as on the other pages.
+     *
+     * @return string HTML.
+     */
+    public function epure_footer(): string {
+        if (\theme_epure\footer::enabled()) {
+            return $this->render_from_template('theme_epure/footer', \theme_epure\footer::export());
+        }
+        if (\theme_epure\accessibility_statement::enabled()) {
+            return $this->render_from_template('theme_epure/a11y_mention', \theme_epure\accessibility_statement::mention());
+        }
+        return '';
     }
 
     /**

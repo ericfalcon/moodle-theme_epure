@@ -66,17 +66,7 @@
     </div>
 
     {{#hasfigures}}
-        <ul class="epure-iomad-figures" aria-label="{{#str}}iomadfigures, theme_epure{{/str}}">
-            {{#figures}}
-                <li class="epure-iomad-figure epure-iomad-figure-{{key}}">
-                    <a href="{{url}}">
-                        <span class="epure-iomad-figure-label">{{label}}</span>
-                        <span class="epure-iomad-figure-value">{{value}}</span>
-                        {{#detail}}<span class="epure-iomad-figure-detail">{{detail}}</span>{{/detail}}
-                    </a>
-                </li>
-            {{/figures}}
-        </ul>
+        {{> theme_epure/figures }}
     {{/hasfigures}}
 
     <div class="iomad_company_admin">

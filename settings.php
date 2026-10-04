@@ -221,6 +221,44 @@ if ($ADMIN->fulltree) {
 
     $settings->add($page);
 
+    // Footer tab: text, legal links and links of the administrator.
+    $page = new admin_settingpage('theme_epure_footer', get_string('footersettings', 'theme_epure'));
+
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/footer',
+        get_string('footer', 'theme_epure'),
+        get_string('footer_desc', 'theme_epure'),
+        1
+    ));
+
+    $page->add(new admin_setting_configtextarea(
+        'theme_epure/footertext',
+        get_string('footertext', 'theme_epure'),
+        get_string('footertext_desc', 'theme_epure'),
+        '',
+        PARAM_RAW
+    ));
+
+    foreach (['footerlegalurl', 'footerprivacyurl', 'footercontacturl'] as $name) {
+        $page->add(new admin_setting_configtext(
+            'theme_epure/' . $name,
+            get_string($name, 'theme_epure'),
+            get_string($name . '_desc', 'theme_epure'),
+            '',
+            PARAM_URL
+        ));
+    }
+
+    $page->add(new admin_setting_configtextarea(
+        'theme_epure/footerlinks',
+        get_string('footerlinksetting', 'theme_epure'),
+        get_string('footerlinksetting_desc', 'theme_epure'),
+        '',
+        PARAM_RAW
+    ));
+
+    $settings->add($page);
+
     // Accessibility tab: statement of the platform, in the French format (RGAA).
     $page = new admin_settingpage('theme_epure_a11y', get_string('a11ysettings', 'theme_epure'));
 

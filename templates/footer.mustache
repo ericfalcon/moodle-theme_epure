@@ -1,0 +1,44 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/footer
+
+    Footer of every page: the site, a text of the administrator, the legal links, the accessibility mention.
+
+    Example context (json):
+    {
+        "site": "Campus Horizon", "text": "<p>1 rue des Tilleuls, Lyon</p>",
+        "haslinks": true, "links": [{"label": "Legal notice", "url": "#"}, {"label": "Accessibility: partially compliant", "url": "#"}],
+        "copyright": "© 2026 Campus Horizon"
+    }
+}}
+<section class="epure-footer d-print-none" aria-label="{{#str}}footerlinks, theme_epure{{/str}}">
+    <div class="epure-footer-inner">
+        <div class="epure-footer-about">
+            <p class="epure-footer-site">{{site}}</p>
+            {{#text}}<div class="epure-footer-text">{{{text}}}</div>{{/text}}
+        </div>
+        {{#haslinks}}
+            <nav class="epure-footer-nav" aria-label="{{#str}}footernav, theme_epure{{/str}}">
+                <ul>
+                    {{#links}}<li><a href="{{url}}">{{label}}</a></li>{{/links}}
+                </ul>
+            </nav>
+        {{/haslinks}}
+    </div>
+    <p class="epure-footer-copyright">{{copyright}}</p>
+</section>
