@@ -103,16 +103,21 @@ class hook_callbacks {
 
     /**
      * Adds the footer under the page: the site, the legal links and the accessibility mention
-     * (« Accessibility: partially compliant »), which French law (RGAA) asks for on every page.
+     * (« Accessibility: partially compliant »), which French law (RGAA) asks for on every page;
+     * and the navigation bar of the phones.
      *
      * @param \core\hook\output\after_standard_main_region_html_generation $hook The hook.
      */
     public static function after_standard_main_region_html_generation(
         \core\hook\output\after_standard_main_region_html_generation $hook
     ): void {
-        global $OUTPUT;
+        global $OUTPUT, $PAGE;
         if (during_initial_install() || !self::epure_page()) {
             return;
+        }
+        // The navigation bar of the phones, fixed at the bottom of the screen.
+        if (mobile_nav::applies($PAGE)) {
+            $hook->add_html($OUTPUT->render_from_template('theme_epure/mobile_nav', mobile_nav::export($PAGE)));
         }
         if (footer::enabled()) {
             $hook->add_html($OUTPUT->render_from_template('theme_epure/footer', footer::export()));

@@ -236,6 +236,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if (\theme_epure\activity_page::applies($this->page)) {
             $additionalclasses[] = 'epure-activity';
         }
+        if (\theme_epure\mobile_nav::applies($this->page)) {
+            $additionalclasses[] = 'epure-has-mobilenav';
+        }
         return parent::body_attributes($additionalclasses);
     }
 

@@ -50,7 +50,7 @@ class company_style {
      * Épure appearance of a company.
      *
      * @param int $companyid Company.
-     * @return array<string, string> brandcolor, headerstyle, font, coursebanner, learnerdashboard, darkmode and the
+     * @return array<string, string> brandcolor, headerstyle, font, coursebanner, learnerdashboard, mobilenav, darkmode and the
      *     footer fields ({@see self::FOOTER_FIELDS}). Empty values when the company uses the site setting.
      */
     public static function settings(int $companyid): array {
@@ -89,6 +89,7 @@ class company_style {
             'font' => isset(fonts::all()[$values['font'] ?? '']) ? $values['font'] : '',
             'coursebanner' => $choice('coursebanner', self::COURSE_BANNERS),
             'learnerdashboard' => $choice('learnerdashboard', self::COURSE_BANNERS),
+            'mobilenav' => $choice('mobilenav', self::COURSE_BANNERS),
             'darkmode' => $choice('darkmode', self::DARK_MODES),
         ];
         foreach (self::FOOTER_FIELDS as $name) {
@@ -149,6 +150,20 @@ class company_style {
             return $choice === 'show';
         }
         return get_config('theme_epure', 'learnerdashboard') !== '0';
+    }
+
+    /**
+     * Whether phones show the navigation bar at the bottom of the screen: the choice of the company of the user,
+     * else the site setting.
+     *
+     * @return bool
+     */
+    public static function mobile_nav(): bool {
+        $company = self::current_company();
+        if ($company && ($choice = self::settings((int) $company->id)['mobilenav'])) {
+            return $choice === 'show';
+        }
+        return get_config('theme_epure', 'mobilenav') !== '0';
     }
 
     /**

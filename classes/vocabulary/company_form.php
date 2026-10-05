@@ -93,13 +93,17 @@ class company_form {
      */
     protected static function appearance_context(int $companyid): array {
         $settings = $companyid ? \theme_epure\company_style::settings($companyid)
-            : array_fill_keys(['brandcolor', 'headerstyle', 'font', 'coursebanner', 'learnerdashboard', 'darkmode'], '')
+            : array_fill_keys(
+                ['brandcolor', 'headerstyle', 'font', 'coursebanner', 'learnerdashboard', 'mobilenav', 'darkmode'],
+                ''
+            )
                 + array_fill_keys(\theme_epure\company_style::FOOTER_FIELDS, '');
         $brand = self::posted('brandcolor', $settings['brandcolor']);
         $header = self::posted('headerstyle', $settings['headerstyle']);
         $font = self::posted('font', $settings['font']);
         $banner = self::posted('coursebanner', $settings['coursebanner']);
         $dashboard = self::posted('learnerdashboard', $settings['learnerdashboard']);
+        $mobilenav = self::posted('mobilenav', $settings['mobilenav']);
         $darkmode = self::posted('darkmode', $settings['darkmode']);
         $logo = $companyid ? \theme_epure\company_style::logo_url($companyid) : null;
 
@@ -128,6 +132,13 @@ class company_form {
         $dashboards = [$option('', get_string('companysite', 'theme_epure', $sitedashboard), $dashboard),
             $option('show', get_string('coursebannershow', 'theme_epure'), $dashboard),
             $option('hide', get_string('coursebannerhide', 'theme_epure'), $dashboard)];
+        $sitemobilenav = get_string(
+            get_config('theme_epure', 'mobilenav') !== '0' ? 'coursebannershow' : 'coursebannerhide',
+            'theme_epure'
+        );
+        $mobilenavs = [$option('', get_string('companysite', 'theme_epure', $sitemobilenav), $mobilenav),
+            $option('show', get_string('coursebannershow', 'theme_epure'), $mobilenav),
+            $option('hide', get_string('coursebannerhide', 'theme_epure'), $mobilenav)];
         $sitedark = (string) get_config('theme_epure', 'darkmode');
         $sitedark = get_string('darkmode' . (in_array($sitedark, ['auto', 'dark'], true) ? $sitedark : 'light'), 'theme_epure');
         $darkmodes = [$option('', get_string('companysite', 'theme_epure', $sitedark), $darkmode)];
@@ -146,6 +157,7 @@ class company_form {
             'fonts' => $fonts,
             'coursebanners' => $banners,
             'learnerdashboards' => $dashboards,
+            'mobilenavs' => $mobilenavs,
             'darkmodes' => $darkmodes,
             'footer' => array_map(fn($name) => [
                 'name' => $name,
@@ -259,6 +271,7 @@ class company_form {
             'font' => optional_param(self::PREFIX . 'font', '', PARAM_ALPHANUMEXT),
             'coursebanner' => optional_param(self::PREFIX . 'coursebanner', '', PARAM_ALPHA),
             'learnerdashboard' => optional_param(self::PREFIX . 'learnerdashboard', '', PARAM_ALPHA),
+            'mobilenav' => optional_param(self::PREFIX . 'mobilenav', '', PARAM_ALPHA),
             'darkmode' => optional_param(self::PREFIX . 'darkmode', '', PARAM_ALPHA),
         ] + array_combine(\theme_epure\company_style::FOOTER_FIELDS, array_map(
             fn($name) => optional_param(self::PREFIX . $name, '', PARAM_RAW),
