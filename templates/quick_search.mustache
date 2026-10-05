@@ -1,0 +1,58 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/quick_search
+
+    Button of the quick search in the header, and its dialogue: a combobox whose results are the links
+    of the menus of the page, the courses, the activities and, for administrators, the settings.
+
+    Example context (json):
+    {
+        "shortcut": "Ctrl K"
+    }
+}}
+<button type="button" class="btn epure-qs-button" data-action="epure-quicksearch" aria-haspopup="dialog"
+    aria-keyshortcuts="Control+K Meta+K" title="{{#str}}quicksearch, theme_epure{{/str}} ({{shortcut}})">
+    <i class="fa fa-magnifying-glass" aria-hidden="true"></i>
+    <span class="epure-qs-button-label">{{#str}}quicksearch_open, theme_epure{{/str}}</span>
+    <kbd aria-hidden="true">{{shortcut}}</kbd>
+</button>
+<dialog class="epure-qs" id="epure-qs" aria-labelledby="epure-qs-title"
+    data-none="{{#str}}quicksearch_none, theme_epure, QUERY{{/str}}"
+    data-searching="{{#str}}quicksearch_searching, theme_epure{{/str}}"
+    data-count="{{#str}}quicksearch_count, theme_epure, NUMBER{{/str}}"
+    data-countone="{{#str}}quicksearch_count_one, theme_epure{{/str}}"
+    data-pages="{{#str}}quicksearch_pages, theme_epure{{/str}}">
+    <h2 class="sr-only visually-hidden" id="epure-qs-title">{{#str}}quicksearch, theme_epure{{/str}}</h2>
+    <div class="epure-qs-field">
+        <i class="fa fa-magnifying-glass" aria-hidden="true"></i>
+        <input type="text" class="epure-qs-input" role="combobox" aria-expanded="false" aria-controls="epure-qs-list"
+            aria-autocomplete="list" aria-label="{{#str}}quicksearch, theme_epure{{/str}}" autocomplete="off" spellcheck="false"
+            placeholder="{{#str}}quicksearch_placeholder, theme_epure{{/str}}">
+        <button type="button" class="btn epure-qs-close" data-action="epure-quicksearch-close">
+            <span aria-hidden="true">{{#str}}quicksearch_esc, theme_epure{{/str}}</span>
+            <span class="sr-only visually-hidden">{{#str}}closebuttontitle{{/str}}</span>
+        </button>
+    </div>
+    <div class="epure-qs-list" id="epure-qs-list" role="listbox" aria-label="{{#str}}quicksearch_results, theme_epure{{/str}}"></div>
+    <p class="epure-qs-status sr-only visually-hidden" role="status" aria-live="polite"></p>
+    <p class="epure-qs-hints" aria-hidden="true">
+        <span><kbd>↑</kbd><kbd>↓</kbd> {{#str}}quicksearch_hint_move, theme_epure{{/str}}</span>
+        <span><kbd>↵</kbd> {{#str}}quicksearch_hint_open, theme_epure{{/str}}</span>
+        <span><kbd>{{#str}}quicksearch_esc, theme_epure{{/str}}</kbd> {{#str}}quicksearch_hint_close, theme_epure{{/str}}</span>
+    </p>
+</dialog>

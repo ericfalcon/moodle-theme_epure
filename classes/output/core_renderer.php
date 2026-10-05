@@ -187,7 +187,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
 
     /**
-     * Output of the plugins in the header, with the button « Aa » of the display preferences first.
+     * Output of the plugins in the header, with the button of the quick search and the button « Aa » of the
+     * display preferences first.
      *
      * @return string HTML.
      */
@@ -197,6 +198,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if (isloggedin() && !isguestuser() && !during_initial_install()) {
             $this->page->requires->js_call_amd('theme_epure/a11y_panel', 'init');
             $output = $this->render_from_template('theme_epure/a11y_panel', \theme_epure\a11y::panel_context()) . $output;
+        }
+        if (\theme_epure\quick_search::enabled() && !during_initial_install()) {
+            $this->page->requires->js_call_amd('theme_epure/quick_search', 'init');
+            $output = $this->render_from_template('theme_epure/quick_search', ['shortcut' => 'Ctrl K']) . $output;
         }
         return $output;
     }

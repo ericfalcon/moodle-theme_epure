@@ -125,6 +125,14 @@ if ($ADMIN->fulltree) {
         1
     ));
 
+    // Quick search (Ctrl+K).
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/quicksearch',
+        get_string('quicksearch', 'theme_epure'),
+        get_string('quicksearch_desc', 'theme_epure'),
+        1
+    ));
+
     // Navigation bar at the bottom of the screen on phones.
     $page->add(new admin_setting_configcheckbox(
         'theme_epure/mobilenav',

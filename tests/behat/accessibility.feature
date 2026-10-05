@@ -112,3 +112,19 @@ Feature: Accessibility of the Épure theme
     And I should see "About this course"
     And I should see "The risks of the workplace" in the ".epure-presentation" "css_element"
     And the page should meet accessibility standards
+
+  Scenario: The quick search finds the activities of my courses
+    Given the following "courses" exist:
+      | fullname       | shortname |
+      | Safety at work | SAFE      |
+    And the following "activities" exist:
+      | activity | course | name               |
+      | page     | SAFE   | Risks of the place |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | learner1 | SAFE   | student |
+    And I log in as "learner1"
+    When I click on ".epure-qs-button" "css_element"
+    And I set the field with xpath "//input[contains(@class, 'epure-qs-input')]" to "risks"
+    Then I should see "Risks of the place" in the "#epure-qs" "css_element"
+    And the page should meet accessibility standards
