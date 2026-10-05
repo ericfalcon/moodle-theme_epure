@@ -1,0 +1,93 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/course_presentation
+
+    Presentation of a course on its enrolment page: a banner with the image, the category and the
+    header of the page, then the summary and the outline of the course, beside its teachers, dates
+    and contents. The enrolment options of Moodle follow.
+
+    Example context (json):
+    {
+        "name": "Safety at work", "image": "", "category": "Training", "header": "<h1>Safety at work</h1>",
+        "fullsummary": "<p>The risks of the workplace.</p>", "access": "Self enrolment", "accessclass": "self",
+        "enrolled": false, "teachers": [{"name": "Tom Teacher", "role": "Teacher", "picture": ""}], "hasteachers": true,
+        "outline": [{"name": "Week 1", "count": "3 activities"}], "hasoutline": true,
+        "contents": [{"count": 2, "name": "Pages"}], "hascontents": true,
+        "dates": [{"label": "Start date", "date": "1 October 2026"}], "customfields": "", "shortname": "SAFE"
+    }
+}}
+<div class="epure-course-banner epure-presentation-banner">
+    <div class="epure-course-banner-image" style="background-image: url('{{image}}');"></div>
+    <div class="epure-course-banner-body">
+        {{#category}}<p class="epure-course-banner-category">{{category}}</p>{{/category}}
+        {{{header}}}
+        {{#access}}
+            <div class="epure-course-banner-panel">
+                <span class="badge epure-catalogue-access epure-catalogue-access-{{accessclass}}">{{access}}</span>
+                {{^enrolled}}
+                    <a class="btn btn-primary btn-lg epure-course-banner-action" href="#region-main">
+                        {{#str}}catalogue_enrolnow, theme_epure{{/str}}</a>
+                {{/enrolled}}
+            </div>
+        {{/access}}
+    </div>
+</div>
+<div class="epure-presentation">
+    <div class="epure-presentation-main">
+        {{#fullsummary}}
+            <section class="epure-presentation-section">
+                <h2>{{#str}}catalogue_about, theme_epure{{/str}}</h2>
+                <div class="epure-presentation-summary">{{{fullsummary}}}</div>
+            </section>
+        {{/fullsummary}}
+        {{#hasoutline}}
+            <section class="epure-presentation-section">
+                <h2>{{#str}}catalogue_outline, theme_epure{{/str}}</h2>
+                <ol class="epure-presentation-outline">
+                    {{#outline}}
+                        <li><span class="epure-presentation-outline-name">{{name}}</span>
+                            {{#count}}<span class="epure-presentation-outline-count">{{count}}</span>{{/count}}</li>
+                    {{/outline}}
+                </ol>
+            </section>
+        {{/hasoutline}}
+    </div>
+    <aside class="epure-presentation-aside" aria-label="{{#str}}catalogue_details, theme_epure{{/str}}">
+        {{#hasteachers}}
+            <section class="epure-presentation-card">
+                <h2>{{#str}}catalogue_teachers, theme_epure{{/str}}</h2>
+                <ul class="epure-presentation-teachers">
+                    {{#teachers}}
+                        <li>{{{picture}}}<span><strong>{{name}}</strong><small>{{role}}</small></span></li>
+                    {{/teachers}}
+                </ul>
+            </section>
+        {{/hasteachers}}
+        <section class="epure-presentation-card">
+            <h2>{{#str}}catalogue_details, theme_epure{{/str}}</h2>
+            <dl class="epure-presentation-details">
+                {{#dates}}<div><dt>{{label}}</dt><dd>{{date}}</dd></div>{{/dates}}
+                {{#hascontents}}
+                    <div><dt>{{#str}}catalogue_contents, theme_epure{{/str}}</dt>
+                        <dd><ul>{{#contents}}<li>{{count}} {{name}}</li>{{/contents}}</ul></dd></div>
+                {{/hascontents}}
+            </dl>
+            {{#customfields}}<div class="epure-presentation-customfields">{{{customfields}}}</div>{{/customfields}}
+        </section>
+    </aside>
+</div>

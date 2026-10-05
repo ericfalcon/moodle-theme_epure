@@ -125,6 +125,14 @@ if ($ADMIN->fulltree) {
         1
     ));
 
+    // Catalogue of the courses, and presentation of a course on its enrolment page.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/catalogue',
+        get_string('catalogue', 'theme_epure'),
+        get_string('catalogue_desc', 'theme_epure'),
+        1
+    ));
+
     // Pages of the activities: strip with the position and the progress, previous and next activities.
     $page->add(new admin_setting_configcheckbox(
         'theme_epure/activitynav',

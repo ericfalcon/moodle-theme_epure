@@ -93,3 +93,22 @@ Feature: Accessibility of the Épure theme
     And I click on "Reading mode" "button"
     And the "class" attribute of "html" "css_element" should contain "epure-focus"
     And the page should meet accessibility standards
+
+  Scenario: The catalogue shows the courses as cards and presents a course before enrolment
+    Given the following "categories" exist:
+      | name   | category | idnumber |
+      | Health | 0        | HEALTH   |
+    And the following "courses" exist:
+      | fullname       | shortname | category | summary                    |
+      | Safety at work | SAFE      | HEALTH   | The risks of the workplace |
+    And the following "activities" exist:
+      | activity | course | name    |
+      | page     | SAFE   | Welcome |
+    And I log in as "learner1"
+    When I am on course index
+    Then I should see "Safety at work" in the ".epure-catalogue-grid" "css_element"
+    And the page should meet accessibility standards
+    And I click on "Safety at work" "link" in the ".epure-catalogue-grid" "css_element"
+    And I should see "About this course"
+    And I should see "The risks of the workplace" in the ".epure-presentation" "css_element"
+    And the page should meet accessibility standards
