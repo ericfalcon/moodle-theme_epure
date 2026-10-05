@@ -125,6 +125,30 @@ class core_renderer extends \theme_boost\output\core_renderer {
         return $this->render_from_template('theme_epure/course_banner', $data);
     }
 
+    /** @var string[] Page types of the installation and upgrade of Moodle and its plugins. */
+    protected const BUSY_PAGES = ['admin-index', 'admin-upgradesettings', 'admin-plugins', 'admin-environment',
+        'admin-purgecaches'];
+
+    /**
+     * End of the page; on the pages that install or upgrade Moodle and its plugins, an indicator that Moodle
+     * is working once a step is started, as the server can take minutes to answer.
+     *
+     * @return string HTML.
+     */
+    public function standard_end_of_body_html() {
+        global $CFG;
+        $output = parent::standard_end_of_body_html();
+        $pagetype = (string) $this->page->pagetype;
+        if (in_array($pagetype, self::BUSY_PAGES, true) || str_starts_with($pagetype, 'admin-tool-installaddon')) {
+            $output .= $this->render_from_template('theme_epure/busy', [
+                'message' => get_string('busy', 'theme_epure'),
+                'detail' => get_string('busy_detail', 'theme_epure'),
+            ]);
+            $output .= \html_writer::script(file_get_contents($CFG->dirroot . '/theme/epure/javascript/busy.js'));
+        }
+        return $output;
+    }
+
     /**
      * Output of the plugins in the header, with the button « Aa » of the display preferences first.
      *
