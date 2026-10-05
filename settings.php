@@ -125,6 +125,14 @@ if ($ADMIN->fulltree) {
         1
     ));
 
+    // E-mails in the colours of the brand.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/emailbranding',
+        get_string('emailbranding', 'theme_epure'),
+        get_string('emailbranding_desc', 'theme_epure'),
+        1
+    ));
+
     // Quick search (Ctrl+K).
     $page->add(new admin_setting_configcheckbox(
         'theme_epure/quicksearch',

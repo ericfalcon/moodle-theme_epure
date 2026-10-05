@@ -1,0 +1,72 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template core/email_html
+
+    HTML e-mails of Moodle in the colours of the brand: the logo or the name of the site (or of the
+    IOMAD company of the recipient), a band of the brand colour, the message, then a footer. Tables and
+    inline styles, which e-mail programs read. Without the context « epure », the message alone, as in Moodle.
+
+    Context variables required for this template:
+    * body - message
+    * epure - brand, brandtext, name, logo, siteurl, footertext, preferencesurl
+
+    Example context (json):
+    {
+        "body": "<p>Your assignment is due tomorrow.</p>",
+        "epure": {"brand": "#36216F", "brandtext": "#36216F", "name": "Campus Horizon", "logo": "",
+            "siteurl": "https://example.org/", "footertext": "Clinique des Tilleuls", "preferencesurl": "#"}
+    }
+}}
+{{#epure}}
+<style>.epure-mail-body a { color: {{brandtext}}; }</style>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f5f6f8;">
+    <tr>
+        <td align="center" style="padding:24px 12px;">
+            <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"
+                style="width:100%;max-width:600px;background-color:#ffffff;border:1px solid #e2e5ea;border-radius:12px;border-collapse:separate;">
+                <tr>
+                    <td style="height:6px;line-height:6px;font-size:0;background-color:{{brand}};border-radius:12px 12px 0 0;">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="padding:24px 32px 0;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+                        <a href="{{siteurl}}" style="text-decoration:none;color:{{brandtext}};font-size:20px;font-weight:700;">
+                            {{#logo}}<img src="{{logo}}" alt="{{name}}" height="48" style="height:48px;width:auto;max-width:240px;border:0;display:block;">{{/logo}}
+                            {{^logo}}{{name}}{{/logo}}
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="epure-mail-body" style="padding:24px 32px;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.6;color:#1d2125;">
+                        {{{body}}}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:16px 32px 24px;border-top:1px solid #e2e5ea;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:13px;line-height:1.5;color:#5f6873;">
+                        <a href="{{siteurl}}" style="color:{{brandtext}};font-weight:600;text-decoration:none;">{{name}}</a>
+                        {{#footertext}}<br>{{footertext}}{{/footertext}}
+                        <br><a href="{{preferencesurl}}" style="color:#5f6873;text-decoration:underline;">{{#str}}email_preferences, theme_epure{{/str}}</a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+{{/epure}}
+{{^epure}}
+{{{body}}}
+{{/epure}}

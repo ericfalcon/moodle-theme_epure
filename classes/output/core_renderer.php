@@ -24,6 +24,8 @@ namespace theme_epure\output;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class core_renderer extends \theme_boost\output\core_renderer {
+    use email_renderer;
+
     /**
      * Logo shown in the header.
      *

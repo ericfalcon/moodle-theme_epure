@@ -165,6 +165,16 @@ En tête de chaque cours, une **bannière** reprend l'image du cours (ou un moti
 
 Pour l'apprenant, le titre de chaque section indique combien de ses activités il a terminées (« 2/5 », coche une fois la section terminée). La bannière se désactive dans les réglages généraux du thème (« Bannière des cours ») ; avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche.
 
+## E-mails aux couleurs de la marque
+
+Les e-mails HTML du site (notifications, messages, forums, devoirs, e-mails d'IOMAD…) reçoivent :
+
+- le **logo** en tête (sinon le nom du site) et un **filet de la couleur de marque** ;
+- le message dans une carte, ses liens dans la couleur de marque ;
+- un **pied** avec le nom du site, le texte du pied de page et un lien « Gérer mes notifications ».
+
+Avec IOMAD, ce sont le logo, la couleur, le nom et le texte du pied de page de **l'entreprise du destinataire**. Le gabarit utilise des tableaux et des styles en ligne, que lisent les logiciels de messagerie, et s'adapte aux écrans étroits. Épure remplace pour cela le gabarit `core/email_html` de Moodle, y compris pour les e-mails envoyés par les tâches planifiées. Les e-mails se désactivent dans les réglages généraux du thème (« E-mails aux couleurs de la marque ») : ils reprennent alors la présentation de Moodle.
+
 ## Recherche rapide (Ctrl+K)
 
 Un bouton **Rechercher** dans l'en-tête, ou **Ctrl+K** (**⌘K** sur Mac) depuis n'importe quelle page, ouvre une fenêtre de recherche. Elle trouve, sans tenir compte des majuscules ni des accents :
