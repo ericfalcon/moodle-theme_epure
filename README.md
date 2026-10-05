@@ -73,6 +73,8 @@ Ces réglages s'appliquent aux utilisateurs rattachés à l'entreprise, et à l'
 - les actions en cartes, **regroupées par intention** dans chaque onglet : Créer, Paramétrer, Gérer, Importer et exporter, Suivre ;
 - la palette de l'entreprise à la place des couleurs fixes d'IOMAD, et des onglets accessibles aux lecteurs d'écran.
 
+**Gérer les cours** (paramètres IOMAD des cours) : le tableau d'IOMAD gagne une colonne **Catégorie**, après celle du cours, avec le chemin complet de sa catégorie (par exemple « Clinique des Tilleuls / Soins infirmiers »).
+
 **Tout se règle dans la fiche de l'entreprise** (Tableau de bord IOMAD › Créer une entreprise ou Modifier l'entreprise › Apparence). En tête de cette partie, la section **Apparence Épure** propose :
 
 | Réglage de l'entreprise | Effet |

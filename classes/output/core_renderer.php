@@ -107,6 +107,14 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 'figures' => \theme_epure\iomad_figures::site(),
             ]), 'epure-site-figures');
         }
+        if (\theme_epure\iomad_courses::applies($this->page)) {
+            $this->page->requires->js_call_amd('theme_epure/iomad_courses', 'init', [get_string('category')]);
+            $header .= \html_writer::tag(
+                'script',
+                json_encode(\theme_epure\iomad_courses::data(), JSON_HEX_TAG | JSON_HEX_AMP),
+                ['type' => 'application/json', 'id' => 'epure-iomad-course-categories']
+            );
+        }
         if (\theme_epure\course_presentation::applies($this->page)) {
             return $this->render_from_template(
                 'theme_epure/course_presentation',

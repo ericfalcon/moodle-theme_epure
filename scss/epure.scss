@@ -1771,6 +1771,11 @@ html.epure-a11y-motion *::after {
     }
 }
 
+// Column « Category » added to IOMAD's page of the courses.
+.epure-iomad-category {
+    min-width: 11rem;
+}
+
 // Catalogue of the courses: subcategories as chips, then the courses as cards.
 .epure-catalogue {
     margin-top: 1.5rem;
