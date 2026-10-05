@@ -59,6 +59,9 @@ class a11y {
             $definitions['theme_epure_a11y_' . $switch] = ['type' => PARAM_INT, 'null' => NULL_NOT_ALLOWED,
                 'default' => 0, 'choices' => [0, 1], 'permissioncallback' => $own];
         }
+        // Reading mode of the pages of the activities, without the drawers.
+        $definitions['theme_epure_focus'] = ['type' => PARAM_INT, 'null' => NULL_NOT_ALLOWED,
+            'default' => 0, 'choices' => [0, 1], 'permissioncallback' => $own];
         return $definitions;
     }
 
@@ -104,6 +107,10 @@ class a11y {
         }
         if ($class = self::scheme_class($preferences['scheme'] ?: self::default_scheme())) {
             $classes[] = $class;
+        }
+        // The reading mode only changes the pages of the activities, whose body has the class epure-activity.
+        if (isloggedin() && !isguestuser() && get_user_preferences('theme_epure_focus', 0)) {
+            $classes[] = 'epure-focus';
         }
         return implode(' ', $classes);
     }

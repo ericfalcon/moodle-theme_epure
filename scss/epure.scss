@@ -1771,6 +1771,225 @@ html.epure-a11y-motion *::after {
     }
 }
 
+// Pages of the activities. At the top, a strip with the course, the position of the activity and
+// the progress; at the bottom, the previous and next activities as cards.
+.epure-activity-strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1.25rem;
+    margin: 0 0 1rem;
+    padding: .625rem 1rem;
+    color: var(--epure-ink-muted);
+    background-color: var(--epure-surface-muted);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius);
+    font-size: .875rem;
+}
+
+.epure-activity-strip-course {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    min-width: 0;
+    font-weight: 600;
+
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.epure-activity-strip-position {
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.epure-activity-strip-progress {
+    display: flex;
+    flex: 1 1 8rem;
+    align-items: center;
+    gap: .5rem;
+    max-width: 16rem;
+    white-space: nowrap;
+
+    .progress {
+        flex: 1 1 auto;
+        height: .5rem;
+    }
+}
+
+.epure-focus-toggle.btn {
+    margin-left: auto;
+    color: var(--epure-ink);
+    background-color: var(--epure-surface);
+    border-color: var(--epure-ink-muted);
+
+    &:hover,
+    &:focus {
+        color: var(--epure-ink);
+        background-color: var(--epure-brand-soft);
+        border-color: var(--epure-brand);
+    }
+
+    .fa {
+        margin-right: .375rem;
+    }
+
+    &[aria-pressed="true"] {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand);
+        border-color: var(--epure-brand);
+    }
+}
+
+// Box of the dates and the completion of the activity, on the surfaces of the theme.
+.path-mod .activity-header:not(:empty) {
+    background-color: var(--epure-surface-muted);
+
+    .activity-dates,
+    .completion-info {
+        border-bottom-color: var(--epure-border);
+    }
+}
+
+.epure-activity-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 2rem 0 0;
+}
+
+.epure-activity-nav-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    color: var(--epure-ink);
+    background-color: var(--epure-surface-raised);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+    text-decoration: none;
+    transition: box-shadow .15s ease-in-out, border-color .15s ease-in-out;
+
+    &:hover,
+    &:focus {
+        color: var(--epure-ink);
+        border-color: var(--epure-brand);
+        box-shadow: var(--epure-shadow-hover);
+        text-decoration: none;
+    }
+}
+
+.epure-activity-nav-next {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.epure-activity-nav-arrow {
+    flex: 0 0 auto;
+    color: var(--epure-brand-text);
+    font-size: 1.25rem;
+}
+
+.epure-activity-nav-text {
+    display: flex;
+    flex-direction: column;
+    gap: .125rem;
+    min-width: 0;
+}
+
+.epure-activity-nav-label {
+    color: var(--epure-brand-text);
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.epure-activity-nav-name {
+    overflow: hidden;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    .activityicon {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-right: .5rem;
+        vertical-align: -.2em;
+    }
+}
+
+.epure-activity-nav-section {
+    color: var(--epure-ink-muted);
+    font-size: .8125rem;
+}
+
+@include media-breakpoint-down(sm) {
+    .epure-activity-nav {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .epure-activity-nav-spacer {
+        display: none;
+    }
+
+    .epure-focus-toggle {
+        margin-left: 0;
+    }
+}
+
+// Button « Mark as done » of the activities with manual completion: larger, in the brand colour.
+.activity-header [data-action="toggle-manual-completion"] {
+    padding: .5rem 1rem;
+    font-size: .9375rem;
+    font-weight: 600;
+
+    &.btn-outline-secondary {
+        color: var(--epure-brand-text);
+        border-color: var(--epure-brand);
+        border-width: 2px;
+
+        &:hover,
+        &:focus {
+            color: var(--epure-on-brand);
+            background-color: var(--epure-brand);
+        }
+    }
+}
+
+// Reading mode: no side panels, the content centred at a comfortable width.
+html.epure-focus body.epure-activity {
+    .drawer,
+    .drawer-toggles,
+    .drawer-left-toggle,
+    .drawer-right-toggle,
+    [data-region="right-hand-drawer"] {
+        display: none;
+    }
+
+    #page.drawers {
+        margin-left: 0;
+        margin-right: 0;
+
+        .main-inner {
+            max-width: 60rem;
+        }
+    }
+
+    #page.drawers ~ .epure-footer {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .header-maxwidth {
+        max-width: 60rem;
+    }
+}
+
 // Dark mode. The page gets the class epure-dark (always dark) or epure-dark-auto (dark when the
 // device asks for it), from the choice of the user, else of their IOMAD company, else of the site.
 // The palette swaps to its dark variant, computed in PHP to keep the AA contrasts on dark
@@ -2368,8 +2587,15 @@ html.epure-a11y-motion *::after {
     }
 
     // Course images and illustrations stay as they are; icons drawn in dark grey are lightened.
-    .icon:not(.activityicon):not(.fa) {
+    .icon:not(.activityicon):not(.fa),
+    .epure-activity-nav-name .activityicon {
         filter: invert(.85) hue-rotate(180deg);
+    }
+
+    // Status of the assignments without a colour of their own, black in the module.
+    .path-mod-assign td.submissionnotgraded,
+    .path-mod-assign div.submissionnotgraded {
+        color: var(--epure-ink);
     }
 
     .epure-a11y-panel {

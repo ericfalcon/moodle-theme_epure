@@ -72,3 +72,24 @@ Feature: Accessibility of the Épure theme
     Then I should see "Pick up where you left off"
     And I should see "Safety at work" in the ".epure-learner-resume" "css_element"
     And the page should meet accessibility standards
+
+  Scenario: The pages of the activities lead to the next one, with a reading mode
+    Given the following "courses" exist:
+      | fullname       | shortname |
+      | Safety at work | SAFE      |
+    And the following "activities" exist:
+      | activity | course | name    | idnumber |
+      | page     | SAFE   | Welcome | welcome  |
+      | page     | SAFE   | Risks   | risks    |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | learner1 | SAFE   | student |
+    When I am on the "Welcome" "page activity" page logged in as "learner1"
+    Then I should see "Activity 1 of 2"
+    And the page should meet accessibility standards
+    And I click on "Risks" "link" in the ".epure-activity-nav" "css_element"
+    And I should see "Activity 2 of 2"
+    And I should see "Back to the course" in the ".epure-activity-nav" "css_element"
+    And I click on "Reading mode" "button"
+    And the "class" attribute of "html" "css_element" should contain "epure-focus"
+    And the page should meet accessibility standards

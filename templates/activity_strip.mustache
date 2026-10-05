@@ -1,0 +1,47 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/activity_strip
+
+    Strip at the top of the page of an activity: the course, the position of the activity, the
+    progress of the learner and the button of the reading mode.
+
+    Example context (json):
+    {
+        "course": "Safety at work", "courseurl": "#", "position": "Activity 3 of 12",
+        "hasprogress": true, "progress": 40, "focus": false
+    }
+}}
+<div class="epure-activity-strip">
+    <a class="epure-activity-strip-course" href="{{courseurl}}">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i><span>{{course}}</span>
+    </a>
+    {{#position}}<span class="epure-activity-strip-position">{{position}}</span>{{/position}}
+    {{#hasprogress}}
+        <div class="epure-activity-strip-progress">
+            <div class="progress" role="progressbar" aria-label="{{#str}}progresslabel, theme_epure{{/str}}"
+                aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" style="width: {{progress}}%"></div>
+            </div>
+            <span aria-hidden="true">{{progress}} %</span>
+        </div>
+    {{/hasprogress}}
+    <button type="button" class="btn btn-outline-secondary btn-sm epure-focus-toggle" data-action="epure-focus"
+        aria-pressed="{{#focus}}true{{/focus}}{{^focus}}false{{/focus}}" title="{{#str}}focusmode_help, theme_epure{{/str}}">
+        <i class="fa fa-book-open" aria-hidden="true"></i>{{#str}}focusmode, theme_epure{{/str}}
+    </button>
+</div>

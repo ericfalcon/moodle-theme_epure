@@ -125,6 +125,14 @@ if ($ADMIN->fulltree) {
         1
     ));
 
+    // Pages of the activities: strip with the position and the progress, previous and next activities.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/activitynav',
+        get_string('activitynav', 'theme_epure'),
+        get_string('activitynav_desc', 'theme_epure'),
+        1
+    ));
+
     // Dashboard: overview of the learner above the blocks.
     $page->add(new admin_setting_configcheckbox(
         'theme_epure/learnerdashboard',

@@ -107,6 +107,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 'figures' => \theme_epure\iomad_figures::site(),
             ]), 'epure-site-figures');
         }
+        if (\theme_epure\activity_page::applies($this->page)) {
+            $this->page->requires->js_call_amd('theme_epure/activity_page', 'init');
+            return $header . $this->render_from_template(
+                'theme_epure/activity_strip',
+                \theme_epure\activity_page::strip($this->page->cm, (int) $USER->id)
+            );
+        }
         if (\theme_epure\learner_dashboard::applies($this->page)) {
             $data = \theme_epure\learner_dashboard::export($this);
             return $data ? $header . $this->render_from_template('theme_epure/learner_dashboard', $data) : $header;
@@ -123,6 +130,22 @@ class core_renderer extends \theme_boost\output\core_renderer {
             }
         }
         return $this->render_from_template('theme_epure/course_banner', $data);
+    }
+
+    /**
+     * Previous and next activities at the bottom of the page of an activity, as cards.
+     *
+     * Moodle shows none when the course index is there; Épure always shows them, without the menu
+     * to jump to an activity, which the course index replaces.
+     *
+     * @return string HTML.
+     */
+    public function activity_navigation() {
+        if (!\theme_epure\activity_page::applies($this->page)) {
+            return parent::activity_navigation();
+        }
+        $data = \theme_epure\activity_page::navigation($this->page->cm);
+        return $data ? $this->render_from_template('theme_epure/activity_navigation', $data) : '';
     }
 
     /** @var string[] Page types of the installation and upgrade of Moodle and its plugins. */
@@ -195,6 +218,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
         if (\theme_epure\company_style::header_style() === 'brand') {
             $additionalclasses[] = 'epure-header-brand';
+        }
+        if (\theme_epure\activity_page::applies($this->page)) {
+            $additionalclasses[] = 'epure-activity';
         }
         return parent::body_attributes($additionalclasses);
     }
