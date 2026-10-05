@@ -1,244 +1,244 @@
 # Épure (theme_epure)
 
-Thème moderne, sobre et accessible pour **Moodle 4.5 LTS et 5.x**, basé sur Boost.
+A modern, clean and accessible theme for **Moodle 4.5 LTS and 5.x**, based on Boost. Documentation in French: [README.fr.md](README.fr.md).
 
 ## Installation
 
-1. Copiez le dossier `epure` dans le dossier `theme` de votre Moodle (`public/theme` à partir de Moodle 5.1).
-2. Connectez-vous en administrateur et lancez la mise à jour de la base de données.
-3. Choisissez Épure dans Administration du site › Apparence › Thèmes.
+1. Copy the `epure` folder into the `theme` folder of your Moodle site (`public/theme` from Moodle 5.1 onwards).
+2. Log in as an administrator and run the database upgrade.
+3. Select Épure in Site administration › Appearance › Themes.
 
-## Réglages
+## Settings
 
-Administration du site › Apparence › Thèmes › Épure.
+Site administration › Appearance › Themes › Épure.
 
-### Réglages généraux
+### General settings
 
-| Réglage | Effet |
+| Setting | Effect |
 |---|---|
-| Couleur de marque | Toute la palette en est déduite : survols, fonds teintés, couleur des liens. Les couleurs sont ajustées automatiquement pour respecter les contrastes AA des WCAG 2.2, et le contraste obtenu est affiché sous le réglage. |
-| Police | Polices fournies : IBM Plex Sans, Inter, Source Sans 3, Figtree, Lato, et pour la lisibilité Atkinson Hyperlegible, Lexend, OpenDyslexic. Ou votre propre police téléversée. |
-| Police téléversée | Nom de la police et fichiers `.woff2` ou `.woff` (normal obligatoire, gras facultatif). Vérifiez que la licence de la police autorise l'usage sur un site web. |
-| Arrondis | Net, doux ou arrondi : cartes, boutons et champs. |
+| Brand colour | The whole palette is derived from it: hover states, tinted backgrounds, link colour. Colours are adjusted automatically to meet the WCAG 2.2 AA contrast requirements, and the resulting contrast is shown below the setting. |
+| Font | Bundled fonts: IBM Plex Sans, Inter, Source Sans 3, Figtree, Lato, and, for readability, Atkinson Hyperlegible, Lexend and OpenDyslexic. Or upload your own font. |
+| Uploaded font | Font name and `.woff2` or `.woff` files (regular required, bold optional). Check that the font's licence allows its use on a website. |
+| Corner style | Sharp, soft or round: cards, buttons and form fields. |
 
-Sous la couleur de marque, le thème propose les **couleurs du logo** enregistré, y compris les couleurs d'accent qui occupent peu de place (lettrage fin, petit emblème) : cliquez sur une pastille, ou directement sur un point du logo (pipette), puis enregistrez. Seuls les codes hexadécimaux sont acceptés, car la palette accessible en est calculée.
+Below the brand colour, the theme suggests the **colours of the logo** you have saved, including accent colours that take up little space (thin lettering, a small emblem): click a swatch, or click directly on a point of the logo (eyedropper), then save. Only hex codes are accepted, since the accessible palette is calculated from them.
 
-Toutes les polices sont servies par votre propre site. Le thème ne fait **aucun appel à Google Fonts** ni à un autre service externe.
+All fonts are served by your own site. The theme makes **no calls to Google Fonts** or to any other external service.
 
-### Page Mes cours
+### My courses page
 
-Les cours que vous **animez** et ceux que vous **suivez** sont présentés en deux sections (« Formations que j'anime », « Formations que je suis », avec vos mots de vocabulaire). Avec un seul rôle, la page affiche une liste unique.
+The courses you **teach** and the courses you **take** are shown in two sections ("Programmes I teach", "Programmes I take", using your vocabulary). Users with only one role see a single list.
 
-| Carte d'un cours suivi | Carte d'un cours animé |
+| Card for a course you take | Card for a course you teach |
 |---|---|
-| Progression, prochaine activité à faire, prochaine échéance, bouton Commencer / Continuer / Revoir, mention Terminé | Bandeau et badge de rôle, participants, apprenants actifs cette semaine, devoirs à corriger, accès directs Participants, Notes, Paramètres |
+| Progress, next activity to do, next deadline, Start / Continue / Review button, Completed label | Banner and role badge, participants, learners active this week, assignments to grade, shortcuts to Participants, Grades, Settings |
 
-Une recherche (insensible aux accents) et des filtres En cours, À venir, Passés complètent la page. Les cours favoris viennent en premier, puis les plus récemment consultés ; les cours que vous avez masqués restent masqués. Un enseignant est reconnu à sa capacité de voir toutes les notes du cours (`moodle/grade:viewall`). Avec IOMAD, qui remplace le bloc de Moodle par le sien (« Mes cours » avec les onglets disponibles, en cours, terminés), la même présentation s'applique, avec en plus une section « Formations disponibles » et le bouton de téléchargement des certificats d'IOMAD. Réglage « Mes cours par rôle » (Réglages généraux) : décochez pour retrouver le bloc de Moodle ou d'IOMAD.
+A search box (accent-insensitive) and In progress, Future and Past filters complete the page. Starred courses come first, followed by the most recently accessed; courses you have hidden stay hidden. A teacher is identified by the capability to view all grades in the course (`moodle/grade:viewall`). With IOMAD, which replaces Moodle's block with its own ("My courses" with available, in progress and completed tabs), the same layout applies, with an extra "Programmes available" section and IOMAD's certificate download button. The "My courses by role" setting (General settings): untick it to restore the Moodle or IOMAD block.
 
-### En-tête
+### Header
 
-| Réglage | Effet |
+| Setting | Effect |
 |---|---|
-| Couleur de l'en-tête | Blanc avec soulignement de la couleur de marque, ou rempli de la couleur de marque. Les textes et icônes prennent la couleur la plus lisible. |
-| Logo | Affiché dans l'en-tête et sur la page de connexion. Les fonds transparents sont pris en charge (SVG, PNG, WebP). Sans logo, ceux d'Apparence › Logos sont utilisés. |
-| Logo pour l'en-tête en couleur | Facultatif : une version lisible sur la couleur de marque, souvent blanche sur fond transparent. |
+| Header colour | White with an underline in the brand colour, or filled with the brand colour. Text and icons take whichever colour is most legible. |
+| Logo | Shown in the header and on the login page. Transparent backgrounds are supported (SVG, PNG, WebP). Without a logo, the ones from Appearance › Logos are used. |
+| Logo for the brand-coloured header | Optional: a version that is legible on the brand colour, often white on a transparent background. |
 
-### Page de connexion
+### Login page
 
-| Réglage | Effet |
+| Setting | Effect |
 |---|---|
-| Disposition | Écran partagé : un visuel de la couleur de marque à côté du formulaire de Moodle (sur téléphone, seul le formulaire s'affiche). Ou formulaire centré. |
-| Accroche et texte d'accompagnement | Affichés sur le visuel. Sans accroche, une phrase par défaut est utilisée. |
-| Image de fond | Facultative. Un voile de la couleur de marque est posé dessus, avec l'opacité nécessaire pour que le texte reste lisible (contraste AA) quelle que soit l'image. |
+| Layout | Split screen: a brand-coloured visual next to Moodle's login form (on phones, only the form is shown). Or a centred form. |
+| Headline and supporting text | Shown on the visual. Without a headline, a default sentence is used. |
+| Background image | Optional. A brand-coloured overlay is placed over it, with the opacity needed to keep the text legible (AA contrast) whatever the image. |
 
-Le formulaire lui-même reste celui de Moodle : il suit chaque version (4.5, 5.0, 5.1) et les méthodes d'authentification configurées.
+The form itself is still Moodle's own: it follows each version (4.5, 5.0, 5.1) and the configured authentication methods.
 
-### Avec IOMAD
+### With IOMAD
 
-Épure applique l'apparence que vous définissez pour chaque entreprise dans IOMAD (Tableau de bord IOMAD › Modifier l'entreprise › Apparence) :
+Épure applies the appearance you define for each company in IOMAD (IOMAD dashboard › Edit company › Appearance):
 
-| Réglage IOMAD de l'entreprise | Effet dans Épure |
+| Company IOMAD setting | Effect in Épure |
 |---|---|
-| Couleur des titres (à défaut, couleur des liens) | Devient la couleur de marque de l'entreprise : la palette accessible est recalculée pour elle (en-tête, boutons, liens, contrastes AA). |
-| Logo de l'entreprise | Remplace le logo d'Épure pour les utilisateurs de l'entreprise. |
-| CSS personnalisé | Ajouté aux pages des utilisateurs de l'entreprise. |
+| Heading colour (or, if not set, link colour) | Becomes the company's brand colour: the accessible palette is recalculated for it (header, buttons, links, AA contrast). |
+| Company logo | Replaces the Épure logo for the company's users. |
+| Custom CSS | Added to the pages of the company's users. |
 
-Ces réglages s'appliquent aux utilisateurs rattachés à l'entreprise, et à l'administrateur qui a sélectionné l'entreprise dans le tableau de bord IOMAD. Seuls les codes couleur hexadécimaux sont pris en compte. La couleur principale (fond de page) d'IOMAD n'est pas appliquée, pour préserver la lisibilité.
+These settings apply to users assigned to the company, and to an administrator who has selected the company in the IOMAD dashboard. Only hex colour codes are taken into account. IOMAD's main colour (page background) is not applied, to preserve legibility.
 
-**Tableau de bord IOMAD** : le tableau de bord d'IOMAD garde ses actions, ses onglets et ses droits, mais Épure en change la présentation :
+**IOMAD dashboard**: the IOMAD dashboard keeps its actions, tabs and permissions, but Épure changes its presentation:
 
-- l'entreprise sélectionnée en en-tête, avec son logo, un accès direct à sa catégorie de cours et à ses sous-catégories (page de gestion pour qui gère les cours, liste des cours sinon), lien repris en tête de l'onglet Cours, et le sélecteur d'entreprise à côté ;
-- les chiffres clés de l'entreprise : utilisateurs (et actifs cette semaine), cours, licences utilisées sur celles attribuées, achèvements des 30 derniers jours ; chacun mène à la page d'IOMAD correspondante ;
-- des onglets sobres, soulignés de la couleur de marque, qui défilent sur mobile ;
-- les actions en cartes, **regroupées par intention** dans chaque onglet : Créer, Paramétrer, Gérer, Importer et exporter, Suivre ;
-- la palette de l'entreprise à la place des couleurs fixes d'IOMAD, et des onglets accessibles aux lecteurs d'écran.
+- the selected company in the header, with its logo, a direct link to its course category and its subcategories (the management page for those who manage courses, the course list otherwise), a link repeated at the top of the Courses tab, and the company selector alongside;
+- the company's key figures: users (and those active this week), courses, licences used out of those allocated, completions over the last 30 days; each one leads to the corresponding IOMAD page;
+- understated tabs, underlined in the brand colour, that scroll on mobile;
+- actions as cards, **grouped by intent** within each tab: Create, Configure, Manage, Import and export, Follow up;
+- the company's palette instead of IOMAD's fixed colours, and tabs that are accessible to screen readers.
 
-**Gérer les cours** (paramètres IOMAD des cours) : le tableau d'IOMAD gagne une colonne **Catégorie**, après celle du cours, avec le chemin complet de sa catégorie (par exemple « Clinique des Tilleuls / Soins infirmiers »).
+**Manage courses** (IOMAD course settings): the IOMAD table gains a **Category** column, after the course column, with the full path of its category (for example "Clinique des Tilleuls / Soins infirmiers").
 
-**Tout se règle dans la fiche de l'entreprise** (Tableau de bord IOMAD › Créer une entreprise ou Modifier l'entreprise › Apparence). En tête de cette partie, la section **Apparence Épure** propose :
+**Everything is set in the company's profile** (IOMAD dashboard › Create company or Edit company › Appearance). At the top of that part, the **Épure appearance** section offers:
 
-| Réglage de l'entreprise | Effet |
+| Company setting | Effect |
 |---|---|
-| Couleur de marque | Code couleur libre, sélecteur de couleur, ou couleurs du logo de l'entreprise (pastilles et pipette, y compris pour un logo tout juste téléversé). Vide : la couleur du titre d'IOMAD, sinon celle du site. La palette accessible est recalculée. |
-| Couleur de l'en-tête | Comme le site, blanc, ou couleur de marque. |
-| Bannière des cours | Comme le site, affichée ou masquée, pour les utilisateurs de l'entreprise. |
-| Aperçu de l'apprenant sur le tableau de bord | Comme le site, affiché ou masqué. |
-| Barre de navigation mobile | Comme le site, affichée ou masquée. |
-| Mode sombre | Comme le site, jamais, automatique selon l'appareil, ou toujours. |
-| Pied de page | Texte, mentions légales, données personnelles, contact, autres liens ; un champ vide reprend la valeur du site, affichée en grisé. |
-| Logo pour l'en-tête en couleur | Facultatif : une version du logo lisible sur la couleur de marque de l'entreprise, souvent blanche sur fond transparent. |
-| Police | Comme le site, ou l'une des polices fournies. |
+| Brand colour | Any colour code, a colour picker, or the colours of the company's logo (swatches and eyedropper, including for a logo that has just been uploaded). Empty: IOMAD's heading colour, otherwise the site's colour. The accessible palette is recalculated. |
+| Header colour | As the site, white, or brand colour. |
+| Course banner | As the site, shown or hidden, for the company's users. |
+| Learner overview on the dashboard | As the site, shown or hidden. |
+| Mobile navigation bar | As the site, shown or hidden. |
+| Dark mode | As the site, never, automatic based on the device, or always. |
+| Footer | Text, legal notice, privacy, contact, other links; an empty field uses the site's value, shown greyed out. |
+| Logo for the brand-coloured header | Optional: a version of the logo that is legible on the company's brand colour, often white on a transparent background. |
+| Font | As the site, or one of the bundled fonts. |
 
-Les champs natifs d'IOMAD (logo, logo compact, CSS personnalisé) restent en dessous ; Épure se déclare thème IOMAD pour qu'IOMAD les affiche. Les couleurs d'IOMAD (titre, principale, lien), qui ne servent qu'aux thèmes IOMAD, sont masquées tant que l'entreprise utilise Épure ; une couleur du titre déjà enregistrée est reprise comme couleur de marque. Enfin, la section **Vocabulaire** règle les mots de l'entreprise, c'est-à-dire ses mots pour « entreprise » et « département », en français et en anglais (« client » et « équipe » pour l'une, « agence » et « service » pour une autre). Épure se déclare thème IOMAD pour qu'IOMAD affiche ces champs. Les mots pour toutes les entreprises se choisissent sur la page Épure : vocabulaire ; une entreprise sans mots propres utilise ceux-là.
+IOMAD's native fields (logo, compact logo, custom CSS) remain below; Épure declares itself an IOMAD theme so that IOMAD displays them. IOMAD's colours (heading, main, link), which are only used by IOMAD themes, are hidden as long as the company uses Épure; a heading colour that has already been saved is carried over as the brand colour. Finally, the **Vocabulary** section sets the company's words, that is, its words for "company" and "department", in French and in English ("client" and "team" for one company, "agency" and "service" for another). Épure declares itself an IOMAD theme so that IOMAD displays these fields. The words for all companies are chosen on the "Épure: vocabulary" page; a company without its own words uses those.
 
-Les paquets de langue étant communs à tout le site, ces mots sont appliqués au chargement des chaînes par un gestionnaire de chaînes que le thème active à chaque page (le mécanisme `$CFG->customstringmanager` de Moodle), avec un cache par entreprise. **Aucune modification de `config.php` n'est nécessaire.** Il n'est activé que si des mots sont choisis ; si `config.php` définit déjà un autre gestionnaire de chaînes, celui-ci est conservé et la page Épure : vocabulaire l'indique.
+Since language packs are shared by the whole site, these words are applied when strings are loaded, by a string manager that the theme enables on each page (Moodle's `$CFG->customstringmanager` mechanism), with a cache per company. **No change to `config.php` is needed.** It is only enabled if words have been chosen; if `config.php` already defines another string manager, that one is kept and the "Épure: vocabulary" page says so.
 
-### Vocabulaire
+### Vocabulary
 
-Administration du site › Présentation › Thèmes › Épure : vocabulaire (lien aussi dans l'onglet Réglages généraux du thème).
+Site administration › Appearance › Themes › Épure: vocabulary (also linked from the theme's General settings tab).
 
-Choisissez, pour le français et l'anglais, les mots qui désignent :
+Choose, for French and English, the words used for:
 
-| Objet | Mots proposés en français | Mots proposés en anglais |
+| Item | Words offered in French | Words offered in English |
 |---|---|---|
-| Cours | cours, formation, parcours, module, autre | course, program, programme, module, class, learning path, autre |
-| Étudiants | étudiant, apprenant, stagiaire, participant, collaborateur, autre | student, learner, trainee, participant, employee, autre |
-| Enseignants | enseignant, formateur, tuteur, intervenant, professeur, coach, autre | teacher, trainer, tutor, instructor, facilitator, coach, autre |
+| Courses | cours, formation, parcours, module, other | course, program, programme, module, class, learning path, other |
+| Students | étudiant, apprenant, stagiaire, participant, collaborateur, other | student, learner, trainee, participant, employee, other |
+| Teachers | enseignant, formateur, tuteur, intervenant, professeur, coach, other | teacher, trainer, tutor, instructor, facilitator, coach, other |
 
-Le vocabulaire s'applique à **tout Moodle** : menus, tableau de bord, listes de cours, participants, rôles, rapports, notifications, ainsi qu'aux pages des plugins et d'IOMAD.
+The vocabulary applies to **the whole of Moodle**: menus, Dashboard, course lists, participants, roles, reports, notifications, as well as plugin and IOMAD pages.
 
-En français, le plugin ne se contente pas de remplacer un mot : les articles, l'élision et les accords suivent le mot choisi. « Tous les cours » devient « Toutes les formations », « Ce cours est masqué » « Cette formation est masquée », « l'étudiant » « le stagiaire ». Pour un mot de votre choix, indiquez son singulier, son pluriel et son genre.
+In French, the plugin does more than swap one word for another: articles, elision and agreement follow the chosen word. "Tous les cours" becomes "Toutes les formations", "Ce cours est masqué" becomes "Cette formation est masquée", and "l'étudiant" becomes "le stagiaire". For a word of your own, enter its singular, its plural and its gender.
 
-Fonctionnement :
+How it works:
 
-- les chaînes sont écrites avec l'outil natif **Personnalisation de la langue** de Moodle (paquets `fr_local`, `en_local`) : aucun fichier de Moodle ni `config.php` n'est modifié ;
-- les chaînes que vous avez personnalisées vous-même dans cet outil sont conservées, jamais écrasées ;
-- chaque chaîne réécrite reste modifiable dans l'outil de personnalisation ;
-- « Rétablir la formulation de Moodle » retire uniquement les chaînes écrites par le thème, tout comme la désinstallation du thème ;
-- les mots restent en place quel que soit le thème utilisé par un cours ou un utilisateur ;
-- la première application prend une vingtaine de secondes par langue (Moodle charge le paquet de langue dans l'outil), les suivantes quelques secondes.
+- the strings are written with Moodle's native **Language customisation** tool (`fr_local` and `en_local` packs): no Moodle file and no `config.php` is modified;
+- strings you have customised yourself in that tool are kept, never overwritten;
+- every rewritten string can still be edited in the customisation tool;
+- "Restore Moodle's wording" removes only the strings written by the theme, as does uninstalling the theme;
+- the words stay in place whatever theme a course or user uses;
+- the first run takes about twenty seconds per language (Moodle loads the language pack into the tool), later runs a few seconds.
 
-Après l'installation d'une nouvelle version de Moodle ou d'un paquet de langue, appliquez à nouveau le vocabulaire pour couvrir les nouvelles chaînes.
+After installing a new Moodle version or language pack, apply the vocabulary again to cover the new strings.
 
-Avec IOMAD, la même page propose les mots « entreprise » et « département » pour toutes les entreprises ; chaque entreprise peut choisir les siens dans sa fiche (voir la section IOMAD).
+With IOMAD, the same page offers the words "company" and "department" for all companies; each company can choose its own in its profile (see the IOMAD section).
 
-### Réglages avancés
+### Advanced settings
 
-SCSS initial (pour redéfinir des variables) et SCSS ajouté à la fin de la feuille de style.
+Initial SCSS (to override variables) and SCSS added at the end of the stylesheet.
 
-## Pied de page
+## Footer
 
-En bas de chaque page, page de connexion comprise : le nom du site, un texte libre (par exemple l'adresse de l'établissement), puis les liens **Mentions légales**, **Données personnelles**, **Accessibilité : …** (une fois la déclaration publiée) et **Contact**, et des liens libres. Il se règle dans l'onglet **Pied de page** des réglages du thème ; avec IOMAD, chaque entreprise peut avoir ses propres texte et liens (fiche de l'entreprise › Apparence). Laissés vides, les liens « Données personnelles » et « Contact » reprennent ceux de Moodle quand il en a (politiques du site, formulaire du support).
+At the bottom of every page, including the login page: the site name, free text (for example the organisation's address), then the **Legal notice**, **Privacy**, **Accessibility: …** (once the statement is published) and **Contact** links, and custom links. It is set in the **Footer** tab of the theme settings; with IOMAD, each company can have its own text and links (company profile › Appearance). When left empty, the "Privacy" and "Contact" links use Moodle's own when it has them (site policies, contact site support form).
 
-## Chiffres clés
+## Key figures
 
-Sur un Moodle sans IOMAD, le tableau de bord des gestionnaires de la plateforme commence par ses chiffres clés : utilisateurs (et actifs cette semaine), cours (et cours visibles), inscriptions actives, achèvements des 30 derniers jours. Avec IOMAD, ce sont ceux de l'entreprise sélectionnée, en tête du tableau de bord IOMAD.
+On a Moodle site without IOMAD, the Dashboard of platform managers starts with its key figures: users (and those active this week), courses (and visible courses), active enrolments, completions over the last 30 days. With IOMAD, these are the figures of the selected company, at the top of the IOMAD dashboard.
 
-## Installation et mises à jour : « Moodle travaille… »
+## Installation and upgrades: "Moodle is working…"
 
-Sur les pages d'installation et de mise à jour (mise à jour de Moodle, nouveaux réglages, plugins, installation depuis un fichier ZIP, vérification de l'environnement), un clic sur « Continuer », « Installer le plugin » ou « Mettre à jour la base de données maintenant » affiche, après une demi-seconde, une fenêtre « Moodle travaille… Ne fermez pas et ne rechargez pas cette page ». Elle évite un second clic et est annoncée aux lecteurs d'écran. Le script est écrit dans la page, sans le chargeur JavaScript de Moodle, pour fonctionner aussi pendant une mise à jour.
+On installation and upgrade pages (Moodle upgrade, new settings, plugins, installation from a ZIP file, environment check), clicking "Continue", "Install plugin" or "Upgrade Moodle database now" displays, after half a second, a "Moodle is working… Do not close or reload this page" window. It prevents a second click and is announced to screen readers. The script is written into the page, without Moodle's JavaScript loader, so that it also works during an upgrade.
 
-## Mode sombre
+## Dark mode
 
-Le réglage **Mode sombre** (réglages généraux du thème) vaut *Jamais*, *Automatique, selon l'appareil* ou *Toujours*. Avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche. Chaque utilisateur peut aussi choisir son affichage dans ses préférences (bouton « Aa ») : comme le site, clair, sombre, ou selon son appareil.
+The **Dark mode** setting (the theme's General settings) can be *Never*, *Automatic, as the device* or *Always*. With IOMAD, each company can make a different choice in its profile. Each user can also choose their display in their preferences ("Aa" button): as the site, light, dark, or as their device.
 
-Les couleurs sombres sont calculées à partir de la couleur de marque, avec les mêmes contrastes AA ; l'en-tête aux couleurs de la marque garde sa couleur. Les pages de Moodle et d'IOMAD (tableaux de bord, cours, formulaires, menus, tableaux) passent en sombre ; l'éditeur de texte garde l'apparence de son propre thème.
+Dark colours are calculated from the brand colour, with the same AA contrast; a brand-coloured header keeps its colour. Moodle and IOMAD pages (dashboards, courses, forms, menus, tables) switch to dark; the text editor keeps the appearance of its own theme.
 
-## Tableau de bord de l'apprenant
+## Learner dashboard
 
-Pour un utilisateur qui suit des cours, le tableau de bord commence par un aperçu, au-dessus des blocs de Moodle :
+For a user who takes courses, the Dashboard starts with an overview, above Moodle's blocks:
 
-- **Reprendre où vous en étiez** : le dernier cours visité et pas encore terminé, avec son image, sa progression, sa prochaine activité et un bouton pour continuer ;
-- **En cours** : les autres cours en cours, avec leur progression, et un lien vers « Mes cours » ;
-- **À venir** : les prochaines échéances de tous ses cours (devoirs à rendre, tests qui ferment…) ;
-- **Terminé** : les cours terminés, avec leur date, et un lien vers ses attestations quand la plateforme en délivre (IOMAD, Certificate, Custom certificate).
+- **Pick up where you left off**: the last course visited and not yet completed, with its image, progress, next activity and a button to continue;
+- **In progress**: the other courses in progress, with their progress, and a link to "My courses";
+- **Coming up**: the next deadlines across all their courses (assignments due, quizzes closing…);
+- **Completed**: completed courses, with their date, and a link to the user's certificates when the platform issues them (IOMAD, Certificate, Custom certificate).
 
-L'aperçu se désactive dans les réglages généraux du thème (« Aperçu de l'apprenant sur le tableau de bord ») ; avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche.
+The overview can be turned off in the theme's General settings ("Learner overview on the dashboard"); with IOMAD, each company can make a different choice in its profile.
 
-## Page de cours
+## Course page
 
-En tête de chaque cours, une **bannière** reprend l'image du cours (ou un motif généré), sa catégorie et son titre, avec le fil d'Ariane et les actions habituelles de Moodle. Ensuite, selon le rôle :
+At the top of each course, a **banner** shows the course image (or a generated pattern), its category and its title, with the breadcrumb and Moodle's usual actions. Then, depending on the role:
 
-- **apprenant** : sa progression, la prochaine activité à faire, la prochaine échéance, et un bouton **Continuer** qui y mène ;
-- **enseignant** : les participants, les apprenants actifs cette semaine, les devoirs à corriger, et des accès directs (participants, notes, paramètres) ;
-- **visiteur** (invité, utilisateur non inscrit) : l'image, la catégorie et le titre seulement.
+- **learner**: their progress, the next activity to do, the next deadline, and a **Continue** button that leads there;
+- **teacher**: participants, learners active this week, assignments to grade, and shortcuts (participants, grades, settings);
+- **visitor** (guest, non-enrolled user): the image, category and title only.
 
-Pour l'apprenant, le titre de chaque section indique combien de ses activités il a terminées (« 2/5 », coche une fois la section terminée). La bannière se désactive dans les réglages généraux du thème (« Bannière des cours ») ; avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche.
+For learners, the title of each section shows how many of its activities they have completed ("2/5", with a tick once the section is complete). The banner can be turned off in the theme's General settings ("Course banner"); with IOMAD, each company can make a different choice in its profile.
 
-## E-mails aux couleurs de la marque
+## Branded e-mails
 
-Les e-mails HTML du site (notifications, messages, forums, devoirs, e-mails d'IOMAD…) reçoivent :
+The site's HTML e-mails (notifications, messages, forums, assignments, IOMAD e-mails…) get:
 
-- le **logo** en tête (sinon le nom du site) et un **filet de la couleur de marque** ;
-- le message dans une carte, ses liens dans la couleur de marque ;
-- un **pied** avec le nom du site, le texte du pied de page et un lien « Gérer mes notifications ».
+- the **logo** at the top (otherwise the site name) and a **rule in the brand colour**;
+- the message in a card, with its links in the brand colour;
+- a **footer** with the site name, the footer text and a "Manage my notifications" link.
 
-Avec IOMAD, ce sont le logo, la couleur, le nom et le texte du pied de page de **l'entreprise du destinataire**. Le gabarit utilise des tableaux et des styles en ligne, que lisent les logiciels de messagerie, et s'adapte aux écrans étroits. Épure remplace pour cela le gabarit `core/email_html` de Moodle, y compris pour les e-mails envoyés par les tâches planifiées. Les e-mails se désactivent dans les réglages généraux du thème (« E-mails aux couleurs de la marque ») : ils reprennent alors la présentation de Moodle.
+With IOMAD, the logo, colour, name and footer text are those of **the recipient's company**. The template uses tables and inline styles, which e-mail clients can read, and adapts to narrow screens. To do this, Épure overrides Moodle's `core/email_html` template, including for e-mails sent by scheduled tasks. Branded e-mails can be turned off in the theme's General settings ("E-mails in the colours of the brand"): e-mails then go back to Moodle's layout.
 
-## Recherche rapide (Ctrl+K)
+## Quick search (Ctrl+K)
 
-Un bouton **Rechercher** dans l'en-tête, ou **Ctrl+K** (**⌘K** sur Mac) depuis n'importe quelle page, ouvre une fenêtre de recherche. Elle trouve, sans tenir compte des majuscules ni des accents :
+A **Search** button in the header, or **Ctrl+K** (**⌘K** on Mac) from any page, opens a search window. Ignoring case and accents, it finds:
 
-- les **pages des menus** : navigation principale, menu utilisateur, onglets du cours ou de la page (donc le tableau de bord IOMAD, l'administration, le calendrier, les notes… selon les droits de chacun) ;
-- **mes cours** et les **activités** de mes cours ;
-- les autres cours du **catalogue**, avec un lien vers la recherche complète ;
-- pour les administrateurs, les **pages de l'administration** dont le nom ou un réglage correspond, avec un lien vers la recherche de l'administration.
+- **menu pages**: primary navigation, user menu, course or page tabs (and therefore the IOMAD dashboard, Site administration, the calendar, grades… depending on each user's permissions);
+- **my courses** and the **activities** in my courses;
+- other courses in the **catalogue**, with a link to the full search;
+- for administrators, **administration pages** whose name or a setting matches, with a link to the administration search.
 
-Les flèches ↑ ↓ choisissent un résultat, Entrée l'ouvre (Ctrl+Entrée dans un nouvel onglet), Échap ferme. La fenêtre est une boîte de dialogue accessible (liste de choix annoncée aux lecteurs d'écran, nombre de résultats). La recherche se désactive dans les réglages généraux du thème (« Recherche rapide »).
+The ↑ ↓ arrows select a result, Enter opens it (Ctrl+Enter in a new tab), Esc closes the window. The window is an accessible dialog (list of options announced to screen readers, number of results). Search can be turned off in the theme's General settings ("Quick search").
 
-## Barre de navigation mobile
+## Mobile navigation bar
 
-Sur téléphone, une barre fixée en bas de l'écran, à portée de pouce, mène au **tableau de bord** (ou à l'accueil du site si le tableau de bord est désactivé), à **mes cours**, au **catalogue**, aux **messages** (avec le nombre de conversations non lues) et au **profil** ; l'entrée de la page en cours est mise en évidence. Les boutons flottants de Moodle (aide, sommaire du cours) remontent au-dessus d'elle ; sur les pages qui ont leur propre barre d'actions en bas (notation, par exemple), elle s'efface. Elle se désactive dans les réglages généraux du thème (« Barre de navigation mobile ») et, avec IOMAD, pour chaque entreprise dans sa fiche.
+On phones, a bar fixed to the bottom of the screen, within thumb's reach, leads to the **Dashboard** (or to the site home if the Dashboard is disabled), **My courses**, the **catalogue**, **messages** (with the number of unread conversations) and the **profile**; the entry for the current page is highlighted. Moodle's floating buttons (help, course index) move up above it; on pages that have their own action bar at the bottom (grading, for example), it steps aside. It can be turned off in the theme's General settings ("Mobile navigation bar") and, with IOMAD, for each company in its profile.
 
-## Catalogue des cours
+## Course catalogue
 
-La page des cours (`/course/index.php`) devient un **catalogue** : les sous-catégories en pastilles avec leur nombre de cours, puis les cours de la catégorie et de ses sous-catégories en **cartes** (image, catégorie, nom, résumé, enseignants). Chaque carte indique si l'utilisateur est **inscrit**, ou comment entrer dans le cours (**inscription libre**, **accès invité**). La barre de Moodle reste en haut (menu des catégories, recherche, actions de gestion). Les résultats de la recherche de cours s'affichent avec les mêmes cartes.
+The courses page (`/course/index.php`) becomes a **catalogue**: subcategories as chips with their number of courses, then the courses of the category and its subcategories as **cards** (image, category, name, summary, teachers). Each card shows whether the user is **enrolled**, or how to get into the course (**open enrolment**, **guest access**). Moodle's bar stays at the top (category menu, search, management actions). Course search results are shown with the same cards.
 
-Avant l'inscription, la page d'inscription d'un cours le **présente** : bannière avec l'image et un bouton vers les options d'inscription, résumé, **programme** (sections et nombre d'activités), enseignants, dates, contenu par type d'activité et champs personnalisés du cours. Les sections et activités cachées n'y figurent pas.
+Before enrolment, a course's enrolment page **introduces** it: a banner with the image and a button to the enrolment options, the summary, the **outline** (sections and number of activities), teachers, dates, contents by activity type and the course's custom fields. Hidden sections and activities are not listed.
 
-Avec IOMAD, le catalogue ne montre que les catégories et les cours qu'IOMAD autorise à l'utilisateur. Le catalogue et la présentation se désactivent dans les réglages généraux du thème (« Catalogue des cours »).
+With IOMAD, the catalogue only shows the categories and courses that IOMAD allows the user to see. The catalogue and the course introduction can be turned off in the theme's General settings ("Course catalogue").
 
-## Pages d'activité
+## Activity pages
 
-Dans Moodle 4 et 5, avec le sommaire latéral, les liens vers l'activité précédente et suivante ont disparu. Épure les rétablit sur chaque page d'activité :
+In Moodle 4 and 5, with the side course index, the links to the previous and next activity disappeared. Épure brings them back on every activity page:
 
-- **en haut**, une bande avec le cours (lien de retour), la position de l'activité (« Activité 3 sur 12 »), la progression de l'apprenant et un bouton **Mode lecture** ;
-- **en bas**, l'activité précédente et la suivante en cartes (icône, nom, section) ; après la dernière, une carte ramène au cours. Les étiquettes et les activités invisibles pour l'utilisateur sont ignorées.
+- **at the top**, a strip with the course (back link), the activity's position ("Activity 3 of 12"), the learner's progress and a **Reading mode** button;
+- **at the bottom**, the previous and next activities as cards (icon, name, section); after the last one, a card leads back to the course. Text and media areas and activities that the user cannot see are skipped.
 
-Le **mode lecture** masque les panneaux latéraux et centre le contenu ; il est gardé dans le profil de l'utilisateur, et la touche Échap le quitte. Le bouton **Marquer comme terminé** est agrandi et prend la couleur de la marque. Ces ajouts se désactivent dans les réglages généraux du thème (« Pages d'activité »).
+**Reading mode** hides the side panels and centres the content; it is saved in the user's profile, and the Esc key exits it. The **Mark as done** button is enlarged and takes the brand colour. These additions can be turned off in the theme's General settings ("Activity pages").
 
-## Accessibilité
+## Accessibility
 
-Le thème vise les WCAG 2.2 niveau AA, le RGAA 4.1.2 et l'EN 301 549 : contrastes calculés, focus clavier toujours visible, lien d'évitement, cibles d'au moins 24 × 24 px, liens soulignés dans le texte, respect du réglage « réduire les animations ».
+The theme targets WCAG 2.2 level AA, RGAA 4.1.2 and EN 301 549: calculated contrast, keyboard focus always visible, a skip link, targets of at least 24 × 24 px, underlined links within text, and respect for the "reduce motion" setting.
 
-**Préférences d'affichage.** Le bouton **Aa** de l'en-tête (raccourci Alt + A) ouvre un panneau où chaque utilisateur connecté choisit :
+**Display preferences.** The **Aa** button in the header (shortcut Alt + A) opens a panel in which each logged-in user chooses:
 
-- la taille du texte : petite, normale, grande ou très grande (90, 100, 115 ou 130 %) ;
-- une police de lecture : celle du site, Atkinson Hyperlegible ou OpenDyslexic ;
-- un texte plus espacé (valeurs du critère WCAG 1.4.12), un contraste renforcé, des liens soulignés, des animations réduites.
+- the text size: small, normal, large or very large (90, 100, 115 or 130%);
+- a reading font: the site's font, Atkinson Hyperlegible or OpenDyslexic;
+- more text spacing (the values from WCAG success criterion 1.4.12), enhanced contrast, underlined links, reduced motion.
 
-Le changement est immédiat, puis enregistré dans les préférences de son profil Moodle : il vaut sur toutes les pages et tous ses appareils, dès le premier affichage. Les visiteurs non connectés et les invités ont l'affichage par défaut. Ces préférences sont déclarées à l'API de confidentialité et exportées avec les données de l'utilisateur.
+The change takes effect immediately and is then saved in the preferences of the user's Moodle profile: it applies on every page and on all their devices, from the very first page load. Visitors who are not logged in and guests get the default display. These preferences are declared to the Privacy API and exported with the user's data.
 
-**Déclaration d'accessibilité.** L'onglet **Accessibilité** des réglages du thème la remplit au format français (RGAA) : état de conformité, entité, taux de conformité, auditeur et date de l'audit, non-conformités, dérogations, contenus non soumis, contact (par défaut, le courriel du support). Tant qu'aucun état n'est choisi, rien n'est publié. Une fois l'état choisi :
+**Accessibility statement.** The **Accessibility** tab of the theme settings fills it in using the French (RGAA) format: compliance status, entity, compliance rate, auditor and audit date, non-compliant content, exemptions, content not subject to the requirements, contact (by default, the support e-mail address). Until a status is chosen, nothing is published. Once the status is chosen:
 
-- la déclaration est publiée à l'adresse `/theme/epure/accessibility.php`, lisible sans compte. Elle liste aussi les mesures d'accessibilité prises par le thème (contrastes, clavier, structure, agrandissement, préférences d'affichage, tests automatiques), et les voies de recours auprès du Défenseur des droits ; une adresse électronique saisie comme contact devient un lien ;
-- la mention « Accessibilité : partiellement conforme » (selon l'état) apparaît en bas de chaque page, et un lien dans le pied de page.
+- the statement is published at `/theme/epure/accessibility.php` and can be read without an account. It also lists the accessibility measures taken by the theme (contrast, keyboard, structure, zoom, display preferences, automated tests) and the ways to seek redress from the Défenseur des droits (the French rights ombudsman); an e-mail address entered as the contact becomes a link;
+- the notice "Accessibility: partially compliant" (depending on the status) appears at the bottom of every page, along with a link in the footer.
 
-Un thème ne rend pas une plateforme conforme à lui seul : les contenus des cours comptent aussi, et un audit manuel reste nécessaire avant de déclarer la conformité.
+A theme alone cannot make a platform compliant: course content matters too, and a manual audit is still required before declaring compliance.
 
-## Développement
+## Development
 
-Les variables de la palette sont exposées en propriétés CSS (`--epure-brand`, `--epure-brand-text`, `--epure-on-brand`, etc.) pour les SCSS personnalisés.
+The palette variables are exposed as CSS custom properties (`--epure-brand`, `--epure-brand-text`, `--epure-on-brand`, etc.) for custom SCSS.
 
-Tests :
+Tests:
 
 ```
 vendor/bin/phpunit --testsuite theme_epure_testsuite
 vendor/bin/behat --config <behat_dataroot>/behatrun/behat/behat.yml --tags @theme_epure
 ```
 
-Les tests Behat passent l'audit axe-core de Moodle (« the page should meet accessibility standards ») sur le tableau de bord, le panneau des préférences et la déclaration d'accessibilité.
+The Behat tests pass Moodle's axe-core audit ("the page should meet accessibility standards") on the Dashboard, the preferences panel and the accessibility statement.
 
 ## Licence
 
-GNU GPL v3 ou ultérieure. Les polices fournies sont sous SIL Open Font License 1.1 (voir `fonts/` et `thirdpartylibs.xml`).
+GNU GPL v3 or later. The bundled fonts are under the SIL Open Font License 1.1 (see `fonts/` and `thirdpartylibs.xml`).

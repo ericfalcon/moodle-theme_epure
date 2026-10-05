@@ -177,6 +177,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
     public function standard_end_of_body_html() {
         global $CFG;
         $output = parent::standard_end_of_body_html();
+        // The page of the messages reuses the template of the drawer, hidden from assistive technologies
+        // (aria-hidden) although the page shows it: the theme shows it to them too, and names the region.
+        if ($this->page->pagetype === 'message-index') {
+            $output .= \html_writer::script('document.querySelectorAll(\'[data-region="message-index"]\').forEach(function(e) {'
+                . 'e.removeAttribute("aria-hidden"); e.removeAttribute("aria-expanded"); e.setAttribute("aria-label", '
+                . json_encode(get_string('messages', 'message')) . '); });');
+        }
         $pagetype = (string) $this->page->pagetype;
         if (in_array($pagetype, self::BUSY_PAGES, true) || str_starts_with($pagetype, 'admin-tool-installaddon')) {
             $output .= $this->render_from_template('theme_epure/busy', [

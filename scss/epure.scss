@@ -68,6 +68,7 @@ a:focus {
 // Links inside running text are underlined, so they never rely on colour alone (WCAG 1.4.1):
 // with some brand colours, the link colour is close to the text colour.
 p a:not(.btn),
+dd a:not(.btn),
 .footer-section a:not(.btn),
 .epure-a11y-statement a:not(.btn),
 .text_to_html a:not(.btn) {
@@ -75,7 +76,37 @@ p a:not(.btn),
     text-underline-offset: .15em;
 }
 
-// Visible keyboard focus everywhere (WCAG 2.4.7 and 2.4.11).
+// Targets of at least 24 × 24 px (WCAG 2.2, 2.5.8) where Moodle draws smaller ones: sorting and
+// hiding the columns of the tables, initials of the lists of users, lists of links of the
+// administration, action menus.
+table.flexible th a[data-sortable],
+table.flexible th .commands a,
+table th a[data-toggle="popover"],
+table th a[data-bs-toggle="popover"],
+.generaltable th a[data-sortable],
+.action-menu-trigger .dropdown-toggle,
+#page-admin-search .list-unstyled > li > a,
+#page-admin-category .list-unstyled > li > a {
+    display: inline-flex;
+    align-items: center;
+    min-width: 24px;
+    min-height: 24px;
+}
+
+// The help icons of the headers of the tables touch the links around them.
+table th a[data-toggle="popover"],
+table th a[data-bs-toggle="popover"] {
+    margin: 2px;
+}
+
+.initialbar .page-link {
+    min-width: 2rem;
+    text-align: center;
+}
+
+// Visible keyboard focus everywhere (WCAG 2.4.7 and 2.4.11). Bootstrap and Moodle remove the outline
+// of many buttons, menus and fields with more specific rules (.btn:focus, .custom-select:focus…), and
+// draw a pale ring instead: the outline of the theme takes precedence over all of them.
 a:focus-visible,
 button:focus-visible,
 .btn:focus-visible,
@@ -84,7 +115,7 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
 summary:focus-visible {
-    outline: 2px solid var(--epure-focus);
+    outline: 2px solid var(--epure-focus) !important; // stylelint-disable-line declaration-no-important
     outline-offset: 2px;
     box-shadow: none;
 }
@@ -302,7 +333,7 @@ body.epure-header-brand .navbar.fixed-top a:focus-visible,
 body.epure-header-brand .navbar.fixed-top button:focus-visible,
 body.epure-header-brand .navbar.fixed-top [tabindex]:focus-visible,
 body.epure-header-brand .navbar.fixed-top input:focus-visible {
-    outline-color: var(--epure-header-on);
+    outline-color: var(--epure-header-on) !important; // stylelint-disable-line declaration-no-important
 }
 
 // Edit mode switch, once on: its track is filled with the brand colour by Bootstrap, the colour of the bar.
@@ -1803,15 +1834,16 @@ html.epure-a11y-motion *::after {
 }
 
 // In the brand-coloured header, the button is drawn with the colours of the header.
+// Without a background of its own, it keeps the contrast of the header, which the palette makes AA.
 .epure-header-brand .navbar .epure-qs-button.btn {
     color: var(--epure-header-on);
-    background-color: rgba(255, 255, 255, .12);
-    border-color: rgba(255, 255, 255, .35);
+    background-color: transparent;
+    border-color: var(--epure-header-on);
 
     kbd {
         color: var(--epure-header-on);
         background-color: transparent;
-        border-color: rgba(255, 255, 255, .35);
+        border-color: var(--epure-header-on);
     }
 }
 
@@ -3276,6 +3308,35 @@ html.epure-focus body.epure-activity {
     }
 
     // Status of the assignments without a colour of their own, black in the module.
+    // Tables of Moodle drawn white or light grey: the grader report and the grading of the assignments.
+    .path-grade-report-grader .gradeparent tr .cell,
+    .path-grade-report-grader .gradeparent .floater .cell {
+        color: var(--epure-ink);
+        background-color: var(--epure-surface);
+    }
+
+    .path-mod-assign .gradingtable tr.unselectedrow td {
+        background-color: var(--epure-surface);
+    }
+
+    .path-mod-assign .gradingtable tr.selectedrow td {
+        background-color: var(--epure-brand-soft);
+    }
+
+    .path-grade-report-grader .gradeparent .heading .cell,
+    .path-grade-report-grader .gradeparent .cell.category,
+    .path-grade-report-grader .gradeparent .avg .cell,
+    .path-mod-assign .gradingtable thead th {
+        color: var(--epure-ink);
+        background-color: var(--epure-surface-raised);
+    }
+
+    // « More » menu of the tabs of the course, light grey on hover and focus.
+    .moremenu .nav-link:hover,
+    .moremenu .nav-link:focus {
+        background-color: var(--epure-surface-raised);
+    }
+
     .path-mod-assign td.submissionnotgraded,
     .path-mod-assign div.submissionnotgraded {
         color: var(--epure-ink);
