@@ -51,7 +51,7 @@ A search box (accent-insensitive) and In progress, Future and Past filters compl
 | Headline and supporting text | Shown on the visual. Without a headline, a default sentence is used. |
 | Background image | Optional. A brand-coloured overlay is placed over it, with the opacity needed to keep the text legible (AA contrast) whatever the image. |
 
-The form itself is still Moodle's own: it follows each version (4.5, 5.0, 5.1) and the configured authentication methods.
+The form itself is still Moodle's own: it follows each version (4.5 to 5.3) and the configured authentication methods.
 
 ### With IOMAD
 

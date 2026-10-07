@@ -51,7 +51,7 @@ Une recherche (insensible aux accents) et des filtres En cours, À venir, Passé
 | Accroche et texte d'accompagnement | Affichés sur le visuel. Sans accroche, une phrase par défaut est utilisée. |
 | Image de fond | Facultative. Un voile de la couleur de marque est posé dessus, avec l'opacité nécessaire pour que le texte reste lisible (contraste AA) quelle que soit l'image. |
 
-Le formulaire lui-même reste celui de Moodle : il suit chaque version (4.5, 5.0, 5.1) et les méthodes d'authentification configurées.
+Le formulaire lui-même reste celui de Moodle : il suit chaque version (4.5 à 5.3) et les méthodes d'authentification configurées.
 
 ### Avec IOMAD
 
