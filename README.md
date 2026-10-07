@@ -99,6 +99,8 @@ These settings apply to users assigned to the company, and to an administrator w
 
 If the company chooses a theme other than Épure, nothing of Épure remains: IOMAD's form is shown as IOMAD shows it (order, fields, note), and the users of the company see that theme as it is without Épure (original words of the language pack, Moodle's e-mails). The Épure settings of the company are kept and apply again if it goes back to Épure.
 
+The change of theme applies from the next page to the users of the company already logged in (Moodle otherwise kept the former theme until they logged in again). A site administrator who is not a member of the company still sees the theme of the site, as with any IOMAD theme: to see the theme of a company, log in as one of its users.
+
 The Épure settings:
 
 | Company setting | Effect |

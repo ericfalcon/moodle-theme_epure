@@ -27,7 +27,8 @@ use theme_epure\vocabulary\company;
  */
 class hook_callbacks {
     /**
-     * Enables the string manager that applies the IOMAD vocabulary, when words were chosen.
+     * Follows the theme of the IOMAD company of the user, and enables the string manager that applies the
+     * IOMAD vocabulary, when words were chosen.
      *
      * Moodle reads the custom string manager from config.php; the plugin sets it for the request
      * instead, so that the administrator does not have to edit config.php. A string manager
@@ -37,6 +38,7 @@ class hook_callbacks {
      */
     public static function after_config(\core\hook\after_config $hook): void {
         global $CFG;
+        self::follow_company_theme();
         if (
             during_initial_install() || !empty($CFG->config_php_settings['customstringmanager'])
                 || !company_style::iomad_installed() || !company::active()
@@ -56,6 +58,29 @@ class hook_callbacks {
         global $CFG;
         $custom = ltrim((string) ($CFG->config_php_settings['customstringmanager'] ?? ''), '\\');
         return $custom === '' || $custom === string_manager::class;
+    }
+
+    /**
+     * When the theme of a company changes, IOMAD writes the new theme on its users, but a user already
+     * logged in keeps the theme of their session until they log in again: the pages keep the former theme.
+     * The theme of the user is read again, so that the theme chosen for the company applies at once, whole.
+     */
+    protected static function follow_company_theme(): void {
+        global $CFG, $DB, $USER;
+        if (
+            during_initial_install() || empty($CFG->allowuserthemes) || empty($USER->id) || isguestuser()
+                || !company_style::iomad_installed()
+        ) {
+            return;
+        }
+        try {
+            $theme = $DB->get_field('user', 'theme', ['id' => $USER->id]);
+        } catch (\Throwable $e) {
+            return;
+        }
+        if ($theme !== false && (string) $theme !== (string) ($USER->theme ?? '')) {
+            $USER->theme = (string) $theme;
+        }
     }
 
     /**
