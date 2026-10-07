@@ -87,12 +87,12 @@ Ces réglages s'appliquent aux utilisateurs rattachés à l'entreprise, et à l'
 
 **Gérer les cours** (paramètres IOMAD des cours) : le tableau d'IOMAD gagne une colonne **Catégorie**, après celle du cours, avec le chemin complet de sa catégorie (par exemple « Clinique des Tilleuls / Soins infirmiers »).
 
-**Tout se règle dans la fiche de l'entreprise** (Tableau de bord IOMAD › Créer une entreprise ou Modifier l'entreprise › Apparence). Épure range cette partie en étapes numérotées, dans l'ordre du travail, et y regroupe les champs d'IOMAD :
+**Tout se règle dans la fiche de l'entreprise** (Tableau de bord IOMAD › Créer une entreprise ou Modifier l'entreprise › Apparence). Épure range cette partie en étapes numérotées, organisées comme les onglets des réglages du thème, et y regroupe les champs d'IOMAD :
 
 1. **Thème** : le thème de l'entreprise.
-2. **Logos** : logo, logo compact et favicon d'IOMAD, puis le logo pour l'en-tête en couleur. Les logos viennent avant les couleurs, car leurs couleurs sont proposées à l'étape suivante.
-3. **Couleurs et police** : couleur de marque, couleur de l'en-tête, police, mode sombre.
-4. **Pages** : bannière de cours, aperçu de l'apprenant, barre de navigation mobile.
+2. **Identité visuelle** : *Logos* (logo, logo compact et favicon d'IOMAD, puis le logo pour l'en-tête en couleur), puis *Couleurs* (couleur de marque, couleur de l'en-tête). Les logos viennent avant les couleurs, car leurs couleurs sont proposées pour la couleur de marque.
+3. **Typographie et affichage** : police, mode sombre.
+4. **Pages et navigation** : *Navigation* (barre de navigation mobile), *Pages* (bannière de cours, aperçu de l'apprenant).
 5. **Pied de page**.
 6. **Vocabulaire**.
 7. **Réglages avancés** : CSS personnalisé et menu personnalisé d'IOMAD.

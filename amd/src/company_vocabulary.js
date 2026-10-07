@@ -19,9 +19,10 @@
  *
  * IOMAD's form has no extension point: the fields are rendered at the end of the page, then moved
  * into its Appearance section (or before its buttons), so that they are posted with the company.
- * IOMAD's own appearance fields are moved into the numbered sections of Épure, in the order of the
- * work: theme, logos (before the colours, which are proposed from the logo), colours and font,
- * pages, footer, vocabulary, then the advanced settings (custom CSS and menu).
+ * IOMAD's own appearance fields are moved into the numbered sections of Épure, organised as the
+ * settings of the theme: theme, brand identity (the logos, then the colours, which are proposed from
+ * the logo), typography and display, pages and navigation, footer, vocabulary, then the advanced
+ * settings (custom CSS and menu).
  *
  * @module     theme_epure/company_vocabulary
  * @copyright  2026 Eric Falcon
@@ -83,7 +84,8 @@ export const init = () => {
  */
 const arrange = (form, region) => {
     const row = (name) => form.querySelector(`[name="${name}"]`)?.closest('.fitem, .form-group');
-    const section = (key) => region.querySelector(`[data-epure-company-section="${key}"]`);
+    const section = (key) => region.querySelector(`[data-epure-company-section="${key}"]`)
+        || region.querySelector(`[data-epure-company-group="${key}"]`);
     const move = (key, names, before = null) => {
         const target = section(key);
         names.map(row).filter((item) => item && !region.contains(item)).forEach((item) => {
@@ -125,7 +127,7 @@ const arrange = (form, region) => {
         section('advanced').append(box);
     }
 
-    region.querySelectorAll('[data-epure-company-section]').forEach((item) => {
+    region.querySelectorAll('[data-epure-company-section], [data-epure-company-group]').forEach((item) => {
         item.hidden = !item.querySelector('.fitem, .form-group');
     });
     // IOMAD's note does not concern Épure, which uses the logos and the colours of these sections.

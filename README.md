@@ -87,12 +87,12 @@ These settings apply to users assigned to the company, and to an administrator w
 
 **Manage courses** (IOMAD course settings): the IOMAD table gains a **Category** column, after the course column, with the full path of its category (for example "Clinique des Tilleuls / Soins infirmiers").
 
-**Everything is set in the company's profile** (IOMAD dashboard › Create company or Edit company › Appearance). Épure arranges that part in numbered steps, in the order of the work, and moves IOMAD's own fields into them:
+**Everything is set in the company's profile** (IOMAD dashboard › Create company or Edit company › Appearance). Épure arranges that part in numbered steps, organised as the tabs of the theme settings, and moves IOMAD's own fields into them:
 
 1. **Theme**: the theme of the company.
-2. **Logos**: IOMAD's logo, compact logo and favicon, then the logo for the brand-coloured header. The logos come before the colours, because their colours are proposed in the next step.
-3. **Colours and font**: brand colour, header colour, font, dark mode.
-4. **Pages**: course banner, learner overview, mobile navigation bar.
+2. **Brand identity**: *Logos* (IOMAD's logo, compact logo and favicon, then the logo for the brand-coloured header), then *Colours* (brand colour, header colour). The logos come before the colours, because their colours are proposed for the brand colour.
+3. **Typography and display**: font, dark mode.
+4. **Pages and navigation**: *Navigation* (mobile navigation bar), *Pages* (course banner, learner overview).
 5. **Footer**.
 6. **Vocabulary**.
 7. **Advanced settings**: IOMAD's custom CSS and custom menu.

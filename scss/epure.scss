@@ -828,6 +828,24 @@ body.epure-header-brand .navbar.fixed-top .divider {
     color: var(--epure-ink-muted);
 }
 
+// Groups of a section, as the headings of the tabs of the theme settings (Logos, Colours…).
+.epure-company-group + .epure-company-group {
+    margin-top: .5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--epure-border);
+}
+
+.epure-company-group-title {
+    margin-bottom: .25rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.epure-company-group-desc {
+    margin-bottom: .75rem;
+    color: var(--epure-ink-muted);
+}
+
 .epure-company-menuhelp {
     margin-bottom: 1rem;
 
