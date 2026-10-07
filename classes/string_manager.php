@@ -58,7 +58,8 @@ class string_manager extends \core_string_manager_standard {
     public function load_component_strings($component, $lang, $disablecache = false, $disablelocal = false) {
         $strings = parent::load_component_strings($component, $lang, $disablecache, $disablelocal);
         // The strings of the theme describe the vocabulary itself (« Companies are called »): they keep the original words.
-        if ($disablelocal || !$strings || $component === 'theme_epure') {
+        // With another theme, the words of the language pack are kept: that theme stays as it is without Épure.
+        if ($disablelocal || !$strings || $component === 'theme_epure' || !theme_use::current()) {
             return $strings;
         }
         $companyid = $this->company_id();

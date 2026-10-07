@@ -37,6 +37,21 @@ class email {
     }
 
     /**
+     * Whether an e-mail to a user gets the colours of the brand: not when their IOMAD company uses another
+     * theme, whose users get the e-mails of Moodle.
+     *
+     * @param int $userid Recipient, 0 when unknown.
+     * @return bool
+     */
+    public static function applies(int $userid): bool {
+        if (!self::enabled()) {
+            return false;
+        }
+        $company = self::company_of($userid);
+        return !$company || theme_use::company($company);
+    }
+
+    /**
      * IOMAD company of a user, or null on a standard Moodle site or without a company.
      *
      * @param int $userid User.

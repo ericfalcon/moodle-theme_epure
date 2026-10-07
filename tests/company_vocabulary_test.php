@@ -70,6 +70,7 @@ final class company_vocabulary_test extends \advanced_testcase {
     public function test_string_manager(): void {
         global $CFG;
         $this->resetAfterTest();
+        set_config('theme', 'epure');
         company::save(7, [terms::setting('en', 'course') => '', terms::setting('en', 'company') => 'client']);
 
         $manager = new class ($CFG->langotherroot, $CFG->langlocalroot, []) extends string_manager {
@@ -98,6 +99,11 @@ final class company_vocabulary_test extends \advanced_testcase {
         $this->assertSame('Company internal', $manager->get_string('siteorganisationtype:companyinternal', 'hub', null, 'en'));
         company::save(0, [terms::setting('en', 'company') => 'agency']);
         $this->assertSame('Agency internal', $manager->get_string('siteorganisationtype:companyinternal', 'hub', null, 'en'));
+
+        // With another theme, the words of the language pack are kept: that theme stays as it is without Épure.
+        set_config('theme', 'boost');
+        $manager->reset_caches();
+        $this->assertSame('Company internal', $manager->get_string('siteorganisationtype:companyinternal', 'hub', null, 'en'));
     }
 
     /**

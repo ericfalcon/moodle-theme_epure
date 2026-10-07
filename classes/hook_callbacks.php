@@ -67,7 +67,7 @@ class hook_callbacks {
         global $CFG, $PAGE, $OUTPUT;
         if (
             $PAGE->pagetype !== 'blocks-iomad_company_admin-company_edit_form' || !company_style::iomad_installed()
-                || during_initial_install()
+                || during_initial_install() || !self::epure_page()
         ) {
             return;
         }

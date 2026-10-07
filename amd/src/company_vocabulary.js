@@ -15,7 +15,8 @@
 
 /**
  * Moves the Épure fields into IOMAD's company form, puts its Appearance section in order, and shows
- * the custom word fields when needed.
+ * the custom word fields when needed. When another theme is chosen for the company, IOMAD's form is
+ * shown as it is without Épure.
  *
  * IOMAD's form has no extension point: the fields are rendered at the end of the page, then moved
  * into its Appearance section (or before its buttons), so that they are posted with the company.
@@ -44,7 +45,7 @@ const toggleCustom = (select) => {
 };
 
 /**
- * Moves the fields into the company form.
+ * Moves the fields into the company form, or restores IOMAD's own form when the company uses another theme.
  */
 export const init = () => {
     const region = document.querySelector('[data-region="epure-company-vocabulary"]');
@@ -56,6 +57,9 @@ export const init = () => {
     }
     const appearance = form.querySelector('#id_appearancecontainer')
         || form.querySelector('#id_appearance')?.querySelector('.fcontainer');
+    // IOMAD's Appearance section as IOMAD shows it, to restore it with another theme.
+    const original = appearance ? [...appearance.childNodes] : [];
+    const help = menuHelp(form);
     const buttons = form.querySelector('#fgroup_id_buttonar');
     if (appearance) {
         // First in the Appearance section, which then holds IOMAD's fields in the sections of Épure.
@@ -65,24 +69,56 @@ export const init = () => {
     } else {
         form.append(region);
     }
-    region.hidden = false;
-    arrange(form, region);
     initColour(region);
     hideIomadColours(form, region);
-
     region.querySelectorAll('[data-epure-vocab-choice]').forEach((select) => {
         select.addEventListener('change', () => toggleCustom(select));
         toggleCustom(select);
     });
+
+    // With another theme, nothing of Épure remains: IOMAD's form is shown as it is without Épure. The fields
+    // of Épure stay in the form, hidden, so that the settings are kept for a return to Épure.
+    const choice = form.querySelector('select[name="theme"], input[name="theme"]');
+    const apply = () => {
+        const epure = !choice || choice.value === 'epure';
+        if (epure) {
+            arrange(form, region, help);
+        } else {
+            original.forEach((node) => appearance?.append(node));
+        }
+        const note = region.querySelector('.epure-company-iomadnote') || form.querySelector('.epure-company-iomadnote');
+        if (note) {
+            note.hidden = epure;
+        }
+        region.hidden = !epure;
+    };
+    choice?.addEventListener('change', apply);
+    apply();
 };
 
 /**
- * Moves IOMAD's appearance fields into the sections of Épure, and removes the sections left empty.
+ * The explanation of IOMAD's custom menu, which follows its field.
+ *
+ * @param {HTMLFormElement} form The company form.
+ * @return {Node[]}
+ */
+const menuHelp = (form) => {
+    const menu = form.querySelector('[name="custommenuitems"]')?.closest('.fitem, .form-group');
+    const help = [];
+    for (let node = menu?.nextSibling; node && !(node.matches?.('.fitem, .form-group, fieldset')); node = node.nextSibling) {
+        help.push(node);
+    }
+    return help.some((node) => node.textContent.trim() !== '') ? help : [];
+};
+
+/**
+ * Moves IOMAD's appearance fields into the sections of Épure, and hides the sections left empty.
  *
  * @param {HTMLFormElement} form The company form.
  * @param {HTMLElement} region The Épure fields.
+ * @param {Node[]} help The explanation of IOMAD's custom menu.
  */
-const arrange = (form, region) => {
+const arrange = (form, region, help) => {
     const row = (name) => form.querySelector(`[name="${name}"]`)?.closest('.fitem, .form-group');
     const section = (key) => region.querySelector(`[data-epure-company-section="${key}"]`)
         || region.querySelector(`[data-epure-company-group="${key}"]`);
@@ -95,7 +131,7 @@ const arrange = (form, region) => {
 
     // Theme: IOMAD's choice, with its note « The options below may only work with the IOMAD themes ».
     const theme = row('theme');
-    if (theme) {
+    if (theme && !region.contains(theme)) {
         const note = theme.nextElementSibling?.tagName === 'P' ? theme.nextElementSibling : null;
         section('theme').append(theme);
         if (note) {
@@ -104,55 +140,26 @@ const arrange = (form, region) => {
         }
     }
     // Logos: IOMAD's logos and favicon before the logo for the brand-coloured header.
-    const logos = section('logos');
-    move('logos', ['companylogo', 'companylogocompact', 'companyfavicon'], logos.querySelector('.fitem'));
+    move('logos', ['companylogo', 'companylogocompact', 'companyfavicon'],
+        section('logos').querySelector('[data-epure-company-row]'));
     // Colours: IOMAD's colours (hidden with Épure) after the brand colour and the header colour.
-    const slot = region.querySelector('[data-epure-company-slot="iomadcolours"]');
-    move('colours', ['headingcolor', 'maincolor', 'linkcolor'], slot);
-    slot?.remove();
-    // Advanced: the custom CSS and the custom menu, with the explanation of the menu that follows it.
-    const menu = row('custommenuitems');
-    const help = [];
-    for (let node = menu?.nextSibling; node && !(node.matches?.('.fitem, .form-group, fieldset')); node = node.nextSibling) {
-        if (region.contains(node)) {
-            break;
-        }
-        help.push(node);
-    }
+    move('colours', ['headingcolor', 'maincolor', 'linkcolor'], region.querySelector('[data-epure-company-slot="iomadcolours"]'));
+    // Advanced: the custom CSS and the custom menu, with the explanation of the menu.
     move('advanced', ['customcss', 'custommenuitems']);
-    if (help.some((node) => node.textContent.trim() !== '')) {
-        const box = document.createElement('div');
-        box.className = 'epure-company-menuhelp small text-muted';
+    if (help.length) {
+        let box = region.querySelector('.epure-company-menuhelp');
+        if (!box) {
+            box = document.createElement('div');
+            box.className = 'epure-company-menuhelp small text-muted';
+            section('advanced').append(box);
+        }
         help.forEach((node) => box.append(node));
-        section('advanced').append(box);
     }
 
     region.querySelectorAll('[data-epure-company-section], [data-epure-company-group]').forEach((item) => {
         item.hidden = !item.querySelector('.fitem, .form-group');
     });
     number(region);
-    // With another theme, the fields of Épure do not apply: they are hidden (and kept, for a return to
-    // Épure), and the fields of IOMAD that concern that theme are shown. IOMAD's note only concerns its
-    // themes.
-    const choice = form.querySelector('select[name="theme"], input[name="theme"]');
-    if (choice) {
-        const note = region.querySelector('.epure-company-iomadnote');
-        const update = () => {
-            const epure = choice.value === 'epure';
-            region.querySelectorAll('[data-epure-only]').forEach((item) => {
-                item.hidden = !epure;
-            });
-            region.querySelectorAll('[data-epure-other]').forEach((item) => {
-                item.hidden = epure;
-            });
-            if (note) {
-                note.hidden = epure;
-            }
-            number(region);
-        };
-        choice.addEventListener('change', update);
-        update();
-    }
 };
 
 /**

@@ -33,7 +33,7 @@ trait email_renderer {
      * @return string HTML.
      */
     public function render_from_template($templatename, $context) {
-        if ($templatename === 'core/email_html' && \theme_epure\email::enabled()) {
+        if ($templatename === 'core/email_html' && \theme_epure\email::applies((int) (((array) $context)['touserid'] ?? 0))) {
             $context = (array) $context;
             $context['epure'] = \theme_epure\email::export((int) ($context['touserid'] ?? 0));
         }

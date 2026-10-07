@@ -55,15 +55,14 @@
     <section class="epure-company-section" data-epure-company-section="theme" aria-labelledby="epure-company-section-theme">
         <h3 class="epure-company-section-title" id="epure-company-section-theme">{{#str}}companysectiontheme, theme_epure{{/str}}</h3>
         <p class="epure-company-section-desc">{{#str}}companysectiontheme_desc, theme_epure{{/str}}</p>
-        <p class="alert alert-info" data-epure-other hidden>{{#str}}companyothertheme, theme_epure{{/str}}</p>
     </section>
     <section class="epure-company-section" data-epure-company-section="brand" aria-labelledby="epure-company-section-brand">
         <h3 class="epure-company-section-title" id="epure-company-section-brand">{{#str}}settingsbrand, theme_epure{{/str}}</h3>
-        <p class="epure-company-section-desc" data-epure-only>{{#str}}companysectionbrand_desc, theme_epure{{/str}}</p>
+        <p class="epure-company-section-desc">{{#str}}companysectionbrand_desc, theme_epure{{/str}}</p>
         <div class="epure-company-group" data-epure-company-group="logos">
             <h4 class="epure-company-group-title">{{#str}}settingslogos, theme_epure{{/str}}</h4>
-            <p class="epure-company-group-desc" data-epure-only>{{#str}}companysectionlogos_desc, theme_epure{{/str}}</p>
-            <div class="form-group mb-3 row fitem" data-epure-only>
+            <p class="epure-company-group-desc">{{#str}}companysectionlogos_desc, theme_epure{{/str}}</p>
+            <div class="form-group mb-3 row fitem" data-epure-company-row>
                 <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
                     <span class="mb-0" id="id_epure_logoonbrand_label">{{#str}}logoonbrand, theme_epure{{/str}}</span>
                 </div>
@@ -78,8 +77,8 @@
         </div>
         <div class="epure-company-group" data-epure-company-group="colours">
             <h4 class="epure-company-group-title">{{#str}}settingscolours, theme_epure{{/str}}</h4>
-            <p class="epure-company-group-desc" data-epure-only>{{#str}}companysectioncolours_desc, theme_epure{{/str}}</p>
-            <div class="form-group mb-3 row fitem" data-epure-only>
+            <p class="epure-company-group-desc">{{#str}}companysectioncolours_desc, theme_epure{{/str}}</p>
+            <div class="form-group mb-3 row fitem">
                 <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
                     <label class="mb-0" for="id_epure_brandcolor">{{#str}}brandcolor, theme_epure{{/str}}</label>
                 </div>
@@ -95,7 +94,7 @@
                     {{#logocolours}}{{> theme_epure/logo_colours }}{{/logocolours}}
                 </div>
             </div>
-            <div class="form-group mb-3 row fitem" data-epure-only>
+            <div class="form-group mb-3 row fitem">
                 <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
                     <label class="mb-0" for="id_epure_headerstyle">{{#str}}headerstyle, theme_epure{{/str}}</label>
                 </div>
@@ -108,7 +107,7 @@
             <div data-epure-company-slot="iomadcolours"></div>
         </div>
     </section>
-    <section class="epure-company-section" data-epure-company-section="display" data-epure-only aria-labelledby="epure-company-section-display">
+    <section class="epure-company-section" data-epure-company-section="display" aria-labelledby="epure-company-section-display">
         <h3 class="epure-company-section-title" id="epure-company-section-display">{{#str}}settingsdisplay, theme_epure{{/str}}</h3>
         <p class="epure-company-section-desc">{{#str}}companysectiondisplay_desc, theme_epure{{/str}}</p>
         <div class="form-group mb-3 row fitem">
@@ -134,7 +133,7 @@
             </div>
         </div>
     </section>
-    <section class="epure-company-section" data-epure-company-section="features" data-epure-only aria-labelledby="epure-company-section-features">
+    <section class="epure-company-section" data-epure-company-section="features" aria-labelledby="epure-company-section-features">
         <h3 class="epure-company-section-title" id="epure-company-section-features">{{#str}}settingsfeatures, theme_epure{{/str}}</h3>
         <p class="epure-company-section-desc">{{#str}}companysectionfeatures_desc, theme_epure{{/str}}</p>
         <div class="epure-company-group" data-epure-company-group="navigation">
@@ -180,7 +179,7 @@
             </div>
         </div>
     </section>
-    <section class="epure-company-section" data-epure-company-section="footer" data-epure-only aria-labelledby="epure-company-section-footer">
+    <section class="epure-company-section" data-epure-company-section="footer" aria-labelledby="epure-company-section-footer">
         <h3 class="epure-company-section-title" id="epure-company-section-footer">{{#str}}footersettings, theme_epure{{/str}}</h3>
         <p class="epure-company-section-desc">{{#str}}companyfooter_desc, theme_epure{{/str}}</p>
         {{#footer}}
