@@ -14,10 +14,14 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Moves the vocabulary fields into IOMAD's company form, and shows the custom word fields when needed.
+ * Moves the Épure fields into IOMAD's company form, puts its Appearance section in order, and shows
+ * the custom word fields when needed.
  *
  * IOMAD's form has no extension point: the fields are rendered at the end of the page, then moved
  * into its Appearance section (or before its buttons), so that they are posted with the company.
+ * IOMAD's own appearance fields are moved into the numbered sections of Épure, in the order of the
+ * work: theme, logos (before the colours, which are proposed from the logo), colours and font,
+ * pages, footer, vocabulary, then the advanced settings (custom CSS and menu).
  *
  * @module     theme_epure/company_vocabulary
  * @copyright  2026 Eric Falcon
@@ -53,7 +57,7 @@ export const init = () => {
         || form.querySelector('#id_appearance')?.querySelector('.fcontainer');
     const buttons = form.querySelector('#fgroup_id_buttonar');
     if (appearance) {
-        // First in the Appearance section: the Épure settings of the company come before IOMAD's own.
+        // First in the Appearance section, which then holds IOMAD's fields in the sections of Épure.
         appearance.prepend(region);
     } else if (buttons) {
         buttons.before(region);
@@ -61,6 +65,7 @@ export const init = () => {
         form.append(region);
     }
     region.hidden = false;
+    arrange(form, region);
     initColour(region);
     hideIomadColours(form, region);
 
@@ -68,6 +73,71 @@ export const init = () => {
         select.addEventListener('change', () => toggleCustom(select));
         toggleCustom(select);
     });
+};
+
+/**
+ * Moves IOMAD's appearance fields into the sections of Épure, and removes the sections left empty.
+ *
+ * @param {HTMLFormElement} form The company form.
+ * @param {HTMLElement} region The Épure fields.
+ */
+const arrange = (form, region) => {
+    const row = (name) => form.querySelector(`[name="${name}"]`)?.closest('.fitem, .form-group');
+    const section = (key) => region.querySelector(`[data-epure-company-section="${key}"]`);
+    const move = (key, names, before = null) => {
+        const target = section(key);
+        names.map(row).filter((item) => item && !region.contains(item)).forEach((item) => {
+            target?.insertBefore(item, before);
+        });
+    };
+
+    // Theme: IOMAD's choice, with its note « The options below may only work with the IOMAD themes ».
+    const theme = row('theme');
+    if (theme) {
+        const note = theme.nextElementSibling?.tagName === 'P' ? theme.nextElementSibling : null;
+        section('theme').append(theme);
+        if (note) {
+            note.classList.add('epure-company-iomadnote');
+            section('theme').append(note);
+        }
+    }
+    // Logos: IOMAD's logos and favicon before the logo for the brand-coloured header.
+    const logos = section('logos');
+    move('logos', ['companylogo', 'companylogocompact', 'companyfavicon'], logos.querySelector('.fitem'));
+    // Colours: IOMAD's colours (hidden with Épure) after the brand colour and the header colour.
+    const slot = region.querySelector('[data-epure-company-slot="iomadcolours"]');
+    move('colours', ['headingcolor', 'maincolor', 'linkcolor'], slot);
+    slot?.remove();
+    // Advanced: the custom CSS and the custom menu, with the explanation of the menu that follows it.
+    const menu = row('custommenuitems');
+    const help = [];
+    for (let node = menu?.nextSibling; node && !(node.matches?.('.fitem, .form-group, fieldset')); node = node.nextSibling) {
+        if (region.contains(node)) {
+            break;
+        }
+        help.push(node);
+    }
+    move('advanced', ['customcss', 'custommenuitems']);
+    if (help.some((node) => node.textContent.trim() !== '')) {
+        const box = document.createElement('div');
+        box.className = 'epure-company-menuhelp small text-muted';
+        help.forEach((node) => box.append(node));
+        section('advanced').append(box);
+    }
+
+    region.querySelectorAll('[data-epure-company-section]').forEach((item) => {
+        item.hidden = !item.querySelector('.fitem, .form-group');
+    });
+    // IOMAD's note does not concern Épure, which uses the logos and the colours of these sections.
+    const select = form.querySelector('select[name="theme"]');
+    const note = region.querySelector('.epure-company-iomadnote');
+    if (select && note) {
+        const update = () => {
+            note.hidden = select.value === 'epure';
+        };
+        select.addEventListener('change', update);
+        update();
+    }
 };
 
 /**

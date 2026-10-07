@@ -75,7 +75,17 @@ These settings apply to users assigned to the company, and to an administrator w
 
 **Manage courses** (IOMAD course settings): the IOMAD table gains a **Category** column, after the course column, with the full path of its category (for example "Clinique des Tilleuls / Soins infirmiers").
 
-**Everything is set in the company's profile** (IOMAD dashboard › Create company or Edit company › Appearance). At the top of that part, the **Épure appearance** section offers:
+**Everything is set in the company's profile** (IOMAD dashboard › Create company or Edit company › Appearance). Épure arranges that part in numbered steps, in the order of the work, and moves IOMAD's own fields into them:
+
+1. **Theme**: the theme of the company.
+2. **Logos**: IOMAD's logo, compact logo and favicon, then the logo for the brand-coloured header. The logos come before the colours, because their colours are proposed in the next step.
+3. **Colours and font**: brand colour, header colour, font, dark mode.
+4. **Pages**: course banner, learner overview, mobile navigation bar.
+5. **Footer**.
+6. **Vocabulary**.
+7. **Advanced settings**: IOMAD's custom CSS and custom menu.
+
+The Épure settings:
 
 | Company setting | Effect |
 |---|---|
@@ -89,7 +99,7 @@ These settings apply to users assigned to the company, and to an administrator w
 | Logo for the brand-coloured header | Optional: a version of the logo that is legible on the company's brand colour, often white on a transparent background. |
 | Font | As the site, or one of the bundled fonts. |
 
-IOMAD's native fields (logo, compact logo, custom CSS) remain below; Épure declares itself an IOMAD theme so that IOMAD displays them. IOMAD's colours (heading, main, link), which are only used by IOMAD themes, are hidden as long as the company uses Épure; a heading colour that has already been saved is carried over as the brand colour. Finally, the **Vocabulary** section sets the company's words, that is, its words for "company" and "department", in French and in English ("client" and "team" for one company, "agency" and "service" for another). Épure declares itself an IOMAD theme so that IOMAD displays these fields. The words for all companies are chosen on the "Épure: vocabulary" page; a company without its own words uses those.
+IOMAD's native fields (logos, custom CSS and menu) are placed in these steps; Épure declares itself an IOMAD theme so that IOMAD displays them. IOMAD's colours (heading, main, link), which are only used by IOMAD themes, are hidden as long as the company uses Épure; a heading colour that has already been saved is carried over as the brand colour. Finally, the **Vocabulary** section sets the company's words, that is, its words for "company" and "department", in French and in English ("client" and "team" for one company, "agency" and "service" for another). Épure declares itself an IOMAD theme so that IOMAD displays these fields. The words for all companies are chosen on the "Épure: vocabulary" page; a company without its own words uses those.
 
 Since language packs are shared by the whole site, these words are applied when strings are loaded, by a string manager that the theme enables on each page (Moodle's `$CFG->customstringmanager` mechanism), with a cache per company. **No change to `config.php` is needed.** It is only enabled if words have been chosen; if `config.php` already defines another string manager, that one is kept and the "Épure: vocabulary" page says so.
 

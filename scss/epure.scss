@@ -780,20 +780,60 @@ body.epure-header-brand .navbar.fixed-top .divider {
     line-height: 1.35;
 }
 
-// Vocabulary fields added to the IOMAD company form, inside its Appearance section.
+// Épure fields of the IOMAD company form, in numbered sections inside its Appearance section,
+// which also hold IOMAD's own appearance fields (theme_epure/company_vocabulary).
 .epure-company-vocabulary {
-    margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--epure-border);
-}
-
-.epure-company-vocabulary-title {
-    font-size: 1.125rem;
-    font-weight: 600;
+    margin-top: .5rem;
+    counter-reset: epure-company-step;
 }
 
 .epure-company-vocabulary-desc {
     color: var(--epure-ink-muted);
+}
+
+.epure-company-section {
+    margin: 0 0 1.5rem;
+    padding: 1.25rem 1.25rem .25rem;
+    border: 1px solid var(--epure-border);
+    border-radius: .75rem;
+    background: var(--epure-surface);
+}
+
+.epure-company-section-title {
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    margin-bottom: .25rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+
+    &::before {
+        counter-increment: epure-company-step;
+        content: counter(epure-company-step);
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 1.75rem;
+        height: 1.75rem;
+        border-radius: 50%;
+        background: var(--epure-brand);
+        color: var(--epure-on-brand);
+        font-size: .875rem;
+    }
+}
+
+.epure-company-section-desc {
+    margin-bottom: 1rem;
+    color: var(--epure-ink-muted);
+}
+
+.epure-company-menuhelp {
+    margin-bottom: 1rem;
+
+    pre {
+        white-space: pre-wrap;
+    }
 }
 
 .epure-company-vocabulary-lang {

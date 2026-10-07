@@ -75,7 +75,17 @@ Ces réglages s'appliquent aux utilisateurs rattachés à l'entreprise, et à l'
 
 **Gérer les cours** (paramètres IOMAD des cours) : le tableau d'IOMAD gagne une colonne **Catégorie**, après celle du cours, avec le chemin complet de sa catégorie (par exemple « Clinique des Tilleuls / Soins infirmiers »).
 
-**Tout se règle dans la fiche de l'entreprise** (Tableau de bord IOMAD › Créer une entreprise ou Modifier l'entreprise › Apparence). En tête de cette partie, la section **Apparence Épure** propose :
+**Tout se règle dans la fiche de l'entreprise** (Tableau de bord IOMAD › Créer une entreprise ou Modifier l'entreprise › Apparence). Épure range cette partie en étapes numérotées, dans l'ordre du travail, et y regroupe les champs d'IOMAD :
+
+1. **Thème** : le thème de l'entreprise.
+2. **Logos** : logo, logo compact et favicon d'IOMAD, puis le logo pour l'en-tête en couleur. Les logos viennent avant les couleurs, car leurs couleurs sont proposées à l'étape suivante.
+3. **Couleurs et police** : couleur de marque, couleur de l'en-tête, police, mode sombre.
+4. **Pages** : bannière de cours, aperçu de l'apprenant, barre de navigation mobile.
+5. **Pied de page**.
+6. **Vocabulaire**.
+7. **Réglages avancés** : CSS personnalisé et menu personnalisé d'IOMAD.
+
+Les réglages propres à Épure :
 
 | Réglage de l'entreprise | Effet |
 |---|---|
@@ -89,7 +99,7 @@ Ces réglages s'appliquent aux utilisateurs rattachés à l'entreprise, et à l'
 | Logo pour l'en-tête en couleur | Facultatif : une version du logo lisible sur la couleur de marque de l'entreprise, souvent blanche sur fond transparent. |
 | Police | Comme le site, ou l'une des polices fournies. |
 
-Les champs natifs d'IOMAD (logo, logo compact, CSS personnalisé) restent en dessous ; Épure se déclare thème IOMAD pour qu'IOMAD les affiche. Les couleurs d'IOMAD (titre, principale, lien), qui ne servent qu'aux thèmes IOMAD, sont masquées tant que l'entreprise utilise Épure ; une couleur du titre déjà enregistrée est reprise comme couleur de marque. Enfin, la section **Vocabulaire** règle les mots de l'entreprise, c'est-à-dire ses mots pour « entreprise » et « département », en français et en anglais (« client » et « équipe » pour l'une, « agence » et « service » pour une autre). Épure se déclare thème IOMAD pour qu'IOMAD affiche ces champs. Les mots pour toutes les entreprises se choisissent sur la page Épure : vocabulaire ; une entreprise sans mots propres utilise ceux-là.
+Les champs natifs d'IOMAD (logos, CSS et menu personnalisés) sont rangés dans ces étapes ; Épure se déclare thème IOMAD pour qu'IOMAD les affiche. Les couleurs d'IOMAD (titre, principale, lien), qui ne servent qu'aux thèmes IOMAD, sont masquées tant que l'entreprise utilise Épure ; une couleur du titre déjà enregistrée est reprise comme couleur de marque. Enfin, la section **Vocabulaire** règle les mots de l'entreprise, c'est-à-dire ses mots pour « entreprise » et « département », en français et en anglais (« client » et « équipe » pour l'une, « agence » et « service » pour une autre). Épure se déclare thème IOMAD pour qu'IOMAD affiche ces champs. Les mots pour toutes les entreprises se choisissent sur la page Épure : vocabulaire ; une entreprise sans mots propres utilise ceux-là.
 
 Les paquets de langue étant communs à tout le site, ces mots sont appliqués au chargement des chaînes par un gestionnaire de chaînes que le thème active à chaque page (le mécanisme `$CFG->customstringmanager` de Moodle), avec un cache par entreprise. **Aucune modification de `config.php` n'est nécessaire.** Il n'est activé que si des mots sont choisis ; si `config.php` définit déjà un autre gestionnaire de chaînes, celui-ci est conservé et la page Épure : vocabulaire l'indique.
 

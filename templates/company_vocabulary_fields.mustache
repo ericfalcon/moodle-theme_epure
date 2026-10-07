@@ -17,9 +17,10 @@
 {{!
     @template theme_epure/company_vocabulary_fields
 
-    Épure fields of an IOMAD company (brand colour with the colours of the logo, header, font,
-    vocabulary), moved into the Appearance section of IOMAD's company form by the AMD module
-    theme_epure/company_vocabulary, and posted with that form.
+    Épure fields of an IOMAD company, in numbered sections (theme, logos, colours and font, pages,
+    footer, vocabulary, advanced), moved into the Appearance section of IOMAD's company form by the
+    AMD module theme_epure/company_vocabulary, which also moves IOMAD's own appearance fields into
+    these sections. Posted with that form.
 
     Context variables required for this template:
     * marker - name of the field telling that the vocabulary fields were posted
@@ -49,173 +50,195 @@
 }}
 <div class="epure-company-vocabulary" data-region="epure-company-vocabulary" hidden>
     <input type="hidden" name="{{marker}}" value="1">
-    <h3 class="epure-company-vocabulary-title">{{#str}}companyappearance, theme_epure{{/str}}</h3>
     <p class="epure-company-vocabulary-desc">{{#str}}companyappearance_desc, theme_epure{{/str}}</p>
-    <div class="form-group mb-3 row fitem">
-        <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
-            <label class="mb-0" for="id_epure_brandcolor">{{#str}}brandcolor, theme_epure{{/str}}</label>
-        </div>
-        <div class="col-md-9 felement">
-            <div class="epure-company-colour">
-                <input type="color" class="epure-company-colour-picker" value="{{#brandcolor}}{{brandcolor}}{{/brandcolor}}{{^brandcolor}}{{sitebrandcolor}}{{/brandcolor}}"
-                    aria-label="{{#str}}brandcolor, theme_epure{{/str}}" data-action="pick-colour">
-                <input type="text" class="form-control epure-company-colour-code" id="id_epure_brandcolor" name="epure_brandcolor"
-                    value="{{brandcolor}}" placeholder="{{sitebrandcolor}}" size="10" maxlength="7"
-                    pattern="#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})" aria-describedby="id_epure_brandcolor_help" autocomplete="off">
-            </div>
-            <p class="small text-muted mt-1 mb-0" id="id_epure_brandcolor_help">{{#str}}companybrandcolor_help, theme_epure, {{sitebrandcolor}}{{/str}}</p>
-            {{#logocolours}}{{> theme_epure/logo_colours }}{{/logocolours}}
-        </div>
-    </div>
-    <div class="form-group mb-3 row fitem">
-        <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
-            <label class="mb-0" for="id_epure_headerstyle">{{#str}}headerstyle, theme_epure{{/str}}</label>
-        </div>
-        <div class="col-md-9 d-flex flex-wrap align-items-start felement">
-            <select class="custom-select form-select" id="id_epure_headerstyle" name="epure_headerstyle">
-                {{#headerstyles}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/headerstyles}}
-            </select>
-        </div>
-    </div>
-    <div class="form-group mb-3 row fitem">
-        <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
-            <span class="mb-0" id="id_epure_logoonbrand_label">{{#str}}logoonbrand, theme_epure{{/str}}</span>
-        </div>
-        <div class="col-md-9 felement" role="group" aria-labelledby="id_epure_logoonbrand_label">
-            {{#logoonbrand}}
-                {{{html}}}
-                <input type="hidden" name="epure_logoonbrand" id="id_epure_logoonbrand" value="{{draftid}}">
-            {{/logoonbrand}}
-            <p class="small text-muted mt-1 mb-0">{{#str}}companylogoonbrand_help, theme_epure{{/str}}</p>
-        </div>
-    </div>
-    <div class="form-group mb-3 row fitem">
-        <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
-            <label class="mb-0" for="id_epure_font">{{#str}}font, theme_epure{{/str}}</label>
-        </div>
-        <div class="col-md-9 d-flex flex-wrap align-items-start felement">
-            <select class="custom-select form-select" id="id_epure_font" name="epure_font">
-                {{#fonts}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/fonts}}
-            </select>
-        </div>
-    </div>
-    <div class="form-group mb-3 row fitem">
-        <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
-            <label class="mb-0" for="id_epure_darkmode">{{#str}}darkmode, theme_epure{{/str}}</label>
-        </div>
-        <div class="col-md-9 d-flex flex-wrap align-items-start felement">
-            <select class="custom-select form-select" id="id_epure_darkmode" name="epure_darkmode"
-                aria-describedby="id_epure_darkmode_help">
-                {{#darkmodes}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/darkmodes}}
-            </select>
-            <p class="small text-muted mt-1 mb-0 w-100" id="id_epure_darkmode_help">{{#str}}companydarkmode_help, theme_epure{{/str}}</p>
-        </div>
-    </div>
-    <div class="form-group mb-3 row fitem">
-        <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
-            <label class="mb-0" for="id_epure_coursebanner">{{#str}}coursebanner, theme_epure{{/str}}</label>
-        </div>
-        <div class="col-md-9 d-flex flex-wrap align-items-start felement">
-            <select class="custom-select form-select" id="id_epure_coursebanner" name="epure_coursebanner"
-                aria-describedby="id_epure_coursebanner_help">
-                {{#coursebanners}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/coursebanners}}
-            </select>
-            <p class="small text-muted mt-1 mb-0 w-100" id="id_epure_coursebanner_help">{{#str}}companycoursebanner_help, theme_epure{{/str}}</p>
-        </div>
-    </div>
-    <div class="form-group mb-3 row fitem">
-        <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
-            <label class="mb-0" for="id_epure_learnerdashboard">{{#str}}learnerdashboard, theme_epure{{/str}}</label>
-        </div>
-        <div class="col-md-9 d-flex flex-wrap align-items-start felement">
-            <select class="custom-select form-select" id="id_epure_learnerdashboard" name="epure_learnerdashboard"
-                aria-describedby="id_epure_learnerdashboard_help">
-                {{#learnerdashboards}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/learnerdashboards}}
-            </select>
-            <p class="small text-muted mt-1 mb-0 w-100" id="id_epure_learnerdashboard_help">{{#str}}companylearnerdashboard_help, theme_epure{{/str}}</p>
-        </div>
-    </div>
-    <div class="form-group mb-3 row fitem">
-        <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
-            <label class="mb-0" for="id_epure_mobilenav">{{#str}}mobilenav, theme_epure{{/str}}</label>
-        </div>
-        <div class="col-md-9 d-flex flex-wrap align-items-start felement">
-            <select class="custom-select form-select" id="id_epure_mobilenav" name="epure_mobilenav"
-                aria-describedby="id_epure_mobilenav_help">
-                {{#mobilenavs}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/mobilenavs}}
-            </select>
-            <p class="small text-muted mt-1 mb-0 w-100" id="id_epure_mobilenav_help">{{#str}}companymobilenav_help, theme_epure{{/str}}</p>
-        </div>
-    </div>
-
-    <h3 class="epure-company-vocabulary-title mt-4">{{#str}}footersettings, theme_epure{{/str}}</h3>
-    <p class="epure-company-vocabulary-desc">{{#str}}companyfooter_desc, theme_epure{{/str}}</p>
-    {{#footer}}
+    <section class="epure-company-section" data-epure-company-section="theme" aria-labelledby="epure-company-section-theme">
+        <h3 class="epure-company-section-title" id="epure-company-section-theme">{{#str}}companysectiontheme, theme_epure{{/str}}</h3>
+        <p class="epure-company-section-desc">{{#str}}companysectiontheme_desc, theme_epure{{/str}}</p>
+    </section>
+    <section class="epure-company-section" data-epure-company-section="logos" aria-labelledby="epure-company-section-logos">
+        <h3 class="epure-company-section-title" id="epure-company-section-logos">{{#str}}companysectionlogos, theme_epure{{/str}}</h3>
+        <p class="epure-company-section-desc">{{#str}}companysectionlogos_desc, theme_epure{{/str}}</p>
         <div class="form-group mb-3 row fitem">
             <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
-                <label class="mb-0" for="id_epure_{{name}}">{{label}}</label>
+                <span class="mb-0" id="id_epure_logoonbrand_label">{{#str}}logoonbrand, theme_epure{{/str}}</span>
             </div>
-            <div class="col-md-9 felement">
-                {{#multiline}}
-                    <textarea class="form-control" id="id_epure_{{name}}" name="epure_{{name}}" rows="3"
-                        placeholder="{{placeholder}}">{{value}}</textarea>
-                {{/multiline}}
-                {{^multiline}}
-                    <input type="url" class="form-control" id="id_epure_{{name}}" name="epure_{{name}}" value="{{value}}"
-                        placeholder="{{placeholder}}">
-                {{/multiline}}
+            <div class="col-md-9 felement" role="group" aria-labelledby="id_epure_logoonbrand_label">
+                {{#logoonbrand}}
+                    {{{html}}}
+                    <input type="hidden" name="epure_logoonbrand" id="id_epure_logoonbrand" value="{{draftid}}">
+                {{/logoonbrand}}
+                <p class="small text-muted mt-1 mb-0">{{#str}}companylogoonbrand_help, theme_epure{{/str}}</p>
             </div>
         </div>
-    {{/footer}}
-
-    <h3 class="epure-company-vocabulary-title mt-4">{{#str}}companyformvocabulary, theme_epure{{/str}}</h3>
-    <p class="epure-company-vocabulary-desc">{{#str}}companyformvocabulary_desc, theme_epure{{/str}}</p>
-    {{#languages}}
-        <h4 class="epure-company-vocabulary-lang">{{name}}</h4>
-        {{#concepts}}
+    </section>
+    <section class="epure-company-section" data-epure-company-section="colours" aria-labelledby="epure-company-section-colours">
+        <h3 class="epure-company-section-title" id="epure-company-section-colours">{{#str}}companysectioncolours, theme_epure{{/str}}</h3>
+        <p class="epure-company-section-desc">{{#str}}companysectioncolours_desc, theme_epure{{/str}}</p>
+        <div class="form-group mb-3 row fitem">
+            <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                <label class="mb-0" for="id_epure_brandcolor">{{#str}}brandcolor, theme_epure{{/str}}</label>
+            </div>
+            <div class="col-md-9 felement">
+                <div class="epure-company-colour">
+                    <input type="color" class="epure-company-colour-picker" value="{{#brandcolor}}{{brandcolor}}{{/brandcolor}}{{^brandcolor}}{{sitebrandcolor}}{{/brandcolor}}"
+                        aria-label="{{#str}}brandcolor, theme_epure{{/str}}" data-action="pick-colour">
+                    <input type="text" class="form-control epure-company-colour-code" id="id_epure_brandcolor" name="epure_brandcolor"
+                        value="{{brandcolor}}" placeholder="{{sitebrandcolor}}" size="10" maxlength="7"
+                        pattern="#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})" aria-describedby="id_epure_brandcolor_help" autocomplete="off">
+                </div>
+                <p class="small text-muted mt-1 mb-0" id="id_epure_brandcolor_help">{{#str}}companybrandcolor_help, theme_epure, {{sitebrandcolor}}{{/str}}</p>
+                {{#logocolours}}{{> theme_epure/logo_colours }}{{/logocolours}}
+            </div>
+        </div>
+        <div class="form-group mb-3 row fitem">
+            <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                <label class="mb-0" for="id_epure_headerstyle">{{#str}}headerstyle, theme_epure{{/str}}</label>
+            </div>
+            <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                <select class="custom-select form-select" id="id_epure_headerstyle" name="epure_headerstyle">
+                    {{#headerstyles}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/headerstyles}}
+                </select>
+            </div>
+        </div>
+        <div data-epure-company-slot="iomadcolours"></div>
+        <div class="form-group mb-3 row fitem">
+            <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                <label class="mb-0" for="id_epure_font">{{#str}}font, theme_epure{{/str}}</label>
+            </div>
+            <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                <select class="custom-select form-select" id="id_epure_font" name="epure_font">
+                    {{#fonts}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/fonts}}
+                </select>
+            </div>
+        </div>
+        <div class="form-group mb-3 row fitem">
+            <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                <label class="mb-0" for="id_epure_darkmode">{{#str}}darkmode, theme_epure{{/str}}</label>
+            </div>
+            <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                <select class="custom-select form-select" id="id_epure_darkmode" name="epure_darkmode"
+                    aria-describedby="id_epure_darkmode_help">
+                    {{#darkmodes}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/darkmodes}}
+                </select>
+                <p class="small text-muted mt-1 mb-0 w-100" id="id_epure_darkmode_help">{{#str}}companydarkmode_help, theme_epure{{/str}}</p>
+            </div>
+        </div>
+    </section>
+    <section class="epure-company-section" data-epure-company-section="pages" aria-labelledby="epure-company-section-pages">
+        <h3 class="epure-company-section-title" id="epure-company-section-pages">{{#str}}companysectionpages, theme_epure{{/str}}</h3>
+        <p class="epure-company-section-desc">{{#str}}companysectionpages_desc, theme_epure{{/str}}</p>
+        <div class="form-group mb-3 row fitem">
+            <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                <label class="mb-0" for="id_epure_coursebanner">{{#str}}coursebanner, theme_epure{{/str}}</label>
+            </div>
+            <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                <select class="custom-select form-select" id="id_epure_coursebanner" name="epure_coursebanner"
+                    aria-describedby="id_epure_coursebanner_help">
+                    {{#coursebanners}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/coursebanners}}
+                </select>
+                <p class="small text-muted mt-1 mb-0 w-100" id="id_epure_coursebanner_help">{{#str}}companycoursebanner_help, theme_epure{{/str}}</p>
+            </div>
+        </div>
+        <div class="form-group mb-3 row fitem">
+            <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                <label class="mb-0" for="id_epure_learnerdashboard">{{#str}}learnerdashboard, theme_epure{{/str}}</label>
+            </div>
+            <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                <select class="custom-select form-select" id="id_epure_learnerdashboard" name="epure_learnerdashboard"
+                    aria-describedby="id_epure_learnerdashboard_help">
+                    {{#learnerdashboards}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/learnerdashboards}}
+                </select>
+                <p class="small text-muted mt-1 mb-0 w-100" id="id_epure_learnerdashboard_help">{{#str}}companylearnerdashboard_help, theme_epure{{/str}}</p>
+            </div>
+        </div>
+        <div class="form-group mb-3 row fitem">
+            <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                <label class="mb-0" for="id_epure_mobilenav">{{#str}}mobilenav, theme_epure{{/str}}</label>
+            </div>
+            <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                <select class="custom-select form-select" id="id_epure_mobilenav" name="epure_mobilenav"
+                    aria-describedby="id_epure_mobilenav_help">
+                    {{#mobilenavs}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/mobilenavs}}
+                </select>
+                <p class="small text-muted mt-1 mb-0 w-100" id="id_epure_mobilenav_help">{{#str}}companymobilenav_help, theme_epure{{/str}}</p>
+            </div>
+        </div>
+    </section>
+    <section class="epure-company-section" data-epure-company-section="footer" aria-labelledby="epure-company-section-footer">
+        <h3 class="epure-company-section-title" id="epure-company-section-footer">{{#str}}footersettings, theme_epure{{/str}}</h3>
+        <p class="epure-company-section-desc">{{#str}}companyfooter_desc, theme_epure{{/str}}</p>
+        {{#footer}}
             <div class="form-group mb-3 row fitem">
                 <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
-                    <label class="mb-0" for="id_{{name}}">{{label}}</label>
+                    <label class="mb-0" for="id_epure_{{name}}">{{label}}</label>
                 </div>
-                <div class="col-md-9 d-flex flex-wrap align-items-start felement">
-                    <select class="custom-select form-select" id="id_{{name}}" name="{{name}}" data-epure-vocab-choice>
-                        {{#options}}
-                            <option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>
-                        {{/options}}
-                    </select>
+                <div class="col-md-9 felement">
+                    {{#multiline}}
+                        <textarea class="form-control" id="id_epure_{{name}}" name="epure_{{name}}" rows="3"
+                            placeholder="{{placeholder}}">{{value}}</textarea>
+                    {{/multiline}}
+                    {{^multiline}}
+                        <input type="url" class="form-control" id="id_epure_{{name}}" name="epure_{{name}}" value="{{value}}"
+                            placeholder="{{placeholder}}">
+                    {{/multiline}}
                 </div>
             </div>
-            <div data-epure-vocab-custom="id_{{name}}" {{^custom}}hidden{{/custom}}>
+        {{/footer}}
+    </section>
+    <section class="epure-company-section" data-epure-company-section="vocabulary" aria-labelledby="epure-company-section-vocabulary">
+        <h3 class="epure-company-section-title" id="epure-company-section-vocabulary">{{#str}}companyformvocabulary, theme_epure{{/str}}</h3>
+        <p class="epure-company-section-desc">{{#str}}companyformvocabulary_desc, theme_epure{{/str}}</p>
+        {{#languages}}
+            <h4 class="epure-company-vocabulary-lang">{{name}}</h4>
+            {{#concepts}}
                 <div class="form-group mb-3 row fitem">
                     <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
-                        <label class="mb-0" for="id_{{name}}_singular">{{#str}}vocabsingular, theme_epure{{/str}}</label>
+                        <label class="mb-0" for="id_{{name}}">{{label}}</label>
                     </div>
                     <div class="col-md-9 d-flex flex-wrap align-items-start felement">
-                        <input type="text" class="form-control" id="id_{{name}}_singular" name="{{name}}_singular" value="{{singular}}" size="24">
+                        <select class="custom-select form-select" id="id_{{name}}" name="{{name}}" data-epure-vocab-choice>
+                            {{#options}}
+                                <option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>
+                            {{/options}}
+                        </select>
                     </div>
                 </div>
-                <div class="form-group mb-3 row fitem">
-                    <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
-                        <label class="mb-0" for="id_{{name}}_plural">{{#str}}vocabplural, theme_epure{{/str}}</label>
-                    </div>
-                    <div class="col-md-9 d-flex flex-wrap align-items-start felement">
-                        <input type="text" class="form-control" id="id_{{name}}_plural" name="{{name}}_plural" value="{{plural}}" size="24">
-                    </div>
-                </div>
-                {{#hasgender}}
+                <div data-epure-vocab-custom="id_{{name}}" {{^custom}}hidden{{/custom}}>
                     <div class="form-group mb-3 row fitem">
                         <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
-                            <label class="mb-0" for="id_{{name}}_gender">{{#str}}vocabgender, theme_epure{{/str}}</label>
+                            <label class="mb-0" for="id_{{name}}_singular">{{#str}}vocabsingular, theme_epure{{/str}}</label>
                         </div>
                         <div class="col-md-9 d-flex flex-wrap align-items-start felement">
-                            <select class="custom-select form-select" id="id_{{name}}_gender" name="{{name}}_gender">
-                                <option value="m" {{#masculine}}selected{{/masculine}}>{{#str}}vocabmasculine, theme_epure{{/str}}</option>
-                                <option value="f" {{#feminine}}selected{{/feminine}}>{{#str}}vocabfeminine, theme_epure{{/str}}</option>
-                            </select>
+                            <input type="text" class="form-control" id="id_{{name}}_singular" name="{{name}}_singular" value="{{singular}}" size="24">
                         </div>
                     </div>
-                {{/hasgender}}
-            </div>
-        {{/concepts}}
-    {{/languages}}
+                    <div class="form-group mb-3 row fitem">
+                        <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                            <label class="mb-0" for="id_{{name}}_plural">{{#str}}vocabplural, theme_epure{{/str}}</label>
+                        </div>
+                        <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                            <input type="text" class="form-control" id="id_{{name}}_plural" name="{{name}}_plural" value="{{plural}}" size="24">
+                        </div>
+                    </div>
+                    {{#hasgender}}
+                        <div class="form-group mb-3 row fitem">
+                            <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                                <label class="mb-0" for="id_{{name}}_gender">{{#str}}vocabgender, theme_epure{{/str}}</label>
+                            </div>
+                            <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                                <select class="custom-select form-select" id="id_{{name}}_gender" name="{{name}}_gender">
+                                    <option value="m" {{#masculine}}selected{{/masculine}}>{{#str}}vocabmasculine, theme_epure{{/str}}</option>
+                                    <option value="f" {{#feminine}}selected{{/feminine}}>{{#str}}vocabfeminine, theme_epure{{/str}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    {{/hasgender}}
+                </div>
+            {{/concepts}}
+        {{/languages}}
+    </section>
+    <section class="epure-company-section" data-epure-company-section="advanced" aria-labelledby="epure-company-section-advanced">
+        <h3 class="epure-company-section-title" id="epure-company-section-advanced">{{#str}}companysectionadvanced, theme_epure{{/str}}</h3>
+        <p class="epure-company-section-desc">{{#str}}companysectionadvanced_desc, theme_epure{{/str}}</p>
+    </section>
 </div>

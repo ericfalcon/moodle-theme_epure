@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'theme_epure';
-$plugin->version   = 2026102800;
-$plugin->release   = '0.21.1';
+$plugin->version   = 2026102900;
+$plugin->release   = '0.22.0';
 $plugin->maturity  = MATURITY_BETA;
 $plugin->requires  = 2024100700; // Moodle 4.5.
 $plugin->supported = [405, 503];
