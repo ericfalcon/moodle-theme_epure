@@ -61,25 +61,48 @@ class hook_callbacks {
     }
 
     /**
-     * When the theme of a company changes, IOMAD writes the new theme on its users, but a user already
-     * logged in keeps the theme of their session until they log in again: the pages keep the former theme.
-     * The theme of the user is read again, so that the theme chosen for the company applies at once, whole.
+     * Shows the pages in the theme of the IOMAD company being worked on.
+     *
+     * The company selected in IOMAD (the company of the user, or the one an administrator chose in the
+     * header) gives its theme to the pages, for its users and for the administrators alike: an
+     * administrator sees each company as its users see it, and the theme of the site without a company.
+     * The theme is set for the session, as IOMAD does for the address of a company, whose theme is kept.
+     *
+     * When the theme of a company changes, IOMAD also writes it on its users, but a user already logged in
+     * kept the theme of their session until they logged in again: it is read again here.
      */
     protected static function follow_company_theme(): void {
-        global $CFG, $DB, $USER;
-        if (
-            during_initial_install() || empty($CFG->allowuserthemes) || empty($USER->id) || isguestuser()
-                || !company_style::iomad_installed()
-        ) {
+        global $CFG, $DB, $SESSION, $USER;
+        if (during_initial_install() || empty($USER->id) || isguestuser() || !company_style::iomad_installed()) {
             return;
         }
         try {
-            $theme = $DB->get_field('user', 'theme', ['id' => $USER->id]);
+            if (!empty($CFG->allowuserthemes)) {
+                $theme = $DB->get_field('user', 'theme', ['id' => $USER->id]);
+                if ($theme !== false && (string) $theme !== (string) ($USER->theme ?? '')) {
+                    $USER->theme = (string) $theme;
+                }
+            }
+            // A theme set by IOMAD from the address of a company is kept.
+            $ours = $SESSION->epure_companytheme ?? null;
+            if (!empty($SESSION->theme) && $SESSION->theme !== $ours) {
+                return;
+            }
+            $companyid = (int) ($SESSION->currenteditingcompany ?? 0);
+            // The IOMAD dashboard records the company chosen in its selector after the theme is set: the
+            // page that changes the company already gets its theme (IOMAD checks the permission itself).
+            if (str_ends_with((string) ($_SERVER['SCRIPT_NAME'] ?? ''), '/blocks/iomad_company_admin/index.php')) {
+                $companyid = optional_param('company', $companyid, PARAM_INT);
+            }
+            $theme = $companyid ? (string) $DB->get_field('company', 'theme', ['id' => $companyid]) : '';
         } catch (\Throwable $e) {
             return;
         }
-        if ($theme !== false && (string) $theme !== (string) ($USER->theme ?? '')) {
-            $USER->theme = (string) $theme;
+        if ($theme !== '' && \core_component::get_component_directory('theme_' . $theme)) {
+            $SESSION->theme = $theme;
+            $SESSION->epure_companytheme = $theme;
+        } else if ($ours !== null) {
+            unset($SESSION->theme, $SESSION->epure_companytheme);
         }
     }
 

@@ -101,7 +101,7 @@ If the company chooses a theme other than Épure, nothing of Épure remains: IOM
 
 A company can choose Épure whatever the theme of the site: even when the site uses Iomad, the Épure settings appear in the form as soon as Épure is chosen for the company.
 
-The change of theme applies from the next page to the users of the company already logged in (Moodle otherwise kept the former theme until they logged in again). A site administrator who is not a member of the company still sees the theme of the site, as with any IOMAD theme: to see the theme of a company, log in as one of its users.
+The change of theme applies from the next page to the users of the company already logged in (Moodle otherwise kept the former theme until they logged in again). The pages take the theme of the selected company, for administrators too: an administrator who chooses a company in IOMAD sees the pages as its users do, in its theme; without a selected company, the theme of the site.
 
 The Épure settings:
 

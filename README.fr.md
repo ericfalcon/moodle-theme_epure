@@ -101,7 +101,7 @@ Si l'entreprise choisit un autre thème qu'Épure, il ne reste rien d'Épure : l
 
 Une entreprise peut choisir Épure quel que soit le thème du site : même si le site utilise Iomad, les réglages d'Épure apparaissent dans le formulaire dès qu'Épure est choisi pour l'entreprise.
 
-Le changement de thème s'applique dès la page suivante aux utilisateurs de l'entreprise déjà connectés (Moodle gardait sinon l'ancien thème jusqu'à leur prochaine connexion). Un administrateur du site qui n'est pas membre de l'entreprise voit toujours le thème du site, comme avec n'importe quel thème IOMAD : pour voir le thème d'une entreprise, connectez-vous avec un de ses utilisateurs.
+Le changement de thème s'applique dès la page suivante aux utilisateurs de l'entreprise déjà connectés (Moodle gardait sinon l'ancien thème jusqu'à leur prochaine connexion). Les pages prennent le thème de l'entreprise sélectionnée, y compris pour un administrateur : en choisissant une entreprise dans IOMAD, il voit les pages comme ses utilisateurs, dans son thème ; sans entreprise sélectionnée, c'est le thème du site.
 
 Les réglages propres à Épure :
 
