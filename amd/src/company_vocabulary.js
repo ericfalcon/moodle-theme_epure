@@ -130,16 +130,44 @@ const arrange = (form, region) => {
     region.querySelectorAll('[data-epure-company-section], [data-epure-company-group]').forEach((item) => {
         item.hidden = !item.querySelector('.fitem, .form-group');
     });
-    // IOMAD's note does not concern Épure, which uses the logos and the colours of these sections.
-    const select = form.querySelector('select[name="theme"]');
-    const note = region.querySelector('.epure-company-iomadnote');
-    if (select && note) {
+    number(region);
+    // With another theme, the fields of Épure do not apply: they are hidden (and kept, for a return to
+    // Épure), and the fields of IOMAD that concern that theme are shown. IOMAD's note only concerns its
+    // themes.
+    const choice = form.querySelector('select[name="theme"], input[name="theme"]');
+    if (choice) {
+        const note = region.querySelector('.epure-company-iomadnote');
         const update = () => {
-            note.hidden = select.value === 'epure';
+            const epure = choice.value === 'epure';
+            region.querySelectorAll('[data-epure-only]').forEach((item) => {
+                item.hidden = !epure;
+            });
+            region.querySelectorAll('[data-epure-other]').forEach((item) => {
+                item.hidden = epure;
+            });
+            if (note) {
+                note.hidden = epure;
+            }
+            number(region);
         };
-        select.addEventListener('change', update);
+        choice.addEventListener('change', update);
         update();
     }
+};
+
+/**
+ * Numbers the sections shown (browsers do not always update CSS counters when a section is hidden).
+ *
+ * @param {HTMLElement} region The Épure fields.
+ */
+const number = (region) => {
+    let step = 0;
+    region.querySelectorAll('[data-epure-company-section]').forEach((item) => {
+        if (!item.hidden) {
+            step++;
+            item.querySelector('.epure-company-section-title').dataset.step = step;
+        }
+    });
 };
 
 /**

@@ -784,7 +784,6 @@ body.epure-header-brand .navbar.fixed-top .divider {
 // which also hold IOMAD's own appearance fields (theme_epure/company_vocabulary).
 .epure-company-vocabulary {
     margin-top: .5rem;
-    counter-reset: epure-company-step;
 }
 
 .epure-company-vocabulary-desc {
@@ -808,8 +807,7 @@ body.epure-header-brand .navbar.fixed-top .divider {
     font-weight: 600;
 
     &::before {
-        counter-increment: epure-company-step;
-        content: counter(epure-company-step);
+        content: attr(data-step);
         display: inline-flex;
         flex: none;
         align-items: center;

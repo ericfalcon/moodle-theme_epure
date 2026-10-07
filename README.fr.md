@@ -97,6 +97,8 @@ Ces réglages s'appliquent aux utilisateurs rattachés à l'entreprise, et à l'
 6. **Vocabulaire**.
 7. **Réglages avancés** : CSS personnalisé et menu personnalisé d'IOMAD.
 
+Si l'entreprise choisit un autre thème qu'Épure, les réglages d'Épure sont masqués dès le changement : il reste les champs d'IOMAD pour ce thème (logos, couleurs d'IOMAD, CSS et menu personnalisés) et le vocabulaire, qui s'applique quel que soit le thème. Les réglages d'Épure sont conservés et s'appliquent de nouveau si l'entreprise revient à Épure.
+
 Les réglages propres à Épure :
 
 | Réglage de l'entreprise | Effet |

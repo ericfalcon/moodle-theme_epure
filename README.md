@@ -97,6 +97,8 @@ These settings apply to users assigned to the company, and to an administrator w
 6. **Vocabulary**.
 7. **Advanced settings**: IOMAD's custom CSS and custom menu.
 
+If the company chooses a theme other than Épure, the Épure settings are hidden as soon as it is selected: IOMAD's fields for that theme remain (logos, IOMAD colours, custom CSS and menu), with the vocabulary, which applies whatever the theme. The Épure settings are kept and apply again if the company goes back to Épure.
+
 The Épure settings:
 
 | Company setting | Effect |
