@@ -84,6 +84,27 @@ class hook_callbacks {
     }
 
     /**
+     * On the IOMAD company form shown with another theme (the theme of the site is IOMAD, for example), the
+     * styles of the Épure fields, which the styles of Épure do not bring there: a company can choose Épure
+     * whatever the theme of the site.
+     *
+     * @param \core\hook\output\before_standard_head_html_generation $hook The hook.
+     */
+    public static function before_standard_head_html_generation(
+        \core\hook\output\before_standard_head_html_generation $hook
+    ): void {
+        global $CFG, $PAGE;
+        if (
+            during_initial_install() || $PAGE->pagetype !== 'blocks-iomad_company_admin-company_edit_form'
+                || !company_style::iomad_installed() || self::epure_page()
+        ) {
+            return;
+        }
+        $url = new \moodle_url('/theme/epure/css/company_form.css', ['v' => get_config('theme_epure', 'version')]);
+        $hook->add_html(\html_writer::empty_tag('link', ['rel' => 'stylesheet', 'href' => $url->out(false)]));
+    }
+
+    /**
      * Adds the vocabulary fields to the IOMAD company form (Create company and Edit company).
      *
      * @param \core\hook\output\before_footer_html_generation $hook The hook.
@@ -92,7 +113,7 @@ class hook_callbacks {
         global $CFG, $PAGE, $OUTPUT;
         if (
             $PAGE->pagetype !== 'blocks-iomad_company_admin-company_edit_form' || !company_style::iomad_installed()
-                || during_initial_install() || !self::epure_page()
+                || during_initial_install()
         ) {
             return;
         }

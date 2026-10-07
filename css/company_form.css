@@ -1,0 +1,169 @@
+/*
+ * Épure fields of the IOMAD company form, when the page itself is shown with another theme (the site
+ * theme is IOMAD, for example) and the styles of Épure are not loaded. With Épure, scss/epure.scss
+ * styles them. See theme_epure\hook_callbacks::before_standard_head_html_generation().
+ */
+.epure-company-vocabulary {
+    --epure-border: #dee2e6;
+    --epure-surface: #fff;
+    --epure-ink-muted: #6a737b;
+    --epure-brand: var(--bs-primary, #0f6cbf);
+    --epure-brand-text: var(--bs-primary, #0f6cbf);
+    --epure-on-brand: #fff;
+    --epure-radius: .375rem;
+    margin-top: .5rem;
+}
+
+.epure-company-vocabulary-desc,
+.epure-company-section-desc,
+.epure-company-group-desc {
+    color: var(--epure-ink-muted);
+}
+
+.epure-company-section {
+    margin: 0 0 1.5rem;
+    padding: 1.25rem 1.25rem .25rem;
+    background: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: .75rem;
+}
+
+.epure-company-section-title {
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    margin-bottom: .25rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.epure-company-section-title::before {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    color: var(--epure-on-brand);
+    font-size: .875rem;
+    background: var(--epure-brand);
+    border-radius: 50%;
+    content: attr(data-step);
+}
+
+.epure-company-section-desc {
+    margin-bottom: 1rem;
+}
+
+.epure-company-group + .epure-company-group {
+    margin-top: .5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--epure-border);
+}
+
+.epure-company-group-title {
+    margin-bottom: .25rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.epure-company-group-desc {
+    margin-bottom: .75rem;
+}
+
+.epure-company-menuhelp {
+    margin-bottom: 1rem;
+}
+
+.epure-company-menuhelp pre {
+    white-space: pre-wrap;
+}
+
+.epure-company-vocabulary-lang {
+    margin: 1.25rem 0 .75rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.epure-company-colour {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.epure-company-colour-picker {
+    width: 2.75rem;
+    height: 2.375rem;
+    padding: .125rem;
+    background: transparent;
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius);
+}
+
+.epure-company-colour-code {
+    width: 8rem;
+    font-family: SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.epure-company-colour-code[aria-invalid="true"] {
+    border-color: #ca3120;
+}
+
+.epure-logocolours {
+    margin-top: 1rem;
+}
+
+.epure-logocolours-title {
+    margin-bottom: .25rem;
+    font-weight: 600;
+}
+
+.epure-logocolours-logo {
+    display: block;
+    max-width: 100%;
+    max-height: 160px;
+    margin-bottom: .75rem;
+    padding: .5rem;
+    background-color: #fff;
+    background-image: repeating-conic-gradient(#f0f2f5 0% 25%, #fff 0% 50%);
+    background-size: 14px 14px;
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius);
+}
+
+.epure-logocolours-pickable {
+    cursor: crosshair;
+}
+
+.epure-logocolours-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-bottom: .5rem;
+}
+
+.epure-logocolours-swatch {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    min-height: 32px;
+    padding: .25rem .625rem .25rem .25rem;
+    color: inherit;
+    font-family: SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .8125rem;
+    background: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: 999px;
+}
+
+.epure-logocolours-swatch[aria-pressed="true"] {
+    border-color: var(--epure-brand-text);
+    box-shadow: 0 0 0 1px var(--epure-brand-text);
+}
+
+.epure-logocolours-dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .15);
+}
