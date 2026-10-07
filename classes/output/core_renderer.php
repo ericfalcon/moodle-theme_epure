@@ -250,6 +250,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if (\theme_epure\mobile_nav::applies($this->page)) {
             $additionalclasses[] = 'epure-has-mobilenav';
         }
+        if (\theme_epure\quick_search::enabled() && !during_initial_install()) {
+            $additionalclasses[] = 'epure-has-quicksearch';
+        }
         return parent::body_attributes($additionalclasses);
     }
 

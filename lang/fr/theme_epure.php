@@ -267,6 +267,7 @@ $string['logoonbrand'] = 'Logo pour l\'en-tête en couleur';
 $string['logoonbrand_desc'] = 'Facultatif. Une version du logo lisible sur la couleur de marque, souvent blanche sur fond transparent. Utilisée quand l\'en-tête prend la couleur de marque.';
 $string['mobilenav'] = 'Barre de navigation mobile';
 $string['mobilenav_desc'] = 'Sur téléphone, une barre en bas de l’écran mène au tableau de bord, à mes cours, au catalogue, aux messages et au profil, à portée de pouce.';
+$string['mobilenav_messages'] = 'Messages';
 $string['mobilenav_unread'] = '{$a} non lus';
 $string['mycourses_active'] = 'Actifs cette semaine';
 $string['mycourses_available'] = '{$a} disponibles';

@@ -85,7 +85,7 @@ class mobile_nav {
             }
             $add(
                 'messages',
-                get_string('messages', 'message'),
+                get_string('mobilenav_messages', 'theme_epure'),
                 '/message/index.php',
                 'fa-comment',
                 str_starts_with($pagetype, 'message-'),

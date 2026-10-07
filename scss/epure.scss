@@ -1903,14 +1903,38 @@ html.epure-a11y-motion *::after {
     }
 }
 
+// On narrow screens, a round icon button, like the other icons of the header. The quick search
+// replaces Moodle's search there: two magnifying glasses side by side would be confusing.
 @media (max-width: 991.98px) {
     .epure-qs-button.btn {
-        padding: .375rem .625rem;
+        flex: none;
+        justify-content: center;
+        align-self: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        margin-right: .25rem;
+        padding: 0;
 
         .epure-qs-button-label,
         kbd {
             display: none;
         }
+    }
+
+    .epure-has-quicksearch #usernavigation > .simplesearchform,
+    .epure-has-quicksearch #usernavigation > .simplesearchform + .divider {
+        display: none;
+    }
+}
+
+// On phones, a long company name in the header is cut instead of pushing the user menu out.
+@media (max-width: 575.98px) {
+    .navbar.fixed-top .companymenu .companybutton,
+    .navbar.fixed-top .companymenu > .dropdown > .btn {
+        max-width: 9rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 }
 
@@ -2171,11 +2195,16 @@ html.epure-a11y-motion *::after {
         line-height: 1;
     }
 
+    // Up to two lines (« Tableau de bord », « Mes formations »), rather than cut words.
     .epure-mobilenav-label {
+        display: -webkit-box;
         max-width: 100%;
         overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        line-height: 1.15;
+        text-align: center;
+        overflow-wrap: anywhere;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
     }
 
     .epure-mobilenav-count {

@@ -267,6 +267,7 @@ $string['logoonbrand'] = 'Logo for the brand-coloured header';
 $string['logoonbrand_desc'] = 'Optional. A version of the logo that reads on the brand colour, often white on a transparent background. Used when the header colour is set to the brand colour.';
 $string['mobilenav'] = 'Mobile navigation bar';
 $string['mobilenav_desc'] = 'On phones, a bar at the bottom of the screen leads to the dashboard, my courses, the catalogue, the messages and the profile, within reach of the thumb.';
+$string['mobilenav_messages'] = 'Messages';
 $string['mobilenav_unread'] = '{$a} unread';
 $string['mycourses_active'] = 'Active this week';
 $string['mycourses_available'] = '{$a} available';
