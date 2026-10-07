@@ -371,3 +371,29 @@ export const setLogo = (selector, url) => {
     img.classList.remove('epure-logocolours-pickable');
     img.src = url;
 };
+
+/**
+ * Follows the logo of a file manager of the page: a logo uploaded there is not saved yet, but its
+ * preview in the file manager gives its colours.
+ *
+ * @param {string} selector Selector of the logo colours region.
+ * @param {string} name Name of the file manager field.
+ */
+export const followManager = (selector, name) => {
+    const manager = document.querySelector(`[name="${name}"]`)?.closest('.fitem, .form-group, .form-item');
+    if (!manager) {
+        return;
+    }
+    const follow = () => {
+        const preview = manager.querySelector('.fp-content img[src*="draftfile.php"], .fp-content img[src*="pluginfile.php"]');
+        if (preview) {
+            const url = new URL(preview.src, window.location.href);
+            url.searchParams.delete('preview');
+            url.searchParams.delete('oid');
+            setLogo(selector, url.toString());
+        }
+    };
+    // The file manager first shows a placeholder, then sets the preview address on the same image.
+    new MutationObserver(follow).observe(manager, {childList: true, subtree: true, attributes: true, attributeFilter: ['src']});
+    follow();
+};

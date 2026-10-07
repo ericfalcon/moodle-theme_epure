@@ -12,18 +12,38 @@ Thème moderne, sobre et accessible pour **Moodle 4.5 LTS et 5.x**, basé sur Bo
 
 Administration du site › Apparence › Thèmes › Épure.
 
-### Réglages généraux
+### Identité visuelle
+
+Les logos viennent en premier : leurs couleurs sont ensuite proposées pour la couleur de marque, juste en dessous.
 
 | Réglage | Effet |
 |---|---|
+| Logo | Affiché dans l'en-tête et sur la page de connexion. Les fonds transparents sont pris en charge (SVG, PNG, WebP). Sans logo, ceux d'Apparence › Logos sont utilisés. |
+| Logo pour l'en-tête en couleur | Facultatif : une version lisible sur la couleur de marque, souvent blanche sur fond transparent. |
 | Couleur de marque | Toute la palette en est déduite : survols, fonds teintés, couleur des liens. Les couleurs sont ajustées automatiquement pour respecter les contrastes AA des WCAG 2.2, et le contraste obtenu est affiché sous le réglage. |
+| Couleur de l'en-tête | Blanc avec soulignement de la couleur de marque, ou rempli de la couleur de marque. Les textes et icônes prennent la couleur la plus lisible. |
+
+Sous la couleur de marque, le thème propose les **couleurs du logo**, y compris les couleurs d'accent qui occupent peu de place (lettrage fin, petit emblème), et celles d'un logo tout juste déposé plus haut, avant même l'enregistrement : cliquez sur une pastille, ou directement sur un point du logo (pipette), puis enregistrez. Seuls les codes hexadécimaux sont acceptés, car la palette accessible en est calculée.
+
+### Typographie et affichage
+
+| Réglage | Effet |
+|---|---|
 | Police | Polices fournies : IBM Plex Sans, Inter, Source Sans 3, Figtree, Lato, et pour la lisibilité Atkinson Hyperlegible, Lexend, OpenDyslexic. Ou votre propre police téléversée. |
 | Police téléversée | Nom de la police et fichiers `.woff2` ou `.woff` (normal obligatoire, gras facultatif). Vérifiez que la licence de la police autorise l'usage sur un site web. |
 | Arrondis | Net, doux ou arrondi : cartes, boutons et champs. |
-
-Sous la couleur de marque, le thème propose les **couleurs du logo** enregistré, y compris les couleurs d'accent qui occupent peu de place (lettrage fin, petit emblème) : cliquez sur une pastille, ou directement sur un point du logo (pipette), puis enregistrez. Seuls les codes hexadécimaux sont acceptés, car la palette accessible en est calculée.
+| Mode sombre | Jamais, automatique comme l'appareil, ou toujours. |
 
 Toutes les polices sont servies par votre propre site. Le thème ne fait **aucun appel à Google Fonts** ni à un autre service externe.
+
+### Pages et navigation
+
+Ce que le thème ajoute aux pages de Moodle, chaque élément pouvant être désactivé :
+
+- **Navigation** : recherche rapide (Ctrl+K), barre de navigation mobile, pages d'activité ;
+- **Pages** : bannière de cours, catalogue des cours, aperçu de l'apprenant sur le tableau de bord, Mes cours par rôle ;
+- **Vocabulaire** : lien vers la page « Épure : vocabulaire » ;
+- **E-mails** : e-mails aux couleurs de la marque.
 
 ### Page Mes cours
 
@@ -33,15 +53,7 @@ Les cours que vous **animez** et ceux que vous **suivez** sont présentés en de
 |---|---|
 | Progression, prochaine activité à faire, prochaine échéance, bouton Commencer / Continuer / Revoir, mention Terminé | Bandeau et badge de rôle, participants, apprenants actifs cette semaine, devoirs à corriger, accès directs Participants, Notes, Paramètres |
 
-Une recherche (insensible aux accents) et des filtres En cours, À venir, Passés complètent la page. Les cours favoris viennent en premier, puis les plus récemment consultés ; les cours que vous avez masqués restent masqués. Un enseignant est reconnu à sa capacité de voir toutes les notes du cours (`moodle/grade:viewall`). Avec IOMAD, qui remplace le bloc de Moodle par le sien (« Mes cours » avec les onglets disponibles, en cours, terminés), la même présentation s'applique, avec en plus une section « Formations disponibles » et le bouton de téléchargement des certificats d'IOMAD. Réglage « Mes cours par rôle » (Réglages généraux) : décochez pour retrouver le bloc de Moodle ou d'IOMAD.
-
-### En-tête
-
-| Réglage | Effet |
-|---|---|
-| Couleur de l'en-tête | Blanc avec soulignement de la couleur de marque, ou rempli de la couleur de marque. Les textes et icônes prennent la couleur la plus lisible. |
-| Logo | Affiché dans l'en-tête et sur la page de connexion. Les fonds transparents sont pris en charge (SVG, PNG, WebP). Sans logo, ceux d'Apparence › Logos sont utilisés. |
-| Logo pour l'en-tête en couleur | Facultatif : une version lisible sur la couleur de marque, souvent blanche sur fond transparent. |
+Une recherche (insensible aux accents) et des filtres En cours, À venir, Passés complètent la page. Les cours favoris viennent en premier, puis les plus récemment consultés ; les cours que vous avez masqués restent masqués. Un enseignant est reconnu à sa capacité de voir toutes les notes du cours (`moodle/grade:viewall`). Avec IOMAD, qui remplace le bloc de Moodle par le sien (« Mes cours » avec les onglets disponibles, en cours, terminés), la même présentation s'applique, avec en plus une section « Formations disponibles » et le bouton de téléchargement des certificats d'IOMAD. Réglage « Mes cours par rôle » (onglet Pages et navigation) : décochez pour retrouver le bloc de Moodle ou d'IOMAD.
 
 ### Page de connexion
 
@@ -105,7 +117,7 @@ Les paquets de langue étant communs à tout le site, ces mots sont appliqués a
 
 ### Vocabulaire
 
-Administration du site › Présentation › Thèmes › Épure : vocabulaire (lien aussi dans l'onglet Réglages généraux du thème).
+Administration du site › Présentation › Thèmes › Épure : vocabulaire (lien aussi dans l'onglet Pages et navigation du thème).
 
 Choisissez, pour le français et l'anglais, les mots qui désignent :
 
@@ -150,7 +162,7 @@ Sur les pages d'installation et de mise à jour (mise à jour de Moodle, nouveau
 
 ## Mode sombre
 
-Le réglage **Mode sombre** (réglages généraux du thème) vaut *Jamais*, *Automatique, selon l'appareil* ou *Toujours*. Avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche. Chaque utilisateur peut aussi choisir son affichage dans ses préférences (bouton « Aa ») : comme le site, clair, sombre, ou selon son appareil.
+Le réglage **Mode sombre** (onglet Typographie et affichage du thème) vaut *Jamais*, *Automatique, selon l'appareil* ou *Toujours*. Avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche. Chaque utilisateur peut aussi choisir son affichage dans ses préférences (bouton « Aa ») : comme le site, clair, sombre, ou selon son appareil.
 
 Les couleurs sombres sont calculées à partir de la couleur de marque, avec les mêmes contrastes AA ; l'en-tête aux couleurs de la marque garde sa couleur. Les pages de Moodle et d'IOMAD (tableaux de bord, cours, formulaires, menus, tableaux) passent en sombre ; l'éditeur de texte garde l'apparence de son propre thème.
 
@@ -163,7 +175,7 @@ Pour un utilisateur qui suit des cours, le tableau de bord commence par un aper�
 - **À venir** : les prochaines échéances de tous ses cours (devoirs à rendre, tests qui ferment…) ;
 - **Terminé** : les cours terminés, avec leur date, et un lien vers ses attestations quand la plateforme en délivre (IOMAD, Certificate, Custom certificate).
 
-L'aperçu se désactive dans les réglages généraux du thème (« Aperçu de l'apprenant sur le tableau de bord ») ; avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche.
+L'aperçu se désactive dans l'onglet Pages et navigation du thème (« Aperçu de l'apprenant sur le tableau de bord ») ; avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche.
 
 ## Page de cours
 
@@ -173,7 +185,7 @@ En tête de chaque cours, une **bannière** reprend l'image du cours (ou un moti
 - **enseignant** : les participants, les apprenants actifs cette semaine, les devoirs à corriger, et des accès directs (participants, notes, paramètres) ;
 - **visiteur** (invité, utilisateur non inscrit) : l'image, la catégorie et le titre seulement.
 
-Pour l'apprenant, le titre de chaque section indique combien de ses activités il a terminées (« 2/5 », coche une fois la section terminée). La bannière se désactive dans les réglages généraux du thème (« Bannière des cours ») ; avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche.
+Pour l'apprenant, le titre de chaque section indique combien de ses activités il a terminées (« 2/5 », coche une fois la section terminée). La bannière se désactive dans l'onglet Pages et navigation du thème (« Bannière des cours ») ; avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche.
 
 ## E-mails aux couleurs de la marque
 
@@ -183,7 +195,7 @@ Les e-mails HTML du site (notifications, messages, forums, devoirs, e-mails d'IO
 - le message dans une carte, ses liens dans la couleur de marque ;
 - un **pied** avec le nom du site, le texte du pied de page et un lien « Gérer mes notifications ».
 
-Avec IOMAD, ce sont le logo, la couleur, le nom et le texte du pied de page de **l'entreprise du destinataire**. Le gabarit utilise des tableaux et des styles en ligne, que lisent les logiciels de messagerie, et s'adapte aux écrans étroits. Épure remplace pour cela le gabarit `core/email_html` de Moodle, y compris pour les e-mails envoyés par les tâches planifiées. Les e-mails se désactivent dans les réglages généraux du thème (« E-mails aux couleurs de la marque ») : ils reprennent alors la présentation de Moodle.
+Avec IOMAD, ce sont le logo, la couleur, le nom et le texte du pied de page de **l'entreprise du destinataire**. Le gabarit utilise des tableaux et des styles en ligne, que lisent les logiciels de messagerie, et s'adapte aux écrans étroits. Épure remplace pour cela le gabarit `core/email_html` de Moodle, y compris pour les e-mails envoyés par les tâches planifiées. Les e-mails se désactivent dans l'onglet Pages et navigation du thème (« E-mails aux couleurs de la marque ») : ils reprennent alors la présentation de Moodle.
 
 ## Recherche rapide (Ctrl+K)
 
@@ -194,11 +206,11 @@ Un bouton **Rechercher** dans l'en-tête, ou **Ctrl+K** (**⌘K** sur Mac) depui
 - les autres cours du **catalogue**, avec un lien vers la recherche complète ;
 - pour les administrateurs, les **pages de l'administration** dont le nom ou un réglage correspond, avec un lien vers la recherche de l'administration.
 
-Les flèches ↑ ↓ choisissent un résultat, Entrée l'ouvre (Ctrl+Entrée dans un nouvel onglet), Échap ferme. La fenêtre est une boîte de dialogue accessible (liste de choix annoncée aux lecteurs d'écran, nombre de résultats). La recherche se désactive dans les réglages généraux du thème (« Recherche rapide »).
+Les flèches ↑ ↓ choisissent un résultat, Entrée l'ouvre (Ctrl+Entrée dans un nouvel onglet), Échap ferme. La fenêtre est une boîte de dialogue accessible (liste de choix annoncée aux lecteurs d'écran, nombre de résultats). La recherche se désactive dans l'onglet Pages et navigation du thème (« Recherche rapide »).
 
 ## Barre de navigation mobile
 
-Sur téléphone, une barre fixée en bas de l'écran, à portée de pouce, mène au **tableau de bord** (ou à l'accueil du site si le tableau de bord est désactivé), à **mes cours**, au **catalogue**, aux **messages** (avec le nombre de conversations non lues) et au **profil** ; l'entrée de la page en cours est mise en évidence. Les boutons flottants de Moodle (aide, sommaire du cours) remontent au-dessus d'elle ; sur les pages qui ont leur propre barre d'actions en bas (notation, par exemple), elle s'efface. Elle se désactive dans les réglages généraux du thème (« Barre de navigation mobile ») et, avec IOMAD, pour chaque entreprise dans sa fiche.
+Sur téléphone, une barre fixée en bas de l'écran, à portée de pouce, mène au **tableau de bord** (ou à l'accueil du site si le tableau de bord est désactivé), à **mes cours**, au **catalogue**, aux **messages** (avec le nombre de conversations non lues) et au **profil** ; l'entrée de la page en cours est mise en évidence. Les boutons flottants de Moodle (aide, sommaire du cours) remontent au-dessus d'elle ; sur les pages qui ont leur propre barre d'actions en bas (notation, par exemple), elle s'efface. Elle se désactive dans l'onglet Pages et navigation du thème (« Barre de navigation mobile ») et, avec IOMAD, pour chaque entreprise dans sa fiche.
 
 ## Catalogue des cours
 
@@ -206,7 +218,7 @@ La page des cours (`/course/index.php`) devient un **catalogue** : les sous-cat�
 
 Avant l'inscription, la page d'inscription d'un cours le **présente** : bannière avec l'image et un bouton vers les options d'inscription, résumé, **programme** (sections et nombre d'activités), enseignants, dates, contenu par type d'activité et champs personnalisés du cours. Les sections et activités cachées n'y figurent pas.
 
-Avec IOMAD, le catalogue ne montre que les catégories et les cours qu'IOMAD autorise à l'utilisateur. Le catalogue et la présentation se désactivent dans les réglages généraux du thème (« Catalogue des cours »).
+Avec IOMAD, le catalogue ne montre que les catégories et les cours qu'IOMAD autorise à l'utilisateur. Le catalogue et la présentation se désactivent dans l'onglet Pages et navigation du thème (« Catalogue des cours »).
 
 ## Pages d'activité
 
@@ -215,7 +227,7 @@ Dans Moodle 4 et 5, avec le sommaire latéral, les liens vers l'activité préc�
 - **en haut**, une bande avec le cours (lien de retour), la position de l'activité (« Activité 3 sur 12 »), la progression de l'apprenant et un bouton **Mode lecture** ;
 - **en bas**, l'activité précédente et la suivante en cartes (icône, nom, section) ; après la dernière, une carte ramène au cours. Les étiquettes et les activités invisibles pour l'utilisateur sont ignorées.
 
-Le **mode lecture** masque les panneaux latéraux et centre le contenu ; il est gardé dans le profil de l'utilisateur, et la touche Échap le quitte. Le bouton **Marquer comme terminé** est agrandi et prend la couleur de la marque. Ces ajouts se désactivent dans les réglages généraux du thème (« Pages d'activité »).
+Le **mode lecture** masque les panneaux latéraux et centre le contenu ; il est gardé dans le profil de l'utilisateur, et la touche Échap le quitte. Le bouton **Marquer comme terminé** est agrandi et prend la couleur de la marque. Ces ajouts se désactivent dans l'onglet Pages et navigation du thème (« Pages d'activité »).
 
 ## Accessibilité
 

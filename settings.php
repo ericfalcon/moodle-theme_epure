@@ -27,13 +27,34 @@ defined('MOODLE_INTERNAL') || die();
 if ($ADMIN->fulltree) {
     $settings = new theme_boost_admin_settingspage_tabs('themesettingepure', get_string('configtitle', 'theme_epure'));
 
-    // General tab: identity, typography and shape.
-    $page = new admin_settingpage('theme_epure_general', get_string('generalsettings', 'theme_epure'));
+    // Brand identity tab: the logos first, as the colours of the logo are proposed for the brand colour,
+    // then the colours.
+    $page = new admin_settingpage('theme_epure_brand', get_string('settingsbrand', 'theme_epure'));
 
     $page->add(new admin_setting_heading(
-        'theme_epure/vocabularylink',
-        '',
-        get_string('vocabularylink', 'theme_epure', (new moodle_url('/theme/epure/vocabulary.php'))->out())
+        'theme_epure/headinglogos',
+        get_string('settingslogos', 'theme_epure'),
+        get_string('settingslogos_desc', 'theme_epure')
+    ));
+
+    foreach (['logo', 'logoonbrand'] as $name) {
+        $setting = new admin_setting_configstoredfile(
+            'theme_epure/' . $name,
+            get_string($name, 'theme_epure'),
+            get_string($name . '_desc', 'theme_epure'),
+            $name,
+            0,
+            ['maxfiles' => 1, 'accepted_types' => ['.svg', '.png', '.webp', '.jpg', '.jpeg']]
+        );
+        $setting->set_updatedcallback('theme_reset_all_caches');
+        $page->add($setting);
+    }
+
+
+    $page->add(new admin_setting_heading(
+        'theme_epure/headingcolours',
+        get_string('settingscolours', 'theme_epure'),
+        get_string('settingscolours_desc', 'theme_epure')
     ));
 
     // Brand colour, with the contrast the theme reaches for the current value.
@@ -56,6 +77,24 @@ if ($ADMIN->fulltree) {
     );
     $setting->set_updatedcallback('theme_reset_all_caches');
     $page->add($setting);
+
+    $setting = new admin_setting_configselect(
+        'theme_epure/headerstyle',
+        get_string('headerstyle', 'theme_epure'),
+        get_string('headerstyle_desc', 'theme_epure'),
+        'light',
+        [
+            'light' => get_string('headerstylelight', 'theme_epure'),
+            'brand' => get_string('headerstylebrand', 'theme_epure'),
+        ]
+    );
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $page->add($setting);
+
+    $settings->add($page);
+
+    // Typography and display tab.
+    $page = new admin_settingpage('theme_epure_display', get_string('settingsdisplay', 'theme_epure'));
 
     $setting = new admin_setting_configselect(
         'theme_epure/font',
@@ -91,19 +130,6 @@ if ($ADMIN->fulltree) {
     }
 
     $setting = new admin_setting_configselect(
-        'theme_epure/darkmode',
-        get_string('darkmode', 'theme_epure'),
-        get_string('darkmode_desc', 'theme_epure'),
-        'light',
-        [
-            'light' => get_string('darkmodelight', 'theme_epure'),
-            'auto' => get_string('darkmodeauto', 'theme_epure'),
-            'dark' => get_string('darkmodedark', 'theme_epure'),
-        ]
-    );
-    $page->add($setting);
-
-    $setting = new admin_setting_configselect(
         'theme_epure/radius',
         get_string('radius', 'theme_epure'),
         get_string('radius_desc', 'theme_epure'),
@@ -117,21 +143,25 @@ if ($ADMIN->fulltree) {
     $setting->set_updatedcallback('theme_reset_all_caches');
     $page->add($setting);
 
-    // Course page: banner with the image, the progress or the figures of the course.
-    $page->add(new admin_setting_configcheckbox(
-        'theme_epure/coursebanner',
-        get_string('coursebanner', 'theme_epure'),
-        get_string('coursebanner_desc', 'theme_epure'),
-        1
-    ));
+    $setting = new admin_setting_configselect(
+        'theme_epure/darkmode',
+        get_string('darkmode', 'theme_epure'),
+        get_string('darkmode_desc', 'theme_epure'),
+        'light',
+        [
+            'light' => get_string('darkmodelight', 'theme_epure'),
+            'auto' => get_string('darkmodeauto', 'theme_epure'),
+            'dark' => get_string('darkmodedark', 'theme_epure'),
+        ]
+    );
+    $page->add($setting);
 
-    // E-mails in the colours of the brand.
-    $page->add(new admin_setting_configcheckbox(
-        'theme_epure/emailbranding',
-        get_string('emailbranding', 'theme_epure'),
-        get_string('emailbranding_desc', 'theme_epure'),
-        1
-    ));
+    $settings->add($page);
+
+    // Pages and navigation tab: what the theme adds to the pages of Moodle.
+    $page = new admin_settingpage('theme_epure_features', get_string('settingsfeatures', 'theme_epure'));
+
+    $page->add(new admin_setting_heading('theme_epure/headingnavigation', get_string('settingsnavigation', 'theme_epure'), ''));
 
     // Quick search (Ctrl+K).
     $page->add(new admin_setting_configcheckbox(
@@ -149,19 +179,29 @@ if ($ADMIN->fulltree) {
         1
     ));
 
-    // Catalogue of the courses, and presentation of a course on its enrolment page.
-    $page->add(new admin_setting_configcheckbox(
-        'theme_epure/catalogue',
-        get_string('catalogue', 'theme_epure'),
-        get_string('catalogue_desc', 'theme_epure'),
-        1
-    ));
-
     // Pages of the activities: strip with the position and the progress, previous and next activities.
     $page->add(new admin_setting_configcheckbox(
         'theme_epure/activitynav',
         get_string('activitynav', 'theme_epure'),
         get_string('activitynav_desc', 'theme_epure'),
+        1
+    ));
+
+    $page->add(new admin_setting_heading('theme_epure/headingpages', get_string('settingspages', 'theme_epure'), ''));
+
+    // Course page: banner with the image, the progress or the figures of the course.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/coursebanner',
+        get_string('coursebanner', 'theme_epure'),
+        get_string('coursebanner_desc', 'theme_epure'),
+        1
+    ));
+
+    // Catalogue of the courses, and presentation of a course on its enrolment page.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/catalogue',
+        get_string('catalogue', 'theme_epure'),
+        get_string('catalogue_desc', 'theme_epure'),
         1
     ));
 
@@ -181,36 +221,21 @@ if ($ADMIN->fulltree) {
         1
     ));
 
-    $settings->add($page);
+    $page->add(new admin_setting_heading(
+        'theme_epure/vocabularylink',
+        get_string('settingsvocabulary', 'theme_epure'),
+        get_string('vocabularylink', 'theme_epure', (new moodle_url('/theme/epure/vocabulary.php'))->out())
+    ));
 
-    // Header tab: colour and logos.
-    $page = new admin_settingpage('theme_epure_header', get_string('headersettings', 'theme_epure'));
+    $page->add(new admin_setting_heading('theme_epure/headingemails', get_string('settingsemails', 'theme_epure'), ''));
 
-    $setting = new admin_setting_configselect(
-        'theme_epure/headerstyle',
-        get_string('headerstyle', 'theme_epure'),
-        get_string('headerstyle_desc', 'theme_epure'),
-        'light',
-        [
-            'light' => get_string('headerstylelight', 'theme_epure'),
-            'brand' => get_string('headerstylebrand', 'theme_epure'),
-        ]
-    );
-    $setting->set_updatedcallback('theme_reset_all_caches');
-    $page->add($setting);
-
-    foreach (['logo', 'logoonbrand'] as $name) {
-        $setting = new admin_setting_configstoredfile(
-            'theme_epure/' . $name,
-            get_string($name, 'theme_epure'),
-            get_string($name . '_desc', 'theme_epure'),
-            $name,
-            0,
-            ['maxfiles' => 1, 'accepted_types' => ['.svg', '.png', '.webp', '.jpg', '.jpeg']]
-        );
-        $setting->set_updatedcallback('theme_reset_all_caches');
-        $page->add($setting);
-    }
+    // E-mails in the colours of the brand.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/emailbranding',
+        get_string('emailbranding', 'theme_epure'),
+        get_string('emailbranding_desc', 'theme_epure'),
+        1
+    ));
 
     $settings->add($page);
 

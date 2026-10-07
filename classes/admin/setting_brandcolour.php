@@ -83,9 +83,9 @@ class setting_brandcolour extends \admin_setting_configcolourpicker {
             'inputid' => $this->get_id(),
             'logourl' => $logo ? $logo->out(false) : null,
         ]);
-        if ($logo) {
-            $PAGE->requires->js_call_amd('theme_epure/logo_colours', 'init', ['#' . $regionid]);
-        }
+        $PAGE->requires->js_call_amd('theme_epure/logo_colours', 'init', ['#' . $regionid]);
+        // The logo is set on the same tab, above: a logo just uploaded gives its colours before it is saved.
+        $PAGE->requires->js_call_amd('theme_epure/logo_colours', 'followManager', ['#' . $regionid, 's_theme_epure_logo']);
 
         return format_admin_setting(
             $this,

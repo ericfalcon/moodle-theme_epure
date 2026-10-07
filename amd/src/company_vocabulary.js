@@ -28,7 +28,7 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {init as initColours, setLogo} from 'theme_epure/logo_colours';
+import {init as initColours, followManager} from 'theme_epure/logo_colours';
 
 /**
  * Shows the custom word fields of a choice when « Other word » is selected.
@@ -214,20 +214,5 @@ const initColour = (region) => {
     initColours('#epure-company-logocolours');
 
     // A logo uploaded in the form is not saved yet: its preview in the file manager gives its colours.
-    const manager = document.querySelector('[name="companylogo"]')?.closest('.fitem, .form-group');
-    if (!manager) {
-        return;
-    }
-    const follow = () => {
-        const preview = manager.querySelector('.fp-content img[src*="draftfile.php"], .fp-content img[src*="pluginfile.php"]');
-        if (preview) {
-            const url = new URL(preview.src, window.location.href);
-            url.searchParams.delete('preview');
-            url.searchParams.delete('oid');
-            setLogo('#epure-company-logocolours', url.toString());
-        }
-    };
-    // The file manager first shows a placeholder, then sets the preview address on the same image.
-    new MutationObserver(follow).observe(manager, {childList: true, subtree: true, attributes: true, attributeFilter: ['src']});
-    follow();
+    followManager('#epure-company-logocolours', 'companylogo');
 };
