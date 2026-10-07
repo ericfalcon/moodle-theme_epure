@@ -3502,6 +3502,53 @@ html.epure-dark {
     color: var(--epure-ink-muted);
 }
 
+// While the server sends the page, as during an upgrade: a message in a corner, which leaves the
+// progress readable, and only appears after a second so that it never flashes.
+.epure-busy-loading {
+    inset: auto 1rem 1rem auto;
+    padding: 0;
+    background-color: transparent;
+    animation: epure-busy-appear .2s 1s both;
+
+    .epure-busy-box {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0 .875rem;
+        align-items: center;
+        max-width: 24rem;
+        padding: 1rem 1.25rem;
+        text-align: start;
+    }
+
+    .epure-busy-spinner {
+        grid-row: span 2;
+        width: 1.75rem;
+        height: 1.75rem;
+        margin: 0;
+    }
+
+    .epure-busy-title {
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    .epure-busy-detail {
+        font-size: .875rem;
+    }
+}
+
+@keyframes epure-busy-appear {
+    from {
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    to {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
 @keyframes epure-busy-spin {
     to {
         transform: rotate(360deg);

@@ -164,9 +164,15 @@ class core_renderer extends \theme_boost\output\core_renderer {
         return $data ? $this->render_from_template('theme_epure/activity_navigation', $data) : '';
     }
 
-    /** @var string[] Page types of the installation and upgrade of Moodle and its plugins. */
-    protected const BUSY_PAGES = ['admin-index', 'admin-upgradesettings', 'admin-plugins', 'admin-environment',
-        'admin-purgecaches'];
+    /**
+     * Top of the page; on the pages that install or upgrade Moodle and its plugins, a message while the
+     * server sends the page.
+     *
+     * @return string HTML.
+     */
+    public function standard_top_of_body_html() {
+        return parent::standard_top_of_body_html() . \theme_epure\busy::top_of_body($this->page);
+    }
 
     /**
      * End of the page; on the pages that install or upgrade Moodle and its plugins, an indicator that Moodle
@@ -175,7 +181,6 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return string HTML.
      */
     public function standard_end_of_body_html() {
-        global $CFG;
         $output = parent::standard_end_of_body_html();
         // The page of the messages reuses the template of the drawer, hidden from assistive technologies
         // (aria-hidden) although the page shows it: the theme shows it to them too, and names the region.
@@ -184,15 +189,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 . 'e.removeAttribute("aria-hidden"); e.removeAttribute("aria-expanded"); e.setAttribute("aria-label", '
                 . json_encode(get_string('messages', 'message')) . '); });');
         }
-        $pagetype = (string) $this->page->pagetype;
-        if (in_array($pagetype, self::BUSY_PAGES, true) || str_starts_with($pagetype, 'admin-tool-installaddon')) {
-            $output .= $this->render_from_template('theme_epure/busy', [
-                'message' => get_string('busy', 'theme_epure'),
-                'detail' => get_string('busy_detail', 'theme_epure'),
-            ]);
-            $output .= \html_writer::script(file_get_contents($CFG->dirroot . '/theme/epure/javascript/busy.js'));
-        }
-        return $output;
+        return $output . \theme_epure\busy::end_of_body($this->page);
     }
 
     /**
