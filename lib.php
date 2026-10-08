@@ -153,9 +153,11 @@ function theme_epure_get_pre_scss($theme) {
         // The sections and activities of the course page, 1rem in Boost whatever the radius chosen.
         'activity-border-radius' => $radius[2],
         // Every page uses the full width of the administration pages: Boost narrows the front
-        // page, the dashboard, My courses and the course pages to 830 or 1120 px.
-        'course-content-maxwidth' => 'none',
-        'medium-content-maxwidth' => 'none',
+        // page, the dashboard, My courses and the course pages to 830 or 1120 px. 100% rather than none:
+        // from Moodle 5.3, the side drawers and their buttons are placed with calculations on this
+        // width, which none makes invalid; with 100%, they come against the edges of the screen.
+        'course-content-maxwidth' => '100%',
+        'medium-content-maxwidth' => '100%',
         'epure-brand' => $light['fill'],
         'epure-brand-hover' => $light['hover'],
         'epure-on-brand' => $light['on'],

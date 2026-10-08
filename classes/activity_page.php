@@ -38,6 +38,8 @@ class activity_page {
         try {
             return $page->context->contextlevel == CONTEXT_MODULE && $page->pagelayout === 'incourse'
                 && $page->cm && !$page->cm->is_stealth() && (int) $page->course->id !== (int) SITEID
+                // In the format « Single activity », the activity is the course: no strip nor previous and next.
+                && $page->course->format !== 'singleactivity'
                 && get_config('theme_epure', 'activitynav') !== '0';
         } catch (\Throwable $e) {
             return false;

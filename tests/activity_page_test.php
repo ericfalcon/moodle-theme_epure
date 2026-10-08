@@ -59,6 +59,11 @@ final class activity_page_test extends \advanced_testcase {
         $coursepage->set_pagelayout('course');
         $this->assertFalse(activity_page::applies($coursepage));
 
+        // In the format « Single activity », the activity is the course.
+        $single = $this->getDataGenerator()->create_course(['format' => 'singleactivity', 'activitytype' => 'page']);
+        $only = $this->getDataGenerator()->create_module('page', ['course' => $single->id]);
+        $this->assertFalse(activity_page::applies($this->activity_page($single, $only)));
+
         set_config('activitynav', '0', 'theme_epure');
         $this->assertFalse(activity_page::applies($this->activity_page($course, $page)));
     }
