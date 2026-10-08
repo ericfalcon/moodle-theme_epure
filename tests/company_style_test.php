@@ -84,10 +84,11 @@ final class company_style_test extends \advanced_testcase {
         $this->assertSame('#36195F', company_style::brand_colour($company));
 
         company_style::save_settings(12, ['brandcolor' => '1c6e73', 'headerstyle' => 'brand', 'font' => 'lexend',
-            'coursebanner' => 'hide', 'learnerdashboard' => 'show', 'mobilenav' => 'hide', 'darkmode' => 'auto']);
+            'coursebanner' => 'hide', 'learnerdashboard' => 'show', 'mobilenav' => 'hide', 'darkmode' => 'auto',
+            'activityicons' => 'moodle']);
         $this->assertSame(
             ['brandcolor' => '#1C6E73', 'headerstyle' => 'brand', 'font' => 'lexend', 'coursebanner' => 'hide',
-                'learnerdashboard' => 'show', 'mobilenav' => 'hide', 'darkmode' => 'auto'],
+                'learnerdashboard' => 'show', 'mobilenav' => 'hide', 'darkmode' => 'auto', 'activityicons' => 'moodle'],
             array_diff_key(company_style::settings(12), array_flip(company_style::FOOTER_FIELDS))
         );
         $this->assertSame('#1C6E73', company_style::brand_colour($company));
@@ -101,7 +102,7 @@ final class company_style_test extends \advanced_testcase {
             'coursebanner' => 'maybe', 'learnerdashboard' => 'never', 'mobilenav' => 'often', 'darkmode' => 'dim']);
         $this->assertSame(
             ['brandcolor' => '', 'headerstyle' => '', 'font' => '', 'coursebanner' => '', 'learnerdashboard' => '',
-                'mobilenav' => '', 'darkmode' => ''] + array_fill_keys(company_style::FOOTER_FIELDS, ''),
+                'mobilenav' => '', 'darkmode' => '', 'activityicons' => ''] + array_fill_keys(company_style::FOOTER_FIELDS, ''),
             company_style::settings(12)
         );
         $this->assertFalse(get_config('theme_epure', 'companystyle_12'));
