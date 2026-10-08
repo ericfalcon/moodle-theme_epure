@@ -13,7 +13,8 @@ Feature: The course formats of Moodle with the Épure theme
       | enablecompletion | 1     |
 
   Scenario Outline: The course page of a format with sections meets accessibility standards
-    Given the following "courses" exist:
+    Given I enable "subsection" "mod" plugin
+    And the following "courses" exist:
       | fullname      | shortname | format   | numsections | enablecompletion |
       | Course <name> | C1        | <format> | 3           | 1                |
     And the following "activities" exist:
@@ -42,13 +43,13 @@ Feature: The course formats of Moodle with the Épure theme
       | fullname      | shortname | format         | activitytype |
       | Single course | C1        | singleactivity | page         |
     And the following "activities" exist:
-      | activity | course | name          |
-      | page     | C1     | The only page |
+      | activity | course | name          | content                  |
+      | page     | C1     | The only page | Welcome to this course.  |
     And the following "course enrolments" exist:
       | user     | course | role    |
       | learner1 | C1     | student |
     When I am on the "Single course" "course" page logged in as "learner1"
-    Then I should see "The only page"
+    Then I should see "Welcome to this course."
     And "Back to the course" "text" should not exist
     And ".epure-activity-strip" "css_element" should not exist
     And the page should meet accessibility standards
