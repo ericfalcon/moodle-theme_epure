@@ -41,6 +41,7 @@
         "mobilenavs": [{"value": "", "label": "As the site (Shown)", "selected": true}],
         "darkmodes": [{"value": "", "label": "As the site (Never)", "selected": true}],
         "activityicons": [{"value": "", "label": "As the site (Colour of the brand)", "selected": true}],
+        "certificateframe": {"preview": "data:image/png;base64,"},
         "footer": [{"name": "footerlegalurl", "label": "Legal notice", "value": "", "multiline": false, "placeholder": ""}],
         "logocolours": {"id": "epure-company-logocolours", "inputid": "id_epure_brandcolor", "logourl": null},
         "languages": [{"lang": "fr", "name": "Français", "concepts": [{
@@ -120,6 +121,25 @@
             </div>
             <div data-epure-company-slot="iomadcolours"></div>
         </div>
+        {{#certificateframe}}
+        <div class="epure-company-group" data-epure-company-group="certificates">
+            <h4 class="epure-company-group-title">{{#str}}companycertificates, theme_epure{{/str}}</h4>
+            <div class="form-group mb-3 row fitem" data-epure-company-row>
+                <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                    <span class="mb-0" id="id_epure_certificateframe_label">{{#str}}certificateframe, theme_epure{{/str}}</span>
+                </div>
+                <div class="col-md-9 felement">
+                    <img class="epure-company-certificateframe" src="{{preview}}" alt="" width="176" height="124">
+                    <div class="form-check mt-2">
+                        <input type="checkbox" class="form-check-input" id="id_epure_certificateframe" name="epure_certificateframe"
+                            value="1" aria-describedby="id_epure_certificateframe_help">
+                        <label class="form-check-label" for="id_epure_certificateframe">{{#str}}certificateframe_apply, theme_epure{{/str}}</label>
+                    </div>
+                    <p class="small text-muted mt-1 mb-0" id="id_epure_certificateframe_help">{{#str}}certificateframe_help, theme_epure{{/str}}</p>
+                </div>
+            </div>
+        </div>
+        {{/certificateframe}}
     </section>
     <section class="epure-company-section" data-epure-company-section="display" aria-labelledby="epure-company-section-display">
         <h3 class="epure-company-section-title" id="epure-company-section-display">{{#str}}settingsdisplay, theme_epure{{/str}}</h3>

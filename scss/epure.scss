@@ -1132,6 +1132,16 @@ body.epure-header-brand .navbar.fixed-top .divider {
     border-radius: var(--epure-radius);
 }
 
+// Preview of the frame of the certificates, on the white of a page.
+.epure-company-certificateframe {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    background-color: #fff;
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-sm);
+}
+
 .epure-company-colour-code {
     width: 8rem;
     font-family: SFMono-Regular, Menlo, Consolas, monospace;
@@ -3282,6 +3292,82 @@ table.quizreviewsummary {
 .path-mod-book .book_content > .no-overflow {
     max-width: 48rem;
     line-height: 1.65;
+}
+
+// Badges: the badges of the user as cards in a grid; the page of a badge with the image on a tint of the brand
+// and the details beside it.
+#page-badges-mybadges ul.badges,
+#page-user-profile ul.badges {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+    padding: 0;
+
+    > li {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: auto;
+        margin: 0;
+        padding: 1.25rem 1rem 1rem;
+        text-align: center;
+        background-color: var(--epure-surface);
+        border: 1px solid var(--epure-border);
+        border-radius: var(--epure-radius-lg);
+        box-shadow: var(--epure-shadow);
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+
+        &:hover {
+            border-color: var(--epure-brand);
+            box-shadow: var(--epure-shadow-hover);
+        }
+    }
+
+    .badge-image {
+        width: 6rem;
+        height: 6rem;
+        object-fit: contain;
+    }
+
+    .badge-name {
+        order: 2;
+        margin-top: .75rem;
+        color: var(--epure-ink);
+        font-weight: 600;
+        line-height: 1.3;
+    }
+
+    .badge-actions {
+        order: 3;
+        margin-top: .25rem;
+    }
+}
+
+#page-badges-badge #badge {
+    padding: 0;
+
+    #badge-image-col {
+        align-self: flex-start;
+        padding: 1.5rem;
+        background-color: var(--epure-brand-soft);
+        border-radius: var(--epure-radius-lg);
+
+        img {
+            max-width: 12rem;
+            height: auto;
+        }
+    }
+
+    #badge-details-col {
+        padding-left: 2rem;
+    }
+
+    #badge-awardedto {
+        color: var(--epure-brand-text);
+        font-size: 1.125rem;
+        font-weight: 600;
+    }
 }
 
 // Activity icons in the colour of the brand (theme_epure\activity_icons): Moodle's filter per purpose is

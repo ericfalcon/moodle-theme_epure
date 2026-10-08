@@ -166,6 +166,8 @@ class company_form {
             'mobilenavs' => $mobilenavs,
             'darkmodes' => $darkmodes,
             'activityicons' => $activityicons,
+            'certificateframe' => $companyid && \theme_epure\certificate_frame::available()
+                ? ['preview' => \theme_epure\certificate_frame::preview($brand ?: $sitebrand)] : null,
             'footer' => array_map(fn($name) => [
                 'name' => $name,
                 'label' => get_string($name === 'footerlinks' ? 'footerlinksetting' : $name, 'theme_epure'),
@@ -285,6 +287,12 @@ class company_form {
             fn($name) => optional_param(self::PREFIX . $name, '', PARAM_RAW),
             \theme_epure\company_style::FOOTER_FIELDS
         )));
+        // Frame of the IOMAD certificates in the colour of the company, when asked for.
+        if (optional_param(self::PREFIX . 'certificateframe', 0, PARAM_BOOL) && \theme_epure\certificate_frame::available()) {
+            $brand = \theme_epure\palette::normalise(optional_param(self::PREFIX . 'brandcolor', '', PARAM_TEXT))
+                ?? \theme_epure\palette::normalise(get_config('theme_epure', 'brandcolor'));
+            \theme_epure\certificate_frame::install_after_request($companyid, $brand);
+        }
         return true;
     }
 }

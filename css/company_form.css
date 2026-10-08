@@ -100,6 +100,16 @@
     border-radius: var(--epure-radius);
 }
 
+/* Preview of the frame of the certificates, on the white of a page. */
+.epure-company-certificateframe {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    background-color: #fff;
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius);
+}
+
 .epure-company-colour-code {
     width: 8rem;
     font-family: SFMono-Regular, Menlo, Consolas, monospace;
