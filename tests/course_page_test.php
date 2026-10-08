@@ -134,4 +134,29 @@ final class course_page_test extends \advanced_testcase {
         $course->enablecompletion = 0;
         $this->assertSame([], course_page::sections($course, $learner->id));
     }
+
+    /**
+     * The progress of the sections is shown to the learners of the course, with or without the banner.
+     */
+    public function test_section_progress_applies(): void {
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course();
+        $learner = $generator->create_and_enrol($course, 'student');
+        $teacher = $generator->create_and_enrol($course, 'editingteacher');
+        $page = new \moodle_page();
+        $page->set_course($course);
+        $page->set_pagetype('course-view-topics');
+
+        $this->setUser($learner);
+        $this->assertTrue(course_page::section_progress_applies($page, (int) $learner->id));
+        set_config('coursebanner', 0, 'theme_epure');
+        $this->assertTrue(course_page::section_progress_applies($page, (int) $learner->id));
+        set_config('sectionprogress', 0, 'theme_epure');
+        $this->assertFalse(course_page::section_progress_applies($page, (int) $learner->id));
+        set_config('sectionprogress', 1, 'theme_epure');
+
+        $this->setUser($teacher);
+        $this->assertFalse(course_page::section_progress_applies($page, (int) $teacher->id));
+    }
 }

@@ -158,17 +158,17 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $data = \theme_epure\learner_dashboard::export($this);
             return $data ? $header . $this->render_from_template('theme_epure/learner_dashboard', $data) : $header;
         }
-        if (!\theme_epure\course_page::applies($this->page)) {
-            return $header;
-        }
-        $course = $this->page->course;
-        $data = \theme_epure\course_page::export($this, $course, $header);
-        if ($data['learning'] && !$this->page->user_is_editing() && get_config('theme_epure', 'sectionprogress') !== '0') {
-            $sections = \theme_epure\course_page::sections($course, (int) $USER->id);
+        // The progress of the sections, with or without the banner.
+        if (\theme_epure\course_page::section_progress_applies($this->page, (int) $USER->id)) {
+            $sections = \theme_epure\course_page::sections($this->page->course, (int) $USER->id);
             if ($sections) {
                 $this->page->requires->js_call_amd('theme_epure/course_page', 'init', [$sections]);
             }
         }
+        if (!\theme_epure\course_page::applies($this->page)) {
+            return $header;
+        }
+        $data = \theme_epure\course_page::export($this, $this->page->course, $header);
         return $this->render_from_template('theme_epure/course_banner', $data);
     }
 

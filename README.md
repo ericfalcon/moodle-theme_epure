@@ -12,7 +12,9 @@ A modern, clean and accessible theme for **Moodle 4.5 LTS and 5.x**, based on Bo
 
 Site administration › Appearance › Themes › Épure.
 
-### Brand identity
+The settings are grouped by subject in tabs: Identity, Navigation, Courses, Accessibility, Appearance, Mobile, Login page, Footer and Advanced. Version 0.26.0 moved them into these tabs without renaming them: the values already saved are kept.
+
+### Identity
 
 The logos come first: their colours are then proposed for the brand colour, just below.
 
@@ -20,31 +22,62 @@ The logos come first: their colours are then proposed for the brand colour, just
 |---|---|
 | Logo | Shown in the header and on the login page. Transparent backgrounds are supported (SVG, PNG, WebP). Without a logo, the ones from Appearance › Logos are used. |
 | Logo for the brand-coloured header | Optional: a version that is legible on the brand colour, often white on a transparent background. |
+| Logo for phones | Optional: a small or square version of the logo, shown in the phone header next to the menu button, where Moodle shows no logo. |
+| Favicon | Optional: the icon of the site in the browser tabs and bookmarks (ICO, PNG or SVG). Without it, the one from Appearance › Logos. |
 | Brand colour | The whole palette is derived from it: hover states, tinted backgrounds, link colour. Colours are adjusted automatically to meet the WCAG 2.2 AA contrast requirements, and the resulting contrast is shown below the setting. |
+| Accent colour | Optional: the colour of the progress bars and of the completed sections, to set them apart from the brand colour. Empty: the brand colour. With IOMAD, a company with its own colour keeps it everywhere. |
 | Header colour | White with an underline in the brand colour, or filled with the brand colour. Text and icons take whichever colour is most legible. |
-| Activity icons | In the brand colour (the default), in Moodle's colours, one per kind of activity (assessment, content, communication…), or hidden for more sober course pages (the activity chooser keeps them). With IOMAD, each company can make another choice. |
 
 Below the brand colour, the theme suggests the **colours of the logo**, including accent colours that take up little space (thin lettering, a small emblem), and a logo just uploaded above even before it is saved: click a swatch, or click directly on a point of the logo (eyedropper), then save. Only hex codes are accepted, since the accessible palette is calculated from them.
 
-### Typography and display
+The tab ends with the **e-mails** in the colours of the brand (see Branded e-mails) and a link to the "Épure: vocabulary" page.
+
+### Navigation
+
+| Setting | Effect |
+|---|---|
+| Main bar | Moodle's main menu and the custom menu items, set in Appearance › Advanced theme settings (the tab links to it). |
+| Quick search | The search window of the header, Ctrl+K (see Quick search). |
+| Breadcrumb | The path of the page above its title: shown, shown on large screens only, or hidden. |
+| User menu | Links are added in Appearance › Advanced theme settings (User menu items); the tab links to it. |
+
+### Courses
+
+| Setting | Effect |
+|---|---|
+| My courses by role | See My courses page. |
+| Course catalogue | See Course catalogue. |
+| Course banner | See Course page. |
+| Progress of the sections | On the course page, how many of its activities the learner has completed in each section and subsection. |
+| Learner overview on the dashboard | See Learner dashboard. |
+| Activity icons | In the brand colour (the default), in Moodle's colours, one per kind of activity (assessment, content, communication…), or hidden for more sober course pages (the activity chooser keeps them). With IOMAD, each company can make another choice. |
+| Activity pages | The strip at the top and the previous and next activities (see Activity pages). |
+
+### Accessibility
+
+The **display preferences**: the button « Aa » of the header can be turned off, and the display by default of the site is set for visitors and for users who have not chosen theirs (see Accessibility). Then the **accessibility statement**.
+
+### Appearance
 
 | Setting | Effect |
 |---|---|
 | Font | Bundled fonts: IBM Plex Sans, Inter, Source Sans 3, Figtree, Lato, and, for readability, Atkinson Hyperlegible, Lexend and OpenDyslexic. Or upload your own font. |
 | Uploaded font | Font name and `.woff2` or `.woff` files (regular required, bold optional). Check that the font's licence allows its use on a website. |
 | Corner style | Sharp, soft or round: cards, buttons, form fields, and the sections and activities of the course pages. |
+| Density | Comfortable, or compact: less space around and between the elements, for more content on the screen. |
 | Dark mode | Never, automatic as the device, or always (see Dark mode below). |
 
 All fonts are served by your own site. The theme makes **no calls to Google Fonts** or to any other external service.
 
-### Pages and navigation
+### Mobile
 
-What the theme adds to Moodle's pages, each of which can be turned off:
-
-- **Navigation**: quick search (Ctrl+K), mobile navigation bar, activity pages, Moodle app in the colours of the brand;
-- **Pages**: course banner, course catalogue, learner overview on the dashboard, My courses by role;
-- **Vocabulary**: link to the "Épure: vocabulary" page;
-- **E-mails**: e-mails in the colours of the brand.
+| Setting | Effect |
+|---|---|
+| Mobile navigation bar | See Mobile navigation bar. |
+| Blocks on phones | In their drawer, opened by a button at the side of the screen, or hidden, for pages limited to their content. |
+| Dashboard on phones | The overview of the learner and the blocks, or the overview only. |
+| Moodle app in the colours of the brand | See Moodle app. |
+| Installable web app | Off by default; with its name and icon (see Installable web app). |
 
 ### My courses page
 
@@ -54,7 +87,7 @@ The courses you **teach** and the courses you **take** are shown in two sections
 |---|---|
 | Progress, next activity to do, next deadline, Start / Continue / Review button, Completed label | Banner and role badge, participants, learners active this week, assignments to grade, shortcuts to Participants, Grades, Settings |
 
-A search box (accent-insensitive) and In progress, Future and Past filters complete the page. Starred courses come first, followed by the most recently accessed; courses you have hidden stay hidden. A teacher is identified by the capability to view all grades in the course (`moodle/grade:viewall`). With IOMAD, which replaces Moodle's block with its own ("My courses" with available, in progress and completed tabs), the same layout applies, with an extra "Programmes available" section and IOMAD's certificate download button. The "My courses by role" setting (Pages and navigation tab): untick it to restore the Moodle or IOMAD block.
+A search box (accent-insensitive) and In progress, Future and Past filters complete the page. Starred courses come first, followed by the most recently accessed; courses you have hidden stay hidden. A teacher is identified by the capability to view all grades in the course (`moodle/grade:viewall`). With IOMAD, which replaces Moodle's block with its own ("My courses" with available, in progress and completed tabs), the same layout applies, with an extra "Programmes available" section and IOMAD's certificate download button. The "My courses by role" setting (Courses tab): untick it to restore the Moodle or IOMAD block.
 
 ### Login page
 
@@ -73,7 +106,7 @@ The form itself is still Moodle's own: it follows each version (4.5 to 5.3) and 
 | Company IOMAD setting | Effect in Épure |
 |---|---|
 | Heading colour (or, if not set, link colour) | Becomes the company's brand colour: the accessible palette is recalculated for it (header, buttons, links, AA contrast). |
-| Company logo | Replaces the Épure logo for the company's users. |
+| Company logo | Replaces the Épure logo for the company's users, in the phone header too. |
 | Custom CSS | Added to the pages of the company's users. |
 
 These settings apply to users assigned to the company, and to an administrator who has selected the company in the IOMAD dashboard. Only hex colour codes are taken into account. IOMAD's main colour (page background) is not applied, to preserve legibility.
@@ -91,12 +124,14 @@ These settings apply to users assigned to the company, and to an administrator w
 **Everything is set in the company's profile** (IOMAD dashboard › Create company or Edit company › Appearance). Épure arranges that part in numbered steps, organised as the tabs of the theme settings, and moves IOMAD's own fields into them:
 
 1. **Theme**: the theme of the company.
-2. **Brand identity**: *Logos* (IOMAD's logo, compact logo and favicon, then the logo for the brand-coloured header), then *Colours* (brand colour, header colour, colours of the activity icons). The logos come before the colours, because their colours are proposed for the brand colour.
-3. **Typography and display**: font, dark mode.
+2. **Identity**: *Logos* (IOMAD's logo, compact logo and favicon, then the logo for the brand-coloured header), then *Colours* (brand colour, header colour, colours of the activity icons), then *Certificates*. The logos come before the colours, because their colours are proposed for the brand colour.
+3. **Appearance**: font, dark mode.
 4. **Pages and navigation**: *Navigation* (mobile navigation bar), *Pages* (course banner, learner overview).
 5. **Footer**.
 6. **Vocabulary**.
 7. **Advanced settings**: IOMAD's custom CSS and custom menu.
+
+In the theme settings, the settings of step 4 are in the Courses tab (course banner, learner overview) and the Mobile tab (mobile navigation bar).
 
 If the company chooses a theme other than Épure, nothing of Épure remains: IOMAD's form is shown as IOMAD shows it (order, fields, note), and the users of the company see that theme as it is without Épure (original words of the language pack, Moodle's e-mails). The Épure settings of the company are kept and apply again if it goes back to Épure.
 
@@ -108,7 +143,7 @@ The Épure settings:
 
 | Company setting | Effect |
 |---|---|
-| Brand colour | Any colour code, a colour picker, or the colours of the company's logo (swatches and eyedropper, including for a logo that has just been uploaded). Empty: IOMAD's heading colour, otherwise the site's colour. The accessible palette is recalculated. |
+| Brand colour | Any colour code, a colour picker, or the colours of the company's logo (swatches and eyedropper, including for a logo that has just been uploaded). Empty: IOMAD's heading colour, otherwise the site's colour. The accessible palette is recalculated. It also replaces the accent colour of the site. |
 | Header colour | As the site, white, or brand colour. |
 | Course banner | As the site, shown or hidden, for the company's users. |
 | Learner overview on the dashboard | As the site, shown or hidden. |
@@ -124,7 +159,7 @@ Since language packs are shared by the whole site, these words are applied when 
 
 ### Vocabulary
 
-Site administration › Appearance › Themes › Épure: vocabulary (also linked from the theme's Pages and navigation tab).
+Site administration › Appearance › Themes › Épure: vocabulary (also linked from the theme's Identity tab).
 
 Choose, for French and English, the words used for:
 
@@ -176,15 +211,26 @@ On installation and upgrade pages (Moodle upgrade, new settings, plugins, instal
 - **Forums**: the posts as cards, the first one marked in the brand colour, the replies on a line that shows the thread. **Glossaries**: the index as buttons, the entries as cards. **Assignments**: the status as a card. **SCORM**: the information as boxes, and in the player a table of contents with the current item in the brand colour. **Books and pages**: the current chapter, the chapter arrows and the quotations in the brand colour, the text at a readable length.
 - **Badges**: the badges of the user as cards; the page of a badge with its image on a tint of the brand.
 - **Reports**: the row under the pointer highlighted in the grader report, the completion report and the IOMAD reports.
-- **IOMAD certificates**: in the company form (Brand identity › Certificates), a frame in the brand colour of the company can be used for its certificates, in place of its current frame. When the company, or the site for a company without a theme of its own, no longer uses Épure, its former frame and « Use border » setting come back before any certificate is made.
+- **IOMAD certificates**: in the company form (Identity › Certificates), a frame in the brand colour of the company can be used for its certificates, in place of its current frame. When the company, or the site for a company without a theme of its own, no longer uses Épure, its former frame and « Use border » setting come back before any certificate is made.
 
 ### Moodle app
 
-With the setting « Moodle app in the colours of the brand » (Pages and navigation), the Moodle app takes the brand colour, the header and the font of the theme, in light and dark mode, and with IOMAD those of the company of the user (the site's on the login screen). The theme sets the style sheet of the app (Site administration › Mobile app › Mobile appearance › CSS) and gives it a new address at each change of the appearance; turned off, it takes it out. Users who see the site with another theme get an empty style sheet.
+With the setting « Moodle app in the colours of the brand » (Mobile tab), the Moodle app takes the brand colour, the header and the font of the theme, in light and dark mode, and with IOMAD those of the company of the user (the site's on the login screen). The theme sets the style sheet of the app (Site administration › Mobile app › Mobile appearance › CSS) and gives it a new address at each change of the appearance; turned off, it takes it out. Users who see the site with another theme get an empty style sheet.
+
+## Installable web app
+
+With the setting « Installable web app » (Mobile tab, off by default), the platform can be added to the home screen of phones and computers from the browser, as an application: its icon, its name, its colour, without the address bar. It does not go through the app stores, nor through the Moodle app.
+
+- The theme adds a web app manifest (name of the site, short name from the setting « Name of the web app » or the short name of the site, brand colour, icons of 192 and 512 pixels), an icon for iOS and the colour of the browser bar. With IOMAD, the colour is the one of the user's company.
+- The icon is the one uploaded (« Icon of the web app », a square PNG of at least 512 × 512 pixels); without it, the theme draws the initial of the site on the brand colour.
+- A service worker, served from `theme/epure/webapp/sw.php` for the whole site, only keeps a page « You are offline », shown when a page cannot load. Nothing else is cached: Moodle's pages always come from the network.
+- When the web app is turned off, or for a user who no longer sees Épure, the service worker removes itself and its cache. The pages of Épure remove it at once when the setting is turned off; with another theme, the browser gets a service worker that removes itself at its next check (after at most an hour of use, or at the browser's own daily check).
+
+Once the theme is uninstalled, its files are gone and browsers keep the last service worker, which only shows the offline page when the network is down: turn the web app off and let users visit the site before uninstalling Épure.
 
 ## Dark mode
 
-The **Dark mode** setting (the theme's Typography and display tab) can be *Never*, *Automatic, as the device* or *Always*. With IOMAD, each company can make a different choice in its profile. Each user can also choose their display in their preferences ("Aa" button): as the site, light, dark, or as their device.
+The **Dark mode** setting (the theme's Appearance tab) can be *Never*, *Automatic, as the device* or *Always*. With IOMAD, each company can make a different choice in its profile. Each user can also choose their display in their preferences ("Aa" button): as the site, light, dark, or as their device.
 
 Dark colours are calculated from the brand colour, with the same AA contrast; a brand-coloured header keeps its colour. Moodle and IOMAD pages (dashboards, courses, forms, menus, tables) switch to dark; the text editor keeps the appearance of its own theme.
 
@@ -197,7 +243,7 @@ For a user who takes courses, the Dashboard starts with an overview, above Moodl
 - **Coming up**: the next deadlines across all their courses (assignments due, quizzes closing…);
 - **Completed**: completed courses, with their date, and a link to the user's certificates when the platform issues them (IOMAD, Certificate, Custom certificate).
 
-The overview can be turned off in the theme's Pages and navigation tab ("Learner overview on the dashboard"); with IOMAD, each company can make a different choice in its profile.
+The overview can be turned off in the theme's Courses tab ("Learner overview on the dashboard"); with IOMAD, each company can make a different choice in its profile. On phones, the dashboard can show the overview only, without the blocks (Mobile tab, "Dashboard on phones").
 
 ## Course page
 
@@ -207,7 +253,9 @@ At the top of each course, a **banner** shows the course image (or a generated p
 - **teacher**: participants, learners active this week, assignments to grade, and shortcuts (participants, grades, settings);
 - **visitor** (guest, non-enrolled user): the image, category and title only.
 
-For learners, the title of each section shows how many of its activities they have completed ("2/5", with a tick once the section is complete). The banner can be turned off in the theme's Pages and navigation tab ("Course banner"); with IOMAD, each company can make a different choice in its profile.
+For learners, the title of each section shows how many of its activities they have completed ("2/5", with a tick once the section is complete). The banner can be turned off in the theme's Courses tab ("Course banner"); with IOMAD, each company can make a different choice in its profile. The progress of the sections stays without the banner, and can be turned off on its own ("Progress of the sections"). The progress bars and the completed sections take the accent colour, when one is set (Identity tab).
+
+**Subsections** (Moodle 4.5 and later): a section counts the activities of its subsections in its progress, and each subsection gets its own. The activities of a subsection come at the place of the subsection in the course order, for the next activity (banner, My courses, dashboard), the position in the course and the previous and next activities. On the course page, subsections are set apart by a tinted background and a band of the brand colour, in light and dark mode.
 
 ## Branded e-mails
 
@@ -217,7 +265,7 @@ The site's HTML e-mails (notifications, messages, forums, assignments, IOMAD e-m
 - the message in a card, with its links in the brand colour;
 - a **footer** with the site name, the footer text and a "Manage my notifications" link.
 
-With IOMAD, the logo, colour, name and footer text are those of **the recipient's company**. The template uses tables and inline styles, which e-mail clients can read, and adapts to narrow screens. To do this, Épure overrides Moodle's `core/email_html` template, including for e-mails sent by scheduled tasks. Branded e-mails can be turned off in the theme's Pages and navigation tab ("E-mails in the colours of the brand"): e-mails then go back to Moodle's layout.
+With IOMAD, the logo, colour, name and footer text are those of **the recipient's company**. The template uses tables and inline styles, which e-mail clients can read, and adapts to narrow screens. To do this, Épure overrides Moodle's `core/email_html` template, including for e-mails sent by scheduled tasks. Branded e-mails can be turned off in the theme's Identity tab ("E-mails in the colours of the brand"): e-mails then go back to Moodle's layout.
 
 ## Quick search (Ctrl+K)
 
@@ -228,11 +276,11 @@ A **Search** button in the header, or **Ctrl+K** (**⌘K** on Mac) from any page
 - other courses in the **catalogue**, with a link to the full search;
 - for administrators, **administration pages** whose name or a setting matches, with a link to the administration search.
 
-The ↑ ↓ arrows select a result, Enter opens it (Ctrl+Enter in a new tab), Esc closes the window. The window is an accessible dialog (list of options announced to screen readers, number of results). Search can be turned off in the theme's Pages and navigation tab ("Quick search"). The quick search replaces Moodle's search button in the header; when Moodle's global search is enabled, the results end with "Search … in the whole site", which opens it.
+The ↑ ↓ arrows select a result, Enter opens it (Ctrl+Enter in a new tab), Esc closes the window. The window is an accessible dialog (list of options announced to screen readers, number of results). Search can be turned off in the theme's Navigation tab ("Quick search"). The quick search replaces Moodle's search button in the header; when Moodle's global search is enabled, the results end with "Search … in the whole site", which opens it.
 
 ## Mobile navigation bar
 
-On phones, a bar fixed to the bottom of the screen, within thumb's reach, leads to the **Dashboard** (or to the site home if the Dashboard is disabled), **My courses**, the **catalogue**, **messages** (with the number of unread conversations) and the **profile**; the entry for the current page is highlighted. Moodle's floating buttons (help, course index) move up above it; on pages that have their own action bar at the bottom (grading, for example), it steps aside. It can be turned off in the theme's Pages and navigation tab ("Mobile navigation bar") and, with IOMAD, for each company in its profile.
+On phones, a bar fixed to the bottom of the screen, within thumb's reach, leads to the **Dashboard** (or to the site home if the Dashboard is disabled), **My courses**, the **catalogue**, **messages** (with the number of unread conversations) and the **profile**; the entry for the current page is highlighted. Moodle's floating buttons (help, course index) move up above it; on pages that have their own action bar at the bottom (grading, for example), it steps aside. It can be turned off in the theme's Mobile tab ("Mobile navigation bar") and, with IOMAD, for each company in its profile.
 
 ## Course catalogue
 
@@ -240,16 +288,16 @@ The courses page (`/course/index.php`) becomes a **catalogue**: subcategories as
 
 Before enrolment, a course's enrolment page **introduces** it: a banner with the image and a button to the enrolment options, the summary, the **outline** (sections and number of activities), teachers, dates, contents by activity type and the course's custom fields. Hidden sections and activities are not listed.
 
-With IOMAD, the catalogue only shows the categories and courses that IOMAD allows the user to see. The catalogue and the course introduction can be turned off in the theme's Pages and navigation tab ("Course catalogue").
+With IOMAD, the catalogue only shows the categories and courses that IOMAD allows the user to see. The catalogue and the course introduction can be turned off in the theme's Courses tab ("Course catalogue").
 
 ## Activity pages
 
 In Moodle 4 and 5, with the side course index, the links to the previous and next activity disappeared. Épure brings them back on every activity page:
 
 - **at the top**, a strip with the course (back link), the activity's position ("Activity 3 of 12"), the learner's progress and a **Reading mode** button;
-- **at the bottom**, the previous and next activities as cards (icon, name, section); after the last one, a card leads back to the course. Text and media areas and activities that the user cannot see are skipped.
+- **at the bottom**, the previous and next activities as cards (icon, name, section, or « Section › Subsection » for an activity of a subsection); after the last one, a card leads back to the course. Text and media areas and activities that the user cannot see are skipped.
 
-**Reading mode** hides the side panels and centres the content; it is saved in the user's profile, and the Esc key exits it. The **Mark as done** button is enlarged and takes the brand colour. These additions can be turned off in the theme's Pages and navigation tab ("Activity pages").
+**Reading mode** hides the side panels and centres the content; it is saved in the user's profile, and the Esc key exits it. The **Mark as done** button is enlarged and takes the brand colour. These additions can be turned off in the theme's Courses tab ("Activity pages").
 
 ## Accessibility
 
@@ -261,7 +309,7 @@ The theme targets WCAG 2.2 level AA, RGAA 4.1.2 and EN 301 549: calculated contr
 - a reading font: the site's font, Atkinson Hyperlegible or OpenDyslexic;
 - more text spacing (the values from WCAG success criterion 1.4.12), enhanced contrast, underlined links, reduced motion.
 
-The change takes effect immediately and is then saved in the preferences of the user's Moodle profile: it applies on every page and on all their devices, from the very first page load. Visitors who are not logged in and guests get the default display. These preferences are declared to the Privacy API and exported with the user's data.
+The change takes effect immediately and is then saved in the preferences of the user's Moodle profile: it applies on every page and on all their devices, from the very first page load. Visitors who are not logged in and guests get the display by default of the site, as do the users who have not chosen theirs: in the theme's Accessibility tab, the administrator sets the text size, the reading font, more text spacing, enhanced contrast, underlined links and reduced motion by default. The button « Aa » can be turned off in the same tab; preferences already chosen still apply. These preferences are declared to the Privacy API and exported with the user's data.
 
 **Accessibility statement.** The **Accessibility** tab of the theme settings fills it in using the French (RGAA) format: compliance status, entity, compliance rate, auditor and audit date, non-compliant content, exemptions, content not subject to the requirements, contact (by default, the support e-mail address). Until a status is chosen, nothing is published. Once the status is chosen:
 
@@ -274,8 +322,10 @@ A theme alone cannot make a platform compliant: course content matters too, and 
 
 - **Styles**: `scss/epure.scss` imports, in the order they are compiled, the files of `scss/epure/`, one per subject (header, course page, activities, dark mode…).
 - **IOMAD**: everything Épure uses of IOMAD goes through `theme_epure\iomad` (detection, API, company context, table names, addresses of the pages). IOMAD 5.1 renamed its tables and classes; this class knows both.
-- **Compatibility**: the continuous integration tests Moodle 4.5 to 5.3 and IOMAD 4.5, 5.1 and 5.2; the Behat tests cover the course formats Topics, Weeks (with a subsection), Single activity and Social, with axe-core.
-- **Performance** (Moodle 4.5, learner, against Boost): style sheet +9 %, JavaScript unchanged, HTML about +10 to 15 %, no layout shift; same server time except on the dashboard (+130 ms), where the learner overview computes the progress of each course. Details in the wiki (Développement).
+- **Course order**: `theme_epure\course_structure` gives the activities of a course in the order of the course page, those of a subsection at the place of the subsection (Moodle lists them at the end of the course); the next activity, the position and the previous and next activities follow it.
+- **Cache**: the progress, next activity and next deadline of each course of a learner, and their next deadlines, are kept 5 minutes in the cache `learnerprogress`, and forgotten at once when an activity or a course is completed, an assignment or a quiz attempt is submitted, or the activities or the completion of the course change.
+- **Compatibility**: the continuous integration tests Moodle 4.5 to 5.3 and IOMAD 4.5, 5.1 and 5.2; the Behat tests cover the course formats Topics, Weeks (with a subsection), Single activity and Social, with axe-core, and run on IOMAD too (a learner of a company sees its colour and logo, a user without company the site's colour, IOMAD's My courses is Épure's page by role). The IOMAD scenarios are tagged `@theme_epure_iomad`.
+- **Performance** (Moodle 4.5, learner, against Boost): style sheet +9 %, JavaScript unchanged, HTML about +10 to 15 %, no layout shift; same server time except on the dashboard, where the learner overview computes the progress of each course (+130 ms before the cache of 0.26.0; once cached, the overview takes about 5 ms instead of 60 to 80 ms). Details in the wiki (Développement).
 
 The palette variables are exposed as CSS custom properties (`--epure-brand`, `--epure-brand-text`, `--epure-on-brand`, etc.) for custom SCSS.
 

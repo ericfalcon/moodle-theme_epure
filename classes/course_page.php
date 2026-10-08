@@ -44,6 +44,26 @@ class course_page {
     }
 
     /**
+     * Whether the course page shows the progress of each section: to a learner of the course, outside the edit mode.
+     *
+     * @param \moodle_page $page Page.
+     * @param int $userid User.
+     * @return bool
+     */
+    public static function section_progress_applies(\moodle_page $page, int $userid): bool {
+        if (
+            !str_starts_with((string) $page->pagetype, 'course-view-') || empty($page->course->id)
+                || (int) $page->course->id === (int) SITEID || get_config('theme_epure', 'sectionprogress') === '0'
+                || !isloggedin() || isguestuser() || $page->user_is_editing()
+        ) {
+            return false;
+        }
+        $context = \context_course::instance($page->course->id);
+        return !mycourses::is_teaching($context, $userid)
+            && (is_enrolled($context, $userid, '', true) || is_role_switched($page->course->id));
+    }
+
+    /**
      * Context of the template theme_epure/course_banner.
      *
      * @param \renderer_base $output Renderer, for the generated course image.
