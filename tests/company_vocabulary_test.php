@@ -111,7 +111,7 @@ final class company_vocabulary_test extends \advanced_testcase {
      */
     public function test_after_config_without_iomad(): void {
         global $CFG;
-        if (file_exists($CFG->dirroot . '/local/iomad/lib/iomad.php')) {
+        if (\theme_epure\iomad::installed()) {
             $this->markTestSkipped('IOMAD is installed on this site.');
         }
         $this->resetAfterTest();
