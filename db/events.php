@@ -34,4 +34,10 @@ $observers = [
         'eventname' => '\block_iomad_company_admin\event\company_updated',
         'callback' => '\theme_epure\observer::company_saved',
     ],
+    // Before IOMAD issues certificates (its own observer), the frames of the companies that left Épure are given back.
+    [
+        'eventname' => '\core\event\course_completed',
+        'callback' => '\theme_epure\observer::course_completed',
+        'priority' => 9999,
+    ],
 ];

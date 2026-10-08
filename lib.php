@@ -150,6 +150,8 @@ function theme_epure_get_pre_scss($theme) {
         'border-radius-sm' => $radius[0],
         'border-radius' => $radius[1],
         'border-radius-lg' => $radius[2],
+        // The sections and activities of the course page, 1rem in Boost whatever the radius chosen.
+        'activity-border-radius' => $radius[2],
         // Every page uses the full width of the administration pages: Boost narrows the front
         // page, the dashboard, My courses and the course pages to 830 or 1120 px.
         'course-content-maxwidth' => 'none',

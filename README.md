@@ -22,7 +22,7 @@ The logos come first: their colours are then proposed for the brand colour, just
 | Logo for the brand-coloured header | Optional: a version that is legible on the brand colour, often white on a transparent background. |
 | Brand colour | The whole palette is derived from it: hover states, tinted backgrounds, link colour. Colours are adjusted automatically to meet the WCAG 2.2 AA contrast requirements, and the resulting contrast is shown below the setting. |
 | Header colour | White with an underline in the brand colour, or filled with the brand colour. Text and icons take whichever colour is most legible. |
-| Colours of the activity icons | In the brand colour (the default), or in Moodle's colours, one per kind of activity (assessment, content, communication…). With IOMAD, each company can make another choice. |
+| Activity icons | In the brand colour (the default), in Moodle's colours, one per kind of activity (assessment, content, communication…), or hidden for more sober course pages (the activity chooser keeps them). With IOMAD, each company can make another choice. |
 
 Below the brand colour, the theme suggests the **colours of the logo**, including accent colours that take up little space (thin lettering, a small emblem), and a logo just uploaded above even before it is saved: click a swatch, or click directly on a point of the logo (eyedropper), then save. Only hex codes are accepted, since the accessible palette is calculated from them.
 
@@ -32,7 +32,7 @@ Below the brand colour, the theme suggests the **colours of the logo**, includin
 |---|---|
 | Font | Bundled fonts: IBM Plex Sans, Inter, Source Sans 3, Figtree, Lato, and, for readability, Atkinson Hyperlegible, Lexend and OpenDyslexic. Or upload your own font. |
 | Uploaded font | Font name and `.woff2` or `.woff` files (regular required, bold optional). Check that the font's licence allows its use on a website. |
-| Corner style | Sharp, soft or round: cards, buttons and form fields. |
+| Corner style | Sharp, soft or round: cards, buttons, form fields, and the sections and activities of the course pages. |
 | Dark mode | Never, automatic as the device, or always (see Dark mode below). |
 
 All fonts are served by your own site. The theme makes **no calls to Google Fonts** or to any other external service.
@@ -41,7 +41,7 @@ All fonts are served by your own site. The theme makes **no calls to Google Font
 
 What the theme adds to Moodle's pages, each of which can be turned off:
 
-- **Navigation**: quick search (Ctrl+K), mobile navigation bar, activity pages;
+- **Navigation**: quick search (Ctrl+K), mobile navigation bar, activity pages, Moodle app in the colours of the brand;
 - **Pages**: course banner, course catalogue, learner overview on the dashboard, My courses by role;
 - **Vocabulary**: link to the "Épure: vocabulary" page;
 - **E-mails**: e-mails in the colours of the brand.
@@ -173,6 +173,14 @@ On installation and upgrade pages (Moodle upgrade, new settings, plugins, instal
 - **Quizzes**: the question on a light tint of the brand, the feedback in a neutral box, and a clearer quiz navigation (number in the middle, current page in the brand colour, answered questions tinted, right and wrong answers marked at the bottom of their button).
 - **Lessons**: the answers one under the other, as cards, the chosen one highlighted, and the progress bar in the brand colour.
 - **Radio buttons and check boxes**, everywhere, in the brand colour.
+- **Forums**: the posts as cards, the first one marked in the brand colour, the replies on a line that shows the thread. **Glossaries**: the index as buttons, the entries as cards. **Assignments**: the status as a card. **SCORM**: the information as boxes, and in the player a table of contents with the current item in the brand colour. **Books and pages**: the current chapter, the chapter arrows and the quotations in the brand colour, the text at a readable length.
+- **Badges**: the badges of the user as cards; the page of a badge with its image on a tint of the brand.
+- **Reports**: the row under the pointer highlighted in the grader report, the completion report and the IOMAD reports.
+- **IOMAD certificates**: in the company form (Brand identity › Certificates), a frame in the brand colour of the company can be used for its certificates, in place of its current frame. When the company, or the site for a company without a theme of its own, no longer uses Épure, its former frame and « Use border » setting come back before any certificate is made.
+
+### Moodle app
+
+With the setting « Moodle app in the colours of the brand » (Pages and navigation), the Moodle app takes the brand colour, the header and the font of the theme, in light and dark mode, and with IOMAD those of the company of the user (the site's on the login screen). The theme sets the style sheet of the app (Site administration › Mobile app › Mobile appearance › CSS) and gives it a new address at each change of the appearance; turned off, it takes it out. Users who see the site with another theme get an empty style sheet.
 
 ## Dark mode
 

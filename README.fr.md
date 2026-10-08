@@ -22,7 +22,7 @@ Les logos viennent en premier : leurs couleurs sont ensuite proposées pour la c
 | Logo pour l'en-tête en couleur | Facultatif : une version lisible sur la couleur de marque, souvent blanche sur fond transparent. |
 | Couleur de marque | Toute la palette en est déduite : survols, fonds teintés, couleur des liens. Les couleurs sont ajustées automatiquement pour respecter les contrastes AA des WCAG 2.2, et le contraste obtenu est affiché sous le réglage. |
 | Couleur de l'en-tête | Blanc avec soulignement de la couleur de marque, ou rempli de la couleur de marque. Les textes et icônes prennent la couleur la plus lisible. |
-| Couleurs des icônes d'activités | Dans la couleur de marque (par défaut), ou dans les couleurs de Moodle, une par type d'activité (évaluation, contenu, communication…). Avec IOMAD, chaque entreprise peut faire un autre choix. |
+| Icônes d'activités | Dans la couleur de marque (par défaut), dans les couleurs de Moodle, une par type d'activité (évaluation, contenu, communication…), ou masquées pour des pages de cours plus sobres (le sélecteur d'activités les garde). Avec IOMAD, chaque entreprise peut faire un autre choix. |
 
 Sous la couleur de marque, le thème propose les **couleurs du logo**, y compris les couleurs d'accent qui occupent peu de place (lettrage fin, petit emblème), et celles d'un logo tout juste déposé plus haut, avant même l'enregistrement : cliquez sur une pastille, ou directement sur un point du logo (pipette), puis enregistrez. Seuls les codes hexadécimaux sont acceptés, car la palette accessible en est calculée.
 
@@ -32,7 +32,7 @@ Sous la couleur de marque, le thème propose les **couleurs du logo**, y compris
 |---|---|
 | Police | Polices fournies : IBM Plex Sans, Inter, Source Sans 3, Figtree, Lato, et pour la lisibilité Atkinson Hyperlegible, Lexend, OpenDyslexic. Ou votre propre police téléversée. |
 | Police téléversée | Nom de la police et fichiers `.woff2` ou `.woff` (normal obligatoire, gras facultatif). Vérifiez que la licence de la police autorise l'usage sur un site web. |
-| Arrondis | Net, doux ou arrondi : cartes, boutons et champs. |
+| Arrondis | Net, doux ou arrondi : cartes, boutons, champs, et sections et activités des pages de cours. |
 | Mode sombre | Jamais, automatique comme l'appareil, ou toujours. |
 
 Toutes les polices sont servies par votre propre site. Le thème ne fait **aucun appel à Google Fonts** ni à un autre service externe.
@@ -41,7 +41,7 @@ Toutes les polices sont servies par votre propre site. Le thème ne fait **aucun
 
 Ce que le thème ajoute aux pages de Moodle, chaque élément pouvant être désactivé :
 
-- **Navigation** : recherche rapide (Ctrl+K), barre de navigation mobile, pages d'activité ;
+- **Navigation** : recherche rapide (Ctrl+K), barre de navigation mobile, pages d'activité, application Moodle aux couleurs de la marque ;
 - **Pages** : bannière de cours, catalogue des cours, aperçu de l'apprenant sur le tableau de bord, Mes cours par rôle ;
 - **Vocabulaire** : lien vers la page « Épure : vocabulaire » ;
 - **E-mails** : e-mails aux couleurs de la marque.
@@ -173,6 +173,14 @@ Sur les pages d'installation et de mise à jour (mise à jour de Moodle, nouveau
 - **Tests** : la question sur une teinte légère de la marque, les commentaires dans un cadre neutre, et une navigation du test plus lisible (numéro au centre, page en cours dans la couleur de marque, questions répondues teintées, réponses justes et fausses marquées en bas de leur bouton).
 - **Leçons** : les réponses les unes sous les autres, en cartes, celle choisie mise en valeur, et la barre de progression dans la couleur de marque.
 - **Boutons radio et cases à cocher**, partout, dans la couleur de marque.
+- **Forums** : les messages en cartes, le premier marqué dans la couleur de marque, les réponses sur une ligne qui montre le fil. **Glossaires** : l'index en boutons, les entrées en cartes. **Devoirs** : l'état de la remise en carte. **SCORM** : les informations en encadrés, et dans le lecteur un sommaire avec l'élément en cours dans la couleur de marque. **Livres et pages** : le chapitre en cours, les flèches des chapitres et les citations dans la couleur de marque, le texte à une largeur lisible.
+- **Badges** : les badges de l'utilisateur en cartes ; la page d'un badge avec son image sur une teinte de la marque.
+- **Rapports** : la ligne sous le pointeur mise en valeur dans le carnet de notes, le rapport d'achèvement et les rapports IOMAD.
+- **Attestations IOMAD** : dans la fiche entreprise (Identité visuelle › Attestations), un cadre dans la couleur de marque de l'entreprise peut remplacer le cadre de ses attestations. Quand l'entreprise, ou le site pour une entreprise sans thème propre, n'utilise plus Épure, son ancien cadre et son réglage « Utiliser un cadre » reviennent avant toute création d'attestation.
+
+### Application Moodle
+
+Avec le réglage « Application Moodle aux couleurs de la marque » (Pages et navigation), l'application Moodle prend la couleur de marque, l'en-tête et la police du thème, en mode clair et sombre, et avec IOMAD ceux de l'entreprise de l'utilisateur (ceux du site sur l'écran de connexion). Le thème règle la feuille de style de l'application (Administration du site › Application mobile › Apparence mobile › CSS) et lui donne une nouvelle adresse à chaque changement d'apparence ; désactivé, il la retire. Les utilisateurs qui voient le site avec un autre thème reçoivent une feuille vide.
 
 ## Mode sombre
 

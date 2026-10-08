@@ -25,6 +25,11 @@ namespace theme_epure;
  * the frame of the company: a band of the colour, a fine line inside and diamonds in the corners, on a
  * transparent background, at the size of a landscape A4 page.
  *
+ * Nothing of Épure stays when the company leaves the theme: the frame of the company and IOMAD's « Use border »
+ * are kept aside when the frame is made, and put back as soon as the company (or the site, for a company without
+ * a theme of its own) no longer uses Épure. That is checked before IOMAD makes certificates: on its certificate
+ * pages, on the completion of a course (which issues them) and after the company form is saved.
+ *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -38,6 +43,15 @@ class certificate_frame {
 
     /** @var string File area of the frames of the companies in IOMAD. */
     public const FILEAREA = 'companycertificateborder';
+
+    /** @var string File area of Épure keeping the frame the company had before. */
+    public const BACKUPAREA = 'certificateframebackup';
+
+    /** @var string File name of the frame made by Épure. */
+    public const FILENAME = 'epure-frame.png';
+
+    /** @var string Prefix of the settings recording the companies with the frame, and what they had before. */
+    public const SETTING = 'certificateframe_';
 
     /**
      * Whether the frame can be made: IOMAD certificates installed, and GD to draw.
@@ -96,7 +110,7 @@ class certificate_frame {
 
     /**
      * Saves the frame of a company in IOMAD, in place of its current frame, and turns the frame of its certificates
-     * on (IOMAD's « Use border »).
+     * on (IOMAD's « Use border »). The first time, the frame and the setting the company had are kept aside.
      *
      * @param int $companyid Company.
      * @param string|null $brand Brand colour of the company.
@@ -105,6 +119,14 @@ class certificate_frame {
         global $DB;
         $context = \context_system::instance();
         $fs = get_file_storage();
+        if (get_config('theme_epure', self::SETTING . $companyid) === false) {
+            foreach ($fs->get_area_files($context->id, 'local_iomad', self::FILEAREA, $companyid, 'id', false) as $file) {
+                $fs->create_file_from_storedfile(['component' => 'theme_epure', 'filearea' => self::BACKUPAREA], $file);
+            }
+            $useborder = company_style::iomad_installed()
+                ? $DB->get_field('companycertificate', 'useborder', ['companyid' => $companyid]) : false;
+            set_config(self::SETTING . $companyid, json_encode(['useborder' => $useborder]), 'theme_epure');
+        }
         $fs->delete_area_files($context->id, 'local_iomad', self::FILEAREA, $companyid);
         $fs->create_file_from_string([
             'contextid' => $context->id,
@@ -112,12 +134,72 @@ class certificate_frame {
             'filearea' => self::FILEAREA,
             'itemid' => $companyid,
             'filepath' => '/',
-            'filename' => 'epure-frame.png',
+            'filename' => self::FILENAME,
         ], self::png($brand));
         // Without a record, IOMAD prints the frame; with one, only if it is turned on.
         if (company_style::iomad_installed()) {
             $DB->set_field('companycertificate', 'useborder', 1, ['companyid' => $companyid]);
         }
+    }
+
+    /**
+     * Gives a company back the frame and the setting it had before the frame of Épure.
+     *
+     * @param int $companyid Company.
+     */
+    public static function remove(int $companyid): void {
+        global $DB;
+        $state = get_config('theme_epure', self::SETTING . $companyid);
+        if ($state === false) {
+            return;
+        }
+        $context = \context_system::instance();
+        $fs = get_file_storage();
+        $fs->delete_area_files($context->id, 'local_iomad', self::FILEAREA, $companyid);
+        foreach ($fs->get_area_files($context->id, 'theme_epure', self::BACKUPAREA, $companyid, 'id', false) as $file) {
+            $fs->create_file_from_storedfile(['component' => 'local_iomad', 'filearea' => self::FILEAREA], $file);
+        }
+        $fs->delete_area_files($context->id, 'theme_epure', self::BACKUPAREA, $companyid);
+        $useborder = json_decode($state, true)['useborder'] ?? false;
+        if ($useborder !== false && $useborder !== null && company_style::iomad_installed()) {
+            $DB->set_field('companycertificate', 'useborder', (int) $useborder, ['companyid' => $companyid]);
+        }
+        unset_config(self::SETTING . $companyid, 'theme_epure');
+    }
+
+    /**
+     * Gives back their frame to the companies that no longer use Épure (another theme for the company, or for the
+     * site when the company has none), or that were deleted.
+     *
+     * @param bool $all Whether to give back all the frames (uninstallation of the theme).
+     */
+    public static function clean_up(bool $all = false): void {
+        global $DB;
+        $config = get_config('theme_epure');
+        foreach ((array) $config as $name => $value) {
+            if (!str_starts_with($name, self::SETTING)) {
+                continue;
+            }
+            $companyid = (int) substr($name, strlen(self::SETTING));
+            $company = company_style::iomad_installed() ? $DB->get_record('company', ['id' => $companyid]) : false;
+            if ($all || !$company || !theme_use::company($company)) {
+                self::remove($companyid);
+            }
+        }
+    }
+
+    /**
+     * Whether some companies have the frame of Épure.
+     *
+     * @return bool
+     */
+    public static function in_use(): bool {
+        foreach (array_keys((array) get_config('theme_epure')) as $name) {
+            if (str_starts_with($name, self::SETTING)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -129,6 +211,16 @@ class certificate_frame {
      */
     public static function install_after_request(int $companyid, ?string $brand): void {
         \core_shutdown_manager::register_function([self::class, 'install'], [$companyid, $brand]);
+    }
+
+    /**
+     * Gives back their frame to the companies that left Épure at the end of the request, after IOMAD's company
+     * form saved its own fields (the theme of the company, and its field « Frame »).
+     */
+    public static function clean_up_after_request(): void {
+        if (self::in_use()) {
+            \core_shutdown_manager::register_function([self::class, 'clean_up']);
+        }
     }
 
     /**

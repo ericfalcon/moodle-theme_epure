@@ -39,6 +39,7 @@ class hook_callbacks {
     public static function after_config(\core\hook\after_config $hook): void {
         global $CFG;
         self::follow_company_theme();
+        self::give_back_certificate_frames();
         if (
             during_initial_install() || !empty($CFG->config_php_settings['customstringmanager'])
                 || !company_style::iomad_installed() || !company::active()
@@ -47,6 +48,29 @@ class hook_callbacks {
         }
         $CFG->config_php_settings['customstringmanager'] = string_manager::class;
         get_string_manager(true);
+    }
+
+    /**
+     * On the pages of IOMAD that make certificates, gives back their frame to the companies that left Épure: the
+     * theme of the site can change without any event to follow.
+     */
+    protected static function give_back_certificate_frames(): void {
+        global $SCRIPT;
+        if (
+            during_initial_install() || !preg_match(
+                '~^/(mod/iomadcertificate|local/iomad_track|local/report_completion)/~',
+                (string) $SCRIPT
+            )
+        ) {
+            return;
+        }
+        try {
+            if (certificate_frame::in_use()) {
+                certificate_frame::clean_up();
+            }
+        } catch (\Throwable $e) {
+            debugging('Épure could not give back the frames of the certificates: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        }
     }
 
     /**

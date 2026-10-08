@@ -61,12 +61,62 @@ final class certificate_frame_test extends \advanced_testcase {
         }
         certificate_frame::install(7, '#1C6E73');
         certificate_frame::install(7, '#9B2335');
-        $files = get_file_storage()->get_area_files(\context_system::instance()->id, 'local_iomad',
-            certificate_frame::FILEAREA, 7, 'id', false);
+        $files = get_file_storage()->get_area_files(
+            \context_system::instance()->id,
+            'local_iomad',
+            certificate_frame::FILEAREA,
+            7,
+            'id',
+            false
+        );
         $this->assertCount(1, $files);
         $this->assertSame(certificate_frame::png('#9B2335'), reset($files)->get_content());
         if ($iomad) {
             $this->assertEquals(1, $DB->get_field('companycertificate', 'useborder', ['companyid' => 7]));
         }
+    }
+    /**
+     * The frame the company had, and IOMAD's « Use border », come back when the frame of Épure is removed, as when
+     * the company leaves Épure; a deleted company or another theme gives the frame back on the clean up.
+     */
+    public function test_remove(): void {
+        global $DB;
+        $this->resetAfterTest();
+        if (!function_exists('imagecreatefromstring')) {
+            $this->markTestSkipped('GD is not installed.');
+        }
+        $iomad = $DB->get_manager()->table_exists('companycertificate');
+        if ($iomad) {
+            $DB->insert_record('companycertificate', ['companyid' => 7, 'uselogo' => 1, 'usewatermark' => 0,
+                'usesignature' => 0, 'useborder' => 0, 'showgrade' => 0]);
+        }
+        $fs = get_file_storage();
+        $context = \context_system::instance();
+        $area = ['contextid' => $context->id, 'component' => 'local_iomad', 'filearea' => certificate_frame::FILEAREA,
+            'itemid' => 7, 'filepath' => '/'];
+        $fs->create_file_from_string($area + ['filename' => 'mine.png'], 'my frame');
+        $names = fn() => array_map(
+            fn($file) => $file->get_filename(),
+            array_values($fs->get_area_files($context->id, 'local_iomad', certificate_frame::FILEAREA, 7, 'id', false))
+        );
+
+        certificate_frame::install(7, '#1C6E73');
+        certificate_frame::install(7, '#9B2335');
+        $this->assertSame([certificate_frame::FILENAME], $names());
+        $this->assertTrue(certificate_frame::in_use());
+
+        certificate_frame::remove(7);
+        $this->assertSame(['mine.png'], $names());
+        $this->assertFalse(certificate_frame::in_use());
+        $this->assertEmpty($fs->get_area_files($context->id, 'theme_epure', certificate_frame::BACKUPAREA, 7, 'id', false));
+        if ($iomad) {
+            $this->assertEquals(0, $DB->get_field('companycertificate', 'useborder', ['companyid' => 7]));
+        }
+
+        // Without IOMAD, or for a company that does not exist, the clean up gives the frame back.
+        certificate_frame::install(7, '#1C6E73');
+        certificate_frame::clean_up();
+        $this->assertSame(['mine.png'], $names());
+        $this->assertFalse(certificate_frame::in_use());
     }
 }

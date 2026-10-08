@@ -31,6 +31,7 @@
 function xmldb_theme_epure_uninstall() {
     global $CFG;
     \theme_epure\vocabulary\manager::revert();
+    \theme_epure\certificate_frame::clean_up(true);
     if (\theme_epure\mobile_app::is_ours($CFG->mobilecssurl ?? '')) {
         set_config('mobilecssurl', '');
     }

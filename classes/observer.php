@@ -40,9 +40,22 @@ class observer {
         require_once($CFG->dirroot . '/local/iomad/lib/iomad.php');
         // The fields are only shown to the users who can change the appearance of the company.
         $context = \core\context\company::instance($companyid);
-        if (!\iomad::has_capability('block/iomad_company_admin:company_edit_appearance', $context)) {
-            return;
+        if (\iomad::has_capability('block/iomad_company_admin:company_edit_appearance', $context)) {
+            company_form::save_from_request($companyid);
         }
-        company_form::save_from_request($companyid);
+        // A company that left Épure gets its frame of certificates back.
+        certificate_frame::clean_up_after_request();
+    }
+
+    /**
+     * Before IOMAD issues the certificate of a completed course, gives back their frame to the companies that left
+     * Épure.
+     *
+     * @param \core\event\course_completed $event Completion of a course.
+     */
+    public static function course_completed(\core\event\course_completed $event): void {
+        if (certificate_frame::in_use()) {
+            certificate_frame::clean_up();
+        }
     }
 }
