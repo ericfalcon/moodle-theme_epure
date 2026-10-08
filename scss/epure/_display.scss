@@ -1,0 +1,41 @@
+// Settings of the display: breadcrumb, logo, blocks and dashboard of the phones (classes of the body).
+
+// Breadcrumb hidden, or only on large screens.
+body.epure-breadcrumb-hide #page-navbar {
+    display: none;
+}
+
+@media (max-width: 767.98px) {
+    body.epure-breadcrumb-desktop #page-navbar {
+        display: none;
+    }
+
+    // Boost shows no logo on phones: the logo for phones, or the logo of the company, next to the menu button.
+    body.epure-has-mobilelogo .navbar .navbar-brand {
+        display: flex !important; // stylelint-disable-line declaration-no-important
+        margin-right: auto !important; // stylelint-disable-line declaration-no-important
+        margin-left: .5rem !important; // stylelint-disable-line declaration-no-important
+
+        .logo {
+            max-width: 7.5rem;
+            max-height: 2rem;
+        }
+    }
+
+    // Blocks hidden on phones: neither the button of their drawer nor the drawer.
+    body.epure-mobile-noblocks {
+        .drawer-toggles .drawer-right-toggle,
+        #theme_boost-drawers-blocks {
+            display: none !important; // stylelint-disable-line declaration-no-important
+        }
+    }
+
+    // Dashboard of the phones: the overview of the learner only, without the blocks.
+    body.epure-mobile-overview {
+        #block-region-content,
+        .drawer-toggles .drawer-right-toggle,
+        #theme_boost-drawers-blocks {
+            display: none !important; // stylelint-disable-line declaration-no-important
+        }
+    }
+}

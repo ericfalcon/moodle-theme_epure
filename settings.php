@@ -27,35 +27,42 @@ defined('MOODLE_INTERNAL') || die();
 if ($ADMIN->fulltree) {
     $settings = new theme_boost_admin_settingspage_tabs('themesettingepure', get_string('configtitle', 'theme_epure'));
 
-    // Brand identity tab: the logos first, as the colours of the logo are proposed for the brand colour,
-    // then the colours.
-    $page = new admin_settingpage('theme_epure_brand', get_string('settingsbrand', 'theme_epure'));
-
-    $page->add(new admin_setting_heading(
-        'theme_epure/headinglogos',
-        get_string('settingslogos', 'theme_epure'),
-        get_string('settingslogos_desc', 'theme_epure')
-    ));
-
-    foreach (['logo', 'logoonbrand'] as $name) {
+    // Adds a file setting of the theme, whose change rebuilds the theme.
+    $file = function (admin_settingpage $page, string $name, array $types) {
         $setting = new admin_setting_configstoredfile(
             'theme_epure/' . $name,
             get_string($name, 'theme_epure'),
             get_string($name . '_desc', 'theme_epure'),
             $name,
             0,
-            ['maxfiles' => 1, 'accepted_types' => ['.svg', '.png', '.webp', '.jpg', '.jpeg']]
+            ['maxfiles' => 1, 'accepted_types' => $types]
         );
         $setting->set_updatedcallback('theme_reset_all_caches');
         $page->add($setting);
+    };
+    // Adds a heading of the theme, with or without a description.
+    $heading = function (admin_settingpage $page, string $name, string $description = '') {
+        $page->add(new admin_setting_heading(
+            'theme_epure/heading' . $name,
+            get_string('settings' . $name, 'theme_epure'),
+            $description
+        ));
+    };
+    // Link to a page of Moodle's administration, for the settings of Moodle the theme follows.
+    $adminlink = fn(string $section) => (new moodle_url('/admin/settings.php', ['section' => $section]))->out();
+
+    // Identity: the logos first, as the colours of the logo are proposed for the brand colour, then the colours, the
+    // e-mails and the vocabulary.
+    $page = new admin_settingpage('theme_epure_brand', get_string('settingsbrand', 'theme_epure'));
+
+    $heading($page, 'logos', get_string('settingslogos_desc', 'theme_epure'));
+    $images = ['.svg', '.png', '.webp', '.jpg', '.jpeg'];
+    foreach (['logo', 'logoonbrand', 'logomobile'] as $name) {
+        $file($page, $name, $images);
     }
+    $file($page, 'favicon', ['.ico', '.png', '.svg']);
 
-
-    $page->add(new admin_setting_heading(
-        'theme_epure/headingcolours',
-        get_string('settingscolours', 'theme_epure'),
-        get_string('settingscolours_desc', 'theme_epure')
-    ));
+    $heading($page, 'colours', get_string('settingscolours_desc', 'theme_epure'));
 
     // Brand colour, with the contrast the theme reaches for the current value.
     $current = theme_epure\palette::derive(get_config('theme_epure', 'brandcolor') ?: null);
@@ -78,6 +85,16 @@ if ($ADMIN->fulltree) {
     $setting->set_updatedcallback('theme_epure\\mobile_app::appearance_updated');
     $page->add($setting);
 
+    // Accent colour: the progress bars and the completed sections, in the brand colour when empty.
+    $setting = new admin_setting_configcolourpicker(
+        'theme_epure/accentcolor',
+        get_string('accentcolor', 'theme_epure'),
+        get_string('accentcolor_desc', 'theme_epure'),
+        ''
+    );
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $page->add($setting);
+
     $setting = new admin_setting_configselect(
         'theme_epure/headerstyle',
         get_string('headerstyle', 'theme_epure'),
@@ -90,6 +107,102 @@ if ($ADMIN->fulltree) {
     );
     $setting->set_updatedcallback('theme_epure\\mobile_app::appearance_updated');
     $page->add($setting);
+
+    $heading($page, 'emails');
+    // E-mails in the colours of the brand.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/emailbranding',
+        get_string('emailbranding', 'theme_epure'),
+        get_string('emailbranding_desc', 'theme_epure'),
+        1
+    ));
+
+    $page->add(new admin_setting_heading(
+        'theme_epure/vocabularylink',
+        get_string('settingsvocabulary', 'theme_epure'),
+        get_string('vocabularylink', 'theme_epure', (new moodle_url('/theme/epure/vocabulary.php'))->out())
+    ));
+
+    $settings->add($page);
+
+    // Navigation: the header, the search, the breadcrumb, the user menu.
+    $page = new admin_settingpage('theme_epure_navigation', get_string('settingsnavigation', 'theme_epure'));
+
+    $heading($page, 'primarynav', get_string('settingsprimarynav_desc', 'theme_epure', $adminlink('themesettingsadvanced')));
+
+    // Quick search (Ctrl+K).
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/quicksearch',
+        get_string('quicksearch', 'theme_epure'),
+        get_string('quicksearch_desc', 'theme_epure'),
+        1
+    ));
+
+    // Breadcrumb of the pages.
+    $page->add(new admin_setting_configselect(
+        'theme_epure/breadcrumb',
+        get_string('breadcrumb', 'theme_epure'),
+        get_string('breadcrumb_desc', 'theme_epure'),
+        'show',
+        [
+            'show' => get_string('breadcrumbshow', 'theme_epure'),
+            'desktop' => get_string('breadcrumbdesktop', 'theme_epure'),
+            'hide' => get_string('breadcrumbhide', 'theme_epure'),
+        ]
+    ));
+
+    $heading($page, 'usermenu', get_string('settingsusermenu_desc', 'theme_epure', $adminlink('themesettingsadvanced')));
+
+    $settings->add($page);
+
+    // Courses: the cards, the progress, the activities and the previous and next activities.
+    $page = new admin_settingpage('theme_epure_courses', get_string('settingscourses', 'theme_epure'));
+
+    $heading($page, 'cards');
+
+    // My courses page: courses split by role, with cards suited to each one.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/mycoursesbyrole',
+        get_string('mycoursesbyrole', 'theme_epure'),
+        get_string('mycoursesbyrole_desc', 'theme_epure'),
+        1
+    ));
+
+    // Catalogue of the courses, and presentation of a course on its enrolment page.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/catalogue',
+        get_string('catalogue', 'theme_epure'),
+        get_string('catalogue_desc', 'theme_epure'),
+        1
+    ));
+
+    $heading($page, 'progress');
+
+    // Course page: banner with the image, the progress or the figures of the course.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/coursebanner',
+        get_string('coursebanner', 'theme_epure'),
+        get_string('coursebanner_desc', 'theme_epure'),
+        1
+    ));
+
+    // Course page: progress of the learner in each section and subsection.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/sectionprogress',
+        get_string('sectionprogress', 'theme_epure'),
+        get_string('sectionprogress_desc', 'theme_epure'),
+        1
+    ));
+
+    // Dashboard: overview of the learner above the blocks.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/learnerdashboard',
+        get_string('learnerdashboard', 'theme_epure'),
+        get_string('learnerdashboard_desc', 'theme_epure'),
+        1
+    ));
+
+    $heading($page, 'activities');
 
     // Activity icons: in the colour of the brand, in Moodle's colours by purpose, or hidden.
     $page->add(new admin_setting_configselect(
@@ -104,10 +217,104 @@ if ($ADMIN->fulltree) {
         ]
     ));
 
+    // Pages of the activities: strip with the position and the progress, previous and next activities.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/activitynav',
+        get_string('activitynav', 'theme_epure'),
+        get_string('activitynav_desc', 'theme_epure'),
+        1
+    ));
+
     $settings->add($page);
 
-    // Typography and display tab.
+    // Accessibility: the display preferences of the users and the default of the site, then the statement of the
+    // platform, in the French format (RGAA).
+    $page = new admin_settingpage('theme_epure_a11y', get_string('a11ysettings', 'theme_epure'));
+
+    $heading($page, 'preferences', get_string('settingspreferences_desc', 'theme_epure'));
+
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/prefpanel',
+        get_string('prefpanel', 'theme_epure'),
+        get_string('prefpanel_desc', 'theme_epure'),
+        1
+    ));
+
+    $sizes = [];
+    foreach (theme_epure\a11y::TEXT_SIZES as $size) {
+        $sizes[$size] = get_string('a11ytext_' . $size, 'theme_epure');
+    }
+    $setting = new admin_setting_configselect(
+        'theme_epure/preftext',
+        get_string('preftext', 'theme_epure'),
+        get_string('preftext_desc', 'theme_epure'),
+        100,
+        $sizes
+    );
+    $page->add($setting);
+
+    $fonts = ['' => get_string('a11yfont_theme', 'theme_epure')];
+    foreach (theme_epure\a11y::FONTS as $font) {
+        $fonts[$font] = theme_epure\fonts::get($font)['family'];
+    }
+    $page->add(new admin_setting_configselect(
+        'theme_epure/preffont',
+        get_string('preffont', 'theme_epure'),
+        get_string('preffont_desc', 'theme_epure'),
+        '',
+        $fonts
+    ));
+
+    foreach (theme_epure\a11y::SWITCHES as $switch) {
+        $page->add(new admin_setting_configcheckbox(
+            'theme_epure/pref' . $switch,
+            get_string('a11y' . $switch, 'theme_epure'),
+            get_string('a11y' . $switch . '_help', 'theme_epure') . ' ' . get_string('prefswitch_desc', 'theme_epure'),
+            0
+        ));
+    }
+
+    $statementurl = theme_epure\accessibility_statement::url()->out();
+    $heading($page, 'statement', get_string('a11ysettings_desc', 'theme_epure', html_writer::link($statementurl, $statementurl)));
+
+    $statuses = ['' => get_string('a11ystatus_unpublished', 'theme_epure')];
+    foreach (theme_epure\accessibility_statement::STATUSES as $status) {
+        $statuses[$status] = get_string('a11ystatus_' . $status, 'theme_epure');
+    }
+    $page->add(new admin_setting_configselect(
+        'theme_epure/a11ystatus',
+        get_string('a11ystatus', 'theme_epure'),
+        get_string('a11ystatus_desc', 'theme_epure'),
+        '',
+        $statuses
+    ));
+
+    foreach (['a11yentity', 'a11yrate', 'a11yauditor', 'a11yauditdate', 'a11ystatementdate'] as $name) {
+        $page->add(new admin_setting_configtext(
+            'theme_epure/' . $name,
+            get_string($name, 'theme_epure'),
+            get_string($name . '_desc', 'theme_epure'),
+            '',
+            PARAM_TEXT
+        ));
+    }
+
+    foreach (theme_epure\accessibility_statement::TEXTS as $name) {
+        $page->add(new admin_setting_configtextarea(
+            'theme_epure/a11y' . $name,
+            get_string('a11y' . $name, 'theme_epure'),
+            get_string('a11y' . $name . '_desc', 'theme_epure'),
+            '',
+            PARAM_RAW
+        ));
+    }
+
+    $settings->add($page);
+
+    // Appearance: the typography, the shapes, the dark mode and the density.
     $page = new admin_settingpage('theme_epure_display', get_string('settingsdisplay', 'theme_epure'));
+
+    $heading($page, 'typography');
 
     $setting = new admin_setting_configselect(
         'theme_epure/font',
@@ -130,17 +337,10 @@ if ($ADMIN->fulltree) {
     $page->add($setting);
 
     foreach (['customfontregular', 'customfontbold'] as $name) {
-        $setting = new admin_setting_configstoredfile(
-            'theme_epure/' . $name,
-            get_string($name, 'theme_epure'),
-            get_string($name . '_desc', 'theme_epure'),
-            $name,
-            0,
-            ['maxfiles' => 1, 'accepted_types' => ['.woff2', '.woff']]
-        );
-        $setting->set_updatedcallback('theme_reset_all_caches');
-        $page->add($setting);
+        $file($page, $name, ['.woff2', '.woff']);
     }
+
+    $heading($page, 'shapes');
 
     $setting = new admin_setting_configselect(
         'theme_epure/radius',
@@ -157,6 +357,21 @@ if ($ADMIN->fulltree) {
     $page->add($setting);
 
     $setting = new admin_setting_configselect(
+        'theme_epure/density',
+        get_string('density', 'theme_epure'),
+        get_string('density_desc', 'theme_epure'),
+        'comfortable',
+        [
+            'comfortable' => get_string('densitycomfortable', 'theme_epure'),
+            'compact' => get_string('densitycompact', 'theme_epure'),
+        ]
+    );
+    $setting->set_updatedcallback('theme_reset_all_caches');
+    $page->add($setting);
+
+    $heading($page, 'darkmode');
+
+    $page->add(new admin_setting_configselect(
         'theme_epure/darkmode',
         get_string('darkmode', 'theme_epure'),
         get_string('darkmode_desc', 'theme_epure'),
@@ -166,23 +381,14 @@ if ($ADMIN->fulltree) {
             'auto' => get_string('darkmodeauto', 'theme_epure'),
             'dark' => get_string('darkmodedark', 'theme_epure'),
         ]
-    );
-    $page->add($setting);
+    ));
 
     $settings->add($page);
 
-    // Pages and navigation tab: what the theme adds to the pages of Moodle.
-    $page = new admin_settingpage('theme_epure_features', get_string('settingsfeatures', 'theme_epure'));
+    // Mobile: the phones, the Moodle app and the installable web app.
+    $page = new admin_settingpage('theme_epure_mobile', get_string('settingsmobile', 'theme_epure'));
 
-    $page->add(new admin_setting_heading('theme_epure/headingnavigation', get_string('settingsnavigation', 'theme_epure'), ''));
-
-    // Quick search (Ctrl+K).
-    $page->add(new admin_setting_configcheckbox(
-        'theme_epure/quicksearch',
-        get_string('quicksearch', 'theme_epure'),
-        get_string('quicksearch_desc', 'theme_epure'),
-        1
-    ));
+    $heading($page, 'phones');
 
     // Navigation bar at the bottom of the screen on phones.
     $page->add(new admin_setting_configcheckbox(
@@ -191,6 +397,30 @@ if ($ADMIN->fulltree) {
         get_string('mobilenav_desc', 'theme_epure'),
         1
     ));
+
+    $page->add(new admin_setting_configselect(
+        'theme_epure/mobileblocks',
+        get_string('mobileblocks', 'theme_epure'),
+        get_string('mobileblocks_desc', 'theme_epure'),
+        'drawer',
+        [
+            'drawer' => get_string('mobileblocksdrawer', 'theme_epure'),
+            'hidden' => get_string('mobileblockshidden', 'theme_epure'),
+        ]
+    ));
+
+    $page->add(new admin_setting_configselect(
+        'theme_epure/mobiledashboard',
+        get_string('mobiledashboard', 'theme_epure'),
+        get_string('mobiledashboard_desc', 'theme_epure'),
+        'full',
+        [
+            'full' => get_string('mobiledashboardfull', 'theme_epure'),
+            'overview' => get_string('mobiledashboardoverview', 'theme_epure'),
+        ]
+    ));
+
+    $heading($page, 'apps');
 
     // The Moodle app in the colours of the brand: the theme sets the style sheet of the app (mobilecssurl).
     $setting = new admin_setting_configcheckbox(
@@ -202,63 +432,26 @@ if ($ADMIN->fulltree) {
     $setting->set_updatedcallback('theme_epure\\mobile_app::appearance_updated');
     $page->add($setting);
 
-    // Pages of the activities: strip with the position and the progress, previous and next activities.
-    $page->add(new admin_setting_configcheckbox(
-        'theme_epure/activitynav',
-        get_string('activitynav', 'theme_epure'),
-        get_string('activitynav_desc', 'theme_epure'),
-        1
+    // The platform installable as an application from the browser (web app manifest and service worker).
+    $setting = new admin_setting_configcheckbox(
+        'theme_epure/webapp',
+        get_string('webapp', 'theme_epure'),
+        get_string('webapp_desc', 'theme_epure'),
+        0
+    );
+    $setting->set_updatedcallback('theme_epure\\web_app::setting_updated');
+    $page->add($setting);
+
+    $page->add(new admin_setting_configtext(
+        'theme_epure/webappname',
+        get_string('webappname', 'theme_epure'),
+        get_string('webappname_desc', 'theme_epure'),
+        '',
+        PARAM_TEXT,
+        30
     ));
 
-    $page->add(new admin_setting_heading('theme_epure/headingpages', get_string('settingspages', 'theme_epure'), ''));
-
-    // Course page: banner with the image, the progress or the figures of the course.
-    $page->add(new admin_setting_configcheckbox(
-        'theme_epure/coursebanner',
-        get_string('coursebanner', 'theme_epure'),
-        get_string('coursebanner_desc', 'theme_epure'),
-        1
-    ));
-
-    // Catalogue of the courses, and presentation of a course on its enrolment page.
-    $page->add(new admin_setting_configcheckbox(
-        'theme_epure/catalogue',
-        get_string('catalogue', 'theme_epure'),
-        get_string('catalogue_desc', 'theme_epure'),
-        1
-    ));
-
-    // Dashboard: overview of the learner above the blocks.
-    $page->add(new admin_setting_configcheckbox(
-        'theme_epure/learnerdashboard',
-        get_string('learnerdashboard', 'theme_epure'),
-        get_string('learnerdashboard_desc', 'theme_epure'),
-        1
-    ));
-
-    // My courses page: courses split by role, with cards suited to each one.
-    $page->add(new admin_setting_configcheckbox(
-        'theme_epure/mycoursesbyrole',
-        get_string('mycoursesbyrole', 'theme_epure'),
-        get_string('mycoursesbyrole_desc', 'theme_epure'),
-        1
-    ));
-
-    $page->add(new admin_setting_heading(
-        'theme_epure/vocabularylink',
-        get_string('settingsvocabulary', 'theme_epure'),
-        get_string('vocabularylink', 'theme_epure', (new moodle_url('/theme/epure/vocabulary.php'))->out())
-    ));
-
-    $page->add(new admin_setting_heading('theme_epure/headingemails', get_string('settingsemails', 'theme_epure'), ''));
-
-    // E-mails in the colours of the brand.
-    $page->add(new admin_setting_configcheckbox(
-        'theme_epure/emailbranding',
-        get_string('emailbranding', 'theme_epure'),
-        get_string('emailbranding_desc', 'theme_epure'),
-        1
-    ));
+    $file($page, 'webappicon', ['.png']);
 
     $settings->add($page);
 
@@ -296,16 +489,7 @@ if ($ADMIN->fulltree) {
         80
     ));
 
-    $setting = new admin_setting_configstoredfile(
-        'theme_epure/loginimage',
-        get_string('loginimage', 'theme_epure'),
-        get_string('loginimage_desc', 'theme_epure'),
-        'loginimage',
-        0,
-        ['maxfiles' => 1, 'accepted_types' => ['.jpg', '.jpeg', '.png', '.webp']]
-    );
-    $setting->set_updatedcallback('theme_reset_all_caches');
-    $page->add($setting);
+    $file($page, 'loginimage', ['.jpg', '.jpeg', '.png', '.webp']);
 
     $settings->add($page);
 
@@ -344,50 +528,6 @@ if ($ADMIN->fulltree) {
         '',
         PARAM_RAW
     ));
-
-    $settings->add($page);
-
-    // Accessibility tab: statement of the platform, in the French format (RGAA).
-    $page = new admin_settingpage('theme_epure_a11y', get_string('a11ysettings', 'theme_epure'));
-
-    $statementurl = theme_epure\accessibility_statement::url()->out();
-    $page->add(new admin_setting_heading(
-        'theme_epure/a11yheading',
-        '',
-        get_string('a11ysettings_desc', 'theme_epure', html_writer::link($statementurl, $statementurl))
-    ));
-
-    $statuses = ['' => get_string('a11ystatus_unpublished', 'theme_epure')];
-    foreach (theme_epure\accessibility_statement::STATUSES as $status) {
-        $statuses[$status] = get_string('a11ystatus_' . $status, 'theme_epure');
-    }
-    $page->add(new admin_setting_configselect(
-        'theme_epure/a11ystatus',
-        get_string('a11ystatus', 'theme_epure'),
-        get_string('a11ystatus_desc', 'theme_epure'),
-        '',
-        $statuses
-    ));
-
-    foreach (['a11yentity', 'a11yrate', 'a11yauditor', 'a11yauditdate', 'a11ystatementdate'] as $name) {
-        $page->add(new admin_setting_configtext(
-            'theme_epure/' . $name,
-            get_string($name, 'theme_epure'),
-            get_string($name . '_desc', 'theme_epure'),
-            '',
-            PARAM_TEXT
-        ));
-    }
-
-    foreach (theme_epure\accessibility_statement::TEXTS as $name) {
-        $page->add(new admin_setting_configtextarea(
-            'theme_epure/a11y' . $name,
-            get_string('a11y' . $name, 'theme_epure'),
-            get_string('a11y' . $name . '_desc', 'theme_epure'),
-            '',
-            PARAM_RAW
-        ));
-    }
 
     $settings->add($page);
 

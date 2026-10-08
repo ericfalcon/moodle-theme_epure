@@ -324,6 +324,11 @@ class company_style {
                 "--epure-dark-brand-text:{$d['text']};" .
                 "--epure-dark-brand-soft:{$d['soft']};" .
                 "--epure-dark-brand-soft-2:{$d['soft2']};" .
+                // The accent colour of the site gives way to the colour of the company.
+                "--epure-accent:{$p['fill']};" .
+                "--epure-on-accent:{$p['on']};" .
+                "--epure-dark-accent:{$d['fill']};" .
+                "--epure-dark-on-accent:{$d['on']};" .
                 "--epure-login-overlay:rgba({$rgb}, {$p['overlayalpha']});" .
                 '--epure-header-hover:' . ($light ? 'rgba(0, 0, 0, .18)' : 'rgba(255, 255, 255, .3)') . ';' .
                 '--epure-header-toggler-filter:' . ($light ? 'brightness(0) invert(1)' : 'none') . ';' .

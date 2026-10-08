@@ -226,7 +226,8 @@ summary:focus-visible {
     }
 }
 
-// Progress bars use the brand colour.
+// Progress bars use the accent colour, the brand colour unless another one is set.
 .progress-bar {
-    background-color: var(--epure-brand);
+    color: var(--epure-on-accent);
+    background-color: var(--epure-accent);
 }

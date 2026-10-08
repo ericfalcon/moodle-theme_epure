@@ -100,7 +100,8 @@ function theme_epure_pluginfile($course, $cm, $context, $filearea, $args, $force
             ['cacheability' => 'private'] + $options
         );
     }
-    $fileareas = ['customfontregular', 'customfontbold', 'logo', 'logoonbrand', 'loginimage'];
+    $fileareas = ['customfontregular', 'customfontbold', 'logo', 'logoonbrand', 'logomobile', 'favicon', 'loginimage',
+        'webappicon'];
     if ($context->contextlevel == CONTEXT_SYSTEM && in_array($filearea, $fileareas)) {
         $theme = theme_config::load('epure');
         // Fonts and logos are requested on every page, including the login page.
@@ -141,6 +142,10 @@ function theme_epure_get_pre_scss($theme) {
     $light = palette::derive($theme->settings->brandcolor ?? null);
     $dark = palette::derive($theme->settings->brandcolor ?? null, true);
     $radius = THEME_EPURE_RADII[$theme->settings->radius ?? ''] ?? THEME_EPURE_RADII['soft'];
+    // The accent colour (progress bars, completed sections), the brand colour when none is set.
+    $accentcolour = palette::normalise($theme->settings->accentcolor ?? null) ?? ($theme->settings->brandcolor ?? null);
+    $accent = palette::derive($accentcolour);
+    $darkaccent = palette::derive($accentcolour, true);
 
     $variables = [
         'primary' => $light['fill'],
@@ -173,7 +178,15 @@ function theme_epure_get_pre_scss($theme) {
         'epure-dark-brand-text' => $dark['text'],
         'epure-dark-brand-soft' => $dark['soft'],
         'epure-dark-brand-soft-2' => $dark['soft2'],
+        'epure-accent' => $accent['fill'],
+        'epure-on-accent' => $accent['on'],
+        'epure-dark-accent' => $darkaccent['fill'],
+        'epure-dark-on-accent' => $darkaccent['on'],
     ];
+    // Compact density: less space around and between the elements, for pages with a lot of content.
+    if (($theme->settings->density ?? '') === 'compact') {
+        $variables['spacer'] = '.75rem';
+    }
 
     $scss = '';
     foreach ($variables as $name => $value) {

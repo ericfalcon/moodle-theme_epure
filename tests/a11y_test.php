@@ -80,6 +80,31 @@ final class a11y_test extends \advanced_testcase {
     }
 
     /**
+     * The display of the site by default applies to the visitors and to the users who did not choose theirs.
+     */
+    public function test_site_defaults(): void {
+        $this->resetAfterTest();
+        set_config('preftext', 115, 'theme_epure');
+        set_config('preffont', 'atkinson', 'theme_epure');
+        set_config('prefmotion', 1, 'theme_epure');
+        $expected = 'epure-a11y-text-115 epure-a11y-font-atkinson epure-a11y-motion';
+        $this->assertSame($expected, a11y::html_classes());
+        $this->setGuestUser();
+        $this->assertSame($expected, a11y::html_classes());
+        $this->setUser($this->getDataGenerator()->create_user());
+        $this->assertSame($expected, a11y::html_classes());
+
+        // The choices of the user come first, the switches turned off too.
+        set_user_preference('theme_epure_a11y_text', 100);
+        set_user_preference('theme_epure_a11y_motion', 0);
+        $this->assertSame('epure-a11y-font-atkinson', a11y::html_classes());
+
+        $this->assertTrue(a11y::panel_enabled());
+        set_config('prefpanel', 0, 'theme_epure');
+        $this->assertFalse(a11y::panel_enabled());
+    }
+
+    /**
      * The preferences can be changed by the user, and only by them; unknown values are refused.
      */
     public function test_definitions(): void {

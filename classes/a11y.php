@@ -72,18 +72,50 @@ class a11y {
      */
     public static function preferences(): array {
         $enabled = isloggedin() && !isguestuser();
-        $text = $enabled ? (int) get_user_preferences('theme_epure_a11y_text', 100) : 100;
-        $font = $enabled ? (string) get_user_preferences('theme_epure_a11y_font', '') : '';
-        $scheme = $enabled ? (string) get_user_preferences('theme_epure_a11y_scheme', '') : '';
+        $defaults = self::site_defaults();
+        // A preference the user never chose is the one of the site.
+        $preference = fn(string $name) => $enabled ? get_user_preferences('theme_epure_a11y_' . $name, null) : null;
+        $text = (int) ($preference('text') ?? $defaults['text']);
+        $font = (string) ($preference('font') ?? $defaults['font']);
+        $scheme = (string) ($preference('scheme') ?? '');
         $preferences = [
             'text' => in_array($text, self::TEXT_SIZES, true) ? $text : 100,
             'font' => in_array($font, self::FONTS, true) ? $font : '',
             'scheme' => in_array($scheme, self::SCHEMES, true) ? $scheme : '',
         ];
         foreach (self::SWITCHES as $switch) {
-            $preferences[$switch] = $enabled && (bool) get_user_preferences('theme_epure_a11y_' . $switch, 0);
+            $preferences[$switch] = (bool) ($preference($switch) ?? $defaults[$switch]);
         }
         return $preferences;
+    }
+
+    /**
+     * Display of the site for the users who did not choose theirs, and for the visitors: the settings « Display by
+     * default » of the theme.
+     *
+     * @return array{text: int, font: string, spacing: bool, contrast: bool, underline: bool, motion: bool}
+     */
+    public static function site_defaults(): array {
+        $config = get_config('theme_epure');
+        $text = (int) ($config->preftext ?? 100);
+        $font = (string) ($config->preffont ?? '');
+        $defaults = [
+            'text' => in_array($text, self::TEXT_SIZES, true) ? $text : 100,
+            'font' => in_array($font, self::FONTS, true) ? $font : '',
+        ];
+        foreach (self::SWITCHES as $switch) {
+            $defaults[$switch] = !empty($config->{'pref' . $switch});
+        }
+        return $defaults;
+    }
+
+    /**
+     * Whether the users get the button « Aa » of the display preferences.
+     *
+     * @return bool
+     */
+    public static function panel_enabled(): bool {
+        return get_config('theme_epure', 'prefpanel') !== '0';
     }
 
     /**

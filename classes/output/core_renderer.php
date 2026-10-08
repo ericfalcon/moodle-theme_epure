@@ -90,7 +90,31 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if ($company && ($css = \theme_epure\company_style::css($company)) !== '') {
             $output .= \html_writer::tag('style', $css, ['id' => 'epure-company-style']);
         }
+        // The installable web app: its manifest and its service worker; once turned off, the service worker is removed.
+        if (\theme_epure\web_app::enabled()) {
+            $output .= \theme_epure\web_app::head_html();
+        }
+        if (!during_initial_install() && ($js = \theme_epure\web_app::register_js()) !== '') {
+            $output .= \html_writer::script($js);
+        }
+        // The logo for the phones, in place of the logo of the header (Boost shows no logo on phones).
+        if (!$this->company_logo_url(['logocompact', 'logo']) && ($url = \theme_epure\logos::url('logomobile'))) {
+            $output .= \html_writer::tag('style', '@media (max-width: 767.98px) {'
+                . '.navbar .navbar-brand .logo { content: url("' . $url->out(false) . '"); } }', ['id' => 'epure-mobile-logo']);
+        }
         return $output;
+    }
+
+    /**
+     * Icon of the site in the tabs of the browsers: the one of the theme, else the one of Moodle.
+     *
+     * @return \moodle_url
+     */
+    public function favicon() {
+        if (!during_initial_install() && ($url = \theme_epure\logos::url('favicon'))) {
+            return $url;
+        }
+        return parent::favicon();
     }
 
     /**
@@ -139,7 +163,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
         $course = $this->page->course;
         $data = \theme_epure\course_page::export($this, $course, $header);
-        if ($data['learning'] && !$this->page->user_is_editing()) {
+        if ($data['learning'] && !$this->page->user_is_editing() && get_config('theme_epure', 'sectionprogress') !== '0') {
             $sections = \theme_epure\course_page::sections($course, (int) $USER->id);
             if ($sections) {
                 $this->page->requires->js_call_amd('theme_epure/course_page', 'init', [$sections]);
@@ -202,7 +226,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
     public function navbar_plugin_output() {
         $output = parent::navbar_plugin_output();
         // The preferences are saved in the profile: guests and visitors who are not logged in do not get them.
-        if (isloggedin() && !isguestuser() && !during_initial_install()) {
+        if (isloggedin() && !isguestuser() && !during_initial_install() && \theme_epure\a11y::panel_enabled()) {
             $this->page->requires->js_call_amd('theme_epure/a11y_panel', 'init');
             $output = $this->render_from_template('theme_epure/a11y_panel', \theme_epure\a11y::panel_context()) . $output;
         }
@@ -257,7 +281,36 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if (!during_initial_install() && \theme_epure\activity_icons::current() !== 'moodle') {
             $additionalclasses[] = 'epure-icons-' . \theme_epure\activity_icons::current();
         }
+        if (!during_initial_install()) {
+            $additionalclasses = array_merge($additionalclasses, $this->epure_display_classes());
+        }
         return parent::body_attributes($additionalclasses);
+    }
+
+    /**
+     * Classes of the body for the settings of the display: breadcrumb, logo, blocks and dashboard of the phones.
+     *
+     * @return string[]
+     */
+    protected function epure_display_classes(): array {
+        $classes = [];
+        $breadcrumb = get_config('theme_epure', 'breadcrumb');
+        if ($breadcrumb === 'hide' || $breadcrumb === 'desktop') {
+            $classes[] = 'epure-breadcrumb-' . $breadcrumb;
+        }
+        if ($this->company_logo_url(['logocompact', 'logo']) || \theme_epure\logos::url('logomobile')) {
+            $classes[] = 'epure-has-mobilelogo';
+        }
+        if (get_config('theme_epure', 'mobileblocks') === 'hidden') {
+            $classes[] = 'epure-mobile-noblocks';
+        }
+        if (
+            get_config('theme_epure', 'mobiledashboard') === 'overview'
+                && \theme_epure\learner_dashboard::applies($this->page)
+        ) {
+            $classes[] = 'epure-mobile-overview';
+        }
+        return $classes;
     }
 
     /**
