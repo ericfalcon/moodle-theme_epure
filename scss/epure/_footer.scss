@@ -1,0 +1,83 @@
+// Footer of every page. It follows the page, so the drawers open beside the page must not cover it.
+@include media-breakpoint-up(lg) {
+    #page.drawers ~ .epure-footer {
+        transition: margin .2s;
+    }
+
+    #page.drawers.show-drawer-left ~ .epure-footer {
+        margin-left: $drawer-left-width;
+    }
+
+    #page.drawers.show-drawer-right ~ .epure-footer {
+        margin-right: $drawer-right-width;
+    }
+}
+
+.epure-footer {
+    padding: 2rem 1rem 1.25rem;
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+    background-color: var(--epure-surface);
+    border-top: 1px solid var(--epure-border);
+}
+
+.epure-footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1.5rem 3rem;
+    max-width: 75rem;
+    margin: 0 auto;
+}
+
+.epure-footer-site {
+    margin: 0 0 .25rem;
+    color: var(--epure-ink);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.epure-footer-text p {
+    margin: 0;
+}
+
+.epure-footer-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.epure-footer-nav a {
+    display: inline-block;
+    min-height: 1.5rem;
+    color: var(--epure-ink);
+    text-decoration: underline;
+    text-underline-offset: .2em;
+}
+
+.epure-footer-copyright {
+    max-width: 75rem;
+    margin: 1.5rem auto 0;
+    padding-top: 1rem;
+    font-size: .8125rem;
+    border-top: 1px solid var(--epure-border);
+}
+
+// Accessibility mention, under the page, at the bottom of every page.
+.epure-a11y-mention {
+    margin: 0;
+    padding: 1rem;
+    font-size: .875rem;
+    text-align: center;
+}
+
+.epure-a11y-statement {
+    max-width: 50rem;
+}
+
+.epure-a11y-statement-contact {
+    margin-bottom: 1.5rem;
+}

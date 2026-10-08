@@ -1,0 +1,39 @@
+// Reports: the row under the pointer in a tint of the brand, to follow a learner across the columns of the
+// grader report and of the completion report; the averages in bold on a tint.
+.path-grade-report-grader .gradeparent tr.userrow:hover .cell,
+#completion-progress tbody tr:hover > *,
+.path-local-report_completion_overview table.generaltable tbody tr:hover > *,
+.path-local-report_users table.generaltable tbody tr:hover > * {
+    background-color: var(--epure-brand-soft) !important; // stylelint-disable-line declaration-no-important
+}
+
+.path-grade-report-grader .gradeparent tr.avg .cell {
+    font-weight: 600;
+    background-color: var(--epure-surface-raised);
+}
+
+#completion-progress .rotated-text {
+    font-weight: 600;
+}
+
+// Links among text that Moodle does not underline: the sort of the completion report (« First name / Last
+// name ») and the backpack of the badges.
+#completion-progress .completion-sortchoice > a,
+#page-badges-mybadges .generalbox > a {
+    text-decoration: underline;
+}
+
+// The downloads of the completion report, one under the other: targets of 24 pixels at least (WCAG 2.5.8).
+.progress-actions a {
+    display: inline-block;
+    padding: .25rem 0;
+}
+
+// IOMAD reports: the tree of the departments as a box of the theme instead of IOMAD's grey box.
+.dep_tree {
+    padding: .5rem .75rem;
+    color: var(--epure-ink);
+    background-color: var(--epure-surface-raised) !important; // stylelint-disable-line declaration-no-important
+    border: 1px solid var(--epure-border) !important; // stylelint-disable-line declaration-no-important
+    border-radius: var(--epure-radius);
+}

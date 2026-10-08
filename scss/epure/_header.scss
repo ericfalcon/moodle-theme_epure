@@ -1,0 +1,164 @@
+// Header and primary navigation: a quiet white bar with a brand underline on the active item.
+.navbar.fixed-top {
+    border-bottom: 1px solid var(--epure-border);
+    box-shadow: none;
+}
+
+.primary-navigation .navigation .nav-link.active,
+.primary-navigation .navigation .nav-link[aria-current="true"] {
+    border-bottom-color: var(--epure-brand);
+}
+
+.moremenu .nav-link:hover,
+.moremenu .nav-link:focus {
+    border-bottom-color: var(--epure-brand-soft-2);
+}
+
+// Logos may have a transparent background: never paint behind them.
+.navbar .navbar-brand .logo,
+#loginlogo,
+.login-logo img {
+    background: transparent;
+}
+
+// Brand-coloured header (Header > Header colour, or the setting of an IOMAD company). Only the
+// bar itself and its own controls change colour; the dropdowns and popovers it opens keep the
+// normal colours. The page gets the class epure-header-brand from the renderer, so that each
+// IOMAD company can choose its own header; colours that depend on the brand colour come from
+// custom properties, set below for the site and by the style of the company.
+:root {
+    @if $epure-on-brand-is-light {
+        --epure-header-hover: rgba(0, 0, 0, .18);
+        --epure-header-toggler-filter: brightness(0) invert(1);
+        --epure-header-divider: rgba(255, 255, 255, .35);
+    }
+    @if not $epure-on-brand-is-light {
+        --epure-header-hover: rgba(255, 255, 255, .3);
+        --epure-header-toggler-filter: none;
+        --epure-header-divider: rgba(0, 0, 0, .2);
+    }
+}
+
+body.epure-header-brand .navbar.fixed-top,
+body.epure-header-brand .navbar.fixed-top.bg-white {
+    // Bootstrap's .bg-white utility uses !important.
+    background-color: var(--epure-header-bg) !important; // stylelint-disable-line declaration-no-important
+    border-bottom-color: transparent;
+}
+
+body.epure-header-brand .navbar.fixed-top .navbar-brand,
+body.epure-header-brand .navbar.fixed-top .primary-navigation .navigation .nav-link,
+body.epure-header-brand .navbar.fixed-top .popover-region-toggle,
+body.epure-header-brand .navbar.fixed-top .popover-region-toggle .icon,
+body.epure-header-brand .navbar.fixed-top .usermenu > .dropdown > .dropdown-toggle,
+body.epure-header-brand .navbar.fixed-top .editmode-switch-form label,
+body.epure-header-brand .navbar.fixed-top .simplesearchform .btn-open,
+body.epure-header-brand .navbar.fixed-top .navbar-toggler,
+body.epure-header-brand .navbar.fixed-top .epure-a11y-toggle,
+body.epure-header-brand .navbar.fixed-top .langmenu .dropdown-toggle {
+    color: var(--epure-header-on);
+}
+
+body.epure-header-brand .navbar.fixed-top .primary-navigation .navigation .nav-link.active,
+body.epure-header-brand .navbar.fixed-top .primary-navigation .navigation .nav-link[aria-current="true"] {
+    border-bottom-color: var(--epure-header-on);
+}
+
+body.epure-header-brand .navbar.fixed-top .primary-navigation .navigation .nav-link:hover {
+    border-bottom-color: currentColor;
+}
+
+// IOMAD company switcher (block_iomad_company_admin) in the header.
+body.epure-header-brand .navbar.fixed-top .companymenu > .dropdown > .btn,
+body.epure-header-brand .navbar.fixed-top .companymenu > .dropdown > .companybutton,
+body.epure-header-brand .navbar.fixed-top .companymenu .companybutton {
+    color: var(--epure-header-on);
+}
+
+// Boost paints hovered and focused header items light grey, which hides light text.
+// The brand colour is darkened instead (or lightened under dark text), which keeps
+// or raises the contrast of the text.
+body.epure-header-brand .navbar.fixed-top .primary-navigation .navigation .nav-link:hover,
+body.epure-header-brand .navbar.fixed-top .primary-navigation .navigation .nav-link:focus,
+body.epure-header-brand .navbar.fixed-top .popover-region-toggle:hover,
+body.epure-header-brand .navbar.fixed-top .popover-region-toggle:focus,
+body.epure-header-brand .navbar.fixed-top .simplesearchform .btn-open:hover,
+body.epure-header-brand .navbar.fixed-top .simplesearchform .btn-open:focus,
+body.epure-header-brand .navbar.fixed-top .usermenu > .dropdown > .dropdown-toggle:hover,
+body.epure-header-brand .navbar.fixed-top .usermenu > .dropdown > .dropdown-toggle:focus,
+body.epure-header-brand .navbar.fixed-top .companymenu > .dropdown > .btn:hover,
+body.epure-header-brand .navbar.fixed-top .companymenu > .dropdown > .btn:focus,
+body.epure-header-brand .navbar.fixed-top .navbar-brand:hover,
+body.epure-header-brand .navbar.fixed-top .navbar-brand:focus,
+body.epure-header-brand .navbar.fixed-top .epure-a11y-toggle:hover,
+body.epure-header-brand .navbar.fixed-top .epure-a11y-toggle:focus,
+body.epure-header-brand .navbar.fixed-top .langmenu .dropdown-toggle:hover,
+body.epure-header-brand .navbar.fixed-top .langmenu .dropdown-toggle:focus {
+    color: var(--epure-header-on);
+    background-color: var(--epure-header-hover);
+}
+
+body.epure-header-brand .navbar.fixed-top a:focus-visible,
+body.epure-header-brand .navbar.fixed-top button:focus-visible,
+body.epure-header-brand .navbar.fixed-top [tabindex]:focus-visible,
+body.epure-header-brand .navbar.fixed-top input:focus-visible {
+    outline-color: var(--epure-header-on) !important; // stylelint-disable-line declaration-no-important
+}
+
+// Edit mode switch, once on: its track is filled with the brand colour by Bootstrap, the colour of the bar.
+body.epure-header-brand .navbar.fixed-top .editmode-switch-form {
+    label {
+        color: var(--epure-header-on) !important; // stylelint-disable-line declaration-no-important
+        opacity: 1;
+    }
+
+    .custom-control-input:checked ~ .custom-control-label::before,
+    .form-check-input:checked {
+        background-color: rgba(0, 0, 0, .4);
+        border-color: var(--epure-header-on);
+    }
+}
+
+// The hamburger icon is a dark image in Bootstrap's light navbar.
+body.epure-header-brand .navbar.fixed-top .navbar-toggler-icon {
+    filter: var(--epure-header-toggler-filter);
+}
+
+body.epure-header-brand .navbar.fixed-top .divider {
+    border-color: var(--epure-header-divider);
+}
+
+// Secondary navigation tabs.
+.secondary-navigation .navigation .nav-tabs .nav-link.active {
+    border-bottom-color: var(--epure-brand);
+}
+
+// Page background and main region.
+#page.drawers {
+    background-color: var(--epure-page);
+}
+
+#page-header .page-header-headings h1 {
+    font-size: 1.75rem;
+}
+
+// Badges and tags.
+.badge-primary,
+.bg-primary {
+    color: var(--epure-on-brand);
+}
+
+// Respect the system setting to reduce motion (WCAG 2.3.3).
+// !important is needed to win over the transitions set by Moodle and Bootstrap components.
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition: none !important; // stylelint-disable-line declaration-no-important
+        scroll-behavior: auto !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .dashboard-card:hover {
+        transform: none;
+    }
+}

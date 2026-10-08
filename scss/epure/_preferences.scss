@@ -1,0 +1,209 @@
+// Display preferences of the user (button « Aa »), as classes on the html element.
+// Text size: rem units follow the root size, so the whole page scales.
+html.epure-a11y-text-90 {
+    font-size: 90%;
+}
+
+html.epure-a11y-text-115 {
+    font-size: 115%;
+}
+
+html.epure-a11y-text-130 {
+    font-size: 130%;
+}
+
+html.epure-a11y-font-atkinson body,
+.epure-a11y-sample-atkinson {
+    font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+}
+
+html.epure-a11y-font-opendyslexic body,
+.epure-a11y-sample-opendyslexic {
+    font-family: "OpenDyslexic", system-ui, sans-serif;
+}
+
+// Text spacing, at the values of WCAG 1.4.12.
+html.epure-a11y-spacing body {
+    line-height: 1.5;
+    letter-spacing: .12em;
+    word-spacing: .16em;
+
+    p {
+        margin-bottom: 2em;
+    }
+}
+
+html.epure-a11y-contrast {
+    --epure-border: #6b7280;
+    --epure-surface-muted: var(--epure-surface);
+    --epure-ink: #000;
+    --epure-ink-muted: #333;
+    --epure-contrast-border: #333;
+
+    body {
+        color: var(--epure-ink);
+    }
+
+    .text-muted,
+    .dimmed_text,
+    .text-secondary,
+    small {
+        color: var(--epure-ink-muted) !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .card,
+    .form-control,
+    .custom-select,
+    .form-select,
+    .btn-secondary,
+    .list-group-item {
+        border-color: var(--epure-contrast-border);
+    }
+
+    a:not(.btn) {
+        color: var(--epure-brand-text);
+    }
+}
+
+html.epure-a11y-underline a:not(.btn):not(.nav-link):not(.dropdown-item) {
+    text-decoration: underline;
+    text-underline-offset: .15em;
+}
+
+html.epure-a11y-motion *,
+html.epure-a11y-motion *::before,
+html.epure-a11y-motion *::after {
+    animation-duration: 0s !important; // stylelint-disable-line declaration-no-important
+    animation-iteration-count: 1 !important; // stylelint-disable-line declaration-no-important
+    transition-duration: 0s !important; // stylelint-disable-line declaration-no-important
+    scroll-behavior: auto !important; // stylelint-disable-line declaration-no-important
+}
+
+// Button « Aa » and its panel.
+.epure-a11y {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.epure-a11y-toggle {
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1;
+    padding: .5rem .6rem;
+    border: 0;
+}
+
+.epure-a11y-panel {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 1060;
+    width: 22rem;
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100vh - 5rem);
+    // Only the choices scroll: the title and the reset button never cover them.
+    flex-direction: column;
+    padding: 1rem;
+    color: var(--epure-ink);
+    background: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow-hover);
+
+    &:not([hidden]) {
+        display: flex;
+    }
+
+    &[hidden] {
+        display: none;
+    }
+}
+
+.epure-a11y-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.epure-a11y-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: .5rem;
+}
+
+.epure-a11y-title {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.epure-a11y-group {
+    margin-bottom: 1rem;
+
+    legend {
+        font-size: .9rem;
+        font-weight: 600;
+        margin-bottom: .4rem;
+    }
+}
+
+.epure-a11y-choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+}
+
+.epure-a11y-choice {
+    position: relative;
+    margin: 0;
+
+    input {
+        position: absolute;
+        opacity: 0;
+    }
+
+    span {
+        display: inline-block;
+        padding: .3rem .7rem;
+        border: 1px solid var(--epure-border);
+        border-radius: 999px;
+        cursor: pointer;
+    }
+
+    input:checked + span {
+        color: var(--epure-on-brand);
+        background: var(--epure-brand);
+        border-color: var(--epure-brand);
+    }
+
+    input:focus-visible + span {
+        outline: 2px solid var(--epure-focus);
+        outline-offset: 2px;
+    }
+}
+
+.epure-a11y-switch {
+    margin-bottom: .5rem;
+}
+
+.epure-a11y-help {
+    font-size: .8rem;
+    color: var(--epure-ink-muted);
+    margin: 0;
+}
+
+.epure-a11y-foot {
+    // The reset button stays in reach when large text makes the choices scroll.
+    padding-top: .75rem;
+    border-top: 1px solid var(--epure-border);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+}
+
+.epure-a11y-status {
+    font-size: .85rem;
+    margin: 0;
+}

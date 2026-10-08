@@ -274,6 +274,11 @@ Un thème ne rend pas une plateforme conforme à lui seul : les contenus des cou
 
 ## Développement
 
+- **Styles** : `scss/epure.scss` importe, dans l'ordre de compilation, les fichiers de `scss/epure/`, un par sujet (en-tête, page de cours, activités, mode sombre…).
+- **IOMAD** : tout ce qu'Épure utilise d'IOMAD passe par `theme_epure\iomad` (détection, API, contexte d'entreprise, noms des tables, adresses des pages). IOMAD 5.1 a renommé ses tables et ses classes ; cette classe connaît les deux.
+- **Compatibilité** : l'intégration continue teste Moodle 4.5 à 5.3 et IOMAD 4.5, 5.1 et 5.2 ; les tests Behat couvrent les formats de cours thématique, hebdomadaire (avec une sous-section), activité unique et informel, avec axe-core.
+- **Performances** (Moodle 4.5, apprenant, face à Boost) : feuille de style +9 %, JavaScript inchangé, HTML d'environ +10 à 15 %, aucun décalage de mise en page ; même temps serveur, sauf sur le tableau de bord (+130 ms), où la vue d'ensemble de l'apprenant calcule la progression de chaque cours. Détails dans le wiki (Développement).
+
 Les variables de la palette sont exposées en propriétés CSS (`--epure-brand`, `--epure-brand-text`, `--epure-on-brand`, etc.) pour les SCSS personnalisés.
 
 Tests :

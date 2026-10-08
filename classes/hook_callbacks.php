@@ -230,6 +230,7 @@ class hook_callbacks {
         try {
             return $PAGE->theme->name === 'epure' || in_array('epure', $PAGE->theme->parents ?? [], true);
         } catch (\Throwable $e) {
+            // Expected: the theme of the page is not chosen yet (early pages, errors before the page is set up).
             return false;
         }
     }

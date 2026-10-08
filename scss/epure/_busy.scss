@@ -1,0 +1,107 @@
+// « Moodle is working » indicator of the install and upgrade pages.
+.epure-busy {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: rgba(15, 18, 23, .45);
+
+    &[hidden] {
+        display: none;
+    }
+}
+
+.epure-busy-box {
+    max-width: 26rem;
+    padding: 1.75rem 2rem;
+    color: var(--epure-ink);
+    text-align: center;
+    background-color: var(--epure-surface);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow-hover);
+}
+
+.epure-busy-spinner {
+    display: inline-block;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-bottom: .75rem;
+    border: .25rem solid var(--epure-brand-soft-2);
+    border-top-color: var(--epure-brand);
+    border-radius: 50%;
+    animation: epure-busy-spin 1s linear infinite;
+}
+
+.epure-busy-title {
+    margin: 0 0 .375rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.epure-busy-detail {
+    margin: 0;
+    color: var(--epure-ink-muted);
+}
+
+// While the server sends the page, as during an upgrade: a message in a corner, which leaves the
+// progress readable, and only appears after a second so that it never flashes.
+.epure-busy-loading {
+    inset: auto 1rem 1rem auto;
+    padding: 0;
+    background-color: transparent;
+    animation: epure-busy-appear .2s 1s both;
+
+    .epure-busy-box {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0 .875rem;
+        align-items: center;
+        max-width: 24rem;
+        padding: 1rem 1.25rem;
+        text-align: start;
+    }
+
+    .epure-busy-spinner {
+        grid-row: span 2;
+        width: 1.75rem;
+        height: 1.75rem;
+        margin: 0;
+    }
+
+    .epure-busy-title {
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    .epure-busy-detail {
+        font-size: .875rem;
+    }
+}
+
+@keyframes epure-busy-appear {
+    from {
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    to {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+@keyframes epure-busy-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// Without motion, the spinner stays still: the text says that Moodle is working.
+@media (prefers-reduced-motion: reduce) {
+    .epure-busy-spinner {
+        animation: none;
+    }
+}

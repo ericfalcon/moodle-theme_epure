@@ -42,6 +42,7 @@ class activity_page {
                 && $page->course->format !== 'singleactivity'
                 && get_config('theme_epure', 'activitynav') !== '0';
         } catch (\Throwable $e) {
+            // Expected: the page has no context or course yet (pages that set them later, errors).
             return false;
         }
     }

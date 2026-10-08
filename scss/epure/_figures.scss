@@ -1,0 +1,55 @@
+// Key figures: of the company on IOMAD's dashboard, of the platform on the dashboard of its managers.
+@include media-breakpoint-up(md) {
+    .epure-site-figures {
+        margin-right: .9375rem;
+        margin-left: .9375rem;
+    }
+}
+
+.epure-iomad-figures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 1rem;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    list-style: none;
+}
+
+.epure-iomad-figure a,
+.epure-iomad-figure-box {
+    display: flex;
+    flex-direction: column;
+    gap: .125rem;
+    height: 100%;
+    padding: 1rem 1.125rem;
+    color: var(--epure-ink);
+    text-decoration: none;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+}
+
+.epure-iomad-figure a:hover,
+.epure-iomad-figure a:focus {
+    border-color: var(--epure-brand);
+    box-shadow: var(--epure-shadow-hover);
+}
+
+.epure-iomad-figure-label {
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+    font-weight: 500;
+}
+
+.epure-iomad-figure-value {
+    color: var(--epure-brand-text);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.epure-iomad-figure-detail {
+    color: var(--epure-ink-muted);
+    font-size: .8125rem;
+}

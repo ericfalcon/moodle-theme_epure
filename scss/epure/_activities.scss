@@ -1,0 +1,788 @@
+// Pages of the activities. At the top, a strip with the course, the position of the activity and
+// the progress; at the bottom, the previous and next activities as cards.
+.epure-activity-strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1.25rem;
+    margin: 0 0 1rem;
+    padding: .625rem 1rem;
+    color: var(--epure-ink-muted);
+    background-color: var(--epure-surface-muted);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius);
+    font-size: .875rem;
+}
+
+.epure-activity-strip-course {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    min-width: 0;
+    font-weight: 600;
+
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.epure-activity-strip-position {
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.epure-activity-strip-progress {
+    display: flex;
+    flex: 1 1 8rem;
+    align-items: center;
+    gap: .5rem;
+    max-width: 16rem;
+    white-space: nowrap;
+
+    .progress {
+        flex: 1 1 auto;
+        height: .5rem;
+    }
+}
+
+.epure-focus-toggle.btn {
+    margin-left: auto;
+    color: var(--epure-ink);
+    background-color: var(--epure-surface);
+    border-color: var(--epure-ink-muted);
+
+    &:hover,
+    &:focus {
+        color: var(--epure-ink);
+        background-color: var(--epure-brand-soft);
+        border-color: var(--epure-brand);
+    }
+
+    .fa {
+        margin-right: .375rem;
+    }
+
+    &[aria-pressed="true"] {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand);
+        border-color: var(--epure-brand);
+    }
+}
+
+// Box of the dates and the completion of the activity, on the surfaces of the theme.
+.path-mod .activity-header:not(:empty) {
+    background-color: var(--epure-surface-muted);
+
+    .activity-dates,
+    .completion-info {
+        border-bottom-color: var(--epure-border);
+    }
+}
+
+.epure-activity-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 2rem 0 0;
+}
+
+.epure-activity-nav-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    color: var(--epure-ink);
+    background-color: var(--epure-surface-raised);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+    text-decoration: none;
+    transition: box-shadow .15s ease-in-out, border-color .15s ease-in-out;
+
+    &:hover,
+    &:focus {
+        color: var(--epure-ink);
+        border-color: var(--epure-brand);
+        box-shadow: var(--epure-shadow-hover);
+        text-decoration: none;
+    }
+}
+
+.epure-activity-nav-next {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.epure-activity-nav-arrow {
+    flex: 0 0 auto;
+    color: var(--epure-brand-text);
+    font-size: 1.25rem;
+}
+
+.epure-activity-nav-text {
+    display: flex;
+    flex-direction: column;
+    gap: .125rem;
+    min-width: 0;
+}
+
+.epure-activity-nav-label {
+    color: var(--epure-brand-text);
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.epure-activity-nav-name {
+    overflow: hidden;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    .activityicon {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-right: .5rem;
+        vertical-align: -.2em;
+    }
+}
+
+.epure-activity-nav-section {
+    color: var(--epure-ink-muted);
+    font-size: .8125rem;
+}
+
+@include media-breakpoint-down(sm) {
+    .epure-activity-nav {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .epure-activity-nav-spacer {
+        display: none;
+    }
+
+    .epure-focus-toggle {
+        margin-left: 0;
+    }
+}
+
+// Button « Mark as done » of the activities with manual completion: larger, in the brand colour.
+.activity-header [data-action="toggle-manual-completion"] {
+    padding: .5rem 1rem;
+    font-size: .9375rem;
+    font-weight: 600;
+
+    &.btn-outline-secondary {
+        color: var(--epure-brand-text);
+        border-color: var(--epure-brand);
+        border-width: 2px;
+
+        &:hover,
+        &:focus {
+            color: var(--epure-on-brand);
+            background-color: var(--epure-brand);
+        }
+    }
+}
+
+// Reading mode: no side panels, the content centred at a comfortable width.
+html.epure-focus body.epure-activity {
+    .drawer,
+    .drawer-toggles,
+    .drawer-left-toggle,
+    .drawer-right-toggle,
+    [data-region="right-hand-drawer"] {
+        display: none;
+    }
+
+    #page.drawers {
+        margin-left: 0;
+        margin-right: 0;
+
+        .main-inner {
+            max-width: 60rem;
+        }
+    }
+
+    #page.drawers ~ .epure-footer {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .header-maxwidth {
+        max-width: 60rem;
+    }
+}
+
+// Radio buttons and check boxes in the colour of the brand (the browser draws them in its own blue).
+input[type="radio"],
+input[type="checkbox"] {
+    accent-color: var(--epure-brand);
+}
+
+// Quizzes: the question in a light tint of the brand instead of Moodle's light blue, the feedback in a
+// neutral box marked with the brand (Moodle uses its warning colours). The colours of right, partly right
+// and wrong answers are kept.
+.que .formulation {
+    color: var(--epure-ink);
+    background-color: var(--epure-brand-soft);
+    border-color: var(--epure-brand-soft-2);
+    border-radius: var(--epure-radius);
+}
+
+.que .outcome,
+.que .comment {
+    color: var(--epure-ink);
+    background-color: var(--epure-surface-muted);
+    border-color: var(--epure-border);
+    border-left: 4px solid var(--epure-brand);
+    border-radius: var(--epure-radius);
+}
+
+.que .info {
+    background-color: var(--epure-surface-muted);
+    border-color: var(--epure-border);
+    border-radius: var(--epure-radius);
+}
+
+// Summary of a quiz attempt: the quiz module paints its cells light grey and white, also in dark mode.
+table.quizreviewsummary {
+    th.cell {
+        color: var(--epure-ink);
+        background: var(--epure-surface-muted);
+    }
+
+    td.cell {
+        color: var(--epure-ink);
+        background: var(--epure-surface);
+    }
+}
+
+// Quiz navigation: square buttons with the number in the middle, the current page in the brand colour,
+// the answered questions tinted, and the state of the review (right, wrong) as a band at the bottom.
+.path-mod-quiz #mod_quiz_navblock {
+    .qnbutton {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        margin: 0 .375rem .375rem 0;
+        padding: 0;
+        color: var(--epure-ink);
+        font-size: .9375rem;
+        font-weight: 600;
+        line-height: 1;
+        background-color: var(--epure-surface);
+        border-radius: var(--epure-radius);
+    }
+
+    .qnbutton .thispageholder {
+        position: absolute;
+        inset: 0;
+        border: 1px solid var(--epure-border);
+        border-radius: var(--epure-radius);
+    }
+
+    .qnbutton.thispage .thispageholder {
+        border: 2px solid var(--epure-brand);
+    }
+
+    .qnbutton .trafficlight {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: .3125rem;
+        margin: 0;
+        border-radius: 0 0 var(--epure-radius) var(--epure-radius);
+    }
+
+    .qnbutton.answersaved,
+    .qnbutton.answersaved .trafficlight,
+    .qnbutton.complete,
+    .qnbutton.complete .trafficlight {
+        background-color: var(--epure-brand-soft-2);
+    }
+
+    .qnbutton.notyetanswered .trafficlight,
+    .qnbutton.invalidanswer .trafficlight {
+        background-color: transparent;
+    }
+
+    a.qnbutton:hover,
+    a.qnbutton:focus {
+        text-decoration: none;
+
+        .thispageholder {
+            border-color: var(--epure-brand);
+        }
+    }
+
+    // The flag of a flagged question in the corner of its button.
+    .qnbutton.flagged .thispageholder {
+        background-position: right 2px top 2px;
+        background-size: 10px;
+    }
+}
+
+// Lessons: the answers one under the other, as cards, and the buttons aligned with the content.
+.path-mod-lesson .answeroptiongroup {
+    > .col-md-3 {
+        display: none;
+    }
+
+    > .felement {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .d-flex.flex-wrap {
+        flex-direction: column;
+        align-items: stretch !important; // stylelint-disable-line declaration-no-important
+        gap: .5rem;
+    }
+
+    .form-check-inline {
+        display: flex;
+        align-items: center;
+        gap: .625rem;
+        margin: 0;
+        padding: .75rem 1rem;
+        background-color: var(--epure-surface);
+        border: 1px solid var(--epure-border);
+        border-radius: var(--epure-radius);
+        cursor: pointer;
+
+        &:hover {
+            border-color: var(--epure-brand);
+        }
+
+        &:has(input:checked) {
+            background-color: var(--epure-brand-soft);
+            border-color: var(--epure-brand);
+        }
+
+        .form-check-input {
+            margin: 0;
+        }
+    }
+}
+
+.path-mod-lesson #region-main .mform > .fitem.femptylabel {
+    > .col-md-3 {
+        display: none;
+    }
+
+    > .felement {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+.path-mod-lesson .progress_bar {
+    margin-top: 1.5rem;
+    color: var(--epure-ink-muted);
+    background: none;
+    border: 0;
+
+    .progress {
+        height: .5rem;
+        margin-top: .5rem;
+        font-size: 0;
+        background-color: var(--epure-surface-muted);
+        border-radius: 999px;
+    }
+}
+
+// Forums: the posts as cards, the first one marked in the brand colour, the replies on a line that shows
+// the thread; the actions as discreet links.
+#page-mod-forum-discuss .forumpost,
+#page-mod-forum-post .forumpost {
+    padding: 1rem 1.25rem !important; // stylelint-disable-line declaration-no-important
+    background-color: var(--epure-surface);
+    border-color: var(--epure-border) !important; // stylelint-disable-line declaration-no-important
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+
+    &.firstpost {
+        border-left: 4px solid var(--epure-brand) !important; // stylelint-disable-line declaration-no-important
+    }
+
+    header .mb-3 {
+        margin-bottom: .75rem !important; // stylelint-disable-line declaration-no-important
+        color: var(--epure-ink-muted);
+        font-size: .875rem;
+
+        // The author among the text of the line: underlined, as the links in the text.
+        a {
+            text-decoration: underline;
+        }
+    }
+
+    .post-content-container {
+        line-height: 1.6;
+    }
+
+    .post-actions .btn-link {
+        padding: .25rem .5rem;
+        font-size: .875rem;
+        font-weight: 600;
+        text-decoration: none;
+        border-radius: var(--epure-radius-sm);
+
+        &:hover {
+            background-color: var(--epure-brand-soft);
+        }
+    }
+}
+
+#page-mod-forum-discuss .indent {
+    padding-left: 1rem;
+    border-left: 2px solid var(--epure-border);
+}
+
+#page-mod-forum-view .discussion-list {
+    th {
+        color: var(--epure-ink-muted);
+        font-size: .8125rem;
+        font-weight: 600;
+        letter-spacing: .02em;
+    }
+
+    tbody tr:hover {
+        background-color: var(--epure-brand-soft);
+    }
+}
+
+// Glossaries: the index as buttons, the letters on the left in the brand colour, the entries as cards.
+#page-mod-glossary-view {
+    .entrybox {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .25rem;
+        // The separators « | » between the letters are text: hidden by the font size, the links keep theirs.
+        font-size: 0;
+
+        .glossaryexplain {
+            flex: 0 0 100%;
+            margin-bottom: .5rem;
+            color: var(--epure-ink-muted);
+            font-size: .875rem;
+        }
+
+        br,
+        hr {
+            display: none;
+        }
+
+        > a,
+        > b {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2rem;
+            height: 2rem;
+            padding: 0 .5rem;
+            font-size: .875rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid var(--epure-border);
+            border-radius: var(--epure-radius-sm);
+        }
+
+        > a:hover {
+            background-color: var(--epure-brand-soft);
+            border-color: var(--epure-brand);
+        }
+
+        > b {
+            color: var(--epure-on-brand);
+            background-color: var(--epure-brand);
+            border-color: var(--epure-brand);
+        }
+    }
+
+    .glossarycategoryheader {
+        margin: 2rem 0 .75rem;
+        text-align: left !important; // stylelint-disable-line declaration-no-important
+
+        h2 {
+            margin: 0;
+            color: var(--epure-brand-text);
+            font-size: 1.25rem;
+        }
+    }
+}
+
+.path-mod-glossary .glossarypost {
+    width: 100%;
+    margin-bottom: .75rem;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-collapse: separate;
+    border-radius: var(--epure-radius-lg);
+
+    td.entry {
+        padding: 1rem 1.25rem .25rem;
+    }
+
+    .concept h3 {
+        margin-bottom: .375rem;
+        font-size: 1.125rem;
+    }
+
+    td.entrylowersection {
+        padding: 0 1rem .5rem;
+
+        hr {
+            display: none;
+        }
+    }
+}
+
+// Assignments: the status as a card, the state of the submission in colour with words, never by colour only.
+.path-mod-assign .submissionsummarytable,
+.path-mod-assign .feedback {
+    padding: 0 !important; // stylelint-disable-line declaration-no-important
+
+    .table-responsive {
+        overflow: hidden;
+        border: 1px solid var(--epure-border);
+        border-radius: var(--epure-radius-lg);
+    }
+
+    table.generaltable {
+        margin: 0;
+        border: 0;
+
+        th,
+        td {
+            padding: .75rem 1rem;
+            border-right: 0;
+            border-left: 0;
+        }
+
+        // No stripes: the headers on the left already mark the rows.
+        tbody tr {
+            background-color: transparent;
+
+            > * {
+                --bs-table-bg-type: transparent;
+                --bs-table-accent-bg: transparent;
+            }
+        }
+
+        tr:first-child > * {
+            border-top: 0;
+        }
+
+        tr:last-child > * {
+            border-bottom: 0;
+        }
+
+        th {
+            width: 30%;
+            color: var(--epure-ink-muted);
+            font-weight: 600;
+            background-color: var(--epure-surface-raised);
+        }
+    }
+}
+
+// SCORM packages: the information of the package as a card; in the player, a table of contents with the
+// current item in the brand colour, and buttons of the theme instead of the grey ones of YUI.
+#page-mod-scorm-view [role="main"] > .box {
+    padding: 1rem 1.25rem !important; // stylelint-disable-line declaration-no-important
+    background-color: var(--epure-surface-muted);
+    border-radius: var(--epure-radius);
+
+    p {
+        margin: 0;
+        line-height: 1.8;
+    }
+}
+
+#page-mod-scorm-view .scorm-center {
+    margin: 1rem 0;
+}
+
+#page-mod-scorm-player {
+    #scorm_toc_title {
+        margin-bottom: .5rem;
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+    #scorm_tree {
+        font-size: .9375rem;
+
+        .yui3-treeview-row {
+            min-height: 2.25rem;
+            padding: .375rem .5rem;
+            color: var(--epure-ink);
+            background: none;
+            border: 0;
+            border-radius: var(--epure-radius-sm);
+
+            &:hover {
+                background-color: var(--epure-brand-soft);
+            }
+        }
+
+        .yui3-treeview-selected > .yui3-treeview-row {
+            color: var(--epure-brand-text);
+            font-weight: 600;
+            background-color: var(--epure-brand-soft);
+            box-shadow: inset 3px 0 0 var(--epure-brand);
+        }
+    }
+
+    #scorm_navpanel .yui3-button {
+        min-width: 2.5rem;
+        min-height: 2.5rem;
+        margin: 0 .125rem;
+        color: var(--epure-ink);
+        background: var(--epure-surface);
+        border: 1px solid var(--epure-border);
+        border-radius: var(--epure-radius);
+
+        &:not(.yui3-button-disabled):hover {
+            color: var(--epure-brand-text);
+            border-color: var(--epure-brand);
+        }
+    }
+}
+
+// Books: the current chapter of the table of contents in the brand colour, the arrows of the chapters in the
+// brand colour.
+.path-mod-book .book_toc {
+    li {
+        margin: .125rem 0;
+    }
+
+    strong {
+        display: inline-block;
+        padding-left: .5rem;
+        color: var(--epure-brand-text);
+        box-shadow: inset 3px 0 0 var(--epure-brand);
+    }
+}
+
+.path-mod-book #mod_book-chaptersnavigation {
+    .btn-previous,
+    .btn-next {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand);
+        border-color: var(--epure-brand);
+
+        &:hover,
+        &:focus {
+            color: var(--epure-on-brand);
+            background-color: var(--epure-brand-hover);
+        }
+    }
+}
+
+// Pages and books: quotations with a line of the brand colour, the text at a readable length.
+.path-mod-page #region-main .box.generalbox,
+.path-mod-book .book_content {
+    blockquote {
+        margin: 1.25rem 0;
+        padding: .75rem 1.25rem;
+        color: var(--epure-ink);
+        background-color: var(--epure-brand-soft);
+        border-left: 4px solid var(--epure-brand);
+        border-radius: 0 var(--epure-radius) var(--epure-radius) 0;
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.path-mod-page #region-main .box.generalbox > .no-overflow,
+.path-mod-book .book_content > .no-overflow {
+    max-width: 48rem;
+    line-height: 1.65;
+}
+
+// Badges: the badges of the user as cards in a grid; the page of a badge with the image on a tint of the brand
+// and the details beside it.
+#page-badges-mybadges ul.badges,
+#page-user-profile ul.badges {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+    padding: 0;
+
+    > li {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: auto;
+        margin: 0;
+        padding: 1.25rem 1rem 1rem;
+        text-align: center;
+        background-color: var(--epure-surface);
+        border: 1px solid var(--epure-border);
+        border-radius: var(--epure-radius-lg);
+        box-shadow: var(--epure-shadow);
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+
+        &:hover {
+            border-color: var(--epure-brand);
+            box-shadow: var(--epure-shadow-hover);
+        }
+    }
+
+    .badge-image {
+        width: 6rem;
+        height: 6rem;
+        object-fit: contain;
+    }
+
+    .badge-name {
+        order: 2;
+        margin-top: .75rem;
+        color: var(--epure-ink);
+        font-weight: 600;
+        line-height: 1.3;
+    }
+
+    .badge-actions {
+        order: 3;
+        margin-top: .25rem;
+    }
+}
+
+#page-badges-badge #badge {
+    padding: 0;
+
+    #badge-image-col {
+        align-self: flex-start;
+        padding: 1.5rem;
+        background-color: var(--epure-brand-soft);
+        border-radius: var(--epure-radius-lg);
+
+        img {
+            max-width: 12rem;
+            height: auto;
+        }
+    }
+
+    #badge-details-col {
+        padding-left: 2rem;
+    }
+
+    #badge-awardedto {
+        color: var(--epure-brand-text);
+        font-size: 1.125rem;
+        font-weight: 600;
+    }
+}

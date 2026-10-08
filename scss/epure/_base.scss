@@ -1,0 +1,232 @@
+// Typography.
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+    font-weight: 600;
+    letter-spacing: -.01em;
+}
+
+// Links keep an accessible colour and show their underline on hover.
+a:hover,
+a:focus {
+    text-underline-offset: .2em;
+}
+
+// Links inside running text are underlined, so they never rely on colour alone (WCAG 1.4.1):
+// with some brand colours, the link colour is close to the text colour.
+p a:not(.btn),
+dd a:not(.btn),
+.footer-section a:not(.btn),
+.epure-a11y-statement a:not(.btn),
+.text_to_html a:not(.btn) {
+    text-decoration: underline;
+    text-underline-offset: .15em;
+}
+
+// Targets of at least 24 × 24 px (WCAG 2.2, 2.5.8) where Moodle draws smaller ones: sorting and
+// hiding the columns of the tables, initials of the lists of users, lists of links of the
+// administration, action menus.
+table.flexible th a[data-sortable],
+table.flexible th .commands a,
+table th a[data-toggle="popover"],
+table th a[data-bs-toggle="popover"],
+.generaltable th a[data-sortable],
+.action-menu-trigger .dropdown-toggle,
+#page-admin-search .list-unstyled > li > a,
+#page-admin-category .list-unstyled > li > a {
+    display: inline-flex;
+    align-items: center;
+    min-width: 24px;
+    min-height: 24px;
+}
+
+// The help icons of the headers of the tables touch the links around them.
+table th a[data-toggle="popover"],
+table th a[data-bs-toggle="popover"] {
+    margin: 2px;
+}
+
+.initialbar .page-link {
+    min-width: 2rem;
+    text-align: center;
+}
+
+// Pages and initials of the tables, pills and active items of the lists: Bootstrap compiles the colour of the
+// site into them; the custom properties give them the colour of the IOMAD company too.
+.page-link {
+    color: var(--epure-brand-text);
+
+    &:hover,
+    &:focus {
+        color: var(--epure-brand-text);
+        background-color: var(--epure-brand-soft);
+    }
+}
+
+// The round buttons that expand the sections of the forms.
+.btn.btn-icon.icons-collapse-expand {
+    color: var(--epure-brand-text);
+    background-color: var(--epure-brand-soft);
+
+    &:hover {
+        outline-color: var(--epure-brand-text);
+    }
+}
+
+// Today in the calendars, and the item chosen in the lists with autocompletion (the company selector of IOMAD).
+.maincalendar .calendarmonth td.today .day-number-circle {
+    color: var(--epure-on-brand);
+    background-color: var(--epure-brand);
+}
+
+.form-autocomplete-selection [data-active-selection="true"] {
+    box-shadow: 0 0 0 .2rem var(--epure-brand-text);
+}
+
+.page-item.active .page-link,
+.nav-pills .nav-link.active,
+.list-group-item.active {
+    color: var(--epure-on-brand);
+    background-color: var(--epure-brand);
+    border-color: var(--epure-brand);
+}
+
+// Visible keyboard focus everywhere (WCAG 2.4.7 and 2.4.11). Bootstrap and Moodle remove the outline
+// of many buttons, menus and fields with more specific rules (.btn:focus, .custom-select:focus…), and
+// draw a pale ring instead: the outline of the theme takes precedence over all of them.
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible,
+[tabindex]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
+    outline: 2px solid var(--epure-focus) !important; // stylelint-disable-line declaration-no-important
+    outline-offset: 2px;
+    box-shadow: none;
+}
+
+// Skip links: Moodle's "Skip to main content" becomes a clear button when focused.
+// Bootstrap only hides these links while they are not focused, so no !important is needed.
+.sr-only-focusable:focus,
+.sr-only-focusable:active,
+.visually-hidden-focusable:focus,
+.visually-hidden-focusable:focus-within {
+    position: fixed;
+    top: .75rem;
+    left: .75rem;
+    z-index: 2000;
+    width: auto;
+    height: auto;
+    padding: .625rem 1rem;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+    color: var(--epure-on-brand);
+    background: var(--epure-brand);
+    border-radius: var(--epure-radius);
+    font-weight: 600;
+    box-shadow: var(--epure-shadow-hover);
+}
+
+// Buttons: the text colour on the brand fill is computed for contrast,
+// instead of Bootstrap's own threshold.
+.btn {
+    font-weight: 500;
+    border-radius: var(--epure-radius);
+}
+
+.btn-primary,
+.btn-primary:disabled,
+.btn-primary.disabled {
+    color: var(--epure-on-brand);
+    background-color: var(--epure-brand);
+    border-color: var(--epure-brand);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active {
+    color: var(--epure-on-brand);
+    background-color: var(--epure-brand-hover);
+    border-color: var(--epure-brand-hover);
+}
+
+.btn-outline-primary {
+    color: var(--epure-brand-text);
+    border-color: var(--epure-brand-text);
+}
+
+.btn-outline-primary:hover {
+    color: var(--epure-on-brand);
+    background-color: var(--epure-brand);
+    border-color: var(--epure-brand);
+}
+
+// Minimum target size for small controls (WCAG 2.5.8).
+.btn-sm,
+.btn-icon,
+.page-link {
+    min-height: 24px;
+    min-width: 24px;
+}
+
+// Form fields.
+.form-control,
+.custom-select,
+.form-select {
+    border-radius: var(--epure-radius);
+}
+
+.form-control:focus,
+.custom-select:focus,
+.form-select:focus {
+    border-color: var(--epure-brand-text);
+    box-shadow: 0 0 0 3px var(--epure-brand-soft-2);
+}
+
+// Cards: a light border and a soft shadow instead of a heavy frame.
+.card {
+    border-color: var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+}
+
+.card .card-img-top,
+.card .card-img {
+    border-top-left-radius: var(--epure-radius-lg);
+    border-top-right-radius: var(--epure-radius-lg);
+}
+
+.dashboard-card {
+    overflow: hidden;
+    transition: box-shadow .2s ease, transform .2s ease;
+
+    &:hover {
+        box-shadow: var(--epure-shadow-hover);
+        transform: translateY(-2px);
+    }
+}
+
+// Progress bars use the brand colour.
+.progress-bar {
+    background-color: var(--epure-brand);
+}

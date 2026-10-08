@@ -272,6 +272,11 @@ A theme alone cannot make a platform compliant: course content matters too, and 
 
 ## Development
 
+- **Styles**: `scss/epure.scss` imports, in the order they are compiled, the files of `scss/epure/`, one per subject (header, course page, activities, dark mode…).
+- **IOMAD**: everything Épure uses of IOMAD goes through `theme_epure\iomad` (detection, API, company context, table names, addresses of the pages). IOMAD 5.1 renamed its tables and classes; this class knows both.
+- **Compatibility**: the continuous integration tests Moodle 4.5 to 5.3 and IOMAD 4.5, 5.1 and 5.2; the Behat tests cover the course formats Topics, Weeks (with a subsection), Single activity and Social, with axe-core.
+- **Performance** (Moodle 4.5, learner, against Boost): style sheet +9 %, JavaScript unchanged, HTML about +10 to 15 %, no layout shift; same server time except on the dashboard (+130 ms), where the learner overview computes the progress of each course. Details in the wiki (Développement).
+
 The palette variables are exposed as CSS custom properties (`--epure-brand`, `--epure-brand-text`, `--epure-on-brand`, etc.) for custom SCSS.
 
 Tests:

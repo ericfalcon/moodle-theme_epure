@@ -1,0 +1,100 @@
+// Login page, split layout: brand visual beside Moodle's own login form.
+// Two ids in the selector to win over Boost's "#page-wrapper #page" flex layout, without !important.
+:root {
+    --epure-login-overlay: #{$epure-login-overlay};
+}
+
+.pagelayout-login #page-wrapper #page.epure-login-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 100vh;
+    max-width: none;
+    padding: 0;
+    margin: 0;
+    background: var(--epure-surface);
+
+    #page-content {
+        align-items: center;
+        margin: 0;
+        padding: 2rem 1.25rem;
+    }
+
+    .login-wrapper {
+        min-height: 100%;
+    }
+
+    .login-container {
+        width: 100%;
+        max-width: 28rem;
+        margin: 0 auto;
+        padding: 0;
+        background: transparent;
+        box-shadow: none;
+    }
+}
+
+.epure-login-visual {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 3rem;
+    color: var(--epure-on-brand);
+    background-color: var(--epure-brand);
+    background-position: center;
+    background-size: cover;
+}
+
+.epure-login-brand {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    font-weight: 600;
+    font-size: 1.0625rem;
+}
+
+.epure-login-logo {
+    max-height: 48px;
+    max-width: 220px;
+    background: transparent;
+
+    &.has-backing {
+        padding: .375rem .75rem;
+        background: #fff;
+        border-radius: var(--epure-radius);
+    }
+}
+
+.epure-login-message {
+    max-width: 30rem;
+}
+
+.epure-login-tagline {
+    margin-bottom: 1rem;
+    font-size: 2.25rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -.02em;
+}
+
+.epure-login-text {
+    margin-bottom: 0;
+    font-size: 1.0625rem;
+    opacity: .92;
+}
+
+// From tablets up: the visual takes the left half, the form loses its own logo (the visual shows it).
+@include media-breakpoint-up(md) {
+    .pagelayout-login #page-wrapper #page.epure-login-split {
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+
+        // Only the image: the heading of the page, read by screen readers, stays.
+        .login-logo #logoimage {
+            display: none;
+        }
+    }
+
+    .epure-login-visual {
+        display: flex;
+    }
+}

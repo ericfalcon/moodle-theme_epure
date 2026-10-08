@@ -1,0 +1,247 @@
+// Dashboard: overview of the learner, above the blocks.
+.epure-learner {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.epure-learner-main,
+.epure-learner-side {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-width: 0;
+}
+
+.epure-learner-heading {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.epure-learner-resume,
+.epure-learner-block {
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+}
+
+.epure-learner-resume {
+    display: grid;
+    grid-template-columns: minmax(10rem, 14rem) 1fr;
+    overflow: hidden;
+}
+
+.epure-learner-resume-image {
+    min-height: 12rem;
+    background-color: var(--epure-brand-soft);
+    background-position: center;
+    background-size: cover;
+}
+
+.epure-learner-resume-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .5rem;
+    padding: 1.25rem 1.5rem;
+}
+
+.epure-learner-resume-category {
+    margin: .25rem 0 0;
+    color: var(--epure-brand-text);
+    font-size: .8125rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.epure-learner-resume-name {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    a:hover,
+    a:focus {
+        text-decoration: underline;
+    }
+}
+
+.epure-learner-progress {
+    width: 100%;
+    max-width: 28rem;
+
+    .progress {
+        width: 100%;
+        height: .625rem;
+    }
+}
+
+.epure-learner-progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: .25rem;
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+    font-weight: 500;
+}
+
+.epure-learner-resume-next {
+    margin: 0;
+    color: var(--epure-ink-muted);
+}
+
+.epure-learner-resume-action {
+    margin-top: .5rem;
+}
+
+.epure-learner-block {
+    padding: 1.125rem 1.25rem;
+}
+
+.epure-learner-block-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .5rem;
+    margin-bottom: .75rem;
+
+    a {
+        font-size: .875rem;
+    }
+}
+
+.epure-learner-count {
+    padding: .125rem .625rem;
+    color: var(--epure-on-brand);
+    font-size: .8125rem;
+    font-weight: 600;
+    background-color: var(--epure-brand);
+    border-radius: 999px;
+}
+
+.epure-learner-courses,
+.epure-learner-deadlines,
+.epure-learner-completed {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li + li {
+        border-top: 1px solid var(--epure-border);
+    }
+}
+
+.epure-learner-courses li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(6rem, 10rem) 3rem;
+    align-items: center;
+    gap: 1rem;
+    padding: .625rem 0;
+
+    .progress {
+        width: 100%;
+    }
+}
+
+.epure-learner-course-name {
+    font-weight: 500;
+}
+
+.epure-learner-course-percent {
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+    text-align: right;
+}
+
+.epure-learner-deadlines li {
+    display: flex;
+    flex-direction: column;
+    padding: .5rem 0;
+}
+
+.epure-learner-deadline-date {
+    color: var(--epure-brand-text);
+    font-size: .8125rem;
+    font-weight: 600;
+}
+
+.epure-learner-deadline-course,
+.epure-learner-completed-date {
+    color: var(--epure-ink-muted);
+    font-size: .8125rem;
+}
+
+.epure-learner-completed li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: .25rem .5rem;
+    padding: .5rem 0;
+
+    .fa {
+        color: var(--epure-brand-text);
+    }
+}
+
+.epure-learner-completed-date {
+    margin-left: auto;
+}
+
+.epure-learner-empty {
+    margin: 0;
+    color: var(--epure-ink-muted);
+}
+
+.epure-learner-certificates {
+    margin-top: .75rem;
+
+    .fa {
+        margin-right: .375rem;
+    }
+}
+
+// Aligned on the heading of the page and the blocks, which Boost indents on wide screens.
+@include media-breakpoint-up(md) {
+    .epure-learner {
+        margin-right: .9375rem;
+        margin-left: .9375rem;
+    }
+}
+
+@include media-breakpoint-down(lg) {
+    .epure-learner {
+        grid-template-columns: 1fr;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .epure-learner-resume {
+        grid-template-columns: 1fr;
+    }
+
+    .epure-learner-resume-image {
+        min-height: 7rem;
+    }
+
+    .epure-learner-resume-action {
+        width: 100%;
+    }
+
+    .epure-learner-courses li {
+        grid-template-columns: minmax(0, 1fr) 3rem;
+
+        .progress {
+            grid-column: 1 / -1;
+            grid-row: 2;
+        }
+    }
+}

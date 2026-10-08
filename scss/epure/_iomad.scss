@@ -1,0 +1,302 @@
+// IOMAD dashboard (rendered by theme_epure/iomad_dashboard): the selected company in a
+// header, quiet underlined tabs, and the actions as cards grouped by intention.
+.epure-iomad-company {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.25rem;
+    background-color: var(--epure-surface-muted);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+}
+
+.epure-iomad-company-identity {
+    display: flex;
+    align-items: center;
+    gap: .875rem;
+}
+
+.epure-iomad-company-logo {
+    width: auto;
+    max-width: 8rem;
+    height: 2.75rem;
+    object-fit: contain;
+}
+
+.epure-iomad-company-label {
+    margin: 0;
+    color: var(--epure-ink-muted);
+    font-size: .8125rem;
+}
+
+.epure-iomad-company-name {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.epure-iomad-company-category {
+    margin: .25rem 0 0;
+    font-size: .9rem;
+
+    .fa {
+        margin-right: .4rem;
+    }
+}
+
+// IOMAD's company selector is a Moodle form: label and field on one line, without the form grid.
+.epure-iomad-company-select {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1rem;
+}
+
+.epure-iomad-company-select form,
+.epure-iomad-company-select .mform {
+    margin: 0;
+}
+
+.epure-iomad-company-select .form-group,
+.epure-iomad-company-select .fitem {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    margin: 0;
+}
+
+.epure-iomad-company-select .fitem > div {
+    flex: 0 1 auto;
+    width: auto;
+    max-width: none;
+    padding: 0;
+}
+
+.epure-iomad-company-select .col-form-label {
+    padding: 0;
+    font-weight: 600;
+}
+
+.epure-iomad-company-suspended form,
+.epure-iomad-company-suspended .singlebutton {
+    margin: 0;
+}
+
+// The "show suspended companies" button is a secondary choice: a quiet link-like button.
+.epure-iomad-company-suspended .btn {
+    padding: .375rem .5rem;
+    color: var(--epure-brand-text);
+    background: transparent;
+    border-color: transparent;
+    text-decoration: underline;
+}
+
+.epure-iomad-company-suspended .btn:hover {
+    background-color: var(--epure-brand-soft);
+}
+
+// Tabs: a thin bar underlined with the brand colour; they scroll on narrow screens.
+.epure-iomad-dashboard .nav-tabs {
+    flex-wrap: wrap;
+    gap: .25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--epure-border);
+}
+
+// On narrow screens, the tabs scroll sideways rather than piling up; the underline of the
+// active tab must not add a vertical scrollbar.
+@include media-breakpoint-down(md) {
+    .epure-iomad-dashboard .nav-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: thin;
+    }
+}
+
+.epure-iomad-dashboard .nav-tabs .nav-link {
+    padding: .625rem .875rem;
+    white-space: nowrap;
+}
+
+// Boost colours the tabs on click and focus with strong selectors: the same selectors, scoped, keep them quiet.
+.epure-iomad-dashboard .nav-tabs:not(.more-nav) .nav-link:not(:disabled):not(.disabled),
+.epure-iomad-dashboard .nav-tabs:not(.more-nav) .nav-link:not(:disabled):not(.disabled):focus,
+.epure-iomad-dashboard .nav-tabs:not(.more-nav) .nav-link:not(:disabled):not(.disabled):active {
+    color: var(--epure-ink-muted);
+    background: transparent;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.epure-iomad-dashboard .nav-tabs:not(.more-nav) .nav-link:not(:disabled):not(.disabled):hover {
+    color: var(--epure-brand-text);
+    border-bottom-color: var(--epure-brand-soft-2);
+}
+
+.epure-iomad-dashboard .nav-tabs:not(.more-nav) .nav-link.active:not(:disabled):not(.disabled),
+.epure-iomad-dashboard .nav-tabs:not(.more-nav) .nav-link.active:not(:disabled):not(.disabled):hover,
+.epure-iomad-dashboard .nav-tabs:not(.more-nav) .nav-link.active:not(:disabled):not(.disabled):focus,
+.epure-iomad-dashboard .nav-tabs:not(.more-nav) .nav-link.active:not(:disabled):not(.disabled):active {
+    color: var(--epure-brand-text);
+    font-weight: 600;
+    background: transparent;
+    border-bottom-color: var(--epure-brand);
+}
+
+.epure-iomad-dashboard .nav-tabs .nav-link .fa {
+    margin-right: .375rem;
+}
+
+.epure-iomad-group + .epure-iomad-group {
+    margin-top: 1.75rem;
+}
+
+.epure-iomad-group-title {
+    margin-bottom: .75rem;
+    color: var(--epure-ink-muted);
+    font-size: .8125rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.epure-iomad-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: .75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+// The whole card is the link: a large, comfortable target.
+.epure-iomad-action {
+    display: flex;
+    align-items: center;
+    gap: .875rem;
+    height: 100%;
+    min-height: 4rem;
+    padding: .75rem 1rem;
+    color: $body-color;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+    transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+
+.epure-iomad-action:hover,
+.epure-iomad-action:focus {
+    color: $body-color;
+    text-decoration: none;
+    border-color: var(--epure-brand);
+    box-shadow: var(--epure-shadow-hover);
+}
+
+.epure-iomad-action:hover {
+    transform: translateY(-1px);
+}
+
+.epure-iomad-action-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    color: var(--epure-brand-text);
+    font-size: 1.125rem;
+    background-color: var(--epure-brand-soft);
+    border-radius: var(--epure-radius);
+}
+
+.epure-iomad-action-label {
+    font-weight: 500;
+    line-height: 1.35;
+}
+
+// Épure fields of the IOMAD company form, in numbered sections inside its Appearance section,
+// which also hold IOMAD's own appearance fields (theme_epure/company_vocabulary).
+.epure-company-vocabulary {
+    margin-top: .5rem;
+}
+
+.epure-company-vocabulary-desc {
+    color: var(--epure-ink-muted);
+}
+
+.epure-company-section {
+    margin: 0 0 1.5rem;
+    padding: 1.25rem 1.25rem .25rem;
+    border: 1px solid var(--epure-border);
+    border-radius: .75rem;
+    background: var(--epure-surface);
+}
+
+.epure-company-section-title {
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    margin-bottom: .25rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+
+    &::before {
+        content: attr(data-step);
+        display: inline-flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 1.75rem;
+        height: 1.75rem;
+        border-radius: 50%;
+        background: var(--epure-brand);
+        color: var(--epure-on-brand);
+        font-size: .875rem;
+    }
+}
+
+.epure-company-section-desc {
+    margin-bottom: 1rem;
+    color: var(--epure-ink-muted);
+}
+
+// Groups of a section, as the headings of the tabs of the theme settings (Logos, Colours…).
+.epure-company-group + .epure-company-group {
+    margin-top: .5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--epure-border);
+}
+
+.epure-company-group-title {
+    margin-bottom: .25rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.epure-company-group-desc {
+    margin-bottom: .75rem;
+    color: var(--epure-ink-muted);
+}
+
+.epure-company-menuhelp {
+    margin-bottom: 1rem;
+
+    pre {
+        white-space: pre-wrap;
+    }
+}
+
+.epure-company-vocabulary-lang {
+    margin: 1.25rem 0 .75rem;
+    font-size: 1rem;
+    font-weight: 600;
+}

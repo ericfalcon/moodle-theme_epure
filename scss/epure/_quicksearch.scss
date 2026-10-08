@@ -1,0 +1,243 @@
+// Quick search (Ctrl+K): the button of the header and its dialogue.
+.epure-qs-button.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    margin-right: .5rem;
+    padding: .3125rem .5rem .3125rem .75rem;
+    color: var(--epure-ink-muted);
+    background-color: var(--epure-surface-muted);
+    border: 1px solid var(--epure-border);
+    border-radius: 2rem;
+    font-size: .875rem;
+
+    &:hover,
+    &:focus {
+        color: var(--epure-ink);
+        border-color: var(--epure-brand);
+    }
+
+    kbd {
+        padding: .0625rem .375rem;
+        color: var(--epure-ink-muted);
+        background-color: var(--epure-surface);
+        border: 1px solid var(--epure-border);
+        border-radius: .25rem;
+        font-family: inherit;
+        font-size: .75rem;
+        box-shadow: none;
+    }
+}
+
+// In the brand-coloured header, the button is drawn with the colours of the header.
+// Without a background of its own, it keeps the contrast of the header, which the palette makes AA.
+.epure-header-brand .navbar .epure-qs-button.btn {
+    color: var(--epure-header-on);
+    background-color: transparent;
+    border-color: var(--epure-header-on);
+
+    kbd {
+        color: var(--epure-header-on);
+        background-color: transparent;
+        border-color: var(--epure-header-on);
+    }
+}
+
+// The quick search replaces Moodle's search in the header: two magnifying glasses side by side would
+// be confusing. Moodle's global search stays reachable from the results (« Search … in the whole site »).
+.epure-has-quicksearch #usernavigation > .simplesearchform,
+.epure-has-quicksearch #usernavigation > .simplesearchform + .divider {
+    display: none;
+}
+
+// On narrow screens, a round icon button, like the other icons of the header.
+@media (max-width: 991.98px) {
+    .epure-qs-button.btn {
+        flex: none;
+        justify-content: center;
+        align-self: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        margin-right: .25rem;
+        padding: 0;
+
+        .epure-qs-button-label,
+        kbd {
+            display: none;
+        }
+    }
+}
+
+// On phones, a long company name in the header is cut instead of pushing the user menu out.
+@media (max-width: 575.98px) {
+    .navbar.fixed-top .companymenu .companybutton,
+    .navbar.fixed-top .companymenu > .dropdown > .btn {
+        max-width: 9rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.epure-qs {
+    width: 40rem;
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100vh - 6rem);
+    margin: 10vh auto auto;
+    padding: 0;
+    overflow: hidden;
+    color: var(--epure-ink);
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: 0 24px 64px -12px rgba(16, 22, 32, .35);
+
+    &[open] {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &::backdrop {
+        background-color: rgba(16, 22, 32, .45);
+    }
+}
+
+.epure-qs-field {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .75rem 1rem;
+    border-bottom: 1px solid var(--epure-border);
+
+    > .fa {
+        color: var(--epure-ink-muted);
+        font-size: 1.125rem;
+    }
+}
+
+.epure-qs-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: .375rem 0;
+    color: var(--epure-ink);
+    background: transparent;
+    border: 0;
+    font-size: 1.125rem;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+// The field shows the focus, as its input has no outline.
+.epure-qs-field:focus-within {
+    box-shadow: inset 0 -2px 0 var(--epure-brand);
+}
+
+.epure-qs-close.btn {
+    padding: .125rem .5rem;
+    color: var(--epure-ink-muted);
+    border: 1px solid var(--epure-border);
+    font-size: .75rem;
+}
+
+.epure-qs-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: 26rem;
+    padding: .25rem .5rem .5rem;
+    overflow-y: auto;
+}
+
+.epure-qs-group {
+    padding: .75rem .5rem .25rem;
+    color: var(--epure-ink-muted);
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.epure-qs-option {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .5rem;
+    border-radius: var(--epure-radius);
+    cursor: pointer;
+
+    &.active {
+        background-color: var(--epure-brand-soft);
+        box-shadow: inset 3px 0 0 var(--epure-brand);
+    }
+}
+
+.epure-qs-icon {
+    flex: 0 0 1.5rem;
+    width: 1.5rem;
+    height: 1.25rem;
+    color: var(--epure-brand-text);
+    text-align: center;
+}
+
+.epure-qs-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.epure-qs-name,
+.epure-qs-detail {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.epure-qs-name {
+    font-weight: 500;
+}
+
+.epure-qs-detail {
+    color: var(--epure-ink-muted);
+    font-size: .8125rem;
+}
+
+.epure-qs-empty {
+    margin: 0;
+    padding: 1.5rem .5rem;
+    color: var(--epure-ink-muted);
+    text-align: center;
+}
+
+.epure-qs-hints {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 0;
+    padding: .5rem 1rem;
+    color: var(--epure-ink-muted);
+    background-color: var(--epure-surface-muted);
+    border-top: 1px solid var(--epure-border);
+    font-size: .75rem;
+
+    kbd {
+        margin-right: .125rem;
+        padding: 0 .3125rem;
+        color: var(--epure-ink);
+        background-color: var(--epure-surface);
+        border: 1px solid var(--epure-border);
+        border-radius: .25rem;
+        font-family: inherit;
+        box-shadow: none;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .epure-qs {
+        margin-top: 1rem;
+    }
+
+    .epure-qs-hints {
+        display: none;
+    }
+}

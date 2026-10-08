@@ -1,0 +1,31 @@
+// Design tokens, exposed as CSS custom properties for templates and custom CSS.
+:root {
+    --epure-brand: #{$epure-brand};
+    --epure-brand-hover: #{$epure-brand-hover};
+    --epure-on-brand: #{$epure-on-brand};
+    --epure-brand-text: #{$epure-brand-text};
+    --epure-brand-soft: #{$epure-brand-soft};
+    --epure-brand-soft-2: #{$epure-brand-soft-2};
+    --epure-dark-brand: #{$epure-dark-brand};
+    --epure-dark-brand-hover: #{$epure-dark-brand-hover};
+    --epure-dark-on-brand: #{$epure-dark-on-brand};
+    --epure-dark-brand-text: #{$epure-dark-brand-text};
+    --epure-dark-brand-soft: #{$epure-dark-brand-soft};
+    --epure-dark-brand-soft-2: #{$epure-dark-brand-soft-2};
+    --epure-radius-sm: #{$border-radius-sm};
+    --epure-radius: #{$border-radius};
+    --epure-radius-lg: #{$border-radius-lg};
+    --epure-border: #e2e5ea;
+    --epure-surface: #{$white};
+    --epure-surface-raised: #{$white};
+    --epure-page: #f5f6f8;
+    --epure-surface-muted: #f5f6f8;
+    --epure-ink: #{$body-color};
+    --epure-ink-muted: #{$gray-700};
+    // The header keeps the light palette in dark mode: the brand colour stays the same.
+    --epure-header-bg: #{$epure-brand};
+    --epure-header-on: #{$epure-on-brand};
+    --epure-shadow: 0 1px 2px rgba(16, 22, 32, .06), 0 2px 8px rgba(16, 22, 32, .05);
+    --epure-shadow-hover: 0 4px 10px rgba(16, 22, 32, .08), 0 14px 32px -12px rgba(16, 22, 32, .18);
+    --epure-focus: #{$epure-brand-text};
+}

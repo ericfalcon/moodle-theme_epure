@@ -51,6 +51,7 @@ class theme_use {
             try {
                 self::$themes[$name] = in_array('epure', \theme_config::load($name)->parents ?? [], true);
             } catch (\Throwable $e) {
+                debugging("Épure could not load the theme {$name}: " . $e->getMessage(), DEBUG_DEVELOPER);
                 self::$themes[$name] = false;
             }
         }

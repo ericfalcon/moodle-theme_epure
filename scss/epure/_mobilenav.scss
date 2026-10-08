@@ -1,0 +1,122 @@
+// Navigation bar at the bottom of the screen on phones. Pages with a sticky footer of their own
+// (save bars of the forms of grading, for instance) keep it instead.
+.epure-mobilenav {
+    display: none;
+}
+
+@media (max-width: 767.98px) {
+    body.epure-has-mobilenav:not(.hasstickyfooter) {
+        --epure-mobilenav-height: calc(3.75rem + env(safe-area-inset-bottom));
+        padding-bottom: var(--epure-mobilenav-height);
+
+        .epure-mobilenav {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: $zindex-fixed;
+            display: block;
+            padding-bottom: calc(var(--epure-mobilenav-height) - 3.75rem);
+            background-color: var(--epure-surface);
+            border-top: 1px solid var(--epure-border);
+            box-shadow: 0 -2px 12px rgba(16, 22, 32, .08);
+        }
+
+        // The buttons fixed at the bottom of the screen go above the bar.
+        .btn-footer-popover {
+            bottom: calc(1rem + var(--epure-mobilenav-height));
+        }
+
+        .btn-footer-communication {
+            bottom: calc(4rem + var(--epure-mobilenav-height));
+        }
+
+        .drawer-toggles .drawer-right-toggle,
+        .drawer-toggles .drawer-left-toggle {
+            top: calc(99vh - var(--epure-mobilenav-height) - #{$navbar-height} * 2);
+        }
+    }
+
+    .epure-mobilenav ul {
+        display: flex;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        li {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+    }
+
+    .epure-mobilenav a {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: .125rem;
+        min-height: 3.75rem;
+        padding: .375rem .25rem;
+        color: var(--epure-ink-muted);
+        font-size: .6875rem;
+        font-weight: 500;
+        text-decoration: none;
+
+        &:hover,
+        &:focus {
+            color: var(--epure-ink);
+            text-decoration: none;
+        }
+
+        &.active {
+            color: var(--epure-brand-text);
+            font-weight: 700;
+
+            &::before {
+                position: absolute;
+                top: 0;
+                left: 25%;
+                width: 50%;
+                height: 3px;
+                background-color: var(--epure-brand);
+                border-radius: 0 0 3px 3px;
+                content: "";
+            }
+        }
+    }
+
+    .epure-mobilenav-icon {
+        position: relative;
+        font-size: 1.25rem;
+        line-height: 1;
+    }
+
+    // Up to two lines (« Tableau de bord », « Mes formations »), rather than cut words.
+    .epure-mobilenav-label {
+        display: -webkit-box;
+        max-width: 100%;
+        overflow: hidden;
+        line-height: 1.15;
+        text-align: center;
+        overflow-wrap: anywhere;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+    .epure-mobilenav-count {
+        position: absolute;
+        top: -.375rem;
+        left: 100%;
+        min-width: 1.125rem;
+        margin-left: -.375rem;
+        padding: 0 .25rem;
+        color: #fff;
+        background-color: #c4314b;
+        border-radius: 1rem;
+        font-size: .6875rem;
+        font-weight: 700;
+        line-height: 1.125rem;
+        text-align: center;
+    }
+}

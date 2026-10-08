@@ -1,0 +1,174 @@
+// Course page: banner at the top of the course.
+.epure-course-banner {
+    display: grid;
+    grid-template-columns: minmax(12rem, 18rem) 1fr;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+}
+
+.epure-course-banner-image {
+    min-height: 10rem;
+    background-color: var(--epure-brand-soft);
+    background-position: center;
+    background-size: cover;
+}
+
+.epure-course-banner-body {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+    min-width: 0;
+    padding: 1.25rem 1.5rem;
+
+    // Boost's header of the page, now inside the banner.
+    #page-header {
+        margin: 0;
+        padding: 0;
+    }
+
+    #page-header .page-context-header {
+        padding-bottom: 0;
+    }
+}
+
+.epure-course-banner-category {
+    margin: 0;
+    color: var(--epure-brand-text);
+    font-size: .8125rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.epure-course-banner-panel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--epure-border);
+}
+
+.epure-course-banner-status {
+    display: flex;
+    flex: 1 1 18rem;
+    flex-direction: column;
+    gap: .375rem;
+    max-width: 36rem;
+}
+
+.epure-course-banner-progress .progress {
+    width: 100%;
+    height: .625rem;
+}
+
+.epure-course-banner-progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: .25rem;
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+    font-weight: 500;
+}
+
+.epure-course-banner-next,
+.epure-course-banner-deadline {
+    margin: 0;
+    font-size: .9375rem;
+}
+
+.epure-course-banner-deadline .fa {
+    margin-right: .25rem;
+    color: var(--epure-ink-muted);
+}
+
+.epure-course-banner-figures {
+    display: grid;
+    flex: 1 1 22rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: .5rem;
+    max-width: 30rem;
+    margin: 0;
+
+    > div {
+        padding: .5rem .75rem;
+        text-align: center;
+        background-color: var(--epure-surface-muted);
+        border-radius: var(--epure-radius);
+    }
+
+    dt {
+        color: var(--epure-ink-muted);
+        font-size: .75rem;
+        font-weight: 500;
+    }
+
+    dd {
+        margin: 0;
+        font-size: 1.375rem;
+        font-weight: 600;
+    }
+
+    .epure-course-banner-alert {
+        background-color: var(--epure-brand-soft);
+    }
+}
+
+.epure-course-banner-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    a {
+        display: inline-flex;
+        align-items: center;
+        gap: .375rem;
+        min-height: 2rem;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .epure-course-banner {
+        grid-template-columns: 1fr;
+    }
+
+    .epure-course-banner-image {
+        min-height: 7rem;
+    }
+
+    .epure-course-banner-body {
+        padding: 1rem;
+    }
+
+    .epure-course-banner-action {
+        width: 100%;
+    }
+}
+
+// Course page: progress of the learner at the end of the title of each section.
+.epure-section-progress {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: .25rem;
+    margin-left: .75rem;
+    padding: .125rem .625rem;
+    color: var(--epure-ink-muted);
+    font-size: .8125rem;
+    font-weight: 600;
+    background-color: var(--epure-surface-muted);
+    border-radius: 999px;
+}
+
+.epure-section-progress-complete {
+    color: var(--epure-on-brand);
+    background-color: var(--epure-brand);
+}
