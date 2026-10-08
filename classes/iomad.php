@@ -33,6 +33,7 @@ class iomad {
     public const TABLES = [
         'company' => 'local_iomad_companies',
         'company_users' => 'local_iomad_company_users',
+        'department' => 'local_iomad_company_departments',
         'company_course' => 'local_iomad_company_courses',
         'companylicense' => 'local_iomad_company_licenses',
         'iomad_courses' => 'local_iomad_courses',

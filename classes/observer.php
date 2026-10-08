@@ -56,4 +56,29 @@ class observer {
             certificate_frame::clean_up();
         }
     }
+
+    /**
+     * Forgets the progress and the deadlines kept in the cache for a learner whose progress changed.
+     *
+     * @param \core\event\base $event Completion of an activity or a course, or a submission.
+     */
+    public static function learner_progress_changed(\core\event\base $event): void {
+        $userid = (int) ($event->relateduserid ?: $event->userid);
+        if (!$userid) {
+            return;
+        }
+        $cache = \cache::make('theme_epure', 'learnerprogress');
+        $cache->delete_many([$userid . '_' . (int) $event->courseid, 'deadlines_' . $userid]);
+    }
+
+    /**
+     * Forgets the progress kept in the cache for all the learners of a course whose activities or completion changed.
+     *
+     * @param \core\event\base $event Change of an activity, a section or the course.
+     */
+    public static function course_changed(\core\event\base $event): void {
+        if ($event->courseid) {
+            \cache::make('theme_epure', 'learnerprogress')->set('course_' . (int) $event->courseid, uniqid('', true));
+        }
+    }
 }

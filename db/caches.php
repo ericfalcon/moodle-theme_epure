@@ -33,4 +33,14 @@ $definitions = [
         'staticacceleration' => true,
         'staticaccelerationsize' => 30,
     ],
+    // Progress, next activity and next deadline of the courses of a learner, by user and course, and the next
+    // deadlines of a learner: the slowest part of the dashboard. A completion or a submission forgets them at once.
+    'learnerprogress' => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => true,
+        'ttl' => 300,
+        'staticacceleration' => true,
+        'staticaccelerationsize' => 50,
+    ],
 ];

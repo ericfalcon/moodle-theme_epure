@@ -83,6 +83,9 @@ class course_page {
     /**
      * Progress of each section of a course for a learner: the activities with completion they completed.
      *
+     * A section counts the activities of its subsections too, as they are shown inside it; each subsection gets its
+     * own progress as well.
+     *
      * @param \stdClass $course Course.
      * @param int $userid Learner.
      * @return array[] Sections with completion, each with id, done and total.
@@ -94,10 +97,16 @@ class course_page {
         }
         $modinfo = get_fast_modinfo($course, $userid);
         $sections = [];
-        foreach ($modinfo->get_section_info_all() as $section) {
+        $count = function (\section_info $section) use (&$count, &$sections, $modinfo, $completion, $userid): array {
             $done = $total = 0;
             foreach ($modinfo->sections[$section->section] ?? [] as $cmid) {
                 $cm = $modinfo->cms[$cmid];
+                if ($delegated = $cm->get_delegated_section_info()) {
+                    [$subdone, $subtotal] = $cm->uservisible ? $count($delegated) : [0, 0];
+                    $done += $subdone;
+                    $total += $subtotal;
+                    continue;
+                }
                 if (!$cm->uservisible || $cm->deletioninprogress || $completion->is_enabled($cm) == COMPLETION_TRACKING_NONE) {
                     continue;
                 }
@@ -115,6 +124,10 @@ class course_page {
                     'label' => get_string('coursesectionprogress', 'theme_epure', (object) ['done' => $done, 'total' => $total]),
                 ];
             }
+            return [$done, $total];
+        };
+        foreach ($modinfo->get_listed_section_info_all() as $section) {
+            $count($section);
         }
         return $sections;
     }

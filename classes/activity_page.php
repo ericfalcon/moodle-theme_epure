@@ -48,14 +48,15 @@ class activity_page {
     }
 
     /**
-     * The activities of the course the user can open, in the order of the course, and where the current one is.
+     * The activities of the course the user can open, in the order of the course page (those of a subsection at the
+     * place of the subsection), and where the current one is.
      *
      * @param \cm_info $current Current activity.
      * @return array{0: \cm_info[], 1: int|false} The activities, and the position of the current one.
      */
     public static function sequence(\cm_info $current): array {
         $activities = [];
-        foreach (get_fast_modinfo($current->course)->get_cms() as $cm) {
+        foreach (course_structure::cms(get_fast_modinfo($current->course)) as $cm) {
             // Labels and other modules without a page are left out, as in Moodle's own navigation.
             if ($cm->uservisible && !$cm->is_stealth() && !empty($cm->url)) {
                 $activities[] = $cm;
@@ -79,18 +80,19 @@ class activity_page {
             if (!$cm) {
                 return null;
             }
-            $section = $cm->get_modinfo()->get_section_info($cm->sectionnum);
             return [
                 'name' => $cm->get_formatted_name(),
                 'url' => (new \moodle_url($cm->url, ['forceview' => 1]))->out(false),
                 'icon' => $cm->get_icon_url()->out(false),
-                'section' => $section ? get_section_name($cm->course, $section) : '',
+                'section' => course_structure::place_name($cm),
             ];
         };
+        // Back to the section of the course page the activity is in: the section holding its subsection, if any.
+        [$section] = course_structure::sections_of($current);
         return [
             'previous' => $card($activities[$position - 1] ?? null),
             'next' => $card($activities[$position + 1] ?? null),
-            'courseurl' => course_get_url($current->course, $current->sectionnum)->out(false),
+            'courseurl' => course_get_url($current->course, $section ? $section->section : $current->sectionnum)->out(false),
         ];
     }
 

@@ -172,3 +172,21 @@
     color: var(--epure-on-brand);
     background-color: var(--epure-brand);
 }
+
+// Subsections (mod_subsection): a part of its section, set apart by a tinted background and a band of the brand
+// colour, so that the learner sees which activities belong to it.
+.course-content .activity.subsection > .activity-item {
+    background-color: var(--epure-surface-muted);
+    border: 1px solid var(--epure-border);
+    border-left: 4px solid var(--epure-brand);
+    border-radius: var(--epure-radius);
+
+    .section .section-item {
+        background-color: transparent;
+    }
+
+    // The progress badge of the subsection stands out of its tinted background.
+    .epure-section-progress:not(.epure-section-progress-complete) {
+        background-color: var(--epure-surface);
+    }
+}

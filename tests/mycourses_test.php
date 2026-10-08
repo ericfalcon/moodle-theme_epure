@@ -104,4 +104,38 @@ final class mycourses_test extends \advanced_testcase {
         $this->assertCount(1, $data['sections']);
         $this->assertSame([(int) $shown->id], array_column($data['sections'][0]['courses'], 'id'));
     }
+
+    /**
+     * The progress kept in the cache follows the completion of the activities: a completion forgets it at once.
+     */
+    public function test_progress_cache(): void {
+        global $CFG, $PAGE;
+        $this->resetAfterTest();
+        $CFG->enablecompletion = true;
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course(['enablecompletion' => 1]);
+        $first = $generator->create_module('page', ['course' => $course->id, 'name' => 'First',
+            'completion' => COMPLETION_TRACKING_MANUAL]);
+        $generator->create_module('page', ['course' => $course->id, 'name' => 'Second',
+            'completion' => COMPLETION_TRACKING_MANUAL]);
+        $user = $generator->create_user();
+        $generator->enrol_user($user->id, $course->id, 'student');
+        $this->setUser($user);
+        $output = $PAGE->get_renderer('core');
+        $card = fn() => mycourses::export($output)['sections'][0]['courses'][0];
+
+        $this->assertSame(0, $card()['progress']);
+        $this->assertSame('First', $card()['next']['name']);
+        $this->assertNotFalse(\cache::make('theme_epure', 'learnerprogress')->get($user->id . '_' . $course->id));
+
+        $completion = new \completion_info($course);
+        $completion->update_state(get_fast_modinfo($course)->get_cm($first->cmid), COMPLETION_COMPLETE, $user->id);
+        $this->assertSame(50, $card()['progress']);
+        $this->assertSame('Second', $card()['next']['name']);
+
+        // A new activity changes the revision of the course, which the cache follows.
+        $generator->create_module('page', ['course' => $course->id, 'name' => 'Third',
+            'completion' => COMPLETION_TRACKING_MANUAL]);
+        $this->assertSame(33, $card()['progress']);
+    }
 }

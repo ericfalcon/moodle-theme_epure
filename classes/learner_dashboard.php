@@ -121,10 +121,38 @@ class learner_dashboard {
     /**
      * Next deadlines of the user in all their courses: assignments due, quizzes closing…
      *
+     * Kept a few minutes in the cache learnerprogress, like the progress of the courses.
+     *
      * @param int $userid User.
      * @return array[] Each with name, course, date, url.
      */
     protected static function deadlines(int $userid): array {
+        $cache = \cache::make('theme_epure', 'learnerprogress');
+        $key = 'deadlines_' . $userid;
+        $data = $cache->get($key);
+        if (!is_array($data) || ($data['lang'] ?? null) !== current_language()) {
+            $data = ['lang' => current_language(), 'events' => self::read_deadlines($userid)];
+            $cache->set($key, $data);
+        }
+        $deadlines = [];
+        foreach ($data['events'] as $event) {
+            // A deadline passed since it was read.
+            if ($event['time'] < time()) {
+                continue;
+            }
+            $event['date'] = userdate($event['time'], get_string('strftimedaydatetime', 'langconfig'));
+            $deadlines[] = $event;
+        }
+        return $deadlines;
+    }
+
+    /**
+     * Reads the next deadlines of the user in all their courses.
+     *
+     * @param int $userid User.
+     * @return array[] Each with name, course, time, url.
+     */
+    protected static function read_deadlines(int $userid): array {
         global $CFG;
         require_once($CFG->dirroot . '/calendar/lib.php');
         $deadlines = [];
@@ -137,10 +165,7 @@ class learner_dashboard {
                 $deadlines[] = [
                     'name' => format_string($event->get_name()),
                     'course' => $course ? format_string($course->get('fullname')) : '',
-                    'date' => userdate(
-                        $event->get_times()->get_sort_time()->getTimestamp(),
-                        get_string('strftimedaydatetime', 'langconfig')
-                    ),
+                    'time' => $event->get_times()->get_sort_time()->getTimestamp(),
                     'url' => $action && $action->get_url() ? $action->get_url()->out(false) : null,
                 ];
             }

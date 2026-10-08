@@ -158,6 +158,8 @@ class mycourses {
         \stdClass $user,
         bool $teaching
     ): array {
+        global $CFG;
+        require_once($CFG->dirroot . '/course/lib.php');
         $image = course_summary_exporter::get_course_image($course) ?: $output->get_generated_image_for_id($course->id);
         $category = \core_course_category::get($course->category, IGNORE_MISSING, true);
         $name = format_string($course->fullname, true, ['context' => $context]);
@@ -234,61 +236,31 @@ class mycourses {
     /**
      * Progress, next activity and next deadline of a course the user takes.
      *
+     * They are kept a few minutes in the cache learnerprogress, as reading them takes most of the time of the
+     * dashboard and of « My courses »: the completion of an activity or of the course, and a submission, forget
+     * them at once ({@see observer::learner_progress_changed()}); a change of the activities or of the completion
+     * of the course too ({@see observer::course_changed()}).
+     *
      * @param \stdClass $course Course.
      * @param \stdClass $user User.
      * @return array
      */
     protected static function learner_data(\stdClass $course, \stdClass $user): array {
-        global $CFG;
-        $completion = new \completion_info($course);
-        $progress = null;
-        $completed = false;
-        if ($completion->is_enabled()) {
-            $percentage = \core_completion\progress::get_course_progress_percentage($course, $user->id);
-            $progress = $percentage === null ? null : (int) floor($percentage);
-            $completed = $completion->is_course_complete($user->id);
+        $cache = \cache::make('theme_epure', 'learnerprogress');
+        $key = $user->id . '_' . $course->id;
+        $version = ($course->cacherev ?? 0) . '_' . ($cache->get('course_' . $course->id) ?: 0) . '_' . current_language();
+        $data = $cache->get($key);
+        if (!is_array($data) || ($data['version'] ?? null) !== $version) {
+            $data = ['version' => $version] + self::read_learner_data($course, $user);
+            $cache->set($key, $data);
         }
-
-        // The next activity to do: the first visible one, in the course order, not completed yet.
-        $next = null;
-        $modinfo = get_fast_modinfo($course, $user->id);
-        if ($completion->is_enabled() && !$completed) {
-            foreach ($modinfo->get_section_info_all() as $section) {
-                foreach ($modinfo->sections[$section->section] ?? [] as $cmid) {
-                    $cm = $modinfo->cms[$cmid];
-                    if (
-                        !$cm->uservisible || !$cm->url || $cm->deletioninprogress
-                            || $completion->is_enabled($cm) == COMPLETION_TRACKING_NONE
-                    ) {
-                        continue;
-                    }
-                    $state = $completion->get_data($cm, false, $user->id)->completionstate;
-                    if ($state == COMPLETION_INCOMPLETE || $state == COMPLETION_COMPLETE_FAIL) {
-                        $next = ['name' => $cm->get_formatted_name(), 'url' => $cm->url->out(false)];
-                        break 2;
-                    }
-                }
-            }
+        ['progress' => $progress, 'completed' => $completed, 'next' => $next, 'deadline' => $deadline] = $data;
+        // A deadline passed since it was read is not shown.
+        if ($deadline && $deadline['time'] < time()) {
+            $deadline = null;
         }
-
-        // The next deadline of the course (assignment due, quiz closing…).
-        $deadline = null;
-        require_once($CFG->dirroot . '/calendar/lib.php');
-        try {
-            $events = \core_calendar\local\api::get_action_events_by_course($course, time(), null, null, 1);
-            if ($event = reset($events)) {
-                $deadline = [
-                    'name' => format_string($event->get_name()),
-                    'date' => userdate(
-                        $event->get_times()->get_sort_time()->getTimestamp(),
-                        get_string('strftimedatefullshort', 'langconfig')
-                    ),
-                    'url' => $event->get_action() && $event->get_action()->get_url()
-                        ? $event->get_action()->get_url()->out(false) : null,
-                ];
-            }
-        } catch (\Throwable $e) {
-            debugging('Épure: could not read the deadlines: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        if ($deadline) {
+            $deadline['date'] = userdate($deadline['time'], get_string('strftimedatefullshort', 'langconfig'));
         }
 
         if ($completed) {
@@ -307,5 +279,63 @@ class mycourses {
             'action' => $action,
             'actionurl' => $next['url'] ?? (new \moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
         ];
+    }
+
+    /**
+     * Reads the progress, the next activity and the next deadline of a course the user takes.
+     *
+     * @param \stdClass $course Course.
+     * @param \stdClass $user User.
+     * @return array With progress (null without completion), completed, next and deadline (with a time).
+     */
+    protected static function read_learner_data(\stdClass $course, \stdClass $user): array {
+        global $CFG;
+        require_once($CFG->libdir . '/completionlib.php');
+        $completion = new \completion_info($course);
+        $progress = null;
+        $completed = false;
+        if ($completion->is_enabled()) {
+            $percentage = \core_completion\progress::get_course_progress_percentage($course, $user->id);
+            $progress = $percentage === null ? null : (int) floor($percentage);
+            $completed = $completion->is_course_complete($user->id);
+        }
+
+        // The next activity to do: the first visible one, in the order of the course page (subsections at their
+        // place), not completed yet.
+        $next = null;
+        $modinfo = get_fast_modinfo($course, $user->id);
+        if ($completion->is_enabled() && !$completed) {
+            foreach (course_structure::cms($modinfo) as $cm) {
+                if (
+                    !$cm->uservisible || !$cm->url || $cm->deletioninprogress
+                        || $completion->is_enabled($cm) == COMPLETION_TRACKING_NONE
+                ) {
+                    continue;
+                }
+                $state = $completion->get_data($cm, false, $user->id)->completionstate;
+                if ($state == COMPLETION_INCOMPLETE || $state == COMPLETION_COMPLETE_FAIL) {
+                    $next = ['name' => $cm->get_formatted_name(), 'url' => $cm->url->out(false)];
+                    break;
+                }
+            }
+        }
+
+        // The next deadline of the course (assignment due, quiz closing…).
+        $deadline = null;
+        require_once($CFG->dirroot . '/calendar/lib.php');
+        try {
+            $events = \core_calendar\local\api::get_action_events_by_course($course, time(), null, null, 1);
+            if ($event = reset($events)) {
+                $deadline = [
+                    'name' => format_string($event->get_name()),
+                    'time' => $event->get_times()->get_sort_time()->getTimestamp(),
+                    'url' => $event->get_action() && $event->get_action()->get_url()
+                        ? $event->get_action()->get_url()->out(false) : null,
+                ];
+            }
+        } catch (\Throwable $e) {
+            debugging('Épure: could not read the deadlines: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        }
+        return ['progress' => $progress, 'completed' => $completed, 'next' => $next, 'deadline' => $deadline];
     }
 }

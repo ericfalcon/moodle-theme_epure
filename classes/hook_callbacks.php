@@ -51,17 +51,18 @@ class hook_callbacks {
     }
 
     /**
-     * On the pages of IOMAD that make certificates, gives back their frame to the companies that left Épure: the
-     * theme of the site can change without any event to follow.
+     * On the pages of IOMAD that make certificates, and in the scripts run from the command line (the scheduled
+     * tasks issue certificates too), gives back their frame to the companies that left Épure: the theme of the site
+     * can change without any event to follow.
+     *
+     * The pages are those of IOMAD 4.5 and of IOMAD 5.1, which moved the tracking of the completions
+     * (local_iomad_track) into local_iomad and renamed its « My courses » block.
      */
     protected static function give_back_certificate_frames(): void {
         global $SCRIPT;
-        if (
-            during_initial_install() || !preg_match(
-                '~^/(mod/iomadcertificate|local/iomad_track|local/report_completion)/~',
-                (string) $SCRIPT
-            )
-        ) {
+        $pages = '~^/(mod/iomadcertificate|local/(iomad|iomad_track|report_completion|report_users)|admin/tool/redocerts'
+            . '|blocks/(iomad_)?mycourses)/~';
+        if (during_initial_install() || (!CLI_SCRIPT && !preg_match($pages, (string) $SCRIPT))) {
             return;
         }
         try {

@@ -40,4 +40,47 @@ $observers = [
         'callback' => '\theme_epure\observer::course_completed',
         'priority' => 9999,
     ],
+    // The progress of a learner kept in the cache is forgotten when they complete an activity or a course, or submit
+    // some work.
+    [
+        'eventname' => '\core\event\course_module_completion_updated',
+        'callback' => '\theme_epure\observer::learner_progress_changed',
+    ],
+    [
+        'eventname' => '\core\event\course_completed',
+        'callback' => '\theme_epure\observer::learner_progress_changed',
+    ],
+    [
+        'eventname' => '\mod_assign\event\assessable_submitted',
+        'callback' => '\theme_epure\observer::learner_progress_changed',
+    ],
+    [
+        'eventname' => '\mod_quiz\event\attempt_submitted',
+        'callback' => '\theme_epure\observer::learner_progress_changed',
+    ],
+    // And for all the learners of a course whose activities or completion change.
+    [
+        'eventname' => '\core\event\course_module_created',
+        'callback' => '\theme_epure\observer::course_changed',
+    ],
+    [
+        'eventname' => '\core\event\course_module_updated',
+        'callback' => '\theme_epure\observer::course_changed',
+    ],
+    [
+        'eventname' => '\core\event\course_module_deleted',
+        'callback' => '\theme_epure\observer::course_changed',
+    ],
+    [
+        'eventname' => '\core\event\course_section_updated',
+        'callback' => '\theme_epure\observer::course_changed',
+    ],
+    [
+        'eventname' => '\core\event\course_updated',
+        'callback' => '\theme_epure\observer::course_changed',
+    ],
+    [
+        'eventname' => '\core\event\course_completion_updated',
+        'callback' => '\theme_epure\observer::course_changed',
+    ],
 ];

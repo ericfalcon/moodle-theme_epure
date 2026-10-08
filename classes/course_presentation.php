@@ -108,7 +108,7 @@ class course_presentation {
         $outline = [];
         $types = [];
         foreach ($modinfo->get_section_info_all() as $section) {
-            if (!$section->visible || (method_exists($section, 'is_delegated') && $section->is_delegated())) {
+            if (!$section->visible || $section->is_delegated()) {
                 continue;
             }
             $count = 0;
@@ -117,8 +117,21 @@ class course_presentation {
                 if (!$cm->visible || $cm->is_stealth() || $cm->deletioninprogress || empty($cm->url)) {
                     continue;
                 }
-                $count++;
-                $types[$cm->modname] = ($types[$cm->modname] ?? 0) + 1;
+                // The activities of a subsection count in its section, the subsection itself does not.
+                $cms = [$cm];
+                if ($delegated = $cm->get_delegated_section_info()) {
+                    $cms = [];
+                    if ($delegated->visible) {
+                        $cms = array_map(fn($id) => $modinfo->get_cm($id), $modinfo->sections[$delegated->section] ?? []);
+                    }
+                }
+                foreach ($cms as $cm) {
+                    if (!$cm->visible || $cm->is_stealth() || $cm->deletioninprogress || empty($cm->url)) {
+                        continue;
+                    }
+                    $count++;
+                    $types[$cm->modname] = ($types[$cm->modname] ?? 0) + 1;
+                }
             }
             $name = get_section_name($course, $section);
             // The general section without a name or a summary of its own is left out of the outline.
