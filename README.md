@@ -212,7 +212,7 @@ A **Search** button in the header, or **Ctrl+K** (**⌘K** on Mac) from any page
 - other courses in the **catalogue**, with a link to the full search;
 - for administrators, **administration pages** whose name or a setting matches, with a link to the administration search.
 
-The ↑ ↓ arrows select a result, Enter opens it (Ctrl+Enter in a new tab), Esc closes the window. The window is an accessible dialog (list of options announced to screen readers, number of results). Search can be turned off in the theme's Pages and navigation tab ("Quick search").
+The ↑ ↓ arrows select a result, Enter opens it (Ctrl+Enter in a new tab), Esc closes the window. The window is an accessible dialog (list of options announced to screen readers, number of results). Search can be turned off in the theme's Pages and navigation tab ("Quick search"). The quick search replaces Moodle's search button in the header; when Moodle's global search is enabled, the results end with "Search … in the whole site", which opens it.
 
 ## Mobile navigation bar
 

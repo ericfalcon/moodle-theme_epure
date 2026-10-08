@@ -214,6 +214,8 @@ Un bouton **Rechercher** dans l'en-tête, ou **Ctrl+K** (**⌘K** sur Mac) depui
 
 Les flèches ↑ ↓ choisissent un résultat, Entrée l'ouvre (Ctrl+Entrée dans un nouvel onglet), Échap ferme. La fenêtre est une boîte de dialogue accessible (liste de choix annoncée aux lecteurs d'écran, nombre de résultats). La recherche se désactive dans l'onglet Pages et navigation du thème (« Recherche rapide »).
 
+La recherche rapide remplace le bouton de recherche de Moodle dans l'en-tête. Quand la recherche globale de Moodle est activée, les résultats se terminent par « Rechercher … dans tout le site », qui l'ouvre.
+
 ## Barre de navigation mobile
 
 Sur téléphone, une barre fixée en bas de l'écran, à portée de pouce, mène au **tableau de bord** (ou à l'accueil du site si le tableau de bord est désactivé), à **mes cours**, au **catalogue**, aux **messages** (avec le nombre de conversations non lues) et au **profil** ; l'entrée de la page en cours est mise en évidence. Les boutons flottants de Moodle (aide, sommaire du cours) remontent au-dessus d'elle ; sur les pages qui ont leur propre barre d'actions en bas (notation, par exemple), elle s'efface. Elle se désactive dans l'onglet Pages et navigation du thème (« Barre de navigation mobile ») et, avec IOMAD, pour chaque entreprise dans sa fiche.
