@@ -171,7 +171,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return string HTML.
      */
     public function standard_top_of_body_html() {
-        return parent::standard_top_of_body_html() . \theme_epure\busy::top_of_body($this->page);
+        return parent::standard_top_of_body_html() . \theme_epure\busy::top_of_body($this->page)
+            . \theme_epure\activity_icons::filters();
     }
 
     /**
@@ -252,6 +253,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
         if (\theme_epure\quick_search::enabled() && !during_initial_install()) {
             $additionalclasses[] = 'epure-has-quicksearch';
+        }
+        if (!during_initial_install() && \theme_epure\activity_icons::current() === 'brand') {
+            $additionalclasses[] = 'epure-icons-brand';
         }
         return parent::body_attributes($additionalclasses);
     }

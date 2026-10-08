@@ -91,6 +91,18 @@ if ($ADMIN->fulltree) {
     $setting->set_updatedcallback('theme_reset_all_caches');
     $page->add($setting);
 
+    // Activity icons: in the colour of the brand, or in Moodle's colours by purpose.
+    $page->add(new admin_setting_configselect(
+        'theme_epure/activityicons',
+        get_string('activityicons', 'theme_epure'),
+        get_string('activityicons_desc', 'theme_epure'),
+        'brand',
+        [
+            'brand' => get_string('activityiconsbrand', 'theme_epure'),
+            'moodle' => get_string('activityiconsmoodle', 'theme_epure'),
+        ]
+    ));
+
     $settings->add($page);
 
     // Typography and display tab.

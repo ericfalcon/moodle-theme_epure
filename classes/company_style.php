@@ -50,7 +50,8 @@ class company_style {
      * Épure appearance of a company.
      *
      * @param int $companyid Company.
-     * @return array<string, string> brandcolor, headerstyle, font, coursebanner, learnerdashboard, mobilenav, darkmode and the
+     * @return array<string, string> brandcolor, headerstyle, font, coursebanner, learnerdashboard, mobilenav, darkmode,
+     *     activityicons and the
      *     footer fields ({@see self::FOOTER_FIELDS}). Empty values when the company uses the site setting.
      */
     public static function settings(int $companyid): array {
@@ -91,6 +92,7 @@ class company_style {
             'learnerdashboard' => $choice('learnerdashboard', self::COURSE_BANNERS),
             'mobilenav' => $choice('mobilenav', self::COURSE_BANNERS),
             'darkmode' => $choice('darkmode', self::DARK_MODES),
+            'activityicons' => $choice('activityicons', activity_icons::CHOICES),
         ];
         foreach (self::FOOTER_FIELDS as $name) {
             $value = trim((string) ($values[$name] ?? ''));
@@ -178,6 +180,18 @@ class company_style {
         }
         $mode = (string) get_config('theme_epure', 'darkmode');
         return in_array($mode, self::DARK_MODES, true) ? $mode : 'light';
+    }
+
+    /**
+     * Brand colour of the current page: the one of the company of the user, else the one of the site.
+     *
+     * @return string Hex colour.
+     */
+    public static function page_brand(): string {
+        $company = self::current_company();
+        return ($company ? self::brand_colour($company) : null)
+            ?? palette::normalise(get_config('theme_epure', 'brandcolor'))
+            ?? palette::DEFAULT_BRAND;
     }
 
     /**

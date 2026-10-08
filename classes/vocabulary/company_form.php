@@ -94,7 +94,7 @@ class company_form {
     protected static function appearance_context(int $companyid): array {
         $settings = $companyid ? \theme_epure\company_style::settings($companyid)
             : array_fill_keys(
-                ['brandcolor', 'headerstyle', 'font', 'coursebanner', 'learnerdashboard', 'mobilenav', 'darkmode'],
+                ['brandcolor', 'headerstyle', 'font', 'coursebanner', 'learnerdashboard', 'mobilenav', 'darkmode', 'activityicons'],
                 ''
             )
                 + array_fill_keys(\theme_epure\company_style::FOOTER_FIELDS, '');
@@ -105,6 +105,7 @@ class company_form {
         $dashboard = self::posted('learnerdashboard', $settings['learnerdashboard']);
         $mobilenav = self::posted('mobilenav', $settings['mobilenav']);
         $darkmode = self::posted('darkmode', $settings['darkmode']);
+        $icons = self::posted('activityicons', $settings['activityicons'] ?? '');
         $logo = $companyid ? \theme_epure\company_style::logo_url($companyid) : null;
 
         $sitebrand = \theme_epure\palette::normalise(get_config('theme_epure', 'brandcolor'))
@@ -145,6 +146,12 @@ class company_form {
         foreach (\theme_epure\company_style::DARK_MODES as $mode) {
             $darkmodes[] = $option($mode, get_string('darkmode' . $mode, 'theme_epure'), $darkmode);
         }
+        $siteicons = get_config('theme_epure', 'activityicons') === 'moodle' ? 'moodle' : 'brand';
+        $siteicons = get_string('activityicons' . $siteicons, 'theme_epure');
+        $activityicons = [$option('', get_string('companysite', 'theme_epure', $siteicons), $icons)];
+        foreach (\theme_epure\activity_icons::CHOICES as $choice) {
+            $activityicons[] = $option($choice, get_string('activityicons' . $choice, 'theme_epure'), $icons);
+        }
         $fonts = [$option('', get_string('companysite', 'theme_epure', $sitefont), $font)];
         foreach (\theme_epure\fonts::all() as $key => $definition) {
             $fonts[] = $option($key, $definition['family'], $font);
@@ -159,6 +166,7 @@ class company_form {
             'learnerdashboards' => $dashboards,
             'mobilenavs' => $mobilenavs,
             'darkmodes' => $darkmodes,
+            'activityicons' => $activityicons,
             'footer' => array_map(fn($name) => [
                 'name' => $name,
                 'label' => get_string($name === 'footerlinks' ? 'footerlinksetting' : $name, 'theme_epure'),
@@ -273,6 +281,7 @@ class company_form {
             'learnerdashboard' => optional_param(self::PREFIX . 'learnerdashboard', '', PARAM_ALPHA),
             'mobilenav' => optional_param(self::PREFIX . 'mobilenav', '', PARAM_ALPHA),
             'darkmode' => optional_param(self::PREFIX . 'darkmode', '', PARAM_ALPHA),
+            'activityicons' => optional_param(self::PREFIX . 'activityicons', '', PARAM_ALPHA),
         ] + array_combine(\theme_epure\company_style::FOOTER_FIELDS, array_map(
             fn($name) => optional_param(self::PREFIX . $name, '', PARAM_RAW),
             \theme_epure\company_style::FOOTER_FIELDS

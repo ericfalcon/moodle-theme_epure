@@ -26,7 +26,8 @@
     Context variables required for this template:
     * marker - name of the field telling that the vocabulary fields were posted
     * languages - lang, name, concepts (name, label, options, custom, singular, plural, hasgender, masculine, feminine)
-    * brandcolor, sitebrandcolor, headerstyles, fonts, coursebanners, learnerdashboards, mobilenavs, darkmodes - appearance of the company
+    * brandcolor, sitebrandcolor, headerstyles, fonts, coursebanners, learnerdashboards, mobilenavs, darkmodes,
+      activityicons - appearance of the company
     * footer - footer fields of the company: name, label, value, multiline, placeholder (value of the site)
     * logocolours - context of theme_epure/logo_colours
 
@@ -39,6 +40,7 @@
         "learnerdashboards": [{"value": "", "label": "As the site (Shown)", "selected": true}],
         "mobilenavs": [{"value": "", "label": "As the site (Shown)", "selected": true}],
         "darkmodes": [{"value": "", "label": "As the site (Never)", "selected": true}],
+        "activityicons": [{"value": "", "label": "As the site (Colour of the brand)", "selected": true}],
         "footer": [{"name": "footerlegalurl", "label": "Legal notice", "value": "", "multiline": false, "placeholder": ""}],
         "logocolours": {"id": "epure-company-logocolours", "inputid": "id_epure_brandcolor", "logourl": null},
         "languages": [{"lang": "fr", "name": "Français", "concepts": [{
@@ -102,6 +104,18 @@
                     <select class="custom-select form-select" id="id_epure_headerstyle" name="epure_headerstyle">
                         {{#headerstyles}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/headerstyles}}
                     </select>
+                </div>
+            </div>
+            <div class="form-group mb-3 row fitem">
+                <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                    <label class="mb-0" for="id_epure_activityicons">{{#str}}activityicons, theme_epure{{/str}}</label>
+                </div>
+                <div class="col-md-9 d-flex flex-wrap align-items-start felement">
+                    <select class="custom-select form-select" id="id_epure_activityicons" name="epure_activityicons"
+                        aria-describedby="id_epure_activityicons_help">
+                        {{#activityicons}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/activityicons}}
+                    </select>
+                    <p class="small text-muted mt-1 mb-0 w-100" id="id_epure_activityicons_help">{{#str}}companyactivityicons_help, theme_epure{{/str}}</p>
                 </div>
             </div>
             <div data-epure-company-slot="iomadcolours"></div>

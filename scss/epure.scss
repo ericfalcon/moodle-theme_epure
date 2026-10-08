@@ -2790,6 +2790,20 @@ html.epure-focus body.epure-activity {
     }
 }
 
+// Activity icons in the colour of the brand (theme_epure\activity_icons): Moodle's filter per purpose is
+// replaced by the SVG filter the theme writes in the page, computed from the brand of the company or the site.
+.epure-icon-filters {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+body.epure-icons-brand .activityiconcontainer:not(.isbranded) .activityicon:not(.nofilter),
+body.epure-icons-brand .activityiconcontainer:not(.isbranded) .icon:not(.nofilter) {
+    filter: url("#epure-icons-light");
+}
+
 // Dark mode. The page gets the class epure-dark (always dark) or epure-dark-auto (dark when the
 // device asks for it), from the choice of the user, else of their IOMAD company, else of the site.
 // The palette swaps to its dark variant, computed in PHP to keep the AA contrasts on dark
@@ -3431,6 +3445,11 @@ html.epure-focus body.epure-activity {
     .epure-a11y-panel {
         color: var(--epure-ink);
         background: var(--epure-surface);
+    }
+
+    body.epure-icons-brand .activityiconcontainer:not(.isbranded) .activityicon:not(.nofilter),
+    body.epure-icons-brand .activityiconcontainer:not(.isbranded) .icon:not(.nofilter) {
+        filter: url("#epure-icons-dark");
     }
 }
 
