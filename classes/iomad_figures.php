@@ -114,12 +114,12 @@ class iomad_figures {
         $dbman = $DB->get_manager();
         $now = time();
         $figures = [];
-        $url = fn(string $path, array $params = []) => (new \moodle_url($path, $params))->out(false);
+        $url = fn(string $page) => iomad::url($page)->out(false);
 
         // Users of the company who are not suspended, and those who came this week.
         $users = $DB->get_record_sql(
             "SELECT COUNT(1) AS total, SUM(CASE WHEN u.lastaccess > :since THEN 1 ELSE 0 END) AS active
-               FROM {company_users} cu
+               FROM {" . iomad::table('company_users') . "} cu
                JOIN {user} u ON u.id = cu.userid AND u.deleted = 0 AND u.suspended = 0
               WHERE cu.companyid = :companyid AND cu.suspended = 0",
             ['companyid' => $companyid, 'since' => $now - WEEKSECS]
@@ -129,22 +129,22 @@ class iomad_figures {
             'label' => get_string('users'),
             'value' => (int) $users->total,
             'detail' => get_string('iomadfigures_active', 'theme_epure', (int) $users->active),
-            'url' => $url('/blocks/iomad_company_admin/editusers.php'),
+            'url' => $url('users'),
         ];
 
         // Courses of the company.
         $figures[] = [
             'key' => 'courses',
             'label' => get_string('courses'),
-            'value' => $DB->count_records('company_course', ['companyid' => $companyid]),
+            'value' => $DB->count_records(iomad::table('company_course'), ['companyid' => $companyid]),
             'detail' => '',
-            'url' => $url('/blocks/iomad_company_admin/iomad_courses_form.php'),
+            'url' => $url('courses'),
         ];
 
         // Licences still valid: places used out of those allocated.
         $licences = $DB->get_record_sql(
             "SELECT COUNT(1) AS total, SUM(allocation) AS allocated, SUM(used) AS used
-               FROM {companylicense}
+               FROM {" . iomad::table('companylicense') . "}
               WHERE companyid = :companyid AND (expirydate = 0 OR expirydate > :now)",
             ['companyid' => $companyid, 'now' => $now]
         );
@@ -154,22 +154,22 @@ class iomad_figures {
                 'label' => get_string('licensemanagement', 'block_iomad_company_admin'),
                 'value' => (int) $licences->used,
                 'detail' => get_string('iomadfigures_allocated', 'theme_epure', (int) $licences->allocated),
-                'url' => $url('/blocks/iomad_company_admin/company_license_list.php'),
+                'url' => $url('licenses'),
             ];
         }
 
         // Courses completed over the last days.
-        if ($dbman->table_exists('local_iomad_track')) {
+        if ($dbman->table_exists(iomad::table('local_iomad_track'))) {
             $figures[] = [
                 'key' => 'completions',
                 'label' => get_string('iomadfigures_completions', 'theme_epure'),
                 'value' => $DB->count_records_select(
-                    'local_iomad_track',
+                    iomad::table('local_iomad_track'),
                     'companyid = :companyid AND timecompleted > :since',
                     ['companyid' => $companyid, 'since' => $now - self::COMPLETION_DAYS * DAYSECS]
                 ),
                 'detail' => get_string('iomadfigures_days', 'theme_epure', self::COMPLETION_DAYS),
-                'url' => $url('/local/report_completion/index.php'),
+                'url' => $url('completionreport'),
             ];
         }
         return $figures;

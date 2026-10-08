@@ -106,12 +106,10 @@ class string_manager extends \core_string_manager_standard {
      * @return int Company identifier, 0 when there is none.
      */
     protected static function iomad_company_id(): int {
-        global $CFG;
-        if (!company_style::iomad_installed() || during_initial_install()) {
+        if (!iomad::installed() || during_initial_install()) {
             return 0;
         }
-        require_once($CFG->dirroot . '/local/iomad/lib/iomad.php');
-        return max(0, (int) \iomad::get_my_companyid(\context_system::instance(), false));
+        return iomad::my_companyid();
     }
 
     /**

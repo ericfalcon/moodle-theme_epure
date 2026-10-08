@@ -59,14 +59,14 @@ class email {
      */
     public static function company_of(int $userid): ?\stdClass {
         global $DB;
-        if (!$userid || !company_style::iomad_installed() || !$DB->get_manager()->table_exists('company_users')) {
+        if (!$userid || !iomad::installed() || !$DB->get_manager()->table_exists(iomad::table('company_users'))) {
             return null;
         }
         $companyid = $DB->get_field_sql(
-            'SELECT MIN(companyid) FROM {company_users} WHERE userid = :userid',
+            'SELECT MIN(companyid) FROM {' . iomad::table('company_users') . '} WHERE userid = :userid',
             ['userid' => $userid]
         );
-        return $companyid ? ($DB->get_record('company', ['id' => $companyid]) ?: null) : null;
+        return iomad::company((int) $companyid);
     }
 
     /**

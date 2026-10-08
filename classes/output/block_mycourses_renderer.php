@@ -16,21 +16,17 @@
 
 namespace theme_epure\output;
 
-use theme_epure\mycourses;
-
 /**
- * Renderer of IOMAD's « My courses » block (block_mycourses), replaced by Épure's page by role.
- *
- * IOMAD shows this block instead of Moodle's on the My courses page. The courses the user teaches
- * and the courses the user takes are shown in two sections, like with Moodle's block, plus the
- * courses the user can start (« Available courses » of IOMAD) and IOMAD's button to download the
- * certificates. This class is only loaded on IOMAD sites.
+ * Renderer of IOMAD's « My courses » block (block_mycourses, up to IOMAD 5.0), replaced by Épure's page by role
+ * ({@see iomad_mycourses}). This class is only loaded on IOMAD sites.
  *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_mycourses_renderer extends \block_mycourses\output\renderer {
+    use iomad_mycourses;
+
     /**
      * Renders IOMAD's « My courses » block.
      *
@@ -41,21 +37,6 @@ class block_mycourses_renderer extends \block_mycourses\output\renderer {
         if (get_config('theme_epure', 'mycoursesbyrole') === '0') {
             return parent::render_main($main);
         }
-        $data = $main->export_for_template($this);
-        $available = [];
-        foreach ($data['availableview']['courses'] ?? [] as $course) {
-            $available[] = [
-                'id' => $course->id,
-                'fullname' => $course->fullname,
-                'url' => $course->url instanceof \moodle_url ? $course->url->out(false) : (string) $course->url,
-                'image' => $course->image instanceof \moodle_url ? $course->image->out(false) : (string) $course->image,
-                'coursecategory' => $course->coursecategory ?? '',
-            ];
-        }
-        $this->page->requires->js_call_amd('theme_epure/mycourses', 'init');
-        return $this->render_from_template('theme_epure/mycourses', mycourses::export($this, null, [
-            'available' => $available,
-            'downloadcerts' => !empty($data['downloadcerts']) ? $data['downloadcertslink'] : null,
-        ]));
+        return $this->render_by_role($main->export_for_template($this));
     }
 }

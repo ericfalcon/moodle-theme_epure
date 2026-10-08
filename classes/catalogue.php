@@ -82,11 +82,9 @@ class catalogue {
      * @return array[]
      */
     public static function subcategories(\core_course_category $category): array {
-        global $CFG;
         $children = $category->get_children();
-        if (file_exists($CFG->dirroot . '/local/iomad/lib/iomad.php') && !is_siteadmin()) {
-            require_once($CFG->dirroot . '/local/iomad/lib/iomad.php');
-            $children = \iomad::iomad_filter_categories($children);
+        if (iomad::installed() && !is_siteadmin()) {
+            $children = iomad::filter_categories($children);
         }
         $list = [];
         foreach ($children as $child) {

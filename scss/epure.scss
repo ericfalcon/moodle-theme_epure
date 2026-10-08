@@ -126,6 +126,16 @@ table th a[data-bs-toggle="popover"] {
     }
 }
 
+// Today in the calendars, and the item chosen in the lists with autocompletion (the company selector of IOMAD).
+.maincalendar .calendarmonth td.today .day-number-circle {
+    color: var(--epure-on-brand);
+    background-color: var(--epure-brand);
+}
+
+.form-autocomplete-selection [data-active-selection="true"] {
+    box-shadow: 0 0 0 .2rem var(--epure-brand-text);
+}
+
 .page-item.active .page-link,
 .nav-pills .nav-link.active,
 .list-group-item.active {

@@ -124,7 +124,7 @@ class certificate_frame {
                 $fs->create_file_from_storedfile(['component' => 'theme_epure', 'filearea' => self::BACKUPAREA], $file);
             }
             $useborder = company_style::iomad_installed()
-                ? $DB->get_field('companycertificate', 'useborder', ['companyid' => $companyid]) : false;
+                ? $DB->get_field(iomad::table('companycertificate'), 'useborder', ['companyid' => $companyid]) : false;
             set_config(self::SETTING . $companyid, json_encode(['useborder' => $useborder]), 'theme_epure');
         }
         $fs->delete_area_files($context->id, 'local_iomad', self::FILEAREA, $companyid);
@@ -138,7 +138,7 @@ class certificate_frame {
         ], self::png($brand));
         // Without a record, IOMAD prints the frame; with one, only if it is turned on.
         if (company_style::iomad_installed()) {
-            $DB->set_field('companycertificate', 'useborder', 1, ['companyid' => $companyid]);
+            $DB->set_field(iomad::table('companycertificate'), 'useborder', 1, ['companyid' => $companyid]);
         }
     }
 
@@ -162,7 +162,7 @@ class certificate_frame {
         $fs->delete_area_files($context->id, 'theme_epure', self::BACKUPAREA, $companyid);
         $useborder = json_decode($state, true)['useborder'] ?? false;
         if ($useborder !== false && $useborder !== null && company_style::iomad_installed()) {
-            $DB->set_field('companycertificate', 'useborder', (int) $useborder, ['companyid' => $companyid]);
+            $DB->set_field(iomad::table('companycertificate'), 'useborder', (int) $useborder, ['companyid' => $companyid]);
         }
         unset_config(self::SETTING . $companyid, 'theme_epure');
     }
@@ -181,7 +181,7 @@ class certificate_frame {
                 continue;
             }
             $companyid = (int) substr($name, strlen(self::SETTING));
-            $company = company_style::iomad_installed() ? $DB->get_record('company', ['id' => $companyid]) : false;
+            $company = iomad::company($companyid);
             if ($all || !$company || !theme_use::company($company)) {
                 self::remove($companyid);
             }

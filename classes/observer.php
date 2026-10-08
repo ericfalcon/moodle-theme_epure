@@ -32,15 +32,13 @@ class observer {
      * @param \core\event\base $event block_iomad_company_admin\event\company_created or company_updated.
      */
     public static function company_saved(\core\event\base $event): void {
-        global $CFG;
         $companyid = (int) $event->objectid;
-        if (!$companyid || !company_style::iomad_installed()) {
+        if (!$companyid || !iomad::installed()) {
             return;
         }
-        require_once($CFG->dirroot . '/local/iomad/lib/iomad.php');
         // The fields are only shown to the users who can change the appearance of the company.
-        $context = \core\context\company::instance($companyid);
-        if (\iomad::has_capability('block/iomad_company_admin:company_edit_appearance', $context)) {
+        $context = iomad::company_context($companyid);
+        if (iomad::has_capability('block/iomad_company_admin:company_edit_appearance', $context)) {
             company_form::save_from_request($companyid);
         }
         // A company that left Épure gets its frame of certificates back.

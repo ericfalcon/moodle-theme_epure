@@ -115,11 +115,13 @@ class hook_callbacks {
             $companyid = (int) ($SESSION->currenteditingcompany ?? 0);
             // The IOMAD dashboard records the company chosen in its selector after the theme is set: the
             // page that changes the company already gets its theme (IOMAD checks the permission itself).
-            if (str_ends_with((string) ($_SERVER['SCRIPT_NAME'] ?? ''), '/blocks/iomad_company_admin/index.php')) {
+            if (str_ends_with((string) ($_SERVER['SCRIPT_NAME'] ?? ''), iomad::PAGES['dashboard'])) {
                 $companyid = optional_param('company', $companyid, PARAM_INT);
             }
-            $theme = $companyid ? (string) $DB->get_field('company', 'theme', ['id' => $companyid]) : '';
+            $theme = $companyid ? (string) $DB->get_field(iomad::table('company'), 'theme', ['id' => $companyid]) : '';
         } catch (\Throwable $e) {
+            // The page keeps its theme; a change of IOMAD shows here, for the developers.
+            debugging('Épure could not follow the theme of the IOMAD company: ' . $e->getMessage(), DEBUG_DEVELOPER);
             return;
         }
         if ($theme !== '' && \core_component::get_component_directory('theme_' . $theme)) {
@@ -164,13 +166,12 @@ class hook_callbacks {
         ) {
             return;
         }
-        require_once($CFG->dirroot . '/local/iomad/lib/iomad.php');
         $companyid = 0;
         if (!optional_param('createnew', 0, PARAM_INT)) {
-            $companyid = max(0, (int) \iomad::get_my_companyid(\context_system::instance(), false));
+            $companyid = iomad::my_companyid();
         }
-        $context = $companyid ? \core\context\company::instance($companyid) : \context_system::instance();
-        if (!\iomad::has_capability('block/iomad_company_admin:company_edit_appearance', $context)) {
+        $context = $companyid ? iomad::company_context($companyid) : \context_system::instance();
+        if (!iomad::has_capability('block/iomad_company_admin:company_edit_appearance', $context)) {
             return;
         }
         $hook->add_html($OUTPUT->render_from_template(

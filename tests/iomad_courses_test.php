@@ -53,8 +53,8 @@ final class iomad_courses_test extends \advanced_testcase {
         $parent = $generator->create_category(['name' => 'Clinic']);
         $child = $generator->create_category(['name' => 'Nursing', 'parent' => $parent->id]);
         $course = $generator->create_course(['category' => $child->id]);
-        if (!$DB->record_exists('iomad_courses', ['courseid' => $course->id])) {
-            $DB->insert_record('iomad_courses', ['courseid' => $course->id, 'licensed' => 0, 'shared' => 0]);
+        if (!$DB->record_exists(iomad::table('iomad_courses'), ['courseid' => $course->id])) {
+            $DB->insert_record(iomad::table('iomad_courses'), ['courseid' => $course->id, 'licensed' => 0, 'shared' => 0]);
         }
 
         $data = iomad_courses::data();

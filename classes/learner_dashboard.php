@@ -160,18 +160,17 @@ class learner_dashboard {
         global $DB;
         // IOMAD: certificates of the completions tracked by the company.
         if (
-            company_style::iomad_installed() && ($company = company_style::current_company())
-                && \iomad::has_capability('block/iomad_company_admin:downloadmycertificates', \context_system::instance())
+            iomad::installed() && ($company = company_style::current_company())
+                && iomad::has_capability('block/iomad_company_admin:downloadmycertificates', \context_system::instance())
                 && $DB->record_exists_sql(
-                    "SELECT 1 FROM {local_iomad_track} lit JOIN {local_iomad_track_certs} litc ON lit.id = litc.trackid
-                      WHERE lit.userid = :userid AND lit.companyid = :companyid",
+                    'SELECT 1 FROM {' . iomad::table('local_iomad_track') . '} lit
+                       JOIN {' . iomad::table('local_iomad_track_certs') . '} litc ON lit.id = litc.trackid
+                      WHERE lit.userid = :userid AND lit.companyid = :companyid',
                     ['userid' => $userid, 'companyid' => $company->id]
                 )
         ) {
-            return (new \moodle_url(
-                '/local/report_completion/index.php',
-                ['certusers' => $userid, 'action' => 'downloadcerts', 'sesskey' => sesskey()]
-            ))->out(false);
+            return iomad::url('completionreport', ['certusers' => $userid, 'action' => 'downloadcerts', 'sesskey' => sesskey()])
+                ->out(false);
         }
         if (
             \core_component::get_component_directory('tool_certificate')

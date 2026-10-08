@@ -74,14 +74,14 @@ final class iomad_figures_test extends \advanced_testcase {
         $idle = $generator->create_user(['lastaccess' => time() - 30 * DAYSECS]);
         $other = $generator->create_user();
         foreach ([[1, $active], [1, $idle], [2, $other]] as [$companyid, $user]) {
-            $DB->insert_record('company_users', ['companyid' => $companyid, 'userid' => $user->id, 'departmentid' => 0,
-                'managertype' => 0, 'suspended' => 0]);
+            $DB->insert_record(iomad::table('company_users'), ['companyid' => $companyid, 'userid' => $user->id,
+                'departmentid' => 0, 'managertype' => 0, 'suspended' => 0]);
         }
         $course = $generator->create_course();
-        $DB->insert_record('company_course', ['companyid' => 1, 'courseid' => $course->id, 'departmentid' => 0]);
-        $DB->insert_record('companylicense', ['companyid' => 1, 'name' => 'L', 'allocation' => 10, 'used' => 4,
+        $DB->insert_record(iomad::table('company_course'), ['companyid' => 1, 'courseid' => $course->id, 'departmentid' => 0]);
+        $DB->insert_record(iomad::table('companylicense'), ['companyid' => 1, 'name' => 'L', 'allocation' => 10, 'used' => 4,
             'validlength' => 30, 'expirydate' => time() + DAYSECS, 'startdate' => 0]);
-        $DB->insert_record('local_iomad_track', ['companyid' => 1, 'courseid' => $course->id, 'userid' => $active->id,
+        $DB->insert_record(iomad::table('local_iomad_track'), ['companyid' => 1, 'courseid' => $course->id, 'userid' => $active->id,
             'timecompleted' => time() - DAYSECS, 'coursename' => 'C']);
 
         $figures = array_column(iomad_figures::export(1), null, 'key');

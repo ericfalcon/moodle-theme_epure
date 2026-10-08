@@ -201,8 +201,7 @@ class company_style {
      * @return bool
      */
     public static function iomad_installed(): bool {
-        global $CFG;
-        return file_exists($CFG->dirroot . '/local/iomad/lib/iomad.php');
+        return iomad::installed();
     }
 
     /**
@@ -265,15 +264,10 @@ class company_style {
      * @return \stdClass|null
      */
     public static function current_company(): ?\stdClass {
-        global $CFG, $DB;
         if (self::$company === null) {
             self::$company = false;
             if (self::iomad_installed() && isloggedin() && !during_initial_install()) {
-                require_once($CFG->dirroot . '/local/iomad/lib/iomad.php');
-                $companyid = (int) \iomad::get_my_companyid(\context_system::instance(), false);
-                if ($companyid > 0) {
-                    self::$company = $DB->get_record('company', ['id' => $companyid]) ?: false;
-                }
+                self::$company = iomad::company(iomad::my_companyid()) ?? false;
             }
         }
         return self::$company ?: null;

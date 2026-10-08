@@ -38,7 +38,8 @@ class iomad_courses {
      */
     public static function applies(\moodle_page $page): bool {
         global $DB;
-        return $page->pagetype === self::PAGETYPE && $DB->get_manager()->table_exists('iomad_courses');
+        return $page->pagetype === self::PAGETYPE && iomad::installed()
+            && $DB->get_manager()->table_exists(iomad::table('iomad_courses'));
     }
 
     /**
@@ -51,13 +52,13 @@ class iomad_courses {
      *     and category of each course by id.
      */
     public static function data(): array {
-        global $CFG, $DB;
-        $sql = "SELECT c.id, c.category FROM {iomad_courses} ic JOIN {course} c ON c.id = ic.courseid";
+        global $DB;
+        $sql = 'SELECT c.id, c.category FROM {' . iomad::table('iomad_courses') . '} ic JOIN {course} c ON c.id = ic.courseid';
         $params = [];
         if (!has_capability('block/iomad_company_admin:company_view_all', \context_system::instance())) {
-            require_once($CFG->dirroot . '/local/iomad/lib/iomad.php');
-            $sql .= " WHERE ic.shared = 1 OR c.id IN (SELECT courseid FROM {company_course} WHERE companyid = :companyid)";
-            $params['companyid'] = (int) \iomad::get_my_companyid(\context_system::instance(), false);
+            $sql .= ' WHERE ic.shared = 1 OR c.id IN (SELECT courseid FROM {' . iomad::table('company_course') . '}
+                                                       WHERE companyid = :companyid)';
+            $params['companyid'] = iomad::my_companyid();
         }
         $courses = array_map('intval', $DB->get_records_sql_menu($sql, $params));
         if (!$courses) {
