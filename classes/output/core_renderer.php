@@ -254,8 +254,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if (\theme_epure\quick_search::enabled() && !during_initial_install()) {
             $additionalclasses[] = 'epure-has-quicksearch';
         }
-        if (!during_initial_install() && \theme_epure\activity_icons::current() === 'brand') {
-            $additionalclasses[] = 'epure-icons-brand';
+        if (!during_initial_install() && \theme_epure\activity_icons::current() !== 'moodle') {
+            $additionalclasses[] = 'epure-icons-' . \theme_epure\activity_icons::current();
         }
         return parent::body_attributes($additionalclasses);
     }

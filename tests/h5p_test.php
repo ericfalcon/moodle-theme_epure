@@ -71,5 +71,12 @@ final class h5p_test extends \advanced_testcase {
         set_config('activityicons', 'moodle', 'theme_epure');
         $this->assertSame('moodle', activity_icons::current());
         $this->assertSame('', activity_icons::filters());
+
+        // Hidden: no filters either; an unknown value falls back to the brand.
+        set_config('activityicons', 'none', 'theme_epure');
+        $this->assertSame('none', activity_icons::current());
+        $this->assertSame('', activity_icons::filters());
+        set_config('activityicons', 'other', 'theme_epure');
+        $this->assertSame('brand', activity_icons::current());
     }
 }

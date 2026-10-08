@@ -74,6 +74,7 @@ class company_style {
             unset_config('companystyle_' . $companyid, 'theme_epure');
         }
         self::reset();
+        mobile_app::refresh();
     }
 
     /**

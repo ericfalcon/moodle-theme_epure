@@ -18,7 +18,8 @@ namespace theme_epure;
 
 /**
  * Colours of the activity icons: those of Moodle, one per purpose (assessment, content, communication…),
- * or the colour of the brand, of the IOMAD company of the user with IOMAD.
+ * or the colour of the brand, of the IOMAD company of the user with IOMAD; or no icons at all, for a sober
+ * course page (the activity chooser keeps them, to tell the activities apart when adding one).
  *
  * Moodle colours the icons with a CSS filter per purpose. With the brand, the theme writes in the page an SVG
  * filter that paints the icons in the readable brand colour (light and dark mode), computed for the company:
@@ -29,20 +30,30 @@ namespace theme_epure;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class activity_icons {
-    /** @var string[] Choices: the colour of the brand, or Moodle's colours by purpose. */
-    public const CHOICES = ['brand', 'moodle'];
+    /** @var string[] Choices: the colour of the brand, Moodle's colours by purpose, or hidden. */
+    public const CHOICES = ['brand', 'moodle', 'none'];
 
     /**
      * The colours of the icons of the current page: the choice of the company of the user, else the site setting.
      *
-     * @return string brand or moodle.
+     * @return string brand, moodle or none.
      */
     public static function current(): string {
         $company = company_style::current_company();
         if ($company && ($choice = company_style::settings((int) $company->id)['activityicons'] ?? '')) {
             return $choice;
         }
-        return get_config('theme_epure', 'activityicons') === 'moodle' ? 'moodle' : 'brand';
+        return self::site();
+    }
+
+    /**
+     * The choice of the site.
+     *
+     * @return string brand, moodle or none.
+     */
+    public static function site(): string {
+        $choice = get_config('theme_epure', 'activityicons');
+        return in_array($choice, self::CHOICES, true) ? $choice : 'brand';
     }
 
     /**

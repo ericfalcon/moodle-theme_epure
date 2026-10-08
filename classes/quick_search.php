@@ -116,6 +116,8 @@ class quick_search {
         $found = [];
         $activities = [];
         $searched = 0;
+        // Without activity icons, a plain icon marks the activities, as the other results.
+        $icons = activity_icons::current() !== 'none';
         foreach ($courses as $course) {
             $context = \context_course::instance($course->id);
             $name = format_string($course->fullname, true, ['context' => $context]);
@@ -145,8 +147,7 @@ class quick_search {
                         'name' => $cmname,
                         'url' => $cm->url->out(false),
                         'detail' => $name,
-                        'image' => $cm->get_icon_url()->out(false),
-                    ];
+                    ] + ($icons ? ['image' => $cm->get_icon_url()->out(false)] : ['icon' => 'fa-file-lines']);
                     if (count($activities) >= self::LIMIT) {
                         break;
                     }

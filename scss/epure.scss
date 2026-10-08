@@ -2986,6 +2986,16 @@ body.epure-icons-brand .activityiconcontainer:not(.isbranded) .icon:not(.nofilte
     filter: url("#epure-icons-light");
 }
 
+// Activity icons hidden: course page, dashboard blocks, calendar, header and navigation of the activities.
+// The activity chooser keeps them (.optionicon and its help, modicon_*), to tell the activities apart.
+body.epure-icons-none {
+    .activityiconcontainer:not(.optionicon):not([class*="modicon_"]),
+    .page-header-image:has(.activityiconcontainer, .activityicon),
+    .epure-activity-nav-name .activityicon {
+        display: none !important; // stylelint-disable-line declaration-no-important
+    }
+}
+
 // Dark mode. The page gets the class epure-dark (always dark) or epure-dark-auto (dark when the
 // device asks for it), from the choice of the user, else of their IOMAD company, else of the site.
 // The palette swaps to its dark variant, computed in PHP to keep the AA contrasts on dark

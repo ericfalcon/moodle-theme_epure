@@ -83,6 +83,23 @@ function theme_epure_pluginfile($course, $cm, $context, $filearea, $args, $force
         }
         send_file_not_found();
     }
+    // Style sheet of the Moodle app (theme_epure\mobile_app), for the user of the token, or the site on the login screen.
+    if ($context->contextlevel == CONTEXT_SYSTEM && $filearea === \theme_epure\mobile_app::FILEAREA) {
+        if (!\theme_epure\mobile_app::enabled()) {
+            send_file_not_found();
+        }
+        send_file(
+            \theme_epure\mobile_app::current_css(),
+            'app.css',
+            0,
+            0,
+            true,
+            false,
+            'text/css',
+            false,
+            ['cacheability' => 'private'] + $options
+        );
+    }
     $fileareas = ['customfontregular', 'customfontbold', 'logo', 'logoonbrand', 'loginimage'];
     if ($context->contextlevel == CONTEXT_SYSTEM && in_array($filearea, $fileareas)) {
         $theme = theme_config::load('epure');

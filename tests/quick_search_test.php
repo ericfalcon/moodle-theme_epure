@@ -77,6 +77,23 @@ final class quick_search_test extends \advanced_testcase {
     }
 
     /**
+     * Without activity icons, the activities found get a plain icon, as the other results.
+     */
+    public function test_activity_icons_hidden(): void {
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course();
+        $generator->create_module('page', ['course' => $course->id, 'name' => 'Les risques au poste']);
+        $this->setUser($generator->create_and_enrol($course, 'student'));
+
+        $activity = fn() => array_column(quick_search::search('risques'), 'items', 'key')['activities'][0];
+        $this->assertArrayHasKey('image', $activity());
+        set_config('activityicons', 'none', 'theme_epure');
+        $this->assertArrayNotHasKey('image', $activity());
+        $this->assertSame('fa-file-lines', $activity()['icon']);
+    }
+
+    /**
      * An administrator also finds the pages of the administration, those whose name matches first.
      */
     public function test_admin(): void {

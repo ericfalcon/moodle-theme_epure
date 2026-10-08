@@ -146,8 +146,7 @@ class company_form {
         foreach (\theme_epure\company_style::DARK_MODES as $mode) {
             $darkmodes[] = $option($mode, get_string('darkmode' . $mode, 'theme_epure'), $darkmode);
         }
-        $siteicons = get_config('theme_epure', 'activityicons') === 'moodle' ? 'moodle' : 'brand';
-        $siteicons = get_string('activityicons' . $siteicons, 'theme_epure');
+        $siteicons = get_string('activityicons' . \theme_epure\activity_icons::site(), 'theme_epure');
         $activityicons = [$option('', get_string('companysite', 'theme_epure', $siteicons), $icons)];
         foreach (\theme_epure\activity_icons::CHOICES as $choice) {
             $activityicons[] = $option($choice, get_string('activityicons' . $choice, 'theme_epure'), $icons);

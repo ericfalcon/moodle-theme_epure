@@ -75,7 +75,7 @@ if ($ADMIN->fulltree) {
         $description,
         theme_epure\palette::DEFAULT_BRAND
     );
-    $setting->set_updatedcallback('theme_reset_all_caches');
+    $setting->set_updatedcallback('theme_epure\\mobile_app::appearance_updated');
     $page->add($setting);
 
     $setting = new admin_setting_configselect(
@@ -88,10 +88,10 @@ if ($ADMIN->fulltree) {
             'brand' => get_string('headerstylebrand', 'theme_epure'),
         ]
     );
-    $setting->set_updatedcallback('theme_reset_all_caches');
+    $setting->set_updatedcallback('theme_epure\\mobile_app::appearance_updated');
     $page->add($setting);
 
-    // Activity icons: in the colour of the brand, or in Moodle's colours by purpose.
+    // Activity icons: in the colour of the brand, in Moodle's colours by purpose, or hidden.
     $page->add(new admin_setting_configselect(
         'theme_epure/activityicons',
         get_string('activityicons', 'theme_epure'),
@@ -100,6 +100,7 @@ if ($ADMIN->fulltree) {
         [
             'brand' => get_string('activityiconsbrand', 'theme_epure'),
             'moodle' => get_string('activityiconsmoodle', 'theme_epure'),
+            'none' => get_string('activityiconsnone', 'theme_epure'),
         ]
     ));
 
@@ -115,7 +116,7 @@ if ($ADMIN->fulltree) {
         theme_epure\fonts::DEFAULT,
         theme_epure\fonts::options()
     );
-    $setting->set_updatedcallback('theme_reset_all_caches');
+    $setting->set_updatedcallback('theme_epure\\mobile_app::appearance_updated');
     $page->add($setting);
 
     $setting = new admin_setting_configtext(
@@ -190,6 +191,16 @@ if ($ADMIN->fulltree) {
         get_string('mobilenav_desc', 'theme_epure'),
         1
     ));
+
+    // The Moodle app in the colours of the brand: the theme sets the style sheet of the app (mobilecssurl).
+    $setting = new admin_setting_configcheckbox(
+        'theme_epure/mobileapp',
+        get_string('mobileapp', 'theme_epure'),
+        get_string('mobileapp_desc', 'theme_epure'),
+        0
+    );
+    $setting->set_updatedcallback('theme_epure\\mobile_app::appearance_updated');
+    $page->add($setting);
 
     // Pages of the activities: strip with the position and the progress, previous and next activities.
     $page->add(new admin_setting_configcheckbox(
