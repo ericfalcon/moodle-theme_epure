@@ -22,6 +22,7 @@ The logos come first: their colours are then proposed for the brand colour, just
 | Logo for the brand-coloured header | Optional: a version that is legible on the brand colour, often white on a transparent background. |
 | Brand colour | The whole palette is derived from it: hover states, tinted backgrounds, link colour. Colours are adjusted automatically to meet the WCAG 2.2 AA contrast requirements, and the resulting contrast is shown below the setting. |
 | Header colour | White with an underline in the brand colour, or filled with the brand colour. Text and icons take whichever colour is most legible. |
+| Colours of the activity icons | In the brand colour (the default), or in Moodle's colours, one per kind of activity (assessment, content, communication…). With IOMAD, each company can make another choice. |
 
 Below the brand colour, the theme suggests the **colours of the logo**, including accent colours that take up little space (thin lettering, a small emblem), and a logo just uploaded above even before it is saved: click a swatch, or click directly on a point of the logo (eyedropper), then save. Only hex codes are accepted, since the accessible palette is calculated from them.
 
@@ -90,7 +91,7 @@ These settings apply to users assigned to the company, and to an administrator w
 **Everything is set in the company's profile** (IOMAD dashboard › Create company or Edit company › Appearance). Épure arranges that part in numbered steps, organised as the tabs of the theme settings, and moves IOMAD's own fields into them:
 
 1. **Theme**: the theme of the company.
-2. **Brand identity**: *Logos* (IOMAD's logo, compact logo and favicon, then the logo for the brand-coloured header), then *Colours* (brand colour, header colour). The logos come before the colours, because their colours are proposed for the brand colour.
+2. **Brand identity**: *Logos* (IOMAD's logo, compact logo and favicon, then the logo for the brand-coloured header), then *Colours* (brand colour, header colour, colours of the activity icons). The logos come before the colours, because their colours are proposed for the brand colour.
 3. **Typography and display**: font, dark mode.
 4. **Pages and navigation**: *Navigation* (mobile navigation bar), *Pages* (course banner, learner overview).
 5. **Footer**.
@@ -165,6 +166,13 @@ On a Moodle site without IOMAD, the Dashboard of platform managers starts with i
 ## Installation and upgrades: "Moodle is working…"
 
 On installation and upgrade pages (Moodle upgrade, new settings, plugins, installation from a ZIP file, environment check), clicking "Continue", "Install plugin" or "Upgrade Moodle database now" displays, after half a second, a "Moodle is working… Do not close or reload this page" window. It prevents a second click and is announced to screen readers. The script is written into the page, without Moodle's JavaScript loader, so that it also works during an upgrade.
+
+## Activities in the colours of the brand
+
+- **H5P**: H5P shows its contents in a frame of their own, which the styles of the theme do not reach. Épure adds to them a style sheet in the brand colour (of the company with IOMAD): buttons, chosen answers, score and progress bars, for the recent content types (H5P theme variables) and the older ones (Course Presentation, Interactive Video…). The green and red of right and wrong answers are kept. Contents that come from elsewhere (SCORM packages, external tools, PDF, embedded videos) keep their own colours.
+- **Quizzes**: the question on a light tint of the brand, the feedback in a neutral box, and a clearer quiz navigation (number in the middle, current page in the brand colour, answered questions tinted, right and wrong answers marked at the bottom of their button).
+- **Lessons**: the answers one under the other, as cards, the chosen one highlighted, and the progress bar in the brand colour.
+- **Radio buttons and check boxes**, everywhere, in the brand colour.
 
 ## Dark mode
 

@@ -22,6 +22,7 @@ Les logos viennent en premier : leurs couleurs sont ensuite proposées pour la c
 | Logo pour l'en-tête en couleur | Facultatif : une version lisible sur la couleur de marque, souvent blanche sur fond transparent. |
 | Couleur de marque | Toute la palette en est déduite : survols, fonds teintés, couleur des liens. Les couleurs sont ajustées automatiquement pour respecter les contrastes AA des WCAG 2.2, et le contraste obtenu est affiché sous le réglage. |
 | Couleur de l'en-tête | Blanc avec soulignement de la couleur de marque, ou rempli de la couleur de marque. Les textes et icônes prennent la couleur la plus lisible. |
+| Couleurs des icônes d'activités | Dans la couleur de marque (par défaut), ou dans les couleurs de Moodle, une par type d'activité (évaluation, contenu, communication…). Avec IOMAD, chaque entreprise peut faire un autre choix. |
 
 Sous la couleur de marque, le thème propose les **couleurs du logo**, y compris les couleurs d'accent qui occupent peu de place (lettrage fin, petit emblème), et celles d'un logo tout juste déposé plus haut, avant même l'enregistrement : cliquez sur une pastille, ou directement sur un point du logo (pipette), puis enregistrez. Seuls les codes hexadécimaux sont acceptés, car la palette accessible en est calculée.
 
@@ -90,7 +91,7 @@ Ces réglages s'appliquent aux utilisateurs rattachés à l'entreprise, et à l'
 **Tout se règle dans la fiche de l'entreprise** (Tableau de bord IOMAD › Créer une entreprise ou Modifier l'entreprise › Apparence). Épure range cette partie en étapes numérotées, organisées comme les onglets des réglages du thème, et y regroupe les champs d'IOMAD :
 
 1. **Thème** : le thème de l'entreprise.
-2. **Identité visuelle** : *Logos* (logo, logo compact et favicon d'IOMAD, puis le logo pour l'en-tête en couleur), puis *Couleurs* (couleur de marque, couleur de l'en-tête). Les logos viennent avant les couleurs, car leurs couleurs sont proposées pour la couleur de marque.
+2. **Identité visuelle** : *Logos* (logo, logo compact et favicon d'IOMAD, puis le logo pour l'en-tête en couleur), puis *Couleurs* (couleur de marque, couleur de l'en-tête, couleurs des icônes d'activités). Les logos viennent avant les couleurs, car leurs couleurs sont proposées pour la couleur de marque.
 3. **Typographie et affichage** : police, mode sombre.
 4. **Pages et navigation** : *Navigation* (barre de navigation mobile), *Pages* (bannière de cours, aperçu de l'apprenant).
 5. **Pied de page**.
@@ -165,6 +166,13 @@ Sur un Moodle sans IOMAD, le tableau de bord des gestionnaires de la plateforme 
 ## Installation et mises à jour : « Moodle travaille… »
 
 Sur les pages d'installation et de mise à jour (mise à jour de Moodle, nouveaux réglages, plugins, installation depuis un fichier ZIP, vérification de l'environnement), un clic sur « Continuer », « Installer le plugin » ou « Mettre à jour la base de données maintenant » affiche, après une demi-seconde, une fenêtre « Moodle travaille… Ne fermez pas et ne rechargez pas cette page ». Elle évite un second clic et est annoncée aux lecteurs d'écran. Le script est écrit dans la page, sans le chargeur JavaScript de Moodle, pour fonctionner aussi pendant une mise à jour.
+
+## Activités aux couleurs de la marque
+
+- **H5P** : H5P affiche ses contenus dans un cadre à part, que les styles du thème n'atteignent pas. Épure leur ajoute une feuille de style dans la couleur de marque (celle de l'entreprise avec IOMAD) : boutons, réponses choisies, barres de score et de progression, pour les types de contenus récents (variables de thème de H5P) et plus anciens (Course Presentation, Interactive Video…). Le vert et le rouge des réponses justes et fausses sont gardés. Les contenus qui viennent d'ailleurs (paquets SCORM, outils externes, PDF, vidéos intégrées) gardent leurs propres couleurs.
+- **Tests** : la question sur une teinte légère de la marque, les commentaires dans un cadre neutre, et une navigation du test plus lisible (numéro au centre, page en cours dans la couleur de marque, questions répondues teintées, réponses justes et fausses marquées en bas de leur bouton).
+- **Leçons** : les réponses les unes sous les autres, en cartes, celle choisie mise en valeur, et la barre de progression dans la couleur de marque.
+- **Boutons radio et cases à cocher**, partout, dans la couleur de marque.
 
 ## Mode sombre
 
