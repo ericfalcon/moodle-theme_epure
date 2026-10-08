@@ -303,6 +303,7 @@ $string['quicksearch'] = 'Quick search';
 $string['quicksearch_activities'] = 'Activities';
 $string['quicksearch_alladmin'] = 'Search “{$a}” in the administration';
 $string['quicksearch_allcourses'] = 'All the courses matching “{$a}”';
+$string['quicksearch_allsite'] = 'Search “{$a}” in the whole site';
 $string['quicksearch_count'] = '{$a} results';
 $string['quicksearch_count_one'] = '1 result';
 $string['quicksearch_desc'] = 'A search button in the header, also opened with Ctrl+K (⌘K on a Mac), finds from any page the links of the menus, the courses of the user, the activities of their courses, the catalogue and, for administrators, the administration pages.';

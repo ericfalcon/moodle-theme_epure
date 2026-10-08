@@ -1903,8 +1903,14 @@ html.epure-a11y-motion *::after {
     }
 }
 
-// On narrow screens, a round icon button, like the other icons of the header. The quick search
-// replaces Moodle's search there: two magnifying glasses side by side would be confusing.
+// The quick search replaces Moodle's search in the header: two magnifying glasses side by side would
+// be confusing. Moodle's global search stays reachable from the results (« Search … in the whole site »).
+.epure-has-quicksearch #usernavigation > .simplesearchform,
+.epure-has-quicksearch #usernavigation > .simplesearchform + .divider {
+    display: none;
+}
+
+// On narrow screens, a round icon button, like the other icons of the header.
 @media (max-width: 991.98px) {
     .epure-qs-button.btn {
         flex: none;
@@ -1919,11 +1925,6 @@ html.epure-a11y-motion *::after {
         kbd {
             display: none;
         }
-    }
-
-    .epure-has-quicksearch #usernavigation > .simplesearchform,
-    .epure-has-quicksearch #usernavigation > .simplesearchform + .divider {
-        display: none;
     }
 }
 

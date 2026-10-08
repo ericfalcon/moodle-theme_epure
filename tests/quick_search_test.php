@@ -88,4 +88,16 @@ final class quick_search_test extends \advanced_testcase {
         // The administration is searched from three characters.
         $this->assertArrayNotHasKey('admin', $this->search('pu'));
     }
+
+    /**
+     * With Moodle's global search, whose button the quick search replaces, the results end with a link to it.
+     */
+    public function test_global_search(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $this->assertArrayNotHasKey('site', $this->search('purge'));
+        set_config('enableglobalsearch', 1);
+        $groups = $this->search('purge');
+        $this->assertEquals([get_string('quicksearch_allsite', 'theme_epure', 'purge')], $groups['site']);
+    }
 }

@@ -90,6 +90,17 @@ class quick_search {
         if (has_capability('moodle/site:config', \context_system::instance()) && \core_text::strlen(implode('', $words)) >= 3) {
             $groups[] = ['key' => 'admin', 'label' => get_string('administrationsite'), 'items' => self::admin($query)];
         }
+        // Moodle's global search, whose button the quick search replaces in the header.
+        $context = \context_system::instance();
+        if (\core_search\manager::is_global_search_enabled() && has_capability('moodle/search:query', $context)) {
+            $groups[] = ['key' => 'site', 'label' => get_string('globalsearch', 'search'), 'items' => [[
+                'id' => 0,
+                'name' => get_string('quicksearch_allsite', 'theme_epure', $query),
+                'url' => (new \moodle_url('/search/index.php', ['q' => $query]))->out(false),
+                'detail' => '',
+                'icon' => 'fa-magnifying-glass',
+            ]]];
+        }
         return array_values(array_filter($groups, fn($group) => $group['items']));
     }
 

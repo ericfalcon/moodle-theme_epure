@@ -303,6 +303,7 @@ $string['quicksearch'] = 'Recherche rapide';
 $string['quicksearch_activities'] = 'Activités';
 $string['quicksearch_alladmin'] = 'Rechercher « {$a} » dans l’administration';
 $string['quicksearch_allcourses'] = 'Tous les cours correspondant à « {$a} »';
+$string['quicksearch_allsite'] = 'Rechercher « {$a} » dans tout le site';
 $string['quicksearch_count'] = '{$a} résultats';
 $string['quicksearch_count_one'] = '1 résultat';
 $string['quicksearch_desc'] = 'Un bouton de recherche dans l’en-tête, qui s’ouvre aussi avec Ctrl+K (⌘K sur Mac), trouve depuis n’importe quelle page les liens des menus, les cours de l’utilisateur, les activités de ses cours, le catalogue et, pour les administrateurs, les pages de l’administration.';
