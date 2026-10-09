@@ -154,7 +154,6 @@
         &.send {
             margin-left: auto !important; // stylelint-disable-line declaration-no-important
             color: var(--epure-ink);
-            background-color: var(--epure-brand-soft);
             background-color: color-mix(in srgb, var(--epure-brand) 16%, var(--epure-surface-raised));
             border-bottom-right-radius: var(--epure-radius-sm) !important; // stylelint-disable-line declaration-no-important
         }
@@ -217,15 +216,11 @@
         }
     }
 
-    #page-message-index #region-main .message-app.main:has([data-region="header-placeholder"].hidden) > .container-fluid > .row {
-        > .col-8 {
-            order: -1;
-            min-height: 60vh;
-            border-bottom: 1px solid var(--epure-border);
-        }
-    }
-
-    #page-message-index #region-main .message-app.main:not(:has([data-region="header-placeholder"].hidden)) .row > .col-8 {
+    // No conversation open: the list alone. A conversation open (Moodle hides its placeholder): the conversation
+    // first, the list under it.
+    #page-message-index #region-main .message-app.main > .container-fluid > .row > .col-8 {
         display: none !important; // stylelint-disable-line declaration-no-important
     }
+    // The conversation open is shown by a rule of style/epure.css: the SCSS compiler of Moodle cannot read a selector
+    // :has() with an attribute.
 }

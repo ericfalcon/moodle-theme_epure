@@ -28,7 +28,7 @@ require_once(__DIR__ . '/lib.php');
 
 $THEME->name = 'epure';
 $THEME->parents = ['boost'];
-$THEME->sheets = [];
+$THEME->sheets = ['epure'];
 $THEME->editor_sheets = [];
 $THEME->editor_scss = [];
 $THEME->usefallback = true;

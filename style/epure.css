@@ -1,0 +1,14 @@
+/*
+ * Rules that the SCSS compiler of Moodle cannot read (a selector :has() with an attribute): they are served as they
+ * are, after the compiled style sheet.
+ */
+
+/* Messaging page on phones: a conversation open (Moodle hides its placeholder) comes first, the list under it. */
+@media (max-width: 767.98px) {
+    #page-message-index #region-main .message-app.main:has([data-region="header-placeholder"].hidden) .row > .col-8 {
+        display: flex !important; /* stylelint-disable-line declaration-no-important */
+        order: -1;
+        min-height: 60vh;
+        border-bottom: 1px solid var(--epure-border);
+    }
+}
