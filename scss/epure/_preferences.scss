@@ -118,6 +118,19 @@ html.epure-a11y-motion *::after {
     &[hidden] {
         display: none;
     }
+
+    // On phones and small tablets, the button is not at the right of the screen: aligned on it, the panel went out of
+    // the screen on the left. It opens under the header instead, with the same margin on both sides.
+    @media (max-width: 767.98px) {
+        position: fixed;
+        top: calc(#{$navbar-height} + .5rem);
+        right: 1rem;
+        left: 1rem;
+        width: auto;
+        max-width: none;
+        // Above the navigation bar at the bottom of the screen too, when there is one.
+        max-height: calc(100dvh - #{$navbar-height} - var(--epure-mobilenav-height, 0px) - 1.5rem);
+    }
 }
 
 .epure-a11y-body {
