@@ -1,0 +1,67 @@
+// Settings forms, lighter: the help in a grey of the text instead of Moodle's teal of information, the titles of
+// the sections at the size of a heading of a list, the five lists of a date narrower, the items chosen in an
+// autocomplete field as tinted labels.
+
+// Help: the question mark in grey, the brand under the pointer and the focus.
+a[data-bs-toggle="popover"] .icon.text-info,
+a[data-toggle="popover"] .icon.text-info {
+    color: var(--epure-ink-muted) !important; // stylelint-disable-line declaration-no-important
+}
+
+a[data-bs-toggle="popover"]:hover .icon.text-info,
+a[data-bs-toggle="popover"]:focus .icon.text-info,
+a[data-toggle="popover"]:hover .icon.text-info,
+a[data-toggle="popover"]:focus .icon.text-info {
+    color: var(--epure-brand-text) !important; // stylelint-disable-line declaration-no-important
+}
+
+// Sections of a form: the title smaller, the button that folds them without a grey square.
+.mform .ftoggler {
+    h3 {
+        font-size: 1.25rem;
+    }
+
+    .btn-icon {
+        background-color: transparent;
+
+        &:hover,
+        &:focus {
+            background-color: var(--epure-surface-muted);
+        }
+    }
+}
+
+// Dates: day, month, year, hour and minute in narrower lists.
+.mform .fdate_selector,
+.mform .fdate_time_selector {
+    .form-select,
+    .custom-select {
+        padding-right: 1.75rem;
+        background-position: right .5rem center;
+    }
+}
+
+// Autocomplete fields: the items chosen as labels tinted with the brand, the item reached with the keyboard
+// outlined only while the list of the items has the focus.
+.form-autocomplete-selection [role="option"] {
+    color: var(--epure-ink) !important; // stylelint-disable-line declaration-no-important
+    background-color: var(--epure-brand-soft) !important; // stylelint-disable-line declaration-no-important
+    border: 1px solid var(--epure-brand-soft-2);
+    border-radius: var(--epure-radius-pill);
+    font-weight: 500;
+}
+
+.form-autocomplete-selection [data-active-selection="true"] {
+    box-shadow: none;
+}
+
+.form-autocomplete-selection:focus-within [data-active-selection="true"] {
+    box-shadow: 0 0 0 .2rem var(--epure-brand-text);
+}
+
+.form-autocomplete-downarrow {
+    top: 50%;
+    color: var(--epure-ink-muted);
+    font-size: .625rem;
+    transform: translateY(-50%);
+}

@@ -546,7 +546,7 @@
     }
 
     // Badges on light colours keep their dark text.
-    .badge.text-dark,
+    .badge.text-dark:not([role="option"]),
     .badge.bg-warning,
     .badge-warning,
     .badge.bg-light,
@@ -554,10 +554,9 @@
         color: #1d2125 !important; // stylelint-disable-line declaration-no-important
     }
 
-    // Grey badges, such as the items chosen in an autocomplete field.
-    .badge-secondary,
-    .badge.bg-secondary,
-    .form-autocomplete-selection [role="option"] {
+    // Grey badges.
+    .badge-secondary:not([role="option"]),
+    .badge.bg-secondary:not([role="option"]) {
         color: var(--epure-ink) !important; // stylelint-disable-line declaration-no-important
         background-color: #3a4250 !important; // stylelint-disable-line declaration-no-important
     }
