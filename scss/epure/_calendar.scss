@@ -1,0 +1,158 @@
+// Calendar: the events of the month as labels that can be read, two lines at most, in a tint of the colour of
+// their type (site, course, user...), instead of a name cut after a few letters behind a small circle; the cards of
+// the day and of the upcoming events in the same colours, their details close to their icons.
+
+// Colours of the types of events, those of Moodle.
+$epure-event-colours: (
+    category: #9e619f,
+    course: #d34600,
+    site: #2b8713,
+    group: #9a6e02,
+    user: #4e7c91,
+    other: #687889,
+);
+
+.maincalendar .calendarmonth {
+    th {
+        color: var(--epure-ink-muted);
+        font-size: .8125rem;
+        font-weight: 600;
+    }
+
+    td.weekend {
+        background-color: var(--epure-surface-muted);
+    }
+
+    td a.day {
+        color: var(--epure-ink);
+    }
+
+    li[data-region="event-item"] {
+        margin-bottom: .25rem;
+
+        > a {
+            --epure-event: #{map-get($epure-event-colours, other)};
+            display: -webkit-box;
+            overflow: hidden;
+            padding: .125rem .375rem;
+            color: var(--epure-ink);
+            font-size: .8125rem;
+            line-height: 1.3;
+            white-space: normal;
+            background-color: var(--epure-surface-muted);
+            background-color: color-mix(in srgb, var(--epure-event) 14%, var(--epure-surface-raised));
+            border-left: 3px solid var(--epure-event);
+            border-radius: var(--epure-radius-sm);
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        // The colour of the type is the one of the label.
+        .calendar-circle {
+            display: none;
+        }
+    }
+
+    @each $type, $colour in $epure-event-colours {
+        li[data-region="event-item"]:has(.calendar_event_#{$type}) > a {
+            --epure-event: #{$colour};
+        }
+    }
+
+    // Phones: the dot under the days with events in the colour of the brand.
+    td.hasevent .d-md-none .day-number::before {
+        color: var(--epure-brand-text);
+    }
+}
+
+// Previous and next month, around the month: the name of the month, never cut over two lines.
+.maincalendar .calendar-controls {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+
+    .previous,
+    .next,
+    .current {
+        float: none;
+        width: auto;
+    }
+
+    .previous,
+    .next {
+        flex: 1 1 0;
+        min-width: 0;
+        white-space: nowrap;
+    }
+
+    .current {
+        flex: 0 1 auto;
+    }
+
+    .next {
+        text-align: right;
+    }
+
+    @include media-breakpoint-down(sm) {
+        .arrow_text {
+            font-size: .875rem;
+        }
+
+        .current {
+            font-size: 1.25rem;
+        }
+    }
+}
+
+// Day and upcoming events: a card marked with the colour of the type, a title of the size of a heading of a list,
+// the details next to their icons (Moodle leaves a twelfth of the width for the icons).
+.maincalendar .event {
+    .card-header {
+        --epure-event: #{map-get($epure-event-colours, other)};
+        color: var(--epure-ink);
+        background-color: var(--epure-surface-raised);
+        border-left: 4px solid var(--epure-event);
+    }
+
+    @each $type, $colour in $epure-event-colours {
+        .card-header.calendar_event_#{$type} {
+            --epure-event: #{$colour};
+        }
+    }
+
+    // Delete and edit beside the title on phones too.
+    .commands {
+        float: right;
+        margin-left: .5rem;
+    }
+
+    .name {
+        margin-bottom: 0;
+        font-size: 1.125rem;
+    }
+
+    .description .row {
+        flex-wrap: nowrap;
+
+        > .col-1 {
+            flex: 0 0 2rem;
+            max-width: 2rem;
+        }
+
+        > .col-11 {
+            flex: 1 1 auto;
+            max-width: none;
+        }
+    }
+}
+
+// Delete and edit of the events, and the filters of the types: in the colour of the text instead of Moodle's blue.
+.maincalendar .event .commands a,
+.maincalendar .calendar_filters li span i {
+    color: var(--epure-ink-muted);
+
+    &:hover,
+    &:focus {
+        color: var(--epure-brand-text);
+    }
+}

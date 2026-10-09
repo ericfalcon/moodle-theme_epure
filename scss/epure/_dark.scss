@@ -165,6 +165,12 @@
         background-color: transparent !important; // stylelint-disable-line declaration-no-important
     }
 
+    // Days and events of the calendar in the colour of the text, not of the links.
+    #page .maincalendar .calendarmonth td.day a.day.aalink,
+    #page .maincalendar .calendarmonth li[data-region="event-item"] > a[data-action="view-event"] {
+        color: var(--epure-ink);
+    }
+
     .calendarmonth td.clickable:hover,
     .calendarmonth td.today,
     .calendarmonth td.weekend {
