@@ -13,6 +13,11 @@ $epure-event-colours: (
 );
 
 .maincalendar .calendarmonth {
+    td,
+    th {
+        border-color: var(--epure-border);
+    }
+
     th {
         color: var(--epure-ink-muted);
         font-size: .8125rem;
@@ -39,7 +44,6 @@ $epure-event-colours: (
             font-size: .8125rem;
             line-height: 1.3;
             white-space: normal;
-            background-color: var(--epure-surface-muted);
             background-color: color-mix(in srgb, var(--epure-event) 14%, var(--epure-surface-raised));
             border-left: 3px solid var(--epure-event);
             border-radius: var(--epure-radius-sm);

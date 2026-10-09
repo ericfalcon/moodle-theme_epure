@@ -63,7 +63,7 @@ Les **préférences d'affichage** : le bouton « Aa » de l'en-tête peut être 
 |---|---|
 | Police | Polices fournies : IBM Plex Sans, Inter, Source Sans 3, Figtree, Lato, et pour la lisibilité Atkinson Hyperlegible, Lexend, OpenDyslexic. Ou votre propre police téléversée. |
 | Police téléversée | Nom de la police et fichiers `.woff2` ou `.woff` (normal obligatoire, gras facultatif). Vérifiez que la licence de la police autorise l'usage sur un site web. |
-| Arrondis | Net, doux ou arrondi : cartes, boutons, champs, et sections et activités des pages de cours. |
+| Arrondis | Net, doux ou arrondi : cartes, boutons, champs, pastilles, et sections et activités des pages de cours, chaque niveau un peu moins arrondi que celui qui le contient (section, puis activités et sous-sections, puis activités d'une sous-section). Avec « Net », les pastilles deviennent des rectangles aux coins adoucis. |
 | Densité | Confortable, ou compacte : moins d'espace autour et entre les éléments, pour plus de contenu à l'écran. |
 | Mode sombre | Jamais, automatique comme l'appareil, ou toujours. |
 

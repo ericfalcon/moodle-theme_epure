@@ -63,7 +63,7 @@ The **display preferences**: the button « Aa » of the header can be turned off
 |---|---|
 | Font | Bundled fonts: IBM Plex Sans, Inter, Source Sans 3, Figtree, Lato, and, for readability, Atkinson Hyperlegible, Lexend and OpenDyslexic. Or upload your own font. |
 | Uploaded font | Font name and `.woff2` or `.woff` files (regular required, bold optional). Check that the font's licence allows its use on a website. |
-| Corner style | Sharp, soft or round: cards, buttons, form fields, and the sections and activities of the course pages. |
+| Corner style | Sharp, soft or round: cards, buttons, form fields, chips, and the sections and activities of the course pages, each level a little less rounded than the one holding it (section, then activities and subsections, then the activities of a subsection). With « Sharp », chips become rectangles with softened corners. |
 | Density | Comfortable, or compact: less space around and between the elements, for more content on the screen. |
 | Dark mode | Never, automatic as the device, or always (see Dark mode below). |
 
