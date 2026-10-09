@@ -1,0 +1,17 @@
+// Messaging and profile.
+
+// Messaging page: a single frame with rounded corners in the card of the page, on the colour of the surface
+// (Moodle draws a grey box with a border inside the card).
+#page-message-index #region-main .message-app.main {
+    overflow: hidden;
+    background-color: var(--epure-surface) !important; // stylelint-disable-line declaration-no-important
+    border-color: var(--epure-border) !important; // stylelint-disable-line declaration-no-important
+    border-radius: var(--epure-radius-lg);
+}
+
+// Profile: the titles of the cards in bold, the details under them in a lighter weight.
+.path-user section.node_category h3.lead {
+    margin-bottom: .75rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+}

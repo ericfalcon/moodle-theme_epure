@@ -786,3 +786,62 @@ table.quizreviewsummary {
         font-weight: 600;
     }
 }
+
+// Workshop: the phases in the colours of the theme, the current one in a tint of the brand instead of lime green.
+.path-mod-workshop .userplan {
+    overflow: hidden;
+    border-color: var(--epure-border);
+    border-radius: var(--epure-radius);
+
+    dt {
+        color: var(--epure-ink-muted);
+        background-color: var(--epure-surface-muted);
+        border-color: var(--epure-border);
+    }
+
+    dt.active {
+        color: var(--epure-ink);
+        background: var(--epure-brand-soft);
+    }
+
+    dd {
+        background-color: var(--epure-surface);
+        border-color: var(--epure-border);
+    }
+
+    dd.active {
+        background-color: var(--epure-brand-soft);
+        border-color: var(--epure-border);
+    }
+
+    dd,
+    dd a,
+    dd a:link,
+    dd a:hover,
+    dd a:visited,
+    dd a:active {
+        color: var(--epure-ink-muted);
+    }
+
+    dd.active,
+    dd.active a,
+    dd.active a:link,
+    dd.active a:hover,
+    dd.active a:visited,
+    dd.active a:active {
+        color: var(--epure-ink);
+    }
+
+    // The tasks: links of 24 pixels high at least (WCAG 2.5.8).
+    .tasks .title a {
+        display: inline-block;
+        min-height: 24px;
+        line-height: 24px;
+    }
+}
+
+// Feedback: the titles of the overview at the size of a heading of a section, apart from what comes before.
+.path-mod-feedback #region-main h3 {
+    margin-top: 1.5rem;
+    font-size: 1.25rem;
+}
