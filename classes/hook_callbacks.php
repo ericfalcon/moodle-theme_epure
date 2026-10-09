@@ -134,6 +134,32 @@ class hook_callbacks {
     }
 
     /**
+     * The charts of the pages of Épure (results of a choice, reports...) in shades of the brand colour, of the user's
+     * company with IOMAD, instead of Moodle's yellow and purple. Only for this page, and only when the site sets no
+     * colours of its own for the charts ($CFG->chart_colorset).
+     */
+    protected static function chart_colours(): void {
+        global $CFG;
+        if (!empty($CFG->chart_colorset) || !self::epure_page()) {
+            return;
+        }
+        // A shade of the brand that stands out on the light and the dark surfaces: the charts are drawn once, for both.
+        [$main] = palette::towards(palette::derive(company_style::page_brand())['text'], '#FFFFFF', palette::SURFACE_DARK, 3);
+        if (palette::contrast($main, palette::SURFACE_LIGHT) < 3) {
+            [$main] = palette::towards($main, '#000000', palette::SURFACE_LIGHT, 3);
+        }
+        // Moodle gives a chart's first series the second colour of the set.
+        $CFG->chart_colorset = [
+            palette::mix($main, '#FFFFFF', 0.45),
+            $main,
+            palette::mix($main, '#000000', 0.35),
+            palette::mix($main, '#FFFFFF', 0.65),
+            palette::mix($main, '#000000', 0.55),
+            palette::mix($main, '#FFFFFF', 0.25),
+        ];
+    }
+
+    /**
      * On the IOMAD company form shown with another theme (the theme of the site is IOMAD, for example), the
      * styles of the Épure fields, which the styles of Épure do not bring there: a company can choose Épure
      * whatever the theme of the site.
@@ -144,8 +170,12 @@ class hook_callbacks {
         \core\hook\output\before_standard_head_html_generation $hook
     ): void {
         global $CFG, $PAGE;
+        if (during_initial_install()) {
+            return;
+        }
+        self::chart_colours();
         if (
-            during_initial_install() || $PAGE->pagetype !== 'blocks-iomad_company_admin-company_edit_form'
+            $PAGE->pagetype !== 'blocks-iomad_company_admin-company_edit_form'
                 || !company_style::iomad_installed() || self::epure_page()
         ) {
             return;

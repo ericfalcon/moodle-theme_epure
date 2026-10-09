@@ -845,3 +845,82 @@ table.quizreviewsummary {
     margin-top: 1.5rem;
     font-size: 1.25rem;
 }
+
+// Choice: each answer a card that can be clicked as a whole, the chosen one marked with the brand, as the answers of
+// the quizzes and lessons; the chart of the results at a readable size.
+.path-mod-choice {
+    .choices {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+        gap: .75rem;
+        margin-bottom: 1rem;
+
+        .clearfloat {
+            display: none;
+        }
+
+        .option {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            margin: 0 !important; // stylelint-disable-line declaration-no-important
+            padding: .75rem 1rem;
+            color: var(--epure-ink);
+            background-color: var(--epure-surface-raised);
+            border: 1px solid var(--epure-border);
+            border-radius: var(--epure-radius);
+            transition: border-color .15s, background-color .15s;
+
+            // The card shows the focus.
+            input:focus {
+                outline: 0;
+                box-shadow: none;
+            }
+
+            label {
+                flex: 1;
+                margin: 0;
+                cursor: pointer;
+
+                // The whole card is the target.
+                &::after {
+                    content: "";
+                    position: absolute;
+                    inset: 0;
+                }
+            }
+
+            &:hover {
+                border-color: var(--epure-brand);
+            }
+
+            &:has(input:checked) {
+                background-color: var(--epure-brand-soft);
+                border-color: var(--epure-brand);
+                box-shadow: inset 0 0 0 1px var(--epure-brand);
+            }
+
+            &:has(input:focus-visible) {
+                outline: 2px solid var(--epure-brand-text);
+                outline-offset: 2px;
+            }
+
+            &:has(input:disabled) {
+                opacity: .6;
+
+                label {
+                    cursor: default;
+                }
+            }
+        }
+    }
+
+    .vertical .choices {
+        grid-template-columns: minmax(0, 40rem);
+    }
+
+    .chart-area {
+        max-width: 40rem;
+    }
+}
