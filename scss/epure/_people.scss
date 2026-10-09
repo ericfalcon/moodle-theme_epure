@@ -15,3 +15,126 @@
     font-size: 1.125rem;
     font-weight: 600;
 }
+
+// Messaging, on its page and in its drawer: the conversations as a list of people, the messages as bubbles (mine in
+// a tint of the brand on the right, the others' neutral on the left), the days as separators, the field to write
+// at the bottom.
+.message-app {
+    background-color: var(--epure-surface);
+
+    // Starred, group and private conversations: titles of a list rather than grey bands.
+    [data-region="toggle"].card-header {
+        background-color: transparent;
+    }
+
+    .overview-section-toggle {
+        font-weight: 600;
+    }
+
+    // The conversation under the pointer, or reached with the keyboard: a tint of the brand, not the brand colour.
+    a[data-conversation-id] {
+        border-left: 3px solid transparent;
+
+        &:hover,
+        &:focus,
+        &:active {
+            color: var(--epure-ink);
+            background-color: var(--epure-brand-soft);
+            border-left-color: var(--epure-brand);
+        }
+    }
+
+    .message {
+        max-width: 80%;
+        padding: .5rem .75rem !important; // stylelint-disable-line declaration-no-important
+        border-radius: var(--epure-radius-lg) !important; // stylelint-disable-line declaration-no-important
+
+        .tail {
+            display: none;
+        }
+
+        &.received {
+            margin-right: auto !important; // stylelint-disable-line declaration-no-important
+            color: var(--epure-ink);
+            background-color: var(--epure-surface-muted);
+            border-bottom-left-radius: var(--epure-radius-sm) !important; // stylelint-disable-line declaration-no-important
+        }
+
+        &.send {
+            margin-left: auto !important; // stylelint-disable-line declaration-no-important
+            color: var(--epure-ink);
+            background-color: var(--epure-brand-soft);
+            background-color: color-mix(in srgb, var(--epure-brand) 16%, var(--epure-surface-raised));
+            border-bottom-right-radius: var(--epure-radius-sm) !important; // stylelint-disable-line declaration-no-important
+        }
+
+        &.received .time,
+        &.send .time {
+            color: var(--epure-ink-muted);
+        }
+    }
+
+    // The day: a small title between two lines.
+    [data-region="day-container"] .day {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        color: var(--epure-ink-muted);
+        font-size: .75rem;
+        font-weight: 600;
+
+        &::before,
+        &::after {
+            content: "";
+            flex: 1;
+            border-top: 1px solid var(--epure-border);
+        }
+    }
+
+    [data-region="footer-container"] {
+        .bg-white {
+            background-color: var(--epure-surface) !important; // stylelint-disable-line declaration-no-important
+        }
+
+        textarea {
+            background-color: var(--epure-surface-raised) !important; // stylelint-disable-line declaration-no-important
+            border-radius: var(--epure-radius-lg);
+        }
+
+        [data-action="send-message"] {
+            color: var(--epure-brand-text);
+        }
+    }
+}
+
+// Messaging page on phones: the list of the conversations and the conversation one under the other, not side by side
+// in two narrow columns; the conversation open comes first (Moodle does not always show a way back to the list, which
+// stays under it).
+@include media-breakpoint-down(md) {
+    #page-message-index #region-main .message-app.main > .container-fluid > .row {
+        flex-direction: column;
+
+        > .col-4,
+        > .col-8 {
+            flex: 0 0 auto;
+            max-width: 100%;
+            width: 100%;
+        }
+
+        > .col-8 {
+            min-height: 0;
+        }
+    }
+
+    #page-message-index #region-main .message-app.main:has([data-region="header-placeholder"].hidden) > .container-fluid > .row {
+        > .col-8 {
+            order: -1;
+            min-height: 60vh;
+            border-bottom: 1px solid var(--epure-border);
+        }
+    }
+
+    #page-message-index #region-main .message-app.main:not(:has([data-region="header-placeholder"].hidden)) .row > .col-8 {
+        display: none !important; // stylelint-disable-line declaration-no-important
+    }
+}
