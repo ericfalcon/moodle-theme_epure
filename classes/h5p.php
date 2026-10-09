@@ -101,6 +101,21 @@ class h5p {
             '.h5p-interactive-video :focus-visible' => "outline-color:{$main}",
             '.ui-state-active,.ui-widget-content .ui-state-active,.ui-widget-header .ui-state-active' =>
                 "border-color:{$dark};background:{$main};color:{$on}",
+            // Course presentations before 1.26 and audio before 1.5.24: blue written in their style sheets (progress
+            // bar of the slides, buttons that open an element, audio buttons).
+            '.h5p-course-presentation .h5p-progressbar .h5p-progressbar-part-show' =>
+                "background:{$main};filter:none",
+            '.h5p-course-presentation .h5p-element-button' => "background:{$main};color:{$on}",
+            '.h5p-course-presentation .h5p-element-button:hover,.h5p-course-presentation .h5p-element-button:focus' =>
+                "background:{$dark}",
+            '.h5p-course-presentation .h5p-progressbar a:focus,.h5p-course-presentation .h5p-footer [role="button"]:focus,'
+                . '.h5p-content:not(.using-mouse) .h5p-course-presentation .h5p-wrapper:focus::after' => "outline-color:{$main}",
+            '.h5p-audio-inner:not(.h5p-audio-transparent) .h5p-audio-minimal-button' =>
+                "background:{$main};border-color:{$main};color:{$on}",
+            '.h5p-audio-inner:not(.h5p-audio-transparent) .h5p-audio-minimal-button:hover,'
+                . '.h5p-audio-inner:not(.h5p-audio-transparent) .h5p-audio-minimal-play-paused,'
+                . '.h5p-audio-inner:not(.h5p-audio-transparent) .h5p-audio-minimal-pause' =>
+                "background:{$dark};border-color:{$dark};color:{$on}",
         ];
         foreach ($rules as $selector => $declarations) {
             $css .= "{$selector}{{$declarations}}";

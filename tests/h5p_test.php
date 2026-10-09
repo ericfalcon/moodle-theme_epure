@@ -37,6 +37,9 @@ final class h5p_test extends \advanced_testcase {
         $this->assertStringContainsString('--h5p-theme-contrast-cta:#FFFFFF;', $css);
         $this->assertStringContainsString('.h5p-joubelui-button,', $css);
         $this->assertStringNotContainsStringIgnoringCase('#1a73d9', $css);
+        // Course presentations and audio of before the H5P theme variables.
+        $this->assertStringContainsString('.h5p-progressbar .h5p-progressbar-part-show{background:#', $css);
+        $this->assertStringContainsString('.h5p-audio-inner:not(.h5p-audio-transparent) .h5p-audio-minimal-button{', $css);
 
         // A light brand colour is darkened for the buttons, which keep a readable text.
         $css = h5p::css('#F5C518');
