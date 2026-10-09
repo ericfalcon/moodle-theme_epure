@@ -102,6 +102,28 @@ table th a[data-bs-toggle="popover"] {
     border-color: var(--epure-brand);
 }
 
+// On phones Moodle turns the tabs into buttons on a grey strip, the active one in its blue and the others white,
+// also in dark mode: in the colours of the theme (its selectors are long, hence the ones below).
+@media (max-width: 767.98px) {
+    .nav-tabs:not(.more-nav),
+    .nav-pills {
+        background-color: var(--epure-surface-muted);
+    }
+
+    .nav-tabs:not(.more-nav) .nav-link:not(.active),
+    .nav-pills .nav-link:not(.active) {
+        color: var(--epure-ink);
+        background-color: var(--epure-surface-raised);
+    }
+
+    body .nav-tabs:not(.more-nav) .nav-link.active.active:not(:disabled):not(.disabled),
+    body .nav-pills .nav-link.active.active:not(:disabled):not(.disabled) {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand);
+        border-color: var(--epure-brand);
+    }
+}
+
 // Visible keyboard focus everywhere (WCAG 2.4.7 and 2.4.11). Bootstrap and Moodle remove the outline
 // of many buttons, menus and fields with more specific rules (.btn:focus, .custom-select:focus…), and
 // draw a pale ring instead: the outline of the theme takes precedence over all of them.

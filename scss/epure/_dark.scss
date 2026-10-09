@@ -103,6 +103,7 @@
     // Links of the page and the drawers; the header has its own colours.
     #page a:not(.btn):not(.nav-link):not(.dropdown-item):not(.list-group-item),
     .drawer a:not(.btn):not(.nav-link):not(.dropdown-item):not(.list-group-item):not(.courseindex-link),
+    .modal-body a:not(.btn):not(.nav-link):not(.dropdown-item):not(.list-group-item),
     .epure-a11y-mention a,
     .btn-link {
         color: var(--epure-brand-text);
@@ -205,6 +206,17 @@
     }
 
     .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
+
+    // Icon of the details of an activity in the chooser of Moodle 4.5, black without the box of the others.
+    .modchooser .optionsummary .heading img.icon[src*="monologo"] {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
+
+    // Moodle 4.5 draws a « × » in the colour of the text instead of an image: the same filter on it cancels the one of
+    // the button, so that it stays light.
+    .btn-close > span {
         filter: invert(1) grayscale(100%) brightness(200%);
     }
 

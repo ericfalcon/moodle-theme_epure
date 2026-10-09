@@ -1,0 +1,96 @@
+// Activity chooser: in the colours of the theme, in light and dark mode, instead of Moodle's blue and of the
+// white written in its style sheets (tabs, cards, details and footer white in dark mode, names grey on dark).
+// Moodle 4.5 shows tabs and cards, Moodle 5.x pills and a list: both are covered.
+
+// Tabs (4.5): the active one in the colour of the brand, the others in the colour of the text.
+.modchooser .nav-tabs {
+    gap: .25rem;
+    border-bottom-color: var(--epure-border);
+
+    .nav-link {
+        color: var(--epure-ink-muted);
+        background-color: transparent;
+        border-color: transparent;
+
+        &:hover,
+        &:focus {
+            color: var(--epure-ink);
+            background-color: var(--epure-surface-raised);
+        }
+
+        &.active {
+            color: var(--epure-on-brand);
+            background-color: var(--epure-brand);
+            border-color: var(--epure-brand);
+        }
+    }
+}
+
+// Pills (5.x), also those of the details of an activity: in the colours of the theme, never on white in dark mode.
+.modchooser .modchoosernav {
+    --bs-nav-pills-link-active-bg: var(--epure-brand);
+    --bs-nav-pills-link-active-color: var(--epure-on-brand);
+    background-color: transparent !important; // stylelint-disable-line declaration-no-important
+
+    .nav-link {
+        --bs-nav-link-color: var(--epure-ink);
+        --bs-nav-link-hover-color: var(--epure-ink);
+        border-color: var(--epure-border) !important; // stylelint-disable-line declaration-no-important
+
+        &:not(.active):hover {
+            background-color: var(--epure-surface-raised);
+        }
+
+        &.active {
+            color: var(--epure-on-brand);
+            background-color: var(--epure-brand);
+            border-color: var(--epure-brand) !important; // stylelint-disable-line declaration-no-important
+        }
+    }
+}
+
+// Activities: their names in the colour of the text, the one under the pointer or chosen outlined in the colour of
+// the brand.
+.modchooser .modchoosercontainer .option {
+    .optioninfo a,
+    .optionname {
+        color: var(--epure-ink);
+    }
+
+    .optionaction:not(.text-primary) {
+        color: var(--epure-ink-muted);
+    }
+
+    &:hover,
+    &:focus,
+    &:focus-within {
+        box-shadow: inset 0 0 0 2px var(--epure-brand);
+    }
+}
+
+.modchooser .modchoosercontent .optionscontainer .option {
+    &:not(.selected):hover {
+        background-color: var(--epure-surface-raised);
+    }
+
+    &.selected {
+        background-color: var(--epure-brand-soft);
+        border-color: var(--epure-brand);
+    }
+}
+
+// Details of an activity and footer: on the surface of the window.
+.modchooser .modal-body .carousel-item,
+.modchooser .modal-body .optionsummary,
+.modchooser .modal-body .optionsummary .actions,
+.modchooser .modal-footer,
+.modchooser.modal-dialog .modal-footer {
+    color: var(--epure-ink);
+    background: var(--epure-surface);
+    border-color: var(--epure-border);
+}
+
+// Lines between the details of an activity (5.x) in the colour of the borders.
+.modchooser .optionsummary .activitychooser-option-details .modchooser-detail:not(:last-child):not(:only-child) {
+    border-bottom-color: var(--epure-border);
+}
