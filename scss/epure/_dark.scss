@@ -743,11 +743,14 @@
     }
 }
 
-html.epure-dark {
-    @include epure-dark;
+// Screens only: printed pages and their PDF stay light.
+@media screen {
+    html.epure-dark {
+        @include epure-dark;
+    }
 }
 
-@media (prefers-color-scheme: dark) {
+@media screen and (prefers-color-scheme: dark) {
     html.epure-dark-auto {
         @include epure-dark;
     }

@@ -26,6 +26,9 @@ namespace theme_epure\output;
 class core_renderer extends \theme_boost\output\core_renderer {
     use email_renderer;
 
+    /** @var string Code of the error being shown by fatal_error(), for its card. */
+    protected $epureerrorcode = '';
+
     /**
      * Logo shown in the header.
      *
@@ -196,7 +199,29 @@ class core_renderer extends \theme_boost\output\core_renderer {
      */
     public function standard_top_of_body_html() {
         return parent::standard_top_of_body_html() . \theme_epure\busy::top_of_body($this->page)
-            . \theme_epure\activity_icons::filters();
+            . \theme_epure\activity_icons::filters() . $this->epure_print_header();
+    }
+
+    /**
+     * Header of the printed pages and of their PDF: the logo and the name of the site, or of the user's IOMAD
+     * company, above a line of the brand colour. Hidden on screen.
+     *
+     * @return string HTML.
+     */
+    protected function epure_print_header(): string {
+        global $SITE;
+        if (in_array($this->page->pagelayout, ['embedded', 'redirect', 'popup'], true)) {
+            return '';
+        }
+        $company = \theme_epure\company_style::current_company();
+        $name = format_string($company->name ?? $SITE->fullname, true, ['context' => \context_system::instance()]);
+        $logo = $this->get_logo_url();
+        $output = '';
+        if ($logo) {
+            $output .= \html_writer::empty_tag('img', ['src' => $logo->out(false), 'alt' => '', 'class' => 'epure-print-logo']);
+        }
+        $output .= \html_writer::span($name, 'epure-print-name');
+        return \html_writer::div($output, 'epure-print-header', ['aria-hidden' => 'true']);
     }
 
     /**
@@ -417,6 +442,58 @@ class core_renderer extends \theme_boost\output\core_renderer {
      */
     public function epure_login_logo_backing(): bool {
         return $this->theme_file_url('logoonbrand') === null;
+    }
+
+    /**
+     * Error page: keeps the code of the error for the card shown by box().
+     *
+     * @param string $message The message to output.
+     * @param string $moreinfourl URL where more info can be found about the error.
+     * @param string $link Link for the Continue button.
+     * @param array $backtrace The execution backtrace.
+     * @param null|string $debuginfo Debugging information.
+     * @param string $errorcode Code of the error.
+     * @return string HTML.
+     */
+    public function fatal_error($message, $moreinfourl, $link, $backtrace, $debuginfo = null, $errorcode = "") {
+        $this->epureerrorcode = (string) $errorcode;
+        return parent::fatal_error($message, $moreinfourl, $link, $backtrace, $debuginfo, $errorcode);
+    }
+
+    /**
+     * Box: the message of an error page is shown in a card in the colours of the theme, which says what happened.
+     *
+     * @param string $contents The contents of the box.
+     * @param string $classes A space-separated list of CSS classes.
+     * @param string $id An optional ID.
+     * @param array $attributes An array of other attributes to give the box.
+     * @return string HTML.
+     */
+    public function box($contents, $classes = 'generalbox', $id = null, $attributes = []) {
+        if (($attributes['data-rel'] ?? '') === 'fatalerror') {
+            $kind = \theme_epure\error_page::kind($this->epureerrorcode);
+            $contents = $this->render_from_template('theme_epure/error_card', \theme_epure\error_page::export($kind, $contents));
+            $classes = 'errorbox epure-error';
+        }
+        return parent::box($contents, $classes, $id, $attributes);
+    }
+
+    /**
+     * Notification: the message of the « page not found » page is shown in the card of the error pages.
+     *
+     * @param string $message The message to print out.
+     * @param string $type The type of notification.
+     * @param bool $closebutton Whether to show a close icon to remove the notification.
+     * @param string|null $title The title of the notification.
+     * @param string|null $titleicon if the title should have an icon you can give the icon name with the component.
+     * @return string HTML.
+     */
+    public function notification($message, $type = null, $closebutton = true, ?string $title = null, ?string $titleicon = null) {
+        if ($type === 'error' && \theme_epure\error_page::is_not_found_page($this->page)) {
+            $card = \theme_epure\error_page::export('notfound', \html_writer::tag('p', $message, ['class' => 'errormessage']));
+            return \html_writer::div($this->render_from_template('theme_epure/error_card', $card), 'errorbox epure-error');
+        }
+        return parent::notification($message, $type, $closebutton, $title, $titleicon);
     }
 
     /**

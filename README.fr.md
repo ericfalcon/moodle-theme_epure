@@ -240,6 +240,12 @@ Le réglage **Mode sombre** (onglet Apparence du thème) vaut *Jamais*, *Automat
 
 Les couleurs sombres sont calculées à partir de la couleur de marque, avec les mêmes contrastes AA ; l'en-tête aux couleurs de la marque garde sa couleur. Les pages de Moodle et d'IOMAD (tableaux de bord, cours, formulaires, menus, tableaux) passent en sombre ; l'éditeur de texte garde l'apparence de son propre thème.
 
+## Pages d'erreur, visites guidées et impression
+
+- **Pages d'erreur** : au lieu de l'encadré rouge de Moodle, une carte aux couleurs de la marque dit en clair ce qui s'est passé (*Page introuvable*, *Accès refusé*, *Contenu inaccessible*, *Session expirée*, ou *Une erreur s'est produite*), garde le message de Moodle en dessous et mène au tableau de bord, ou à la page de connexion. La page « introuvable » de Moodle (`error/index.php`) prend la même carte.
+- **Visites guidées** : leurs étapes prennent les couleurs du thème, en clair comme en sombre, et l'élément montré est entouré de la couleur de marque. Les visites livrées avec Moodle sont réservées par Moodle au thème Boost (filtre *Thème* de chaque visite) : pour les montrer avec Épure, ajoutez-le à ce filtre dans Administration › Apparence › Visites guidées.
+- **Pages imprimées et PDF** (impression du navigateur) : en tête, le logo et le nom du site, ou de l'entreprise IOMAD, sur un filet de la couleur de marque ; puis le titre de la page et son contenu, sans les menus, panneaux et boutons de l'écran. Toujours en clair, même quand l'écran est en mode sombre.
+
 ## Tableau de bord de l'apprenant
 
 Pour un utilisateur qui suit des cours, le tableau de bord commence par un aperçu, au-dessus des blocs de Moodle :

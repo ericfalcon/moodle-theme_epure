@@ -1,0 +1,54 @@
+// User tours: their steps in the colours of the theme, in light and dark mode, instead of Bootstrap's popovers.
+span[data-flexitour="container"] {
+    .modal-content {
+        color: var(--epure-ink);
+        background-color: var(--epure-surface);
+        border: 1px solid var(--epure-border);
+        border-top: 4px solid var(--epure-brand);
+        border-radius: var(--epure-radius-lg);
+        box-shadow: var(--epure-shadow-hover);
+    }
+
+    .modal-header,
+    .modal-footer {
+        border-color: var(--epure-border);
+    }
+
+    .modal-title {
+        color: var(--epure-ink);
+    }
+
+    .modal-body {
+        color: var(--epure-ink);
+
+        a {
+            color: var(--epure-brand-text);
+        }
+    }
+
+    // The arrow in the colour of the step.
+    @each $direction in (top, bottom, left, right) {
+        &[x-placement^="#{$direction}"] div[data-role="arrow"] {
+            border-#{$direction}-color: var(--epure-border);
+
+            &::after {
+                border-#{$direction}-color: var(--epure-surface);
+            }
+        }
+    }
+
+    // The arrow touches the coloured line of the steps under their target.
+    &[x-placement^="bottom"] div[data-role="arrow"] {
+        border-bottom-color: var(--epure-brand);
+
+        &::after {
+            border-bottom-color: var(--epure-brand);
+        }
+    }
+}
+
+// The element shown by a step with a backdrop, outlined in the colour of the brand.
+[data-flexitour="highlight"] {
+    outline: 2px solid var(--epure-brand);
+    outline-offset: 2px;
+}

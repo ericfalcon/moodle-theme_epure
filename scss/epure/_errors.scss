@@ -1,0 +1,73 @@
+// Error pages (page not found, access denied, content not available, session expired, other errors): a card in
+// the colours of the theme, which says in plain words what happened, above Moodle's message, instead of a red box.
+.epure-error {
+    max-width: 40rem;
+    margin: 2rem auto 1.5rem;
+
+    // The continue button of Moodle, under the card.
+    + .continuebutton {
+        max-width: 40rem;
+        margin: 0 auto;
+        text-align: center;
+    }
+}
+
+.epure-error-card {
+    padding: 2rem 1.5rem;
+    color: var(--epure-ink);
+    text-align: center;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-top: 4px solid var(--epure-brand);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+}
+
+.epure-error-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: var(--epure-brand-text);
+    background-color: var(--epure-brand-soft);
+    border-radius: 50%;
+}
+
+.epure-error-title {
+    margin-bottom: .5rem;
+    font-size: 1.5rem;
+}
+
+.epure-error-lead {
+    margin-bottom: 1rem;
+    color: var(--epure-ink-muted);
+}
+
+// Moodle's message, and its link to the documentation, set back.
+.epure-error-details {
+    padding: .75rem 1rem;
+    margin-bottom: 1rem;
+    font-size: .9375rem;
+    text-align: start;
+    background-color: var(--epure-surface-muted);
+    border-radius: var(--epure-radius);
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+
+    .errorcode {
+        font-size: .875rem;
+    }
+}
+
+.epure-error-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    justify-content: center;
+    margin-bottom: 0;
+}

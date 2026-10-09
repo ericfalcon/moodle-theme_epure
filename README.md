@@ -240,6 +240,12 @@ The **Dark mode** setting (the theme's Appearance tab) can be *Never*, *Automati
 
 Dark colours are calculated from the brand colour, with the same AA contrast; a brand-coloured header keeps its colour. Moodle and IOMAD pages (dashboards, courses, forms, menus, tables) switch to dark; the text editor keeps the appearance of its own theme.
 
+## Error pages, user tours and printing
+
+- **Error pages**: instead of Moodle's red box, a card in the colours of the brand says in plain words what happened (*Page not found*, *Access denied*, *Content not available*, *Session expired*, or *Something went wrong*), keeps Moodle's message under it and leads to the dashboard, or to the login page. Moodle's « page not found » page (`error/index.php`) gets the same card.
+- **User tours**: their steps take the colours of the theme, in light and dark mode, and the element shown is outlined in the brand colour. Moodle keeps the tours it ships for the Boost theme (the *Theme* filter of each tour): to show them with Épure, add it to that filter in Site administration › Appearance › User tours.
+- **Printed pages and PDF** (printing from the browser): at the top, the logo and name of the site, or of the IOMAD company, over a line of the brand colour; then the title of the page and its content, without the menus, panels and buttons of the screen. Always light, even when the screen is in dark mode.
+
 ## Learner dashboard
 
 For a user who takes courses, the Dashboard starts with an overview, above Moodle's blocks:

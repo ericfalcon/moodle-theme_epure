@@ -1,0 +1,101 @@
+// Printed pages, and their PDF: the identity of the brand (logo, name of the site or of the IOMAD company, line of
+// the brand colour) at the top, the content alone, without the menus, panels and buttons of the screen. Always in
+// the light colours: dark mode is for screens only.
+.epure-print-header {
+    display: none;
+}
+
+@media print {
+    body,
+    #page,
+    #page-wrapper,
+    #page.drawers,
+    #topofscroll,
+    .main-inner {
+        background: #fff !important; // stylelint-disable-line declaration-no-important
+        box-shadow: none !important; // stylelint-disable-line declaration-no-important
+    }
+
+    #page.drawers {
+        margin-top: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .epure-print-header {
+        display: flex;
+        gap: .75rem;
+        align-items: center;
+        padding-bottom: .5rem;
+        margin-bottom: 1rem;
+        border-bottom: 3px solid var(--epure-brand);
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact; // stylelint-disable-line property-no-vendor-prefix
+    }
+
+    .epure-print-logo {
+        max-width: 6cm;
+        max-height: 1.25cm;
+    }
+
+    .epure-print-name {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--epure-ink);
+    }
+
+    // The title of the page, which Boost leaves out of the printed pages, without its buttons.
+    #page-header.d-print-none {
+        display: block !important; // stylelint-disable-line declaration-no-important
+    }
+
+    // The menus, panels and buttons of the screen.
+    #page-header .header-actions-container,
+    #page-header .context-header-settings-menu,
+    #collapsesections,
+    #page-footer,
+    .epure-footer,
+    .epure-mobilenav,
+    .epure-a11y,
+    .epure-a11y-panel,
+    .epure-qs,
+    .epure-busy,
+    .epure-activity-nav,
+    .activity-navigation,
+    .btn-footer-popover,
+    .drawer-toggles,
+    .secondary-navigation,
+    .tertiary-navigation,
+    #goto-top-link,
+    [data-flexitour="container"],
+    [data-flexitour="backdrop"] {
+        display: none !important; // stylelint-disable-line declaration-no-important
+    }
+
+    // Headings in the colour of the brand, links in its text colour, the blocks not cut between two pages.
+    h1,
+    h2,
+    .h1,
+    .h2 {
+        color: var(--epure-brand-text);
+        break-after: avoid;
+    }
+
+    a {
+        color: var(--epure-brand-text);
+    }
+
+    .card,
+    .activity-item,
+    .epure-error-card,
+    figure,
+    img,
+    tr {
+        break-inside: avoid;
+    }
+
+    .card,
+    .activity-item {
+        box-shadow: none !important; // stylelint-disable-line declaration-no-important
+    }
+}
