@@ -1,7 +1,7 @@
 // Activity icons in the colour of the brand (theme_epure\activity_icons): Moodle's filter per purpose is
 // replaced by the SVG filter the theme writes in the page, computed from the brand of the company or the site.
 // Moodle leaves the logos of brands in their colours (isbranded): the one of H5P, of a single colour with its letters
-// cut out, takes the brand colour too.
+// cut out, takes the colour of the activities too, the brand or Moodle's.
 .epure-icon-filters {
     position: absolute;
     width: 0;
@@ -14,6 +14,18 @@ body.epure-icons-brand .activityiconcontainer:not(.isbranded) .icon:not(.nofilte
 body.epure-icons-brand .modchooser .optionsummary .heading img.icon[src*="monologo"],
 body.epure-icons-brand .activityiconcontainer.isbranded img[src*="/h5pactivity/"][src*="monologo"] {
     filter: url("#epure-icons-light");
+}
+
+// With Moodle's colours, the H5P logo takes the one of its type (interactive content) as the activities next to it,
+// instead of its own blue: through Moodle's filter on 4.5, through its recolouring mixin from 5.0.
+body:not(.epure-icons-brand) .activityiconcontainer.isbranded img[src*="/h5pactivity/"][src*="monologo"] {
+    @if mixin-exists(recolor-icon) {
+        @include recolor-icon($activity-icon-interactivecontent-bg, 1);
+    }
+    @else {
+        // Moodle's filter starts from a black icon.
+        filter: brightness(0) $activity-icon-interactivecontent-filter;
+    }
 }
 
 // The squares of the activity icons follow the radius chosen (4px in Moodle).
