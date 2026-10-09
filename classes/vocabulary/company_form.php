@@ -92,12 +92,8 @@ class company_form {
      * @return array
      */
     protected static function appearance_context(int $companyid): array {
-        $settings = $companyid ? \theme_epure\company_style::settings($companyid)
-            : array_fill_keys(
-                ['brandcolor', 'headerstyle', 'font', 'coursebanner', 'learnerdashboard', 'mobilenav', 'darkmode', 'activityicons'],
-                ''
-            )
-                + array_fill_keys(\theme_epure\company_style::FOOTER_FIELDS, '');
+        // A new company has the settings of the site everywhere: the empty values.
+        $settings = \theme_epure\company_style::settings($companyid);
         $brand = self::posted('brandcolor', $settings['brandcolor']);
         $header = self::posted('headerstyle', $settings['headerstyle']);
         $font = self::posted('font', $settings['font']);
@@ -106,6 +102,7 @@ class company_form {
         $mobilenav = self::posted('mobilenav', $settings['mobilenav']);
         $darkmode = self::posted('darkmode', $settings['darkmode']);
         $icons = self::posted('activityicons', $settings['activityicons'] ?? '');
+        $accent = self::posted('accentcolor', $settings['accentcolor']);
         $logo = $companyid ? \theme_epure\company_style::logo_url($companyid) : null;
 
         $sitebrand = \theme_epure\palette::normalise(get_config('theme_epure', 'brandcolor'))
@@ -155,7 +152,45 @@ class company_form {
         foreach (\theme_epure\fonts::all() as $key => $definition) {
             $fonts[] = $option($key, $definition['family'], $font);
         }
+        // The other settings of the site a company can set instead: « As the site (…) », then the choices of the site.
+        $select = function (string $name, array $choices, string $site, string $label = '') use ($settings, $option) {
+            $current = self::posted($name, $settings[$name]);
+            $options = [$option('', get_string('companysite', 'theme_epure', $choices[$site] ?? $site), $current)];
+            foreach ($choices as $value => $text) {
+                $options[] = $option((string) $value, $text, $current);
+            }
+            return ['name' => $name, 'label' => $label ?: get_string($name, 'theme_epure'), 'options' => $options];
+        };
+        $switch = fn(string $name, string $label = '') => $select($name, [
+            'show' => get_string('companyswitchshow', 'theme_epure'),
+            'hide' => get_string('companyswitchhide', 'theme_epure'),
+        ], get_config('theme_epure', $name) !== '0' ? 'show' : 'hide', $label);
+        $choices = function (string $name) use ($select) {
+            $values = \theme_epure\company_style::CHOICES[$name];
+            $site = (string) get_config('theme_epure', $name) ?: \theme_epure\company_style::CHOICE_DEFAULTS[$name];
+            return $select($name, array_combine($values, array_map(
+                fn($value) => get_string($name . $value, 'theme_epure'),
+                $values
+            )), $site);
+        };
+        $siteaccent = \theme_epure\palette::normalise(get_config('theme_epure', 'accentcolor'));
+
         return [
+            'accentcolor' => $accent,
+            'siteaccentcolor' => $siteaccent ?? ($brand ?: $sitebrand),
+            'shapes' => [$choices('radius')],
+            'navigation' => [$choices('breadcrumb'), $switch('quicksearch'), $switch('activitynav'),
+                $choices('mobileblocks'), $choices('mobiledashboard')],
+            'pages' => [$switch('catalogue'), $switch('sectionprogress'), $switch('mycoursesbyrole')],
+            'emails' => [$switch('emailbranding')],
+            'login' => [$choices('loginlayout')],
+            'logintexts' => array_map(fn($name) => [
+                'name' => $name,
+                'label' => get_string($name, 'theme_epure'),
+                'value' => self::posted($name, $settings[$name]),
+                'multiline' => $name === 'logintext',
+                'placeholder' => trim((string) get_config('theme_epure', $name)),
+            ], \theme_epure\company_style::LOGIN_FIELDS),
             'logoonbrand' => self::logo_onbrand_manager($companyid),
             'brandcolor' => $brand,
             'sitebrandcolor' => $sitebrand,
@@ -274,19 +309,21 @@ class company_form {
                 self::LOGO_OPTIONS
             );
         }
+        $posted = fn(array $names, string $type) => array_combine($names, array_map(
+            fn($name) => optional_param(self::PREFIX . $name, '', $type),
+            $names
+        ));
         \theme_epure\company_style::save_settings($companyid, [
             'brandcolor' => optional_param(self::PREFIX . 'brandcolor', '', PARAM_TEXT),
+            'accentcolor' => optional_param(self::PREFIX . 'accentcolor', '', PARAM_TEXT),
             'headerstyle' => optional_param(self::PREFIX . 'headerstyle', '', PARAM_ALPHA),
             'font' => optional_param(self::PREFIX . 'font', '', PARAM_ALPHANUMEXT),
-            'coursebanner' => optional_param(self::PREFIX . 'coursebanner', '', PARAM_ALPHA),
-            'learnerdashboard' => optional_param(self::PREFIX . 'learnerdashboard', '', PARAM_ALPHA),
-            'mobilenav' => optional_param(self::PREFIX . 'mobilenav', '', PARAM_ALPHA),
             'darkmode' => optional_param(self::PREFIX . 'darkmode', '', PARAM_ALPHA),
             'activityicons' => optional_param(self::PREFIX . 'activityicons', '', PARAM_ALPHA),
-        ] + array_combine(\theme_epure\company_style::FOOTER_FIELDS, array_map(
-            fn($name) => optional_param(self::PREFIX . $name, '', PARAM_RAW),
-            \theme_epure\company_style::FOOTER_FIELDS
-        )));
+        ] + $posted(\theme_epure\company_style::SWITCHES, PARAM_ALPHA)
+            + $posted(array_keys(\theme_epure\company_style::CHOICES), PARAM_ALPHA)
+            + $posted(\theme_epure\company_style::LOGIN_FIELDS, PARAM_TEXT)
+            + $posted(\theme_epure\company_style::FOOTER_FIELDS, PARAM_RAW));
         // Frame of the IOMAD certificates in the colour of the company, when asked for.
         if (optional_param(self::PREFIX . 'certificateframe', 0, PARAM_BOOL) && \theme_epure\certificate_frame::available()) {
             $brand = \theme_epure\palette::normalise(optional_param(self::PREFIX . 'brandcolor', '', PARAM_TEXT))

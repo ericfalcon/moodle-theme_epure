@@ -36,7 +36,7 @@ class block_myoverview_renderer extends \block_myoverview\output\renderer {
      * @return string HTML.
      */
     public function render_main(\block_myoverview\output\main $main) {
-        if (get_config('theme_epure', 'mycoursesbyrole') === '0') {
+        if (!\theme_epure\company_style::enabled('mycoursesbyrole')) {
             return parent::render_main($main);
         }
         $this->page->requires->js_call_amd('theme_epure/mycourses', 'init');

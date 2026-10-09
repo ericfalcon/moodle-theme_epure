@@ -38,7 +38,7 @@ class catalogue {
      * @return bool
      */
     public static function enabled(): bool {
-        return get_config('theme_epure', 'catalogue') !== '0';
+        return company_style::enabled('catalogue');
     }
 
     /**

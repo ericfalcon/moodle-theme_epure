@@ -294,18 +294,18 @@ class core_renderer extends \theme_boost\output\core_renderer {
      */
     protected function epure_display_classes(): array {
         $classes = [];
-        $breadcrumb = get_config('theme_epure', 'breadcrumb');
+        $breadcrumb = \theme_epure\company_style::choice('breadcrumb');
         if ($breadcrumb === 'hide' || $breadcrumb === 'desktop') {
             $classes[] = 'epure-breadcrumb-' . $breadcrumb;
         }
         if ($this->company_logo_url(['logocompact', 'logo']) || \theme_epure\logos::url('logomobile')) {
             $classes[] = 'epure-has-mobilelogo';
         }
-        if (get_config('theme_epure', 'mobileblocks') === 'hidden') {
+        if (\theme_epure\company_style::choice('mobileblocks') === 'hidden') {
             $classes[] = 'epure-mobile-noblocks';
         }
         if (
-            get_config('theme_epure', 'mobiledashboard') === 'overview'
+            \theme_epure\company_style::choice('mobiledashboard') === 'overview'
                 && \theme_epure\learner_dashboard::applies($this->page)
         ) {
             $classes[] = 'epure-mobile-overview';
@@ -351,17 +351,18 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return bool
      */
     public function epure_login_split(): bool {
-        return get_config('theme_epure', 'loginlayout') !== 'centered';
+        return \theme_epure\company_style::choice('loginlayout') !== 'centered';
     }
 
     /**
-     * Full name of the site, shown beside the logo on the login visual.
+     * Full name of the site, shown beside the logo on the login visual: the name of the IOMAD company on its login page.
      *
      * @return string
      */
     public function epure_login_sitename(): string {
         global $SITE;
-        return format_string($SITE->fullname, true, ['context' => \context_system::instance()]);
+        $company = \theme_epure\company_style::current_company();
+        return format_string($company->name ?? $SITE->fullname, true, ['context' => \context_system::instance()]);
     }
 
     /**
@@ -370,7 +371,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return string
      */
     public function epure_login_tagline(): string {
-        $tagline = trim((string) get_config('theme_epure', 'logintagline'));
+        $tagline = \theme_epure\company_style::footer_setting('logintagline');
         if ($tagline === '') {
             return get_string('logintagline_default', 'theme_epure');
         }
@@ -383,7 +384,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return string
      */
     public function epure_login_text(): string {
-        $text = trim((string) get_config('theme_epure', 'logintext'));
+        $text = \theme_epure\company_style::footer_setting('logintext');
         return $text === '' ? '' : format_string($text, true, ['context' => \context_system::instance()]);
     }
 

@@ -144,11 +144,17 @@ The Épure settings:
 | Company setting | Effect |
 |---|---|
 | Brand colour | Any colour code, a colour picker, or the colours of the company's logo (swatches and eyedropper, including for a logo that has just been uploaded). Empty: IOMAD's heading colour, otherwise the site's colour. The accessible palette is recalculated. It also replaces the accent colour of the site. |
+| Accent colour | Progress bars and completed sections. Empty: the company's brand colour, otherwise the site's accent colour. |
 | Header colour | As the site, white, or brand colour. |
+| Corner style | As the site, sharp, soft or round. On Moodle 4.5, the corners compiled into Bootstrap 4 (Moodle's fields and buttons) keep the site's; those of Épure and, from Moodle 5.0, those of Bootstrap follow the company. |
+| E-mails in the colours of the brand | As the site, on or off, by the company of the recipient. |
 | Course banner | As the site, shown or hidden, for the company's users. |
 | Learner overview on the dashboard | As the site, shown or hidden. |
 | Mobile navigation bar | As the site, shown or hidden. |
 | Dark mode | As the site, never, automatic based on the device, or always. |
+| Navigation | As the site, or another choice for the breadcrumb, the quick search, the activity pages, the blocks and the dashboard on phones. |
+| Pages | As the site, or another choice for the course catalogue, the progress of the sections and My courses by role. |
+| Login page | Layout, headline and supporting text of its login page (its own address or its link `login/index.php?id=…&code=…`), which also takes its colours, its logo and its name. Empty fields: the site's. |
 | Footer | Text, legal notice, privacy, contact, other links; an empty field uses the site's value, shown greyed out. |
 | Logo for the brand-coloured header | Optional: a version of the logo that is legible on the company's brand colour, often white on a transparent background. |
 | Font | As the site, or one of the bundled fonts. |

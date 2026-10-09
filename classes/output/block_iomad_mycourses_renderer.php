@@ -34,7 +34,7 @@ class block_iomad_mycourses_renderer extends \block_iomad_mycourses\output\rende
      * @return string HTML.
      */
     public function render_main(\block_iomad_mycourses\output\main $main) {
-        if (get_config('theme_epure', 'mycoursesbyrole') === '0') {
+        if (!\theme_epure\company_style::enabled('mycoursesbyrole')) {
             return parent::render_main($main);
         }
         return $this->render_by_role($main->export_for_template($this));

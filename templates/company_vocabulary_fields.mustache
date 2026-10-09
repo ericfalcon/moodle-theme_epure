@@ -28,12 +28,16 @@
     * languages - lang, name, concepts (name, label, options, custom, singular, plural, hasgender, masculine, feminine)
     * brandcolor, sitebrandcolor, headerstyles, fonts, coursebanners, learnerdashboards, mobilenavs, darkmodes,
       activityicons - appearance of the company
+    * accentcolor, siteaccentcolor - accent colour of the company and the one used while it has none
+    * shapes, navigation, pages, emails, login - other settings of the site (see theme_epure/company_select)
+    * logintexts - texts of the login page: name, label, value, multiline, placeholder (value of the site)
     * footer - footer fields of the company: name, label, value, multiline, placeholder (value of the site)
     * logocolours - context of theme_epure/logo_colours
 
     Example context (json):
     {
-        "marker": "epure_vocab", "brandcolor": "", "sitebrandcolor": "#2559A8",
+        "marker": "epure_vocab", "brandcolor": "", "sitebrandcolor": "#2559A8", "accentcolor": "", "siteaccentcolor": "#2559A8",
+        "shapes": [], "navigation": [], "pages": [], "emails": [], "login": [], "logintexts": [],
         "headerstyles": [{"value": "", "label": "As the site (White)", "selected": true}],
         "fonts": [{"value": "", "label": "As the site (IBM Plex Sans)", "selected": true}],
         "coursebanners": [{"value": "", "label": "As the site (Shown)", "selected": true}],
@@ -99,6 +103,21 @@
             </div>
             <div class="form-group mb-3 row fitem">
                 <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                    <label class="mb-0" for="id_epure_accentcolor">{{#str}}accentcolor, theme_epure{{/str}}</label>
+                </div>
+                <div class="col-md-9 felement">
+                    <div class="epure-company-colour">
+                        <input type="color" class="epure-company-colour-picker" value="{{#accentcolor}}{{accentcolor}}{{/accentcolor}}{{^accentcolor}}{{siteaccentcolor}}{{/accentcolor}}"
+                            aria-label="{{#str}}accentcolor, theme_epure{{/str}}" data-action="pick-colour">
+                        <input type="text" class="form-control epure-company-colour-code" id="id_epure_accentcolor" name="epure_accentcolor"
+                            value="{{accentcolor}}" placeholder="{{siteaccentcolor}}" size="10" maxlength="7"
+                            pattern="#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})" aria-describedby="id_epure_accentcolor_help" autocomplete="off">
+                    </div>
+                    <p class="small text-muted mt-1 mb-0" id="id_epure_accentcolor_help">{{#str}}companyaccentcolor_help, theme_epure{{/str}}</p>
+                </div>
+            </div>
+            <div class="form-group mb-3 row fitem">
+                <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
                     <label class="mb-0" for="id_epure_headerstyle">{{#str}}headerstyle, theme_epure{{/str}}</label>
                 </div>
                 <div class="col-md-9 d-flex flex-wrap align-items-start felement">
@@ -120,6 +139,10 @@
                 </div>
             </div>
             <div data-epure-company-slot="iomadcolours"></div>
+        </div>
+        <div class="epure-company-group" data-epure-company-group="emails">
+            <h4 class="epure-company-group-title">{{#str}}settingsemails, theme_epure{{/str}}</h4>
+            {{#emails}}{{> theme_epure/company_select }}{{/emails}}
         </div>
         {{#certificateframe}}
         <div class="epure-company-group" data-epure-company-group="certificates">
@@ -166,6 +189,7 @@
                 <p class="small text-muted mt-1 mb-0 w-100" id="id_epure_darkmode_help">{{#str}}companydarkmode_help, theme_epure{{/str}}</p>
             </div>
         </div>
+        {{#shapes}}{{> theme_epure/company_select }}{{/shapes}}
     </section>
     <section class="epure-company-section" data-epure-company-section="features" aria-labelledby="epure-company-section-features">
         <h3 class="epure-company-section-title" id="epure-company-section-features">{{#str}}settingsfeatures, theme_epure{{/str}}</h3>
@@ -184,6 +208,7 @@
                     <p class="small text-muted mt-1 mb-0 w-100" id="id_epure_mobilenav_help">{{#str}}companymobilenav_help, theme_epure{{/str}}</p>
                 </div>
             </div>
+            {{#navigation}}{{> theme_epure/company_select }}{{/navigation}}
         </div>
         <div class="epure-company-group" data-epure-company-group="pages">
             <h4 class="epure-company-group-title">{{#str}}settingspages, theme_epure{{/str}}</h4>
@@ -211,7 +236,30 @@
                     <p class="small text-muted mt-1 mb-0 w-100" id="id_epure_learnerdashboard_help">{{#str}}companylearnerdashboard_help, theme_epure{{/str}}</p>
                 </div>
             </div>
+            {{#pages}}{{> theme_epure/company_select }}{{/pages}}
         </div>
+    </section>
+    <section class="epure-company-section" data-epure-company-section="login" aria-labelledby="epure-company-section-login">
+        <h3 class="epure-company-section-title" id="epure-company-section-login">{{#str}}loginsettings, theme_epure{{/str}}</h3>
+        <p class="epure-company-section-desc">{{#str}}companylogin_desc, theme_epure{{/str}}</p>
+        {{#login}}{{> theme_epure/company_select }}{{/login}}
+        {{#logintexts}}
+            <div class="form-group mb-3 row fitem">
+                <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                    <label class="mb-0" for="id_epure_{{name}}">{{label}}</label>
+                </div>
+                <div class="col-md-9 felement">
+                    {{#multiline}}
+                        <textarea class="form-control" id="id_epure_{{name}}" name="epure_{{name}}" rows="3"
+                            placeholder="{{placeholder}}">{{value}}</textarea>
+                    {{/multiline}}
+                    {{^multiline}}
+                        <input type="text" class="form-control" id="id_epure_{{name}}" name="epure_{{name}}" value="{{value}}"
+                            placeholder="{{placeholder}}">
+                    {{/multiline}}
+                </div>
+            </div>
+        {{/logintexts}}
     </section>
     <section class="epure-company-section" data-epure-company-section="footer" aria-labelledby="epure-company-section-footer">
         <h3 class="epure-company-section-title" id="epure-company-section-footer">{{#str}}footersettings, theme_epure{{/str}}</h3>

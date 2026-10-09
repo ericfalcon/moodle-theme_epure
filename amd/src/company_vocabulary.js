@@ -211,16 +211,12 @@ const hideIomadColours = (form, region) => {
 };
 
 /**
- * Keeps the colour picker and the colour code in step, and proposes the colours of the logo.
+ * Keeps each colour picker and its colour code in step (brand and accent colours), and proposes the colours of the
+ * logo for the brand colour.
  *
  * @param {HTMLElement} region The Épure fields.
  */
 const initColour = (region) => {
-    const code = region.querySelector('#id_epure_brandcolor');
-    const picker = region.querySelector('[data-action="pick-colour"]');
-    if (!code || !picker) {
-        return;
-    }
     const valid = (value) => /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value.trim());
     const full = (value) => {
         let hex = value.trim().replace('#', '');
@@ -229,24 +225,34 @@ const initColour = (region) => {
         }
         return '#' + hex.toUpperCase();
     };
-    picker.addEventListener('input', () => {
-        code.value = picker.value.toUpperCase();
-        code.removeAttribute('aria-invalid');
-    });
-    // The colours of the logo and the eyedropper fill the code: the picker follows.
-    const sync = () => {
-        const value = code.value;
-        if (value.trim() === '') {
-            code.removeAttribute('aria-invalid');
-        } else if (valid(value)) {
-            code.removeAttribute('aria-invalid');
-            picker.value = full(value).toLowerCase();
-        } else {
-            code.setAttribute('aria-invalid', 'true');
+    region.querySelectorAll('.epure-company-colour').forEach((box) => {
+        const code = box.querySelector('.epure-company-colour-code');
+        const picker = box.querySelector('[data-action="pick-colour"]');
+        if (!code || !picker) {
+            return;
         }
-    };
-    code.addEventListener('input', sync);
-    code.addEventListener('change', sync);
+        picker.addEventListener('input', () => {
+            code.value = picker.value.toUpperCase();
+            code.removeAttribute('aria-invalid');
+        });
+        // The colours of the logo and the eyedropper fill the code: the picker follows.
+        const sync = () => {
+            const value = code.value;
+            if (value.trim() === '') {
+                code.removeAttribute('aria-invalid');
+            } else if (valid(value)) {
+                code.removeAttribute('aria-invalid');
+                picker.value = full(value).toLowerCase();
+            } else {
+                code.setAttribute('aria-invalid', 'true');
+            }
+        };
+        code.addEventListener('input', sync);
+        code.addEventListener('change', sync);
+    });
+    if (!region.querySelector('#id_epure_brandcolor')) {
+        return;
+    }
 
     initColours('#epure-company-logocolours');
 

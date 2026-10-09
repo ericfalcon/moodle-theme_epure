@@ -47,12 +47,41 @@ class company_style {
     public const FOOTER_FIELDS = ['footertext', 'footerlegalurl', 'footerprivacyurl', 'footercontacturl', 'footerlinks'];
 
     /**
+     * @var string[] Settings of the site, on or off, that a company can set instead: show or hide, empty for the site
+     *     setting (stored 1 or 0 by the site).
+     */
+    public const SWITCHES = ['coursebanner', 'learnerdashboard', 'mobilenav', 'catalogue', 'quicksearch', 'activitynav',
+        'sectionprogress', 'mycoursesbyrole', 'emailbranding'];
+
+    /** @var array<string, string[]> Settings of the site with several choices that a company can set instead. */
+    public const CHOICES = [
+        'radius' => ['sharp', 'soft', 'round'],
+        'loginlayout' => ['split', 'centered'],
+        'breadcrumb' => ['show', 'desktop', 'hide'],
+        'mobileblocks' => ['drawer', 'hidden'],
+        'mobiledashboard' => ['full', 'overview'],
+    ];
+
+    /** @var array<string, string> Choice of the site when it was never saved ({@see self::CHOICES}). */
+    public const CHOICE_DEFAULTS = [
+        'radius' => 'soft',
+        'loginlayout' => 'split',
+        'breadcrumb' => 'show',
+        'mobileblocks' => 'drawer',
+        'mobiledashboard' => 'full',
+    ];
+
+    /** @var string[] Texts of the login page that a company can set instead of those of the site. */
+    public const LOGIN_FIELDS = ['logintagline', 'logintext'];
+
+    /**
      * Épure appearance of a company.
      *
      * @param int $companyid Company.
-     * @return array<string, string> brandcolor, headerstyle, font, coursebanner, learnerdashboard, mobilenav, darkmode,
-     *     activityicons and the
-     *     footer fields ({@see self::FOOTER_FIELDS}). Empty values when the company uses the site setting.
+     * @return array<string, string> brandcolor, accentcolor, headerstyle, font, darkmode, activityicons, the switches
+     *     ({@see self::SWITCHES}), the choices ({@see self::CHOICES}), the texts of the login page
+     *     ({@see self::LOGIN_FIELDS}) and the footer fields ({@see self::FOOTER_FIELDS}). Empty values when the company
+     *     uses the site setting.
      */
     public static function settings(int $companyid): array {
         $json = get_config('theme_epure', 'companystyle_' . $companyid);
@@ -87,14 +116,21 @@ class company_style {
         $choice = fn(string $name, array $choices) => in_array($values[$name] ?? '', $choices, true) ? $values[$name] : '';
         $settings = [
             'brandcolor' => (string) (palette::normalise($values['brandcolor'] ?? null) ?? ''),
+            'accentcolor' => (string) (palette::normalise($values['accentcolor'] ?? null) ?? ''),
             'headerstyle' => $choice('headerstyle', self::HEADER_STYLES),
             'font' => isset(fonts::all()[$values['font'] ?? '']) ? $values['font'] : '',
-            'coursebanner' => $choice('coursebanner', self::COURSE_BANNERS),
-            'learnerdashboard' => $choice('learnerdashboard', self::COURSE_BANNERS),
-            'mobilenav' => $choice('mobilenav', self::COURSE_BANNERS),
             'darkmode' => $choice('darkmode', self::DARK_MODES),
             'activityicons' => $choice('activityicons', activity_icons::CHOICES),
         ];
+        foreach (self::SWITCHES as $name) {
+            $settings[$name] = $choice($name, self::COURSE_BANNERS);
+        }
+        foreach (self::CHOICES as $name => $choices) {
+            $settings[$name] = $choice($name, $choices);
+        }
+        foreach (self::LOGIN_FIELDS as $name) {
+            $settings[$name] = trim((string) ($values[$name] ?? ''));
+        }
         foreach (self::FOOTER_FIELDS as $name) {
             $value = trim((string) ($values[$name] ?? ''));
             $settings[$name] = str_ends_with($name, 'url') ? clean_param($value, PARAM_URL) : $value;
@@ -103,17 +139,48 @@ class company_style {
     }
 
     /**
-     * A footer setting: the one of the company of the user when it has one, else the one of the site.
+     * Value of a setting for the company of the current page, empty when there is none or when it uses the site setting.
      *
-     * @param string $name One of {@see self::FOOTER_FIELDS}.
+     * @param string $name Setting.
+     * @return string
+     */
+    protected static function company_value(string $name): string {
+        $company = self::current_company();
+        return $company ? (string) (self::settings((int) $company->id)[$name] ?? '') : '';
+    }
+
+    /**
+     * A text setting (footer, login page): the one of the company of the user when it has one, else the one of the site.
+     *
+     * @param string $name One of {@see self::FOOTER_FIELDS} or {@see self::LOGIN_FIELDS}.
      * @return string
      */
     public static function footer_setting(string $name): string {
-        $company = self::current_company();
-        if ($company && ($value = self::settings((int) $company->id)[$name] ?? '') !== '') {
-            return $value;
-        }
-        return trim((string) get_config('theme_epure', $name));
+        $value = self::company_value($name);
+        return $value !== '' ? $value : trim((string) get_config('theme_epure', $name));
+    }
+
+    /**
+     * A setting on or off ({@see self::SWITCHES}): the choice of the company of the user, else the site setting.
+     *
+     * @param string $name Setting.
+     * @return bool
+     */
+    public static function enabled(string $name): bool {
+        $value = self::company_value($name);
+        return $value !== '' ? $value === 'show' : get_config('theme_epure', $name) !== '0';
+    }
+
+    /**
+     * A setting with several choices ({@see self::CHOICES}): the choice of the company of the user, else the site
+     * setting, else its default.
+     *
+     * @param string $name Setting.
+     * @return string
+     */
+    public static function choice(string $name): string {
+        $value = self::company_value($name);
+        return $value !== '' ? $value : ((string) get_config('theme_epure', $name) ?: (self::CHOICE_DEFAULTS[$name] ?? ''));
     }
 
     /**
@@ -135,11 +202,7 @@ class company_style {
      * @return bool
      */
     public static function course_banner(): bool {
-        $company = self::current_company();
-        if ($company && ($choice = self::settings((int) $company->id)['coursebanner'])) {
-            return $choice === 'show';
-        }
-        return get_config('theme_epure', 'coursebanner') !== '0';
+        return self::enabled('coursebanner');
     }
 
     /**
@@ -148,11 +211,7 @@ class company_style {
      * @return bool
      */
     public static function learner_dashboard(): bool {
-        $company = self::current_company();
-        if ($company && ($choice = self::settings((int) $company->id)['learnerdashboard'])) {
-            return $choice === 'show';
-        }
-        return get_config('theme_epure', 'learnerdashboard') !== '0';
+        return self::enabled('learnerdashboard');
     }
 
     /**
@@ -162,11 +221,7 @@ class company_style {
      * @return bool
      */
     public static function mobile_nav(): bool {
-        $company = self::current_company();
-        if ($company && ($choice = self::settings((int) $company->id)['mobilenav'])) {
-            return $choice === 'show';
-        }
-        return get_config('theme_epure', 'mobilenav') !== '0';
+        return self::enabled('mobilenav');
     }
 
     /**
@@ -266,11 +321,26 @@ class company_style {
     public static function current_company(): ?\stdClass {
         if (self::$company === null) {
             self::$company = false;
-            if (self::iomad_installed() && isloggedin() && !during_initial_install()) {
-                self::$company = iomad::company(iomad::my_companyid()) ?? false;
+            if (self::iomad_installed() && !during_initial_install()) {
+                if (isloggedin() && !isguestuser()) {
+                    self::$company = iomad::company(iomad::my_companyid()) ?? false;
+                } else if ($companyid = self::login_companyid()) {
+                    // The login page of a company (its address or its code): IOMAD remembers it in the session.
+                    self::$company = iomad::company($companyid) ?? false;
+                }
             }
         }
         return self::$company ?: null;
+    }
+
+    /**
+     * Company whose login page was opened (login/index.php?id=…&code=…, or its own address), before logging in.
+     *
+     * @return int 0 when none.
+     */
+    protected static function login_companyid(): int {
+        global $SESSION;
+        return (int) ($SESSION->company->id ?? 0);
     }
 
     /**
@@ -326,11 +396,7 @@ class company_style {
                 "--epure-dark-brand-text:{$d['text']};" .
                 "--epure-dark-brand-soft:{$d['soft']};" .
                 "--epure-dark-brand-soft-2:{$d['soft2']};" .
-                // The accent colour of the site gives way to the colour of the company.
-                "--epure-accent:{$p['fill']};" .
-                "--epure-on-accent:{$p['on']};" .
-                "--epure-dark-accent:{$d['fill']};" .
-                "--epure-dark-on-accent:{$d['on']};" .
+                // The accent colour of the site gives way to the colour of the company (or to its accent, below).
                 "--epure-login-overlay:rgba({$rgb}, {$p['overlayalpha']});" .
                 '--epure-header-hover:' . ($light ? 'rgba(0, 0, 0, .18)' : 'rgba(255, 255, 255, .3)') . ';' .
                 '--epure-header-toggler-filter:' . ($light ? 'brightness(0) invert(1)' : 'none') . ';' .
@@ -345,8 +411,34 @@ class company_style {
                 '.btn-primary:hover,.btn-primary:focus{background-color:var(--epure-brand-hover);' .
                 'border-color:var(--epure-brand-hover);color:var(--epure-on-brand);}';
         }
+        // The accent colour (progress bars, completed sections): the one of the company, else its brand colour.
+        $settings = self::settings((int) ($company->id ?? 0));
+        if ($accent = ($settings['accentcolor'] ?: $brand)) {
+            $a = palette::derive($accent);
+            $ad = palette::derive($accent, true);
+            $css .= ':root{' .
+                "--epure-accent:{$a['fill']};" .
+                "--epure-on-accent:{$a['on']};" .
+                "--epure-dark-accent:{$ad['fill']};" .
+                "--epure-dark-on-accent:{$ad['on']};" .
+                '}';
+        }
+        // The corners of the company: the custom properties of the theme, and those of Bootstrap 5 (Moodle 5.x); the
+        // corners compiled into Bootstrap 4 (Moodle 4.5) keep those of the site.
+        global $CFG;
+        require_once($CFG->dirroot . '/theme/epure/lib.php');
+        if (($radius = $settings['radius']) && ($sizes = THEME_EPURE_RADII[$radius] ?? null)) {
+            $pill = $radius === 'sharp' ? $sizes[1] : '999px';
+            $css .= ':root{' .
+                "--epure-radius-sm:{$sizes[0]};--epure-radius:{$sizes[1]};--epure-radius-lg:{$sizes[2]};" .
+                "--epure-radius-pill:{$pill};" .
+                "--bs-border-radius-sm:{$sizes[0]};--bs-border-radius:{$sizes[1]};--bs-border-radius-lg:{$sizes[2]};" .
+                "--bs-border-radius-xl:{$sizes[2]};--bs-border-radius-xxl:{$sizes[2]};" .
+                '--bs-border-radius-pill:' . ($radius === 'sharp' ? $sizes[1] : '50rem') . ';' .
+                '}';
+        }
         // The font of the company: its faces, then the font of the text.
-        if ($font = self::settings((int) ($company->id ?? 0))['font']) {
+        if ($font = $settings['font']) {
             global $PAGE;
             $css .= fonts::font_face_css($font, fn($file) => $PAGE->theme->font_url($file, 'theme')->out(false));
             $css .= 'body,.tooltip,.popover{font-family:' . fonts::stack($font) . ';}';

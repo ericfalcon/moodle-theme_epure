@@ -40,7 +40,7 @@ class activity_page {
                 && $page->cm && !$page->cm->is_stealth() && (int) $page->course->id !== (int) SITEID
                 // In the format « Single activity », the activity is the course: no strip nor previous and next.
                 && $page->course->format !== 'singleactivity'
-                && get_config('theme_epure', 'activitynav') !== '0';
+                && company_style::enabled('activitynav');
         } catch (\Throwable $e) {
             // Expected: the page has no context or course yet (pages that set them later, errors).
             return false;

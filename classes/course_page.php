@@ -53,7 +53,7 @@ class course_page {
     public static function section_progress_applies(\moodle_page $page, int $userid): bool {
         if (
             !str_starts_with((string) $page->pagetype, 'course-view-') || empty($page->course->id)
-                || (int) $page->course->id === (int) SITEID || get_config('theme_epure', 'sectionprogress') === '0'
+                || (int) $page->course->id === (int) SITEID || !company_style::enabled('sectionprogress')
                 || !isloggedin() || isguestuser() || $page->user_is_editing()
         ) {
             return false;

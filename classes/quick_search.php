@@ -39,7 +39,7 @@ class quick_search {
      * @return bool
      */
     public static function enabled(): bool {
-        return get_config('theme_epure', 'quicksearch') !== '0' && isloggedin() && !isguestuser();
+        return company_style::enabled('quicksearch') && isloggedin() && !isguestuser();
     }
 
     /**

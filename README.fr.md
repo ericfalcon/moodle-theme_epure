@@ -144,11 +144,17 @@ Les réglages propres à Épure :
 | Réglage de l'entreprise | Effet |
 |---|---|
 | Couleur de marque | Code couleur libre, sélecteur de couleur, ou couleurs du logo de l'entreprise (pastilles et pipette, y compris pour un logo tout juste téléversé). Vide : la couleur du titre d'IOMAD, sinon celle du site. La palette accessible est recalculée. Elle remplace aussi la couleur d'accent du site. |
+| Couleur d'accent | Barres de progression et sections terminées. Vide : la couleur de marque de l'entreprise, sinon la couleur d'accent du site. |
 | Couleur de l'en-tête | Comme le site, blanc, ou couleur de marque. |
+| Arrondis | Comme le site, nets, doux ou arrondis. Sur Moodle 4.5, les coins compilés dans Bootstrap 4 (champs, boutons de Moodle) gardent ceux du site ; ceux d'Épure et, à partir de Moodle 5.0, ceux de Bootstrap suivent l'entreprise. |
+| E-mails aux couleurs de la marque | Comme le site, activé ou désactivé, selon l'entreprise du destinataire. |
 | Bannière des cours | Comme le site, affichée ou masquée, pour les utilisateurs de l'entreprise. |
 | Aperçu de l'apprenant sur le tableau de bord | Comme le site, affiché ou masqué. |
 | Barre de navigation mobile | Comme le site, affichée ou masquée. |
 | Mode sombre | Comme le site, jamais, automatique selon l'appareil, ou toujours. |
+| Navigation | Comme le site, ou un autre choix pour le fil d'Ariane, la recherche rapide, les pages d'activité, les blocs et le tableau de bord sur téléphone. |
+| Pages | Comme le site, ou un autre choix pour le catalogue des cours, la progression des sections et « Mes cours » par rôle. |
+| Page de connexion | Disposition, accroche et texte d'accompagnement de sa page de connexion (son adresse propre ou son lien `login/index.php?id=…&code=…`), qui prend aussi ses couleurs, son logo et son nom. Champs vides : ceux du site. |
 | Pied de page | Texte, mentions légales, données personnelles, contact, autres liens ; un champ vide reprend la valeur du site, affichée en grisé. |
 | Logo pour l'en-tête en couleur | Facultatif : une version du logo lisible sur la couleur de marque de l'entreprise, souvent blanche sur fond transparent. |
 | Police | Comme le site, ou l'une des polices fournies. |

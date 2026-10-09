@@ -86,10 +86,10 @@ final class company_style_test extends \advanced_testcase {
         company_style::save_settings(12, ['brandcolor' => '1c6e73', 'headerstyle' => 'brand', 'font' => 'lexend',
             'coursebanner' => 'hide', 'learnerdashboard' => 'show', 'mobilenav' => 'hide', 'darkmode' => 'auto',
             'activityicons' => 'moodle']);
-        $this->assertSame(
+        $this->assertEquals(
             ['brandcolor' => '#1C6E73', 'headerstyle' => 'brand', 'font' => 'lexend', 'coursebanner' => 'hide',
                 'learnerdashboard' => 'show', 'mobilenav' => 'hide', 'darkmode' => 'auto', 'activityicons' => 'moodle'],
-            array_diff_key(company_style::settings(12), array_flip(company_style::FOOTER_FIELDS))
+            array_filter(company_style::settings(12))
         );
         $this->assertSame('#1C6E73', company_style::brand_colour($company));
         $css = company_style::css($company);
@@ -100,12 +100,85 @@ final class company_style_test extends \advanced_testcase {
         // Invalid values are ignored; nothing left means the settings of the site.
         company_style::save_settings(12, ['brandcolor' => 'rouge', 'headerstyle' => 'pink', 'font' => 'comic',
             'coursebanner' => 'maybe', 'learnerdashboard' => 'never', 'mobilenav' => 'often', 'darkmode' => 'dim']);
-        $this->assertSame(
-            ['brandcolor' => '', 'headerstyle' => '', 'font' => '', 'coursebanner' => '', 'learnerdashboard' => '',
-                'mobilenav' => '', 'darkmode' => '', 'activityicons' => ''] + array_fill_keys(company_style::FOOTER_FIELDS, ''),
-            company_style::settings(12)
-        );
+        $this->assertSame([], array_filter(company_style::settings(12)));
         $this->assertFalse(get_config('theme_epure', 'companystyle_12'));
         $this->assertSame('#36195F', company_style::brand_colour($company));
+    }
+
+    /**
+     * The other settings of the site a company can set instead: accent colour, corners, switches, choices and the texts
+     * of the login page. Invalid values are ignored.
+     */
+    public function test_more_company_settings(): void {
+        $this->resetAfterTest();
+        company_style::save_settings(12, ['accentcolor' => '0e7c66', 'radius' => 'sharp', 'quicksearch' => 'hide',
+            'catalogue' => 'show', 'emailbranding' => 'hide', 'breadcrumb' => 'desktop', 'loginlayout' => 'centered',
+            'mobileblocks' => 'hidden', 'mobiledashboard' => 'overview', 'logintagline' => ' Bienvenue ',
+            'logintext' => 'Formations']);
+        $this->assertEquals(
+            ['accentcolor' => '#0E7C66', 'catalogue' => 'show', 'quicksearch' => 'hide', 'emailbranding' => 'hide',
+                'radius' => 'sharp', 'loginlayout' => 'centered', 'breadcrumb' => 'desktop', 'mobileblocks' => 'hidden',
+                'mobiledashboard' => 'overview', 'logintagline' => 'Bienvenue', 'logintext' => 'Formations'],
+            array_filter(company_style::settings(12))
+        );
+
+        company_style::save_settings(12, ['accentcolor' => 'vert', 'radius' => 'square', 'quicksearch' => 'maybe',
+            'breadcrumb' => 'top', 'loginlayout' => 'left']);
+        $this->assertSame([], array_filter(company_style::settings(12)));
+    }
+
+    /**
+     * The accent colour of the company, else its brand colour, and its corners in the custom properties of the theme
+     * and of Bootstrap.
+     */
+    public function test_css_accent_and_radius(): void {
+        $this->resetAfterTest();
+        $company = (object) ['id' => 12, 'headingcolor' => '#36195F'];
+        $brand = palette::derive('#36195F');
+        $this->assertStringContainsString("--epure-accent:{$brand['fill']};", company_style::css($company));
+        $this->assertStringNotContainsString('--epure-radius:', company_style::css($company));
+
+        company_style::save_settings(12, ['accentcolor' => '#0E7C66', 'radius' => 'sharp']);
+        $css = company_style::css($company);
+        $accent = palette::derive('#0E7C66');
+        $this->assertStringContainsString("--epure-accent:{$accent['fill']};", $css);
+        $this->assertStringContainsString("--epure-dark-accent:" . palette::derive('#0E7C66', true)['fill'] . ';', $css);
+        $this->assertStringContainsString('--epure-radius:0.25rem;', $css);
+        $this->assertStringContainsString('--bs-border-radius:0.25rem;', $css);
+        // Sharp corners: the pills are rounded rectangles too.
+        $this->assertStringContainsString('--epure-radius-pill:0.25rem;', $css);
+
+        // An accent colour alone, without brand colour.
+        $this->assertStringContainsString("--epure-accent:{$accent['fill']};", company_style::css((object) ['id' => 12]));
+    }
+
+    /**
+     * Without a company, the settings of the site (or their defaults); with one, its own choices first.
+     */
+    public function test_settings_of_the_page(): void {
+        $this->resetAfterTest();
+        $this->assertTrue(company_style::enabled('catalogue'));
+        set_config('catalogue', '0', 'theme_epure');
+        $this->assertFalse(company_style::enabled('catalogue'));
+        $this->assertSame('show', company_style::choice('breadcrumb'));
+        set_config('loginlayout', 'centered', 'theme_epure');
+        $this->assertSame('centered', company_style::choice('loginlayout'));
+        set_config('logintagline', ' Site ', 'theme_epure');
+        $this->assertSame('Site', company_style::footer_setting('logintagline'));
+
+        // The company of the page (set as current_company() would find it).
+        company_style::save_settings(12, ['catalogue' => 'show', 'loginlayout' => 'split', 'logintagline' => 'Clinique']);
+        $property = new \ReflectionProperty(company_style::class, 'company');
+        $property->setValue(null, (object) ['id' => 12]);
+        try {
+            $this->assertTrue(company_style::enabled('catalogue'));
+            $this->assertSame('split', company_style::choice('loginlayout'));
+            $this->assertSame('Clinique', company_style::footer_setting('logintagline'));
+            // What the company leaves empty stays the setting of the site.
+            $this->assertSame('show', company_style::choice('breadcrumb'));
+            $this->assertTrue(company_style::enabled('quicksearch'));
+        } finally {
+            company_style::reset();
+        }
     }
 }
