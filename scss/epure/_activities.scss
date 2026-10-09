@@ -924,3 +924,162 @@ table.quizreviewsummary {
         max-width: 40rem;
     }
 }
+
+// Database: the entries as cards of a normal size (Moodle gives them a very large inner margin), the names of the
+// fields as small grey titles, the empty tags hidden; the search and sort options grouped in a light box.
+.path-mod-data {
+    // « Clear all » after the number of entries found: a link among text, underlined.
+    .generalbox > a {
+        text-decoration: underline;
+    }
+
+    .datapreferences {
+        margin: 1rem 0 !important; // stylelint-disable-line declaration-no-important
+        padding: .75rem 1rem;
+        background-color: var(--epure-surface-muted);
+        border-radius: var(--epure-radius);
+    }
+
+    .defaulttemplate-listentry,
+    .defaulttemplate-single-body {
+        margin: 1rem 0 !important; // stylelint-disable-line declaration-no-important
+        padding: 1.25rem 1.5rem !important; // stylelint-disable-line declaration-no-important
+        border-color: var(--epure-border);
+        border-radius: var(--epure-radius-lg);
+
+        hr {
+            border-color: var(--epure-border);
+            opacity: 1;
+        }
+
+        // The author and the dates: a header line, not a block of a hundred pixels; on phones, one under the other
+        // rather than cut letter by letter.
+        .row.my-6 {
+            margin-top: 0 !important; // stylelint-disable-line declaration-no-important
+            margin-bottom: .5rem !important; // stylelint-disable-line declaration-no-important
+
+            @include media-breakpoint-down(sm) {
+                .row > [class*="col"]:not(:last-child) {
+                    flex: 1 0 100%;
+                    max-width: 100%;
+                }
+            }
+        }
+
+        .row.my-3 {
+            margin-top: .5rem !important; // stylelint-disable-line declaration-no-important
+            margin-bottom: .5rem !important; // stylelint-disable-line declaration-no-important
+        }
+
+        .row > .fw-bold {
+            color: var(--epure-ink-muted);
+            font-size: .8125rem;
+            font-weight: 600 !important; // stylelint-disable-line declaration-no-important
+        }
+
+        .mb-4:has(> .fw-bold + p:empty) {
+            display: none;
+        }
+    }
+}
+
+// Wiki: the table of contents as a light box marked with the brand, the text at a readable width, the « edit »
+// links of the sections discreet.
+.path-mod-wiki {
+    .wiki-toc {
+        margin: 1rem 0;
+        padding: .75rem 1.25rem;
+        background-color: var(--epure-surface-muted);
+        border: 0;
+        border-left: 4px solid var(--epure-brand);
+        border-radius: var(--epure-radius);
+    }
+
+    .wiki-toc-title {
+        margin-bottom: .5rem;
+        color: var(--epure-ink);
+        font-size: .875rem;
+        font-variant: normal;
+        font-weight: 600;
+        text-align: left;
+    }
+
+    a.wiki_edit_section {
+        color: var(--epure-ink-muted);
+        font-size: .75rem;
+        font-weight: 400;
+    }
+}
+
+#page-mod-wiki-view #region-main [role="main"] {
+    > p,
+    > ul,
+    > ol,
+    > blockquote,
+    > h3,
+    > h4,
+    .wiki-toc {
+        max-width: 48rem;
+    }
+}
+
+// Feedback: each question in a card, numbered, the answers of a multiple choice as rows that can be clicked as a
+// whole, the chosen one marked with the brand.
+#page-mod-feedback-complete #region-main form {
+    counter-reset: epure-question;
+
+    .fitem.feedback_itemlist {
+        margin: 0 0 1rem;
+        padding: 1rem 1.25rem;
+        background-color: var(--epure-surface-raised);
+        border: 1px solid var(--epure-border);
+        border-radius: var(--epure-radius-lg);
+        counter-increment: epure-question;
+
+        > .col-form-label {
+            flex: 0 0 100%;
+            max-width: 100%;
+            margin-bottom: .5rem;
+            font-weight: 600;
+
+            > :first-child::before {
+                content: counter(epure-question) ". ";
+                color: var(--epure-brand-text);
+            }
+        }
+
+        > .felement {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+    }
+
+    .feedback-item-textarea textarea {
+        height: 8rem;
+    }
+
+    .feedback-item-multichoice label.form-check-label {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        width: 100%;
+        margin: 0 0 .5rem;
+        padding: .5rem .75rem;
+        border: 1px solid var(--epure-border);
+        border-radius: var(--epure-radius);
+        cursor: pointer;
+
+        .form-check-input {
+            margin: 0;
+        }
+
+        &:hover {
+            border-color: var(--epure-brand);
+        }
+
+        &:has(input:checked) {
+            background-color: var(--epure-brand-soft);
+            border-color: var(--epure-brand);
+        }
+    }
+}
