@@ -8,7 +8,8 @@
 }
 
 body.epure-icons-brand .activityiconcontainer:not(.isbranded) .activityicon:not(.nofilter),
-body.epure-icons-brand .activityiconcontainer:not(.isbranded) .icon:not(.nofilter) {
+body.epure-icons-brand .activityiconcontainer:not(.isbranded) .icon:not(.nofilter),
+body.epure-icons-brand .modchooser .optionsummary .heading img.icon[src*="monologo"] {
     filter: url("#epure-icons-light");
 }
 

@@ -209,8 +209,9 @@
         filter: invert(1) grayscale(100%) brightness(200%);
     }
 
-    // Icon of the details of an activity in the chooser of Moodle 4.5, black without the box of the others.
-    .modchooser .optionsummary .heading img.icon[src*="monologo"] {
+    // Icon of the details of an activity in the chooser of Moodle 4.5, black without the box of the others (in the
+    // colour of the brand when the icons take it, below).
+    body:not(.epure-icons-brand) .modchooser .optionsummary .heading img.icon[src*="monologo"] {
         filter: invert(1) grayscale(100%) brightness(200%);
     }
 
@@ -735,7 +736,8 @@
     }
 
     body.epure-icons-brand .activityiconcontainer:not(.isbranded) .activityicon:not(.nofilter),
-    body.epure-icons-brand .activityiconcontainer:not(.isbranded) .icon:not(.nofilter) {
+    body.epure-icons-brand .activityiconcontainer:not(.isbranded) .icon:not(.nofilter),
+    body.epure-icons-brand .modchooser .optionsummary .heading img.icon[src*="monologo"] {
         filter: url("#epure-icons-dark");
     }
 }

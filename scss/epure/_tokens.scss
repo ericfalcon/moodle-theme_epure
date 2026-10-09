@@ -6,6 +6,9 @@
     --epure-brand-text: #{$epure-brand-text};
     --epure-brand-soft: #{$epure-brand-soft};
     --epure-brand-soft-2: #{$epure-brand-soft-2};
+    // The light palette also in dark mode, for what stays white (the text editor).
+    --epure-light-brand-text: #{$epure-brand-text};
+    --epure-light-brand-soft: #{$epure-brand-soft};
     --epure-dark-brand: #{$epure-dark-brand};
     --epure-dark-brand-hover: #{$epure-dark-brand-hover};
     --epure-dark-on-brand: #{$epure-dark-on-brand};

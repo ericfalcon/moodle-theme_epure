@@ -65,3 +65,77 @@ a[data-toggle="popover"]:focus .icon.text-info {
     font-size: .625rem;
     transform: translateY(-50%);
 }
+
+// Text editor (TinyMCE): it stays white in dark mode too, so it takes the light palette of the brand instead of
+// TinyMCE's blue for the active buttons and menus, the chosen items, the frames and the focus.
+body .tox {
+    .tox-tbtn--active,
+    .tox-tbtn--enabled,
+    .tox-tbtn--enabled:focus,
+    .tox-tbtn--enabled:hover,
+    .tox-mbtn--active,
+    .tox-mbtn:not(:disabled).tox-mbtn--active:focus,
+    .tox-collection--toolbar .tox-collection__item--enabled,
+    .tox-collection--toolbar .tox-collection__item--enabled.tox-collection__item--active,
+    .tox-collection--toolbar .tox-collection__item--enabled.tox-collection__item--active:hover {
+        background: var(--epure-light-brand-soft);
+    }
+
+    .tox-collection--list .tox-collection__item--active,
+    .tox-insert-table-picker .tox-insert-table-picker__selected {
+        color: #fff;
+        background-color: var(--epure-light-brand-text);
+    }
+
+    .tox-tbtn:focus::after,
+    .tox-tbtn--enabled:focus::after,
+    .tox-mbtn:focus:not(:disabled)::after,
+    .tox-split-button:focus::after,
+    .tox-number-input:focus::after,
+    .tox-number-input button:focus::after,
+    .tox-collection--toolbar .tox-collection__item--active:focus::after,
+    .tox-statusbar a:focus-visible::after,
+    .tox-statusbar__path-item:focus-visible::after,
+    .tox-statusbar__wordcount:focus-visible::after,
+    .tox-statusbar__resize-handle:focus-visible::after {
+        box-shadow: 0 0 0 2px var(--epure-light-brand-text);
+    }
+
+    .tox-collection--grid .tox-collection__item--active:not(.tox-collection__item--state-disabled):focus::after {
+        box-shadow: 0 0 0 2px var(--epure-light-brand-text) inset;
+    }
+
+    .tox-edit-area::before {
+        border-color: var(--epure-light-brand-text);
+    }
+
+    .tox-custom-editor:focus-within,
+    .tox-listboxfield .tox-listbox--select:focus,
+    .tox-textarea-wrap:focus-within,
+    .tox-textarea:focus,
+    .tox-textfield:focus,
+    .tox-selectfield select:focus,
+    .tox-notification:focus,
+    .tox-navobj-bordered-focus.tox-navobj-bordered::before {
+        border-color: var(--epure-light-brand-text);
+        box-shadow: 0 0 0 1px var(--epure-light-brand-text);
+    }
+
+    .tox-color-input span:focus:not([aria-disabled="true"]),
+    .tox-color-input span:hover:not([aria-disabled="true"]) {
+        border-color: var(--epure-light-brand-text);
+    }
+
+    .tox-checkbox__icons .tox-checkbox-icon__checked svg,
+    .tox-checkbox__icons .tox-checkbox-icon__indeterminate svg {
+        fill: var(--epure-light-brand-text);
+    }
+
+    input.tox-checkbox__input:focus + .tox-checkbox__icons {
+        box-shadow: inset 0 0 0 1px var(--epure-light-brand-text);
+    }
+
+    .tox-dialog__body-content a:focus-visible {
+        outline-color: var(--epure-light-brand-text);
+    }
+}

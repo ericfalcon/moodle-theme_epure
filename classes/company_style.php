@@ -318,6 +318,8 @@ class company_style {
                 "--epure-focus:{$p['text']};" .
                 "--epure-header-bg:{$p['fill']};" .
                 "--epure-header-on:{$p['on']};" .
+                "--epure-light-brand-text:{$p['text']};" .
+                "--epure-light-brand-soft:{$p['soft']};" .
                 "--epure-dark-brand:{$d['fill']};" .
                 "--epure-dark-brand-hover:{$d['hover']};" .
                 "--epure-dark-on-brand:{$d['on']};" .
