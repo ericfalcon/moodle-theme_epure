@@ -272,4 +272,12 @@
     <licenseversion>1.1</licenseversion>
     <repository>https://github.com/fontsource/font-files</repository>
   </library>
+  <library>
+    <location>pix/workshop</location>
+    <name>Font Awesome Free icons (task icons of the workshop, recoloured for the dark mode)</name>
+    <version>6.5.2</version>
+    <license>CC BY 4.0</license>
+    <licenseversion>4.0</licenseversion>
+    <repository>https://github.com/FortAwesome/Font-Awesome</repository>
+  </library>
 </libraries>

@@ -688,6 +688,24 @@
         background-color: var(--epure-surface-raised) !important; // stylelint-disable-line declaration-no-important
     }
 
+    // Tasks of the workshop: Moodle's icons are black, or dark colours, images that cannot take the colour of the
+    // text. Light versions of the same icons.
+    .path-mod-workshop .userplan dd.phasetasks li {
+        background-image: url([[pix:theme_epure|workshop/task-todo-dark]]);
+
+        &.completed {
+            background-image: url([[pix:theme_epure|workshop/task-done-dark]]);
+        }
+
+        &.fail {
+            background-image: url([[pix:theme_epure|workshop/task-fail-dark]]);
+        }
+
+        &.info {
+            background-image: url([[pix:theme_epure|workshop/task-info-dark]]);
+        }
+    }
+
     // « More » menu of the tabs of the course, light grey on hover and focus.
     .moremenu .nav-link:hover,
     .moremenu .nav-link:focus {
