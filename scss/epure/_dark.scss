@@ -737,7 +737,8 @@
 
     body.epure-icons-brand .activityiconcontainer:not(.isbranded) .activityicon:not(.nofilter),
     body.epure-icons-brand .activityiconcontainer:not(.isbranded) .icon:not(.nofilter),
-    body.epure-icons-brand .modchooser .optionsummary .heading img.icon[src*="monologo"] {
+    body.epure-icons-brand .modchooser .optionsummary .heading img.icon[src*="monologo"],
+    body.epure-icons-brand .activityiconcontainer.isbranded img[src*="/h5pactivity/"][src*="monologo"] {
         filter: url("#epure-icons-dark");
     }
 }
