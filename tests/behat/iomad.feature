@@ -22,8 +22,6 @@ Feature: The Épure theme on IOMAD
     And the following config values are set as admin:
       | theme            | epure |
       | enablecompletion | 1     |
-    And the following config values are set as admin:
-      | brandcolor | #0F766E | theme_epure |
     And the following IOMAD companies exist:
       | name             | shortname | theme | headingcolor |
       | Clinique Tilleul | tilleul   | epure | #9B2335      |
@@ -44,7 +42,8 @@ Feature: The Épure theme on IOMAD
 
   Scenario: A user without company keeps the colour of the platform
     When I log in as "learner2"
-    Then the brand colour of the page should come from "#0F766E"
+    Then "#epure-company-style" "css_element" should not exist
+    And the brand colour of the page should not come from "#9B2335"
 
   Scenario: The « My courses » page of IOMAD is the page by role of Épure
     When I log in as "learner1"

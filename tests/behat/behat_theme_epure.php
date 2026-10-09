@@ -116,12 +116,34 @@ class behat_theme_epure extends behat_base {
      */
     public function the_brand_colour_of_the_page_should_come_from(string $colour): void {
         $expected = \theme_epure\palette::derive($colour)['fill'];
-        $actual = $this->evaluate_script(
-            'return getComputedStyle(document.documentElement).getPropertyValue("--epure-brand").trim().toUpperCase();'
-        );
+        $actual = $this->brand_colour();
         if ($actual !== strtoupper($expected)) {
             throw new ExpectationException("The brand colour of the page is $actual, not $expected.", $this->getSession());
         }
+    }
+
+    /**
+     * Checks that the brand colour of the page is not the one the theme derives from a colour.
+     *
+     * @Then /^the brand colour of the page should not come from "(?P<colour>#[0-9A-Fa-f]{6})"$/
+     * @param string $colour Brand colour.
+     */
+    public function the_brand_colour_of_the_page_should_not_come_from(string $colour): void {
+        $colour = strtoupper(\theme_epure\palette::derive($colour)['fill']);
+        if ($this->brand_colour() === $colour) {
+            throw new ExpectationException("The brand colour of the page is $colour.", $this->getSession());
+        }
+    }
+
+    /**
+     * Brand colour of the page, as the custom property --epure-brand.
+     *
+     * @return string
+     */
+    protected function brand_colour(): string {
+        return (string) $this->evaluate_script(
+            'return getComputedStyle(document.documentElement).getPropertyValue("--epure-brand").trim().toUpperCase();'
+        );
     }
 
     /**
