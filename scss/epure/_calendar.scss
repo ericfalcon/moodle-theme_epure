@@ -84,14 +84,17 @@ $epure-event-colours: (
         width: auto;
     }
 
-    // Targets of 24 pixels high at least (WCAG 2.5.8), also in the calendar block.
+    // Targets of 24 pixels high at least (WCAG 2.5.8), also in the calendar block, with a margin, and above the
+    // title of the month so that it never covers them.
     .previous,
     .next {
+        position: relative;
+        z-index: 1;
         display: flex;
         flex: 1 1 0;
         align-items: center;
         min-width: 0;
-        min-height: 24px;
+        min-height: 28px;
         white-space: nowrap;
     }
 
