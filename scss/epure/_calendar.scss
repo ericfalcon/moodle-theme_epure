@@ -84,10 +84,14 @@ $epure-event-colours: (
         width: auto;
     }
 
+    // Targets of 24 pixels high at least (WCAG 2.5.8), also in the calendar block.
     .previous,
     .next {
+        display: flex;
         flex: 1 1 0;
+        align-items: center;
         min-width: 0;
+        min-height: 24px;
         white-space: nowrap;
     }
 
@@ -96,6 +100,7 @@ $epure-event-colours: (
     }
 
     .next {
+        justify-content: flex-end;
         text-align: right;
     }
 
