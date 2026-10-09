@@ -24,7 +24,9 @@ $epure-event-colours: (
         font-weight: 600;
     }
 
+    // Weekends tinted, their days in a grey dark enough to be read on the tint (Moodle's lighter grey is not).
     td.weekend {
+        color: var(--epure-ink-muted);
         background-color: var(--epure-surface-muted);
     }
 
