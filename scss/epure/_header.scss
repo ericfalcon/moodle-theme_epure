@@ -162,3 +162,38 @@ body.epure-header-brand .navbar.fixed-top .divider {
         transform: none;
     }
 }
+
+// Edit mode switch on phones: Moodle hides its label for lack of room, which leaves a switch without a word. A pencil,
+// Moodle's icon to edit, stands for it before the switch; the label keeps its text for screen readers and still
+// toggles the switch when tapped. Moodle hides it with !important.
+@media (max-width: 767.98px) {
+    // The room of the pencil, taken from the margin after the divider before the switch (a utility of Moodle, with
+    // !important), so that the header keeps fitting 360 pixels.
+    body .navbar.fixed-top .navbar-nav > .divider {
+        margin-right: .5rem !important; // stylelint-disable-line declaration-no-important
+    }
+
+    body .navbar.fixed-top .editmode-switch-form .input-group {
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+
+    body .navbar.fixed-top .editmode-switch-form label {
+        position: static !important; // stylelint-disable-line declaration-no-important
+        width: auto !important; // stylelint-disable-line declaration-no-important
+        height: auto !important; // stylelint-disable-line declaration-no-important
+        margin: 0 .375rem 0 0 !important; // stylelint-disable-line declaration-no-important
+        overflow: hidden !important; // stylelint-disable-line declaration-no-important
+        clip: auto !important; // stylelint-disable-line declaration-no-important
+        font-size: 0;
+        line-height: 1;
+        cursor: pointer;
+
+        &::before {
+            content: "\f304";
+            font-family: "Font Awesome 6 Free";
+            font-size: 1rem;
+            font-weight: 900;
+        }
+    }
+}
