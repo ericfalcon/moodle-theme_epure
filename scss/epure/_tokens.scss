@@ -19,6 +19,8 @@
     --epure-radius-sm: #{$border-radius-sm};
     --epure-radius: #{$border-radius};
     --epure-radius-lg: #{$border-radius-lg};
+    // Chips, counters and the search field: pills, or rounded rectangles with the sharp corners.
+    --epure-radius-pill: #{$epure-radius-pill};
     --epure-border: #e2e5ea;
     --epure-surface: #{$white};
     --epure-surface-raised: #{$white};

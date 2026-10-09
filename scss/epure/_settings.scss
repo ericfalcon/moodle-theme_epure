@@ -43,7 +43,7 @@
     color: inherit;
     background: var(--epure-surface);
     border: 1px solid var(--epure-border);
-    border-radius: 999px;
+    border-radius: var(--epure-radius-pill);
 
     &[aria-pressed="true"] {
         border-color: var(--epure-brand-text);
@@ -56,4 +56,10 @@
     height: 22px;
     border-radius: 50%;
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .15);
+}
+
+// A check box next to a field of the same group (« Enable » of the word limit): apart from the field, a target of
+// 24 pixels at least (WCAG 2.5.8). Moodle sets the margins of the items of a group with !important: a padding.
+.mform .d-flex > label.form-check.fitem {
+    padding-inline-start: calc(1.5em + .5rem);
 }

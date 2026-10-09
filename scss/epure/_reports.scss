@@ -37,3 +37,17 @@
     border: 1px solid var(--epure-border) !important; // stylelint-disable-line declaration-no-important
     border-radius: var(--epure-radius);
 }
+
+// Scheduled, running and logged tasks: the class of each task in a light grey of Moodle, too pale to read.
+#page-admin-tool-task-scheduledtasks .task-class,
+#page-admin-tool-task-runningtasks .task-class,
+#page-admin-tasklogs .task-class {
+    color: var(--epure-ink-muted);
+}
+
+// Quiz results: the highlighted cell in a tint of the brand instead of Moodle's light blue.
+#page-mod-quiz-report .highlight {
+    color: var(--epure-ink);
+    background-color: var(--epure-brand-soft);
+    border-color: var(--epure-brand-soft-2);
+}

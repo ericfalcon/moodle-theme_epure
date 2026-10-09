@@ -167,7 +167,7 @@ html.epure-a11y-motion *::after {
         display: inline-block;
         padding: .3rem .7rem;
         border: 1px solid var(--epure-border);
-        border-radius: 999px;
+        border-radius: var(--epure-radius-pill);
         cursor: pointer;
     }
 

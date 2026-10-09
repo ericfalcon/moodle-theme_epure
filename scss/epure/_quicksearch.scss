@@ -8,7 +8,7 @@
     color: var(--epure-ink-muted);
     background-color: var(--epure-surface-muted);
     border: 1px solid var(--epure-border);
-    border-radius: 2rem;
+    border-radius: var(--epure-radius-pill);
     font-size: .875rem;
 
     &:hover,
@@ -22,7 +22,7 @@
         color: var(--epure-ink-muted);
         background-color: var(--epure-surface);
         border: 1px solid var(--epure-border);
-        border-radius: .25rem;
+        border-radius: var(--epure-radius-sm);
         font-family: inherit;
         font-size: .75rem;
         box-shadow: none;
@@ -226,7 +226,7 @@
         color: var(--epure-ink);
         background-color: var(--epure-surface);
         border: 1px solid var(--epure-border);
-        border-radius: .25rem;
+        border-radius: var(--epure-radius-sm);
         font-family: inherit;
         box-shadow: none;
     }

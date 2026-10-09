@@ -627,6 +627,62 @@
         background-color: var(--epure-surface-raised);
     }
 
+    // Grades of a user and setup of the gradebook: white and light grey cells of Moodle, with its selectors.
+    .path-grade-report-user,
+    .grade-report-user {
+        .user-report-container {
+            background-color: var(--epure-surface-muted);
+        }
+
+        .user-grade {
+            thead th,
+            td,
+            td.item,
+            tbody tr,
+            tbody tr:hover,
+            .baggt,
+            .baggb,
+            th.category,
+            th.column-itemname:not(.header, .category, .baggt, .baggb) {
+                color: var(--epure-ink);
+                background-color: var(--epure-surface);
+                border-color: var(--epure-border);
+            }
+
+            .levelodd,
+            th.levelodd,
+            td.levelodd {
+                background-color: var(--epure-surface-raised);
+            }
+
+            th.category a.toggle-category i {
+                color: var(--epure-ink);
+            }
+        }
+    }
+
+    .path-grade-edit-tree .gradetree-wrapper {
+        background-color: var(--epure-surface-muted);
+
+        .setup-grades.table th,
+        .setup-grades.table tr.category td,
+        .setup-grades.table tr.item td {
+            color: var(--epure-ink);
+            background-color: var(--epure-surface-raised);
+            border-color: var(--epure-border);
+        }
+
+        .setup-grades.table tr.item td {
+            background-color: var(--epure-surface);
+        }
+    }
+
+    .badge.bg-light.text-dark,
+    .badge.text-dark.number {
+        color: var(--epure-ink) !important; // stylelint-disable-line declaration-no-important
+        background-color: var(--epure-surface-raised) !important; // stylelint-disable-line declaration-no-important
+    }
+
     // « More » menu of the tabs of the course, light grey on hover and focus.
     .moremenu .nav-link:hover,
     .moremenu .nav-link:focus {

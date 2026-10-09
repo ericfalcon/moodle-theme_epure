@@ -157,6 +157,10 @@ function theme_epure_get_pre_scss($theme) {
         'border-radius-lg' => $radius[2],
         // The sections and activities of the course page, 1rem in Boost whatever the radius chosen.
         'activity-border-radius' => $radius[2],
+        // Pills (chips, counters, search field), rounded rectangles with the sharp corners.
+        'epure-radius-pill' => ($theme->settings->radius ?? '') === 'sharp' ? $radius[1] : '999px',
+        'rounded-pill' => ($theme->settings->radius ?? '') === 'sharp' ? $radius[1] : '50rem',
+        'border-radius-pill' => ($theme->settings->radius ?? '') === 'sharp' ? $radius[1] : '50rem',
         // Every page uses the full width of the administration pages: Boost narrows the front
         // page, the dashboard, My courses and the course pages to 830 or 1120 px. 100% rather than none:
         // from Moodle 5.3, the side drawers and their buttons are placed with calculations on this

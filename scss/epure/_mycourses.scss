@@ -39,7 +39,7 @@
     font-weight: 500;
     background-color: var(--epure-surface);
     border: 1px solid var(--epure-border);
-    border-radius: 999px;
+    border-radius: var(--epure-radius-pill);
 }
 
 .epure-mycourses-filter:hover {
@@ -73,7 +73,7 @@
     font-weight: 600;
     text-align: center;
     background-color: var(--epure-brand-soft);
-    border-radius: 999px;
+    border-radius: var(--epure-radius-pill);
 }
 
 .epure-mycourses-grid {

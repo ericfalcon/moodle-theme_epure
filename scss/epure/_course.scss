@@ -165,12 +165,25 @@
     font-size: .8125rem;
     font-weight: 600;
     background-color: var(--epure-surface-muted);
-    border-radius: 999px;
+    border-radius: var(--epure-radius-pill);
 }
 
 .epure-section-progress-complete {
     color: var(--epure-on-accent);
     background-color: var(--epure-accent);
+}
+
+// Corners of the course page, each level a step less rounded than the one holding it: the sections the large
+// radius, their activities and subsections the medium one, the activities of a subsection the small one.
+.course-content {
+    .activity-item {
+        border-radius: var(--epure-radius);
+    }
+
+    .activity.subsection .activity:not(.subsection) .activity-item,
+    .activity.subsection .section .section-item {
+        border-radius: var(--epure-radius-sm);
+    }
 }
 
 // Subsections (mod_subsection): a part of its section, set apart by a tinted background and a band of the brand
