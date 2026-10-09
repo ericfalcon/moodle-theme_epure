@@ -63,7 +63,7 @@ Les **préférences d'affichage** : le bouton « Aa » de l'en-tête peut être 
 |---|---|
 | Police | Polices fournies : IBM Plex Sans, Inter, Source Sans 3, Figtree, Lato, et pour la lisibilité Atkinson Hyperlegible, Lexend, OpenDyslexic. Ou votre propre police téléversée. |
 | Police téléversée | Nom de la police et fichiers `.woff2` ou `.woff` (normal obligatoire, gras facultatif). Vérifiez que la licence de la police autorise l'usage sur un site web. |
-| Arrondis | Net, doux ou arrondi : cartes, boutons, champs, pastilles, et sections et activités des pages de cours, chaque niveau un peu moins arrondi que celui qui le contient (section, puis activités et sous-sections, puis activités d'une sous-section). Avec « Net », les pastilles deviennent des rectangles aux coins adoucis. |
+| Arrondis | Peu arrondis (coins presque droits), moyennement arrondis (par défaut) ou très arrondis : cartes, boutons, champs, pastilles, et sections et activités des pages de cours, chaque niveau un peu moins arrondi que celui qui le contient (section, puis activités et sous-sections, puis activités d'une sous-section). Avec « Peu arrondis », les pastilles deviennent des rectangles aux coins adoucis. |
 | Densité | Confortable, ou compacte : moins d'espace autour et entre les éléments, pour plus de contenu à l'écran. |
 | Mode sombre | Jamais, automatique comme l'appareil, ou toujours. |
 
@@ -146,7 +146,7 @@ Les réglages propres à Épure :
 | Couleur de marque | Code couleur libre, sélecteur de couleur, ou couleurs du logo de l'entreprise (pastilles et pipette, y compris pour un logo tout juste téléversé). Vide : la couleur du titre d'IOMAD, sinon celle du site. La palette accessible est recalculée. Elle remplace aussi la couleur d'accent du site. |
 | Couleur d'accent | Barres de progression et sections terminées. Vide : la couleur de marque de l'entreprise, sinon la couleur d'accent du site. |
 | Couleur de l'en-tête | Comme le site, blanc, ou couleur de marque. |
-| Arrondis | Comme le site, nets, doux ou arrondis. Sur Moodle 4.5, les coins compilés dans Bootstrap 4 (champs, boutons de Moodle) gardent ceux du site ; ceux d'Épure et, à partir de Moodle 5.0, ceux de Bootstrap suivent l'entreprise. |
+| Arrondis | Comme le site, peu, moyennement ou très arrondis. Sur Moodle 4.5, les coins compilés dans Bootstrap 4 (champs, boutons de Moodle) gardent ceux du site ; ceux d'Épure et, à partir de Moodle 5.0, ceux de Bootstrap suivent l'entreprise. |
 | E-mails aux couleurs de la marque | Comme le site, activé ou désactivé, selon l'entreprise du destinataire. |
 | Bannière des cours | Comme le site, affichée ou masquée, pour les utilisateurs de l'entreprise. |
 | Aperçu de l'apprenant sur le tableau de bord | Comme le site, affiché ou masqué. |
@@ -157,7 +157,7 @@ Les réglages propres à Épure :
 | Page de connexion | Disposition, accroche et texte d'accompagnement de sa page de connexion (son adresse propre ou son lien `login/index.php?id=…&code=…`), qui prend aussi ses couleurs, son logo et son nom. Champs vides : ceux du site. |
 | Pied de page | Texte, mentions légales, données personnelles, contact, autres liens ; un champ vide reprend la valeur du site, affichée en grisé. |
 | Logo pour l'en-tête en couleur | Facultatif : une version du logo lisible sur la couleur de marque de l'entreprise, souvent blanche sur fond transparent. |
-| Police | Comme le site, ou l'une des polices fournies. |
+| Police | Comme le site, l'une des 8 polices fournies, la police téléversée du site, ou une police téléversée pour l'entreprise (nom, fichiers normal et gras en woff2 ou woff ; vérifiez que sa licence autorise l'usage sur un site web). Sans fichier normal, la police du site est gardée. |
 
 Les champs natifs d'IOMAD (logos, CSS et menu personnalisés) sont rangés dans ces étapes ; Épure se déclare thème IOMAD pour qu'IOMAD les affiche. Les couleurs d'IOMAD (titre, principale, lien), qui ne servent qu'aux thèmes IOMAD, sont masquées tant que l'entreprise utilise Épure ; une couleur du titre déjà enregistrée est reprise comme couleur de marque. Enfin, la section **Vocabulaire** règle les mots de l'entreprise, c'est-à-dire ses mots pour « entreprise » et « département », en français et en anglais (« client » et « équipe » pour l'une, « agence » et « service » pour une autre). Épure se déclare thème IOMAD pour qu'IOMAD affiche ces champs. Les mots pour toutes les entreprises se choisissent sur la page Épure : vocabulaire ; une entreprise sans mots propres utilise ceux-là.
 

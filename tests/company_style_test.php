@@ -181,4 +181,29 @@ final class company_style_test extends \advanced_testcase {
             company_style::reset();
         }
     }
+
+    /**
+     * The font uploaded for a company: its faces from its files, under the name chosen; nothing without a normal file.
+     */
+    public function test_company_font(): void {
+        $this->resetAfterTest();
+        $company = (object) ['id' => 12];
+        company_style::save_settings(12, ['font' => company_style::COMPANY_FONT, 'fontname' => 'Marque Sans']);
+        $this->assertStringNotContainsString('font-family', company_style::css($company));
+
+        get_file_storage()->create_file_from_string([
+            'contextid' => \context_system::instance()->id, 'component' => 'theme_epure', 'filearea' => 'companyfontregular',
+            'itemid' => 12, 'filepath' => '/', 'filename' => 'marque.woff2',
+        ], 'woff2');
+        $css = company_style::css($company);
+        $this->assertStringContainsString('font-family: "Marque Sans"', $css);
+        $this->assertStringContainsString('/theme_epure/companyfontregular/12/', $css);
+        $this->assertStringContainsString("format('woff2')", $css);
+        $this->assertStringContainsString('body,.tooltip,.popover{font-family:"Marque Sans", ', $css);
+
+        // The font uploaded for the site, chosen by the company, without its files: nothing.
+        company_style::save_settings(12, ['font' => fonts::CUSTOM]);
+        $this->assertSame(fonts::CUSTOM, company_style::settings(12)['font']);
+        $this->assertStringNotContainsString('font-family', company_style::css($company));
+    }
 }

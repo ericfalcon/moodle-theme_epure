@@ -63,7 +63,7 @@ The **display preferences**: the button « Aa » of the header can be turned off
 |---|---|
 | Font | Bundled fonts: IBM Plex Sans, Inter, Source Sans 3, Figtree, Lato, and, for readability, Atkinson Hyperlegible, Lexend and OpenDyslexic. Or upload your own font. |
 | Uploaded font | Font name and `.woff2` or `.woff` files (regular required, bold optional). Check that the font's licence allows its use on a website. |
-| Corner style | Sharp, soft or round: cards, buttons, form fields, chips, and the sections and activities of the course pages, each level a little less rounded than the one holding it (section, then activities and subsections, then the activities of a subsection). With « Sharp », chips become rectangles with softened corners. |
+| Corner style | Slightly rounded (almost square corners), moderately rounded (the default) or very rounded: cards, buttons, form fields, chips, and the sections and activities of the course pages, each level a little less rounded than the one holding it (section, then activities and subsections, then the activities of a subsection). With « Slightly rounded », chips become rectangles with softened corners. |
 | Density | Comfortable, or compact: less space around and between the elements, for more content on the screen. |
 | Dark mode | Never, automatic as the device, or always (see Dark mode below). |
 
@@ -146,7 +146,7 @@ The Épure settings:
 | Brand colour | Any colour code, a colour picker, or the colours of the company's logo (swatches and eyedropper, including for a logo that has just been uploaded). Empty: IOMAD's heading colour, otherwise the site's colour. The accessible palette is recalculated. It also replaces the accent colour of the site. |
 | Accent colour | Progress bars and completed sections. Empty: the company's brand colour, otherwise the site's accent colour. |
 | Header colour | As the site, white, or brand colour. |
-| Corner style | As the site, sharp, soft or round. On Moodle 4.5, the corners compiled into Bootstrap 4 (Moodle's fields and buttons) keep the site's; those of Épure and, from Moodle 5.0, those of Bootstrap follow the company. |
+| Corner style | As the site, slightly, moderately or very rounded. On Moodle 4.5, the corners compiled into Bootstrap 4 (Moodle's fields and buttons) keep the site's; those of Épure and, from Moodle 5.0, those of Bootstrap follow the company. |
 | E-mails in the colours of the brand | As the site, on or off, by the company of the recipient. |
 | Course banner | As the site, shown or hidden, for the company's users. |
 | Learner overview on the dashboard | As the site, shown or hidden. |
@@ -157,7 +157,7 @@ The Épure settings:
 | Login page | Layout, headline and supporting text of its login page (its own address or its link `login/index.php?id=…&code=…`), which also takes its colours, its logo and its name. Empty fields: the site's. |
 | Footer | Text, legal notice, privacy, contact, other links; an empty field uses the site's value, shown greyed out. |
 | Logo for the brand-coloured header | Optional: a version of the logo that is legible on the company's brand colour, often white on a transparent background. |
-| Font | As the site, or one of the bundled fonts. |
+| Font | As the site, one of the 8 bundled fonts, the font uploaded for the site, or a font uploaded for the company (name, normal and bold files in woff2 or woff; check that its licence allows its use on a website). Without a normal file, the font of the site is kept. |
 
 IOMAD's native fields (logos, custom CSS and menu) are placed in these steps; Épure declares itself an IOMAD theme so that IOMAD displays them. IOMAD's colours (heading, main, link), which are only used by IOMAD themes, are hidden as long as the company uses Épure; a heading colour that has already been saved is carried over as the brand colour. Finally, the **Vocabulary** section sets the company's words, that is, its words for "company" and "department", in French and in English ("client" and "team" for one company, "agency" and "service" for another). Épure declares itself an IOMAD theme so that IOMAD displays these fields. The words for all companies are chosen on the "Épure: vocabulary" page; a company without its own words uses those.
 

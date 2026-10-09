@@ -109,7 +109,9 @@ class company_form {
             ?? \theme_epure\palette::DEFAULT_BRAND;
         $siteheader = get_config('theme_epure', 'headerstyle') === 'brand'
             ? get_string('headerstylebrand', 'theme_epure') : get_string('headerstylelight', 'theme_epure');
-        $sitefont = \theme_epure\fonts::get(get_config('theme_epure', 'font') ?: null)['family'];
+        $sitecustom = trim((string) get_config('theme_epure', 'customfontname')) ?: get_string('fontcustom', 'theme_epure');
+        $sitefont = get_config('theme_epure', 'font') === \theme_epure\fonts::CUSTOM ? $sitecustom
+            : \theme_epure\fonts::get(get_config('theme_epure', 'font') ?: null)['family'];
 
         $option = fn(string $value, string $label, string $current) => ['value' => $value, 'label' => $label,
             'selected' => $value === $current];
@@ -152,6 +154,11 @@ class company_form {
         foreach (\theme_epure\fonts::all() as $key => $definition) {
             $fonts[] = $option($key, $definition['family'], $font);
         }
+        // The fonts uploaded: the one of the site when it has one, the one of the company.
+        if (get_config('theme_epure', 'customfontregular')) {
+            $fonts[] = $option(\theme_epure\fonts::CUSTOM, get_string('companyfontsite', 'theme_epure', $sitecustom), $font);
+        }
+        $fonts[] = $option(\theme_epure\company_style::COMPANY_FONT, get_string('companyfontown', 'theme_epure'), $font);
         // The other settings of the site a company can set instead: « As the site (…) », then the choices of the site.
         $select = function (string $name, array $choices, string $site, string $label = '') use ($settings, $option) {
             $current = self::posted($name, $settings[$name]);
@@ -178,7 +185,7 @@ class company_form {
         return [
             'accentcolor' => $accent,
             'siteaccentcolor' => $siteaccent ?? ($brand ?: $sitebrand),
-            'shapes' => [$choices('radius')],
+            'shapes' => [$choices('radius') + ['help' => get_string('radius_desc', 'theme_epure')]],
             'navigation' => [$choices('breadcrumb'), $switch('quicksearch'), $switch('activitynav'),
                 $choices('mobileblocks'), $choices('mobiledashboard')],
             'pages' => [$switch('catalogue'), $switch('sectionprogress'), $switch('mycoursesbyrole')],
@@ -192,6 +199,13 @@ class company_form {
                 'placeholder' => trim((string) get_config('theme_epure', $name)),
             ], \theme_epure\company_style::LOGIN_FIELDS),
             'logoonbrand' => self::logo_onbrand_manager($companyid),
+            'fontname' => self::posted('fontname', $settings['fontname']),
+            'fontfiles' => [
+                ['name' => 'fontregular', 'label' => get_string('customfontregular', 'theme_epure')]
+                    + self::file_manager($companyid, 'fontregular', 'companyfontregular', self::FONT_OPTIONS),
+                ['name' => 'fontbold', 'label' => get_string('customfontbold', 'theme_epure')]
+                    + self::file_manager($companyid, 'fontbold', 'companyfontbold', self::FONT_OPTIONS),
+            ],
             'brandcolor' => $brand,
             'sitebrandcolor' => $sitebrand,
             'headerstyles' => $headers,
@@ -235,6 +249,9 @@ class company_form {
     /** @var array Options of the file area of the logo for the brand-coloured header. */
     protected const LOGO_OPTIONS = ['subdirs' => 0, 'maxfiles' => 1, 'accepted_types' => ['.svg', '.png', '.webp', '.jpg']];
 
+    /** @var array Options of the file areas of the font uploaded for the company. */
+    protected const FONT_OPTIONS = ['subdirs' => 0, 'maxfiles' => 1, 'accepted_types' => ['.woff2', '.woff']];
+
     /**
      * File manager of the logo for the brand-coloured header, with the logo saved for the company.
      *
@@ -242,6 +259,19 @@ class company_form {
      * @return array HTML of the file manager, and the draft area posted with the form.
      */
     protected static function logo_onbrand_manager(int $companyid): array {
+        return self::file_manager($companyid, 'logoonbrand', 'companylogoonbrand', self::LOGO_OPTIONS);
+    }
+
+    /**
+     * File manager of a file of the company (logo, font), with the file saved for it.
+     *
+     * @param int $companyid Company edited, 0 for a new company.
+     * @param string $field Field of the draft area, without prefix.
+     * @param string $area File area of the theme.
+     * @param array $fileoptions Options of the file area.
+     * @return array HTML of the file manager, and the draft area posted with the form.
+     */
+    protected static function file_manager(int $companyid, string $field, string $area, array $fileoptions): array {
         global $CFG, $PAGE;
         require_once($CFG->libdir . '/filelib.php');
         require_once($CFG->dirroot . '/repository/lib.php');
@@ -249,24 +279,17 @@ class company_form {
         $context = \context_system::instance();
 
         // Displayed again after an error: the draft area posted keeps the files chosen.
-        $draftid = optional_param(self::PREFIX . 'logoonbrand', 0, PARAM_INT);
+        $draftid = optional_param(self::PREFIX . $field, 0, PARAM_INT);
         if (!$draftid) {
-            // Without a draft area, Moodle creates one and copies the saved logo into it.
-            file_prepare_draft_area(
-                $draftid,
-                $context->id,
-                'theme_epure',
-                'companylogoonbrand',
-                $companyid ?: null,
-                self::LOGO_OPTIONS
-            );
+            // Without a draft area, Moodle creates one and copies the saved file into it.
+            file_prepare_draft_area($draftid, $context->id, 'theme_epure', $area, $companyid ?: null, $fileoptions);
         }
-        $options = (object) (self::LOGO_OPTIONS + [
+        $options = (object) ($fileoptions + [
             'itemid' => $draftid,
             'maxbytes' => 0,
             'context' => $context,
             'return_types' => FILE_INTERNAL,
-            'target' => 'id_epure_logoonbrand',
+            'target' => 'id_epure_' . $field,
             'mainfile' => false,
         ]);
         $manager = new \form_filemanager($options);
@@ -299,15 +322,16 @@ class company_form {
             }
         }
         company::save($companyid, $values);
-        if ($draftid = optional_param(self::PREFIX . 'logoonbrand', 0, PARAM_INT)) {
-            file_save_draft_area_files(
-                $draftid,
-                \context_system::instance()->id,
-                'theme_epure',
-                'companylogoonbrand',
-                $companyid,
-                self::LOGO_OPTIONS
-            );
+        foreach (
+            [
+                'logoonbrand' => ['companylogoonbrand', self::LOGO_OPTIONS],
+                'fontregular' => ['companyfontregular', self::FONT_OPTIONS],
+                'fontbold' => ['companyfontbold', self::FONT_OPTIONS],
+            ] as $field => [$area, $options]
+        ) {
+            if ($draftid = optional_param(self::PREFIX . $field, 0, PARAM_INT)) {
+                file_save_draft_area_files($draftid, \context_system::instance()->id, 'theme_epure', $area, $companyid, $options);
+            }
         }
         $posted = fn(array $names, string $type) => array_combine($names, array_map(
             fn($name) => optional_param(self::PREFIX . $name, '', $type),
@@ -318,6 +342,7 @@ class company_form {
             'accentcolor' => optional_param(self::PREFIX . 'accentcolor', '', PARAM_TEXT),
             'headerstyle' => optional_param(self::PREFIX . 'headerstyle', '', PARAM_ALPHA),
             'font' => optional_param(self::PREFIX . 'font', '', PARAM_ALPHANUMEXT),
+            'fontname' => optional_param(self::PREFIX . 'fontname', '', PARAM_TEXT),
             'darkmode' => optional_param(self::PREFIX . 'darkmode', '', PARAM_ALPHA),
             'activityicons' => optional_param(self::PREFIX . 'activityicons', '', PARAM_ALPHA),
         ] + $posted(\theme_epure\company_style::SWITCHES, PARAM_ALPHA)

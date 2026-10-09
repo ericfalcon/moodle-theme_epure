@@ -71,6 +71,15 @@ class company_style {
         'mobiledashboard' => 'full',
     ];
 
+    /** @var string Font of a company: the one uploaded for it in its form. */
+    public const COMPANY_FONT = 'company';
+
+    /** @var array<int, string> File areas of the font uploaded for a company, by weight. */
+    public const FONT_AREAS = [400 => 'companyfontregular', 700 => 'companyfontbold'];
+
+    /** @var string[] File areas of the files uploaded for a company, served by the theme. */
+    public const FILE_AREAS = ['companylogoonbrand', 'companyfontregular', 'companyfontbold'];
+
     /** @var string[] Texts of the login page that a company can set instead of those of the site. */
     public const LOGIN_FIELDS = ['logintagline', 'logintext'];
 
@@ -118,7 +127,9 @@ class company_style {
             'brandcolor' => (string) (palette::normalise($values['brandcolor'] ?? null) ?? ''),
             'accentcolor' => (string) (palette::normalise($values['accentcolor'] ?? null) ?? ''),
             'headerstyle' => $choice('headerstyle', self::HEADER_STYLES),
-            'font' => isset(fonts::all()[$values['font'] ?? '']) ? $values['font'] : '',
+            'font' => isset(fonts::all()[$values['font'] ?? '']) || in_array($values['font'] ?? '', [fonts::CUSTOM,
+                self::COMPANY_FONT], true) ? $values['font'] : '',
+            'fontname' => trim((string) ($values['fontname'] ?? '')),
             'darkmode' => $choice('darkmode', self::DARK_MODES),
             'activityicons' => $choice('activityicons', activity_icons::CHOICES),
         ];
@@ -290,27 +301,72 @@ class company_style {
      * @return \moodle_url|null
      */
     public static function logo_onbrand_url(int $companyid): ?\moodle_url {
+        return self::file_url($companyid, 'companylogoonbrand');
+    }
+
+    /**
+     * Address of a file uploaded for a company ({@see self::FILE_AREAS}).
+     *
+     * @param int $companyid Company.
+     * @param string $area File area.
+     * @return \moodle_url|null
+     */
+    public static function file_url(int $companyid, string $area): ?\moodle_url {
         $context = \context_system::instance();
-        $files = get_file_storage()->get_area_files(
-            $context->id,
-            'theme_epure',
-            'companylogoonbrand',
-            $companyid,
-            'timemodified DESC',
-            false
-        );
+        $files = get_file_storage()->get_area_files($context->id, 'theme_epure', $area, $companyid, 'timemodified DESC', false);
         if (!$file = reset($files)) {
             return null;
         }
-        // The time of the file in the address makes browsers fetch a new logo, as the file is cached for long.
+        // The time of the file in the address makes browsers fetch a new file, as the file is cached for long.
         return \moodle_url::make_pluginfile_url(
             $context->id,
             'theme_epure',
-            'companylogoonbrand',
+            $area,
             $companyid,
             '/' . $file->get_timemodified() . '/',
             $file->get_filename()
         );
+    }
+
+    /**
+     * Font face rules and font family of the font of a company, or null when its files are missing.
+     *
+     * @param int $companyid Company.
+     * @param string $font Bundled font, the font uploaded for the site ({@see fonts::CUSTOM}) or for the company
+     *     ({@see self::COMPANY_FONT}).
+     * @param string $name Name of the font uploaded for the company.
+     * @return array{0: string, 1: string}|null
+     */
+    public static function font(int $companyid, string $font, string $name = ''): ?array {
+        global $PAGE;
+        if ($font === self::COMPANY_FONT || $font === fonts::CUSTOM) {
+            $urls = [];
+            foreach (self::FONT_AREAS as $weight => $area) {
+                if ($font === self::COMPANY_FONT) {
+                    $url = self::file_url($companyid, $area);
+                } else {
+                    // The font uploaded for the site, in the settings of the theme.
+                    $setting = $weight === 400 ? 'customfontregular' : 'customfontbold';
+                    $url = get_config('theme_epure', $setting)
+                        ? \theme_config::load('epure')->setting_file_url($setting, $setting) : null;
+                }
+                if ($url) {
+                    $urls[$weight] = $url instanceof \moodle_url ? $url->out(false) : (string) $url;
+                }
+            }
+            if (!isset($urls[400])) {
+                return null;
+            }
+            $family = $font === self::COMPANY_FONT ? $name : (string) get_config('theme_epure', 'customfontname');
+            return fonts::custom_scss($family, $urls);
+        }
+        if (!isset(fonts::all()[$font])) {
+            return null;
+        }
+        return [
+            fonts::font_face_css($font, fn($file) => $PAGE->theme->font_url($file, 'theme')->out(false)),
+            fonts::stack($font),
+        ];
     }
 
     /**
@@ -438,10 +494,8 @@ class company_style {
                 '}';
         }
         // The font of the company: its faces, then the font of the text.
-        if ($font = $settings['font']) {
-            global $PAGE;
-            $css .= fonts::font_face_css($font, fn($file) => $PAGE->theme->font_url($file, 'theme')->out(false));
-            $css .= 'body,.tooltip,.popover{font-family:' . fonts::stack($font) . ';}';
+        if ($settings['font'] && ($font = self::font((int) ($company->id ?? 0), $settings['font'], $settings['fontname']))) {
+            $css .= $font[0] . 'body,.tooltip,.popover{font-family:' . $font[1] . ';}';
         }
         if (!empty($company->customcss)) {
             // The custom CSS of the company, as IOMAD's own theme applies it. A closing style

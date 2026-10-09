@@ -24,10 +24,11 @@
     * name - name of the setting, posted as epure_<name>
     * label - label of the setting
     * options - value, label, selected
+    * help - optional help under the list
 
     Example context (json):
     {
-        "name": "quicksearch", "label": "Quick search",
+        "name": "quicksearch", "label": "Quick search", "help": "",
         "options": [{"value": "", "label": "As the site (On)", "selected": true},
             {"value": "show", "label": "On", "selected": false}, {"value": "hide", "label": "Off", "selected": false}]
     }
@@ -37,8 +38,10 @@
         <label class="mb-0" for="id_epure_{{name}}">{{label}}</label>
     </div>
     <div class="col-md-9 d-flex flex-wrap align-items-start felement">
-        <select class="custom-select form-select" id="id_epure_{{name}}" name="epure_{{name}}">
+        <select class="custom-select form-select" id="id_epure_{{name}}" name="epure_{{name}}"
+            {{#help}}aria-describedby="id_epure_{{name}}_help"{{/help}}>
             {{#options}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/options}}
         </select>
+        {{#help}}<p class="small text-muted mt-1 mb-0 w-100" id="id_epure_{{name}}_help">{{help}}</p>{{/help}}
     </div>
 </div>
