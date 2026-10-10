@@ -166,6 +166,38 @@
         background-color: transparent !important; // stylelint-disable-line declaration-no-important
     }
 
+    // Popovers (help of the forms, among others): Bootstrap 4 (Moodle 4.5) writes the colour of their text and of
+    // their arrow at build time, dark text and a white arrow; Bootstrap 5 reads them from these properties.
+    .popover {
+        --bs-popover-bg: var(--epure-surface);
+        --bs-popover-border-color: var(--epure-border);
+        --bs-popover-header-bg: var(--epure-surface-raised);
+        --bs-popover-header-color: var(--epure-ink);
+        --bs-popover-body-color: var(--epure-ink);
+    }
+
+    .popover-header,
+    .popover-body {
+        color: var(--epure-ink);
+    }
+
+    .popover-header {
+        background-color: var(--epure-surface-raised);
+        border-color: var(--epure-border);
+    }
+
+    @each $side in (top, right, bottom, left) {
+        .bs-popover-#{$side} > .arrow::before,
+        .bs-popover-auto[x-placement^="#{$side}"] > .arrow::before {
+            border-#{$side}-color: var(--epure-border);
+        }
+
+        .bs-popover-#{$side} > .arrow::after,
+        .bs-popover-auto[x-placement^="#{$side}"] > .arrow::after {
+            border-#{$side}-color: var(--epure-surface);
+        }
+    }
+
     // Days and events of the calendar in the colour of the text, not of the links.
     #page .maincalendar .calendarmonth td.day a.day.aalink,
     #page .maincalendar .calendarmonth li[data-region="event-item"] > a[data-action="view-event"] {
