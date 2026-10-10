@@ -646,8 +646,9 @@
         }
     }
 
-    // Course images and illustrations stay as they are; icons drawn in dark grey are lightened.
-    .icon:not(.activityicon):not(.fa),
+    // Course images and illustrations stay as they are; icons drawn in dark grey are lightened. Font icons (fa,
+    // and fa-solid, fa-regular… of Font Awesome 6) already take the colour of the text.
+    .icon:not(.activityicon):not(.fa):not([class*="fa-"]),
     .epure-activity-nav-name .activityicon,
     img.epure-qs-icon {
         filter: invert(.85) hue-rotate(180deg);

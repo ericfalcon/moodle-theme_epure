@@ -160,13 +160,23 @@ $epure-event-colours: (
     }
 }
 
-// Delete and edit of the events, and the filters of the types: in the colour of the text instead of Moodle's blue.
-.maincalendar .event .commands a,
-.maincalendar .calendar_filters li span i {
+// Delete and edit of the events: in the colour of the text instead of Moodle's blue.
+.maincalendar .event .commands a {
     color: var(--epure-ink-muted);
 
     &:hover,
     &:focus {
         color: var(--epure-brand-text);
     }
+}
+
+// Filters of the types of events (in the calendar and in its block), on their light pastel pills in light and dark
+// mode: the eye in dark grey instead of Moodle's blue, in the brand colour under the pointer.
+#page-wrapper .calendar_filters li span[class*="calendar_event_"] i {
+    color: #41474f;
+}
+
+#page-wrapper .calendar_filters li a:hover span[class*="calendar_event_"] i,
+#page-wrapper .calendar_filters li a:focus span[class*="calendar_event_"] i {
+    color: var(--epure-light-brand-text);
 }

@@ -72,14 +72,12 @@
     }
 }
 
-// On phones, a long company name in the header is cut instead of pushing the user menu out.
-@media (max-width: 575.98px) {
-    .navbar.fixed-top .companymenu .companybutton,
-    .navbar.fixed-top .companymenu > .dropdown > .btn {
-        max-width: 9rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+// IOMAD company menu on phones and small tablets: the header has no room for it (without it, it already fills
+// 360 pixels), and it pushed the user menu (preferences, logout) and the edit mode switch out of the screen. It is
+// left out there; the company is changed from the IOMAD dashboard, which has its own selector.
+@media (max-width: 767.98px) {
+    .navbar.fixed-top .companymenu {
+        display: none;
     }
 }
 

@@ -224,3 +224,35 @@
     // The conversation open is shown by a rule of style/epure.css: the SCSS compiler of Moodle cannot read a selector
     // :has() with an attribute.
 }
+
+// Notifications of the header (bell): Moodle writes the background of the unread ones (light grey, also in dark
+// mode, under light text), the brand colour with white text under the pointer, and a fixed blue for the selected
+// one. They take the colours of the theme: the unread ones on the soft brand colour, in light and dark mode.
+.content-item-container {
+    border-color: var(--epure-border);
+
+    &.unread {
+        background-color: var(--epure-brand-soft);
+    }
+
+    &:hover,
+    &.unread:hover,
+    &.selected {
+        color: var(--epure-ink);
+        background-color: var(--epure-surface-muted);
+        border-color: var(--epure-border);
+
+        .content-item-footer .timestamp {
+            color: var(--epure-ink-muted);
+        }
+    }
+
+    .content-item-footer .timestamp {
+        color: var(--epure-ink-muted);
+    }
+
+    .view-more,
+    &:hover .view-more {
+        color: var(--epure-brand-text);
+    }
+}
