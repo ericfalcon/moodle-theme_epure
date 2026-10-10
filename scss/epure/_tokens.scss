@@ -37,4 +37,7 @@
     --epure-shadow: 0 1px 2px rgba(16, 22, 32, .06), 0 2px 8px rgba(16, 22, 32, .05);
     --epure-shadow-hover: 0 4px 10px rgba(16, 22, 32, .08), 0 14px 32px -12px rgba(16, 22, 32, .18);
     --epure-focus: #{$epure-brand-text};
+    // Ring of the focused fields, buttons and tabs: Bootstrap writes it at build time in the colour of the site, which
+    // stayed when an IOMAD company has a colour of its own. It follows the focus colour of the page instead.
+    --epure-focus-ring: color-mix(in srgb, var(--epure-focus) 55%, transparent);
 }

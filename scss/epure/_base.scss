@@ -122,6 +122,12 @@ table th a[data-bs-toggle="popover"] {
         background-color: var(--epure-brand);
         border-color: var(--epure-brand);
     }
+
+    // Moodle writes a blue ring around the active tab or pill once focused, whatever the colours of the site.
+    body .nav-tabs:not(.more-nav) .nav-link.active:focus,
+    body .nav-pills .nav-link.active:focus {
+        box-shadow: 0 0 0 .2rem var(--epure-focus-ring);
+    }
 }
 
 // Visible keyboard focus everywhere (WCAG 2.4.7 and 2.4.11). Bootstrap and Moodle remove the outline
@@ -138,6 +144,31 @@ summary:focus-visible {
     outline: 2px solid var(--epure-focus) !important; // stylelint-disable-line declaration-no-important
     outline-offset: 2px;
     box-shadow: none;
+}
+
+// Rings and outlines that Bootstrap and Moodle write at build time in the colour of the site: in the colours of the
+// page, those of the IOMAD company when it has its own.
+.btn-outline-primary:focus,
+.btn-outline-primary.focus,
+.btn-outline-primary:not(:disabled):not(.disabled):active:focus,
+.btn-outline-primary:not(:disabled):not(.disabled).active:focus,
+.show > .btn-outline-primary.dropdown-toggle:focus,
+a.badge-primary:focus,
+a.badge-primary.focus {
+    box-shadow: 0 0 0 .2rem var(--epure-focus-ring);
+}
+
+.dropdown-item-outline:focus,
+.dropdown-item-outline:focus-within {
+    outline-color: var(--epure-focus);
+}
+
+.overlay-preview-borders,
+.editing .activity-item:hover:not(:has(.activity:hover)),
+.editing .activity-item.selected,
+.btn.btn-icon.icons-collapse-expand:hover,
+.btn-icon.icons-collapse-expand:hover {
+    outline-color: var(--epure-brand);
 }
 
 // Skip links: Moodle's "Skip to main content" becomes a clear button when focused.

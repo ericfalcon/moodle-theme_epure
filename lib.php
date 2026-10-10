@@ -190,6 +190,10 @@ function theme_epure_get_pre_scss($theme) {
         'epure-on-accent' => $accent['on'],
         'epure-dark-accent' => $darkaccent['fill'],
         'epure-dark-on-accent' => $darkaccent['on'],
+        // The ring of the focused fields, buttons and tabs, in the colour of the page (that of the IOMAD company when it
+        // has one) rather than the colour of the site written at build time: Bootstrap 4 (Moodle 4.5) and 5.
+        'input-btn-focus-color' => 'var(--epure-focus-ring)',
+        'focus-ring-color' => 'var(--epure-focus-ring)',
     ];
     // Compact density: less space around and between the elements, for pages with a lot of content.
     if (($theme->settings->density ?? '') === 'compact') {
