@@ -131,6 +131,26 @@ html.epure-a11y-motion *::after {
         // Above the navigation bar at the bottom of the screen too, when there is one.
         max-height: calc(100dvh - #{$navbar-height} - var(--epure-mobilenav-height, 0px) - 1.5rem);
     }
+
+    // Phones in landscape and other short screens: the header, the navigation bar at the bottom, the title and the
+    // reset button left almost no height for the choices. The panel scrolls as a whole instead of its choices alone.
+    @media (max-height: 500px) {
+        position: fixed;
+        top: calc(#{$navbar-height} + .25rem);
+        right: 1rem;
+        left: auto;
+        width: 26rem;
+        max-width: calc(100vw - 2rem);
+        max-height: calc(100dvh - #{$navbar-height} - var(--epure-mobilenav-height, 0px) - .75rem);
+        padding: .75rem 1rem;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+
+        .epure-a11y-body {
+            flex: none;
+            overflow: visible;
+        }
+    }
 }
 
 .epure-a11y-body {
