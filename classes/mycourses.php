@@ -62,7 +62,8 @@ class mycourses {
         $userid = $userid ?? (int) $USER->id;
         $user = \core_user::get_user($userid);
 
-        $courses = enrol_get_all_users_courses($userid, true, null);
+        // The revision of the course keys the progress kept in the caches, that of Épure and that of Moodle.
+        $courses = enrol_get_all_users_courses($userid, true, 'cacherev');
         $favourites = [];
         $service = \core_favourites\service_factory::get_service_for_user_context(\context_user::instance($userid));
         foreach ($service->find_favourites_by_type('core_course', 'courses') as $favourite) {
