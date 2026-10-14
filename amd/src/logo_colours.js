@@ -218,6 +218,25 @@ export const extractColours = (img) => {
 };
 
 /**
+ * Shows a colour in the two squares of Moodle's colour picker, next to the gradient.
+ *
+ * Moodle only updates them on a click in the gradient, so a colour typed in the field, or
+ * chosen from the logo, would leave the squares showing the previous colour.
+ *
+ * @param {HTMLInputElement} input The colour field.
+ */
+const syncPicker = (input) => {
+    const colour = input.value.trim();
+    if (!window.CSS?.supports('color', colour)) {
+        return;
+    }
+    input.parentElement?.querySelectorAll('.admin_colourpicker .previewcolour, .admin_colourpicker .currentcolour')
+        .forEach((square) => {
+            square.style.backgroundColor = colour;
+        });
+};
+
+/**
  * Fills the colour field and announces the change.
  *
  * @param {HTMLElement} region The logo colours region.
@@ -303,6 +322,8 @@ export const init = (selector) => {
         return;
     }
     region.dataset.initialised = '1';
+    const input = document.getElementById(region.dataset.input);
+    input?.addEventListener('input', () => syncPicker(input));
     const logo = () => region.querySelector('[data-region="logo"]');
 
     const start = async() => {
