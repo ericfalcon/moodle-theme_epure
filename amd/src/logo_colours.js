@@ -277,9 +277,20 @@ const renderSwatches = async(region, colours) => {
         button.setAttribute('aria-label', labels[index]);
         const dot = document.createElement('span');
         dot.className = 'epure-logocolours-dot';
-        dot.style.backgroundColor = colour;
+        // Inline sizes: the setting can be shown under another theme, without the styles of Épure.
+        Object.assign(dot.style, {
+            display: 'inline-block',
+            flex: 'none',
+            width: '22px',
+            height: '22px',
+            verticalAlign: 'middle',
+            borderRadius: '50%',
+            boxShadow: 'inset 0 0 0 1px rgba(0, 0, 0, .15)',
+            backgroundColor: colour,
+        });
         dot.setAttribute('aria-hidden', 'true');
-        button.append(dot, document.createTextNode(colour));
+        // The space separates the dot from the code without the styles of Épure; Épure's flex gap replaces it.
+        button.append(dot, document.createTextNode(' ' + colour));
         return button;
     }));
 };
@@ -384,6 +395,8 @@ export const setLogo = (selector, url) => {
         img = document.createElement('img');
         img.alt = '';
         img.className = 'epure-logocolours-logo';
+        img.style.maxWidth = '100%';
+        img.style.maxHeight = '160px';
         img.dataset.region = 'logo';
         region.querySelector('[data-region="swatches"]').before(img);
     }
