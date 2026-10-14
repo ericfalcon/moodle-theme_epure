@@ -91,7 +91,8 @@ class hook_callbacks {
      * The company selected in IOMAD (the company of the user, or the one an administrator chose in the
      * header) gives its theme to the pages, for its users and for the administrators alike: an
      * administrator sees each company as its users see it, and the theme of the site without a company.
-     * The theme is set for the session, as IOMAD does for the address of a company, whose theme is kept.
+     * The theme is set for the session, as IOMAD does for the address of a company, whose theme is kept for
+     * that company only: its address can be that of the whole site.
      *
      * When the theme of a company changes, IOMAD also writes it on its users, but a user already logged in
      * kept the theme of their session until they logged in again: it is read again here.
@@ -108,12 +109,23 @@ class hook_callbacks {
                     $USER->theme = (string) $theme;
                 }
             }
-            // A theme set by IOMAD from the address of a company is kept.
             $ours = $SESSION->epure_companytheme ?? null;
-            if (!empty($SESSION->theme) && $SESSION->theme !== $ours) {
-                return;
-            }
             $companyid = (int) ($SESSION->currenteditingcompany ?? 0);
+            // A theme set by IOMAD from the address of a company is kept for that company. When the address of the
+            // site is that of one company (often for a link with another software), the users of the other companies,
+            // and an administrator working on another company, get the theme of their own company.
+            $fromhost = false;
+            if (!empty($SESSION->theme) && $SESSION->theme !== $ours) {
+                $host = self::hostname_company();
+                if (!$host || $SESSION->theme !== (string) $host->theme) {
+                    return;
+                }
+                $companyid = self::company_of_user($companyid, (int) $host->id);
+                if ($companyid === (int) $host->id) {
+                    return;
+                }
+                $fromhost = true;
+            }
             // The IOMAD dashboard records the company chosen in its selector after the theme is set: the
             // page that changes the company already gets its theme (IOMAD checks the permission itself).
             if (str_ends_with((string) ($_SERVER['SCRIPT_NAME'] ?? ''), iomad::PAGES['dashboard'])) {
@@ -128,9 +140,47 @@ class hook_callbacks {
         if ($theme !== '' && \core_component::get_component_directory('theme_' . $theme)) {
             $SESSION->theme = $theme;
             $SESSION->epure_companytheme = $theme;
-        } else if ($ours !== null) {
+        } else if ($ours !== null && !$fromhost) {
             unset($SESSION->theme, $SESSION->epure_companytheme);
         }
+    }
+
+    /**
+     * The IOMAD company whose address is that of this page, as IOMAD finds it to set its theme.
+     *
+     * @return \stdClass|null With id and theme.
+     */
+    protected static function hostname_company(): ?\stdClass {
+        global $DB;
+        $hostname = (string) ($_SERVER['SERVER_NAME'] ?? '');
+        if ($hostname === '') {
+            return null;
+        }
+        return $DB->get_record(iomad::table('company'), ['hostname' => $hostname], 'id, theme', IGNORE_MULTIPLE) ?: null;
+    }
+
+    /**
+     * The company the user works in, when the address of the site gave the company of its address.
+     *
+     * IOMAD selects the company of the address for a session that has none, also for the users of another
+     * company, until a page checks their company: their own company, the one they used last, is taken.
+     *
+     * @param int $companyid Company selected in the session.
+     * @param int $hostid Company of the address.
+     * @return int
+     */
+    protected static function company_of_user(int $companyid, int $hostid): int {
+        global $DB, $USER;
+        if ($companyid !== $hostid) {
+            return $companyid;
+        }
+        $table = iomad::table('company_users');
+        $member = $DB->record_exists($table, ['userid' => $USER->id, 'companyid' => $hostid]);
+        if ($member || !$DB->record_exists($table, ['userid' => $USER->id])) {
+            return $hostid;
+        }
+        $last = $DB->get_records($table, ['userid' => $USER->id], 'lastused DESC, id DESC', 'id, companyid', 0, 1);
+        return (int) reset($last)->companyid;
     }
 
     /**
