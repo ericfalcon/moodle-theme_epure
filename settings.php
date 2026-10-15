@@ -168,6 +168,16 @@ if ($ADMIN->fulltree) {
         1
     ));
 
+    // IOMAD: the courses of all the companies of a learner in « My courses », each opening in its company.
+    if (\theme_epure\company_style::iomad_installed()) {
+        $page->add(new admin_setting_configcheckbox(
+            'theme_epure/iomadallcourses',
+            get_string('iomadallcourses', 'theme_epure'),
+            get_string('iomadallcourses_desc', 'theme_epure'),
+            0
+        ));
+    }
+
     // Catalogue of the courses, and presentation of a course on its enrolment page.
     $page->add(new admin_setting_configcheckbox(
         'theme_epure/catalogue',

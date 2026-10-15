@@ -46,6 +46,7 @@ The tab ends with the **e-mails** in the colours of the brand (see Branded e-mai
 | Setting | Effect |
 |---|---|
 | My courses by role | See My courses page. |
+| All the companies in My courses (IOMAD) | Off: as IOMAD, only the courses of the company the user is logged in. On: a learner of several companies sees all their courses, those of their other companies with the name of the company, and each course opens in its company (its colours, its activity counted for it). Not for the managers and the administrators. |
 | Course catalogue | See Course catalogue. |
 | Course banner | See Course page. |
 | Progress of the sections | On the course page, how many of its activities the learner has completed in each section and subsection. |

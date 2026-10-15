@@ -38,6 +38,7 @@ class hook_callbacks {
      */
     public static function after_config(\core\hook\after_config $hook): void {
         global $CFG;
+        self::follow_course_company();
         self::follow_company_theme();
         self::give_back_certificate_frames();
         if (
@@ -83,6 +84,56 @@ class hook_callbacks {
         global $CFG;
         $custom = ltrim((string) ($CFG->config_php_settings['customstringmanager'] ?? ''), '\\');
         return $custom === '' || $custom === string_manager::class;
+    }
+
+    /**
+     * With the setting « All the companies » (« My courses » shows the courses of all the companies of a learner):
+     * a course of another company of the learner opens in that company, as if they had logged in there, with its
+     * theme, and its events go to that company. The company they open it in is the one they were enrolled in it
+     * through. Not for the managers and the administrators, who choose the company they work on in the IOMAD
+     * dashboard.
+     *
+     * The course is that of the page of a course or of an activity.
+     */
+    protected static function follow_course_company(): void {
+        global $DB, $SESSION, $USER;
+        if (
+            during_initial_install() || empty($USER->id) || isguestuser() || !company_style::iomad_installed()
+                || !get_config('theme_epure', 'iomadallcourses')
+        ) {
+            return;
+        }
+        try {
+            $script = (string) ($_SERVER['SCRIPT_NAME'] ?? '');
+            $courseid = 0;
+            if (str_ends_with($script, '/course/view.php')) {
+                $courseid = optional_param('id', 0, PARAM_INT);
+            } else if (preg_match('~/mod/[a-z0-9_]+/view\.php$~', $script) && ($cmid = optional_param('id', 0, PARAM_INT))) {
+                $courseid = (int) $DB->get_field('course_modules', 'course', ['id' => $cmid]);
+            }
+            $current = (int) ($SESSION->currenteditingcompany ?? 0);
+            if (
+                !$courseid || $courseid === SITEID || !$current || is_siteadmin()
+                    || !iomad::other_company_courses((int) $USER->id, [$courseid], $current)
+                    || iomad::is_manager((int) $USER->id)
+            ) {
+                return;
+            }
+            $companyid = iomad::course_company((int) $USER->id, $courseid);
+            if ($companyid && $companyid !== $current) {
+                // As IOMAD changes the company in its dashboard.
+                $SESSION->currenteditingcompany = $companyid;
+                unset($SESSION->company);
+                $DB->set_field(
+                    iomad::table('company_users'),
+                    'lastused',
+                    time(),
+                    ['userid' => $USER->id, 'companyid' => $companyid]
+                );
+            }
+        } catch (\Throwable $e) {
+            debugging('Épure could not open the course in its IOMAD company: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        }
     }
 
     /**

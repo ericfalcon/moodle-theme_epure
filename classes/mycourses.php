@@ -82,11 +82,21 @@ class mycourses {
             $favourites[(int) $favourite->itemid] = true;
         }
         $lastaccess = $DB->get_records_menu('user_lastaccess', ['userid' => $userid], '', 'courseid, timeaccess');
+        // IOMAD: the courses of the company the user works in, as IOMAD's « My courses »; or, with the setting « All
+        // the companies », all their courses, those of their other companies with the name of the company, where
+        // they open ({@see hook_callbacks::follow_course_company()}).
+        $companyid = (int) $USER->id === $userid ? iomad::my_companyid() : 0;
+        $othercompanies = array_flip(iomad::other_company_courses($userid, array_keys($courses), $companyid));
+        $allcompanies = (bool) get_config('theme_epure', 'iomadallcourses');
+        $companynames = [];
 
         $sections = [self::TEACHING => [], self::LEARNING => []];
         foreach ($courses as $course) {
             // Courses the user hid from « My courses » stay hidden.
-            if (get_user_preferences('block_myoverview_hidden_course_' . $course->id, 0, $userid)) {
+            if (
+                get_user_preferences('block_myoverview_hidden_course_' . $course->id, 0, $userid)
+                || (isset($othercompanies[$course->id]) && !$allcompanies)
+            ) {
                 continue;
             }
             $context = \context_course::instance($course->id);
@@ -94,6 +104,11 @@ class mycourses {
             $card = self::card($course, $context, $output, $user, $teaching);
             $card['favourite'] = isset($favourites[$course->id]);
             $card['lastaccess'] = (int) ($lastaccess[$course->id] ?? 0);
+            if (isset($othercompanies[$course->id])) {
+                $other = iomad::course_company($userid, (int) $course->id);
+                $companynames[$other] ??= ($company = iomad::company($other)) ? format_string($company->name) : null;
+                $card['company'] = $companynames[$other];
+            }
             $sections[$teaching ? self::TEACHING : self::LEARNING][] = $card;
         }
 

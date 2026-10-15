@@ -58,4 +58,56 @@ final class iomad_test extends \advanced_testcase {
             }
         }
     }
+
+    /**
+     * The courses of other companies are left out of « My courses », unless shared with the company or followed
+     * through it; a course of no company stays.
+     */
+    public function test_other_company_courses(): void {
+        global $DB;
+        iomad::reset();
+        $this->assertSame([], iomad::other_company_courses(2, [3], 0));
+        if (!iomad::installed()) {
+            $this->assertSame([], iomad::other_company_courses(2, [3], 1));
+            return;
+        }
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $user = $generator->create_user();
+        $companies = [];
+        foreach (['A', 'B'] as $name) {
+            $category = $generator->create_category();
+            $companies[$name] = (int) $DB->insert_record(iomad::table('company'), ['name' => $name, 'shortname' => $name,
+                'city' => 'Lyon', 'country' => 'FR', 'category' => $category->id]);
+        }
+        $courses = [];
+        foreach (['ofa', 'ofb', 'open', 'sharedwithb', 'tracked', 'none'] as $name) {
+            $courses[$name] = (int) $generator->create_course()->id;
+            $DB->delete_records(iomad::table('company_course'), ['courseid' => $courses[$name]]);
+            $DB->delete_records(iomad::table('iomad_courses'), ['courseid' => $courses[$name]]);
+        }
+        $link = fn(string $course, string $company) => $DB->insert_record(
+            iomad::table('company_course'),
+            ['companyid' => $companies[$company], 'courseid' => $courses[$course], 'departmentid' => 0]
+        );
+        $link('ofa', 'A');
+        $link('ofb', 'B');
+        $link('open', 'A');
+        $link('sharedwithb', 'A');
+        $link('tracked', 'A');
+        $DB->insert_record(iomad::table('iomad_courses'), ['courseid' => $courses['open'], 'licensed' => 0, 'shared' => 1]);
+        $DB->insert_record(
+            iomad::table('company_shared_courses'),
+            ['companyid' => $companies['B'], 'courseid' => $courses['sharedwithb']]
+        );
+        $DB->insert_record(iomad::table('local_iomad_track'), ['userid' => $user->id, 'courseid' => $courses['tracked'],
+            'companyid' => $companies['B'], 'coursename' => 'Tracked', 'timeenrolled' => time()]);
+
+        $others = iomad::other_company_courses((int) $user->id, array_values($courses), $companies['B']);
+        $this->assertSame([$courses['ofa']], $others);
+        $this->assertEqualsCanonicalizing(
+            [$courses['ofb']],
+            iomad::other_company_courses((int) $user->id, array_values($courses), $companies['A'])
+        );
+    }
 }

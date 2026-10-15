@@ -22,7 +22,7 @@
 
     Example context (json):
     {
-        "id": 2, "name": "Safety at work", "url": "#", "image": "", "category": "Training", "status": "inprogress",
+        "id": 2, "name": "Safety at work", "url": "#", "image": "", "company": "Clinic North", "category": "Training", "status": "inprogress",
         "favourite": true, "teaching": true, "rolename": "Teacher", "participants": 24, "active": 10,
         "tograde": 3, "hastograde": true, "gradeurl": "#", "links": [{"label": "Participants", "url": "#", "icon": "fa-users"}]
     }
@@ -35,6 +35,7 @@
             {{#favourite}}<span class="epure-course-card-star"><i class="fa fa-star" aria-hidden="true"></i><span class="sr-only visually-hidden">{{#str}}favourites, block_myoverview{{/str}}</span></span>{{/favourite}}
             {{#hidden}}<span class="epure-course-card-hidden">{{#str}}hiddenfromstudents{{/str}}</span>{{/hidden}}
         </div>
+        {{#company}}<p class="epure-course-card-company"><i class="fa fa-building" aria-hidden="true"></i>{{company}}</p>{{/company}}
         {{#category}}<p class="epure-course-card-category">{{category}}</p>{{/category}}
         <h3 class="epure-course-card-title" id="epure-course-{{id}}"><a href="{{url}}">{{name}}</a></h3>
 

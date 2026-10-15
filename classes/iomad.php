@@ -37,6 +37,7 @@ class iomad {
         'company_course' => 'local_iomad_company_courses',
         'companylicense' => 'local_iomad_company_licenses',
         'iomad_courses' => 'local_iomad_courses',
+        'company_shared_courses' => 'local_iomad_company_shared_courses',
         'companycertificate' => 'local_iomad_company_certificates',
         'local_iomad_track' => 'local_iomad_tracks',
         'local_iomad_track_certs' => 'local_iomad_track_certs',
@@ -165,6 +166,95 @@ class iomad {
             return null;
         }
         return $DB->get_record(self::table('company'), ['id' => $companyid]) ?: null;
+    }
+
+    /**
+     * The courses of a user that belong to other companies than the one they work in, as IOMAD's « My courses » leaves
+     * them out: a course of another company (« Company courses »), not shared with this one, where the user was not
+     * enrolled through this company. A course of no company stays.
+     *
+     * @param int $userid User.
+     * @param int[] $courseids Courses the user is enrolled in.
+     * @param int $companyid Company the user works in.
+     * @return int[] Ids of the courses of other companies.
+     */
+    public static function other_company_courses(int $userid, array $courseids, int $companyid): array {
+        global $DB;
+        if (!$courseids || !$companyid || !self::installed()) {
+            return [];
+        }
+        [$insql, $params] = $DB->get_in_or_equal($courseids, SQL_PARAMS_NAMED);
+        $owned = $DB->get_records_select_menu(
+            self::table('company_course'),
+            "courseid $insql",
+            $params,
+            '',
+            'DISTINCT courseid, 1'
+        );
+        $others = [];
+        foreach (array_keys($owned) as $courseid) {
+            $courseid = (int) $courseid;
+            $ofcompany = $DB->record_exists(self::table('company_course'), ['companyid' => $companyid, 'courseid' => $courseid])
+                || $DB->record_exists(self::table('iomad_courses'), ['courseid' => $courseid, 'shared' => 1])
+                || $DB->record_exists(self::table('company_shared_courses'), ['companyid' => $companyid, 'courseid' => $courseid])
+                || $DB->record_exists(
+                    self::table('local_iomad_track'),
+                    ['userid' => $userid, 'courseid' => $courseid, 'companyid' => $companyid]
+                );
+            if (!$ofcompany) {
+                $others[] = $courseid;
+            }
+        }
+        return $others;
+    }
+
+    /**
+     * The company a course of another company opens in for a user: the one they were enrolled in it through, else a
+     * company of the course they belong to.
+     *
+     * @param int $userid User.
+     * @param int $courseid Course.
+     * @return int Company, 0 when the user belongs to none of its companies.
+     */
+    public static function course_company(int $userid, int $courseid): int {
+        global $DB;
+        if (!self::installed()) {
+            return 0;
+        }
+        $members = 'SELECT companyid FROM {' . self::table('company_users') . '} WHERE userid = :member';
+        $tracked = $DB->get_records_sql(
+            'SELECT id, companyid FROM {' . self::table('local_iomad_track') . '}
+              WHERE userid = :userid AND courseid = :courseid AND companyid IN (' . $members . ')
+           ORDER BY timeenrolled DESC, id DESC',
+            ['userid' => $userid, 'courseid' => $courseid, 'member' => $userid],
+            0,
+            1
+        );
+        if ($tracked) {
+            return (int) reset($tracked)->companyid;
+        }
+        $owners = $DB->get_records_sql(
+            'SELECT id, companyid FROM {' . self::table('company_course') . '}
+              WHERE courseid = :courseid AND companyid IN (' . $members . ')
+           ORDER BY id',
+            ['courseid' => $courseid, 'member' => $userid],
+            0,
+            1
+        );
+        return $owners ? (int) reset($owners)->companyid : 0;
+    }
+
+    /**
+     * Whether a user manages a company (company or department manager, educator...): the company they work on is
+     * theirs to choose in the IOMAD dashboard.
+     *
+     * @param int $userid User.
+     * @return bool
+     */
+    public static function is_manager(int $userid): bool {
+        global $DB;
+        $select = 'userid = :userid AND managertype > 0';
+        return self::installed() && $DB->record_exists_select(self::table('company_users'), $select, ['userid' => $userid]);
     }
 
     /**
