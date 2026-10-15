@@ -144,7 +144,7 @@ final class mycourses_test extends \advanced_testcase {
      * as a teacher, or not enrolled, they teach it.
      */
     public function test_is_teaching_admin(): void {
-        global $USER;
+        global $DB, $USER;
         $this->resetAfterTest();
         $this->setAdminUser();
         $generator = $this->getDataGenerator();
@@ -156,6 +156,10 @@ final class mycourses_test extends \advanced_testcase {
         $this->assertFalse(mycourses::is_teaching(\context_course::instance($learning->id), (int) $USER->id));
         $this->assertTrue(mycourses::is_teaching(\context_course::instance($teaching->id), (int) $USER->id));
         $this->assertTrue(mycourses::is_teaching(\context_course::instance($other->id), (int) $USER->id));
+        // Switched to the role of a student in a course they are not enrolled in.
+        $student = $DB->get_field('role', 'id', ['shortname' => 'student']);
+        role_switch($student, \context_course::instance($other->id));
+        $this->assertFalse(mycourses::is_teaching(\context_course::instance($other->id), (int) $USER->id));
 
         $teacher = $generator->create_user();
         $generator->enrol_user($teacher->id, $teaching->id, 'teacher');
