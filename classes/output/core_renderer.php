@@ -161,11 +161,22 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $data = \theme_epure\learner_dashboard::export($this);
             return $data ? $header . $this->render_from_template('theme_epure/learner_dashboard', $data) : $header;
         }
-        // The progress of the sections, with or without the banner.
-        if (\theme_epure\course_page::section_progress_applies($this->page, (int) $USER->id)) {
-            $sections = \theme_epure\course_page::sections($this->page->course, (int) $USER->id);
-            if ($sections) {
-                $this->page->requires->js_call_amd('theme_epure/course_page', 'init', [$sections]);
+        // The progress of the sections and the state of the activities, with or without the banner.
+        if (\theme_epure\course_page::learner_applies($this->page, (int) $USER->id)) {
+            $sections = \theme_epure\course_page::section_progress_applies($this->page, (int) $USER->id)
+                ? \theme_epure\course_page::sections($this->page->course, (int) $USER->id) : [];
+            $states = \theme_epure\activity_state::course($this->page->course, (int) $USER->id);
+            if ($sections || $states) {
+                // A course has many activities: their data goes in the page, not in the call of the script.
+                $this->page->requires->js_call_amd('theme_epure/course_page', 'init');
+                $header .= \html_writer::tag(
+                    'script',
+                    json_encode(
+                        ['sections' => $sections, 'states' => $states, 'all' => \theme_epure\activity_state::all()],
+                        JSON_HEX_TAG | JSON_HEX_AMP
+                    ),
+                    ['type' => 'application/json', 'id' => 'epure-course-page-data']
+                );
             }
         }
         if (!\theme_epure\course_page::applies($this->page)) {

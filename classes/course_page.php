@@ -51,9 +51,21 @@ class course_page {
      * @return bool
      */
     public static function section_progress_applies(\moodle_page $page, int $userid): bool {
+        return company_style::enabled('sectionprogress') && self::learner_applies($page, $userid);
+    }
+
+    /**
+     * Whether the course page is seen by a learner of the course, outside the edit mode: it then shows the state of
+     * each activity ({@see activity_state}).
+     *
+     * @param \moodle_page $page Page.
+     * @param int $userid User.
+     * @return bool
+     */
+    public static function learner_applies(\moodle_page $page, int $userid): bool {
         if (
             !str_starts_with((string) $page->pagetype, 'course-view-') || empty($page->course->id)
-                || (int) $page->course->id === (int) SITEID || !company_style::enabled('sectionprogress')
+                || (int) $page->course->id === (int) SITEID
                 || !isloggedin() || isguestuser() || $page->user_is_editing()
         ) {
             return false;

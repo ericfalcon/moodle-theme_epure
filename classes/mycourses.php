@@ -263,6 +263,12 @@ class mycourses {
         if ($deadline) {
             $deadline['date'] = userdate($deadline['time'], get_string('strftimedatefullshort', 'langconfig'));
         }
+        if ($next) {
+            $state = !empty($next['base']) ? activity_state::at($next['base'], $next['due'] ?? null) : null;
+            $next['state'] = $state && activity_state::notable($state)
+                ? activity_state::export($state, $next['due'] ?? null) : null;
+            unset($next['base'], $next['due']);
+        }
 
         if ($completed) {
             $action = get_string('mycourses_review', 'theme_epure');
@@ -315,7 +321,10 @@ class mycourses {
                 }
                 $state = $completion->get_data($cm, false, $user->id)->completionstate;
                 if ($state == COMPLETION_INCOMPLETE || $state == COMPLETION_COMPLETE_FAIL) {
-                    $next = ['name' => $cm->get_formatted_name(), 'url' => $cm->url->out(false)];
+                    // Its state is kept without the time: late or due soon is told when it is shown.
+                    $base = activity_state::base($cm, $completion, (int) $user->id);
+                    $next = ['name' => $cm->get_formatted_name(), 'url' => $cm->url->out(false), 'base' => $base,
+                        'due' => $base ? activity_state::deadline($cm, (int) $user->id) : null];
                     break;
                 }
             }

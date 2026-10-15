@@ -13,6 +13,12 @@
     --epure-focus: var(--epure-dark-brand-text);
     --epure-accent: var(--epure-dark-accent);
     --epure-on-accent: var(--epure-dark-on-accent);
+    --epure-state-done: #86dd9c;
+    --epure-state-done-soft: #14301c;
+    --epure-state-late: #ffb3aa;
+    --epure-state-late-soft: #3d1714;
+    --epure-state-soon: #ffd08a;
+    --epure-state-soon-soft: #36270f;
     --epure-page: #0f1217;
     --epure-surface: #171b22;
     // Muted boxes stay close to the surface, so that the brand text keeps its AA contrast on them.
@@ -96,7 +102,8 @@
     .versionnumber,
     .requiredby,
     .activity-dates,
-    .activity-information {
+    .activity-information,
+    #courseindex .courseindex-item.dimmed .courseindex-link {
         color: var(--epure-ink-muted) !important; // stylelint-disable-line declaration-no-important
     }
 

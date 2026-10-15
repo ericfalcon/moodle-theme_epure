@@ -52,7 +52,7 @@
                             </div>
                         </div>
                     {{/hasprogress}}
-                    {{#next}}<p class="epure-learner-resume-next">{{#str}}mycourses_next, theme_epure{{/str}} {{name}}</p>{{/next}}
+                    {{#next}}<p class="epure-learner-resume-next">{{#str}}mycourses_next, theme_epure{{/str}} {{name}}{{#state}} {{>theme_epure/activity_state}}{{/state}}</p>{{/next}}
                     <a class="btn btn-primary btn-lg epure-learner-resume-action" href="{{actionurl}}">
                         {{action}}<span class="sr-only visually-hidden"> – {{name}}</span>
                     </a>

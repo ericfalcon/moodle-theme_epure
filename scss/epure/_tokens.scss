@@ -40,4 +40,12 @@
     // Ring of the focused fields, buttons and tabs: Bootstrap writes it at build time in the colour of the site, which
     // stayed when an IOMAD company has a colour of its own. It follows the focus colour of the page instead.
     --epure-focus-ring: color-mix(in srgb, var(--epure-focus) 55%, transparent);
+    // States of the activities (see _states.scss): text and tint of each, AA on the surfaces and on their tint.
+    --epure-state-done: #1b7a33;
+    --epure-state-done-soft: #e9f6ec;
+    --epure-state-late: #b42318;
+    --epure-state-late-soft: #fdecea;
+    --epure-state-soon: #8a4b00;
+    --epure-state-soon-soft: #fff3dc;
+    --epure-state-neutral: var(--epure-ink-muted);
 }

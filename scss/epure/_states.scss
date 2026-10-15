@@ -1,0 +1,98 @@
+// States of the activities for the learner (\theme_epure\activity_state): the same colour, icon and label on the
+// course page, in the course index and on the dashboard. Late and failed in red, due soon in amber, in progress in
+// the brand colour, done and passed in green; to do, locked and optional stay neutral.
+.epure-state {
+    --epure-state-ink: var(--epure-state-neutral);
+    --epure-state-bg: var(--epure-surface-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    max-width: 100%;
+    padding: .125rem .5rem .125rem .375rem;
+    font-size: .8125rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--epure-state-ink);
+    vertical-align: middle;
+    background: var(--epure-state-bg);
+    border-radius: var(--epure-radius-pill);
+
+    .icon {
+        margin: 0;
+        font-size: .875em;
+        color: inherit;
+    }
+}
+
+.epure-state-late,
+.epure-state-failed {
+    --epure-state-ink: var(--epure-state-late);
+    --epure-state-bg: var(--epure-state-late-soft);
+}
+
+.epure-state-soon {
+    --epure-state-ink: var(--epure-state-soon);
+    --epure-state-bg: var(--epure-state-soon-soft);
+}
+
+.epure-state-progress {
+    --epure-state-ink: var(--epure-brand-text);
+    --epure-state-bg: var(--epure-brand-soft);
+}
+
+.epure-state-done,
+.epure-state-passed {
+    --epure-state-ink: var(--epure-state-done);
+    --epure-state-bg: var(--epure-state-done-soft);
+}
+
+// Optional: a discreet outline, not a tint.
+.epure-state-optional {
+    --epure-state-bg: transparent;
+    font-weight: 400;
+    box-shadow: inset 0 0 0 1px var(--epure-border);
+}
+
+// Course page: under the name of the activity.
+.activity-name-area > .epure-state {
+    align-self: flex-start;
+    margin-top: .25rem;
+}
+
+// Next activity of a course (banner, « My courses », dashboard): after its name.
+.epure-course-banner-next,
+.epure-course-card-next,
+.epure-learner-resume-next {
+    .epure-state {
+        margin-inline-start: .25rem;
+    }
+}
+
+// Course index: the icon of each activity in the colour of its state.
+#courseindex [data-for="cm"] [data-for="cm_completion"] .icon {
+    color: var(--epure-state-neutral);
+}
+
+#courseindex {
+    [data-epure-state="late"],
+    [data-epure-state="failed"] {
+        [data-for="cm_completion"] .icon {
+            color: var(--epure-state-late);
+        }
+    }
+
+    [data-epure-state="soon"] [data-for="cm_completion"] .icon {
+        color: var(--epure-state-soon);
+    }
+
+    [data-epure-state="progress"] [data-for="cm_completion"] .icon {
+        color: var(--epure-brand-text);
+    }
+
+    [data-epure-state="done"],
+    [data-epure-state="passed"] {
+        [data-for="cm_completion"] .icon {
+            color: var(--epure-state-done);
+        }
+    }
+}

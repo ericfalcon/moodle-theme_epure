@@ -74,7 +74,7 @@
                 </div>
             {{/hasprogress}}
             {{#next}}
-                <p class="epure-course-card-next">{{#str}}mycourses_next, theme_epure{{/str}} <a href="{{url}}">{{name}}</a></p>
+                <p class="epure-course-card-next">{{#str}}mycourses_next, theme_epure{{/str}} <a href="{{url}}">{{name}}</a>{{#state}} {{>theme_epure/activity_state}}{{/state}}</p>
             {{/next}}
             {{#deadline}}
                 <p class="epure-course-card-deadline"><i class="fa fa-calendar" aria-hidden="true"></i>
