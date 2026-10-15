@@ -172,7 +172,11 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 $header .= \html_writer::tag(
                     'script',
                     json_encode(
-                        ['sections' => $sections, 'states' => $states, 'all' => \theme_epure\activity_state::all()],
+                        ['sections' => $sections, 'states' => $states, 'all' => \theme_epure\activity_state::all(),
+                            'labels' => [
+                                'activity' => get_string('currentactivity', 'theme_epure'),
+                                'section' => get_string('currentsection', 'theme_epure'),
+                            ]],
                         JSON_HEX_TAG | JSON_HEX_AMP
                     ),
                     ['type' => 'application/json', 'id' => 'epure-course-page-data']

@@ -173,12 +173,15 @@ class activity_state {
         return $states;
     }
 
+    /** @var string[] States of an activity still to do: the first one of the course is the activity to continue. */
+    public const PENDING = ['late', 'soon', 'failed', 'progress', 'todo'];
+
     /**
-     * States of the activities of a course, for its page.
+     * States of the activities of a course, for its page, in the order of the page (subsections at their place).
      *
      * @param \stdClass $course Course.
      * @param int $userid Learner.
-     * @return array[] Each with cmid and the keys of export().
+     * @return array[] Each with cmid, sections (ids of its section and subsection) and the keys of export().
      */
     public static function course(\stdClass $course, int $userid): array {
         global $CFG;
@@ -188,13 +191,19 @@ class activity_state {
             return [];
         }
         $states = [];
-        foreach (get_fast_modinfo($course, $userid)->get_cms() as $cm) {
+        foreach (course_structure::cms(get_fast_modinfo($course, $userid)) as $cm) {
             if (!$base = self::base($cm, $completion, $userid)) {
                 continue;
             }
             $deadline = in_array($base, ['todo', 'progress'], true) ? self::deadline($cm, $userid) : null;
             $state = self::at($base, $deadline);
-            $states[] = ['cmid' => (int) $cm->id] + self::export($state, $deadline);
+            $sections = [];
+            foreach (course_structure::sections_of($cm) as $section) {
+                if ($section) {
+                    $sections[] = (int) $section->id;
+                }
+            }
+            $states[] = ['cmid' => (int) $cm->id, 'sections' => $sections] + self::export($state, $deadline);
         }
         return $states;
     }

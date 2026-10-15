@@ -108,6 +108,9 @@ final class activity_state_test extends \advanced_testcase {
             $locked->cmid => 'locked',
             $optional->cmid => 'optional',
         ], $states);
+        // Each activity tells its section, for the highlight of the activity to continue.
+        $section = (int) get_fast_modinfo($course)->get_cm($todo->cmid)->section;
+        $this->assertSame([$section], activity_state::course($course, (int) $user->id)[0]['sections']);
         $cm = get_fast_modinfo($course, $user->id)->get_cm($late->cmid);
         $this->assertSame((int) $late->duedate, activity_state::deadline($cm, (int) $user->id));
     }

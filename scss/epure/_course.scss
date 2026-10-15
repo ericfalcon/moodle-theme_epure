@@ -173,6 +173,93 @@
     background-color: var(--epure-accent);
 }
 
+// Bar of the progress of a section: in the badge of its title, and under its name in the course index.
+.epure-section-bar {
+    display: inline-block;
+    flex-shrink: 0;
+    overflow: hidden;
+    width: 3rem;
+    height: .375rem;
+    background-color: var(--epure-border);
+    border-radius: var(--epure-radius-pill);
+
+    > span {
+        display: block;
+        height: 100%;
+        background-color: var(--epure-brand);
+        border-radius: inherit;
+    }
+}
+
+.epure-section-progress .epure-section-bar {
+    margin-right: .25rem;
+}
+
+#courseindex .courseindex-section-title {
+    flex-wrap: wrap;
+
+    > .epure-section-bar {
+        flex-basis: calc(100% - 1.75rem);
+        width: auto;
+        height: .25rem;
+        margin: .25rem 0 .125rem 1.75rem;
+    }
+
+    > .epure-section-bar-complete > span {
+        background-color: var(--epure-state-done);
+    }
+}
+
+// The activity to continue (the first one still to do) and its section, on the course page and in the course index.
+.epure-current-label {
+    display: inline-block;
+    align-self: flex-start;
+    margin: 0 0 .25rem;
+    padding: .0625rem .5rem;
+    color: var(--epure-on-brand);
+    font-size: .75rem;
+    font-weight: 600;
+    line-height: 1.5;
+    background-color: var(--epure-brand);
+    border-radius: var(--epure-radius-pill);
+}
+
+.course-section-header > .epure-current-label {
+    align-self: center;
+    margin: 0 0 0 .75rem;
+}
+
+// On phones, the progress and « You are here » go under the name of the section rather than squeezing it.
+.course-section-header:has(> .epure-section-progress, > .epure-current-label) {
+    flex-wrap: wrap;
+    row-gap: .375rem;
+}
+
+.epure-section-progress,
+.epure-current-label {
+    white-space: nowrap;
+}
+
+.course-content .activity.epure-current > .activity-item {
+    background-color: var(--epure-brand-soft);
+    box-shadow: inset 4px 0 0 var(--epure-brand);
+}
+
+#courseindex {
+    .courseindex-item.epure-current,
+    .courseindex-section-title.epure-current-section {
+        .courseindex-link {
+            font-weight: 600;
+            color: var(--epure-brand-text);
+        }
+    }
+
+    .courseindex-item.epure-current {
+        background-color: var(--epure-brand-soft);
+        box-shadow: inset 3px 0 0 var(--epure-brand);
+    }
+}
+
 // Corners of the course page, each level a step less rounded than the one holding it: the sections the large
 // radius, their activities and subsections the medium one, the activities of a subsection the small one.
 .course-content {
