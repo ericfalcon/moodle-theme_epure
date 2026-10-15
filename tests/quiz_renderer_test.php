@@ -85,4 +85,40 @@ final class quiz_renderer_test extends \advanced_testcase {
         $this->assertStringNotContainsString('epure-quiz-check-items', $html);
         $this->assertStringContainsString('data-action="epure-quiz-finish"', $html);
     }
+
+    /**
+     * The result of an attempt reviewed: the grade, not passed under the grade to pass, the questions right, wrong and
+     * not answered, and the choice to show only those to look at again; nothing when the marks cannot be seen.
+     */
+    public function test_review_result(): void {
+        global $CFG, $PAGE;
+        require_once($CFG->libdir . '/gradelib.php');
+        $attemptobj = $this->attempt();
+        // Moodle 5.0 split finishing an attempt into submitting and grading it.
+        if (method_exists($attemptobj, 'process_submit')) {
+            $attemptobj->process_submit(time(), false);
+            $attemptobj->process_grade_submission(time());
+        } else {
+            $attemptobj->process_finish(time(), false);
+        }
+        $attemptobj = quiz_attempt::create($attemptobj->get_attemptid());
+        $quiz = $attemptobj->get_quiz();
+        $item = \grade_item::fetch(['itemtype' => 'mod', 'itemmodule' => 'quiz', 'iteminstance' => $quiz->id,
+            'courseid' => $quiz->course]);
+        $item->gradepass = $quiz->grade / 2;
+        $item->update();
+
+        $options = new \mod_quiz\question\display_options();
+        $options->marks = \question_display_options::MARK_AND_MAX;
+        $options->correctness = \question_display_options::VISIBLE;
+        $renderer = new mod_quiz_renderer($PAGE, RENDERER_TARGET_GENERAL);
+        $html = $renderer->review_result($attemptobj, $options, $attemptobj->get_slots());
+        $this->assertStringContainsString(get_string('state_failed', 'theme_epure'), $html);
+        $this->assertStringContainsString(get_string('quizreview_correct', 'theme_epure', 1), $html);
+        $this->assertStringContainsString(get_string('quizreview_notanswered', 'theme_epure', 2), $html);
+        $this->assertStringContainsString('data-epure-review="mistakes"', $html);
+
+        $options->marks = \question_display_options::HIDDEN;
+        $this->assertSame('', $renderer->review_result($attemptobj, $options, $attemptobj->get_slots()));
+    }
 }

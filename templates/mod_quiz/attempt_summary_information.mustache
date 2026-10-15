@@ -1,0 +1,46 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_quiz/attempt_summary_information
+
+    Summary of a quiz attempt (status, dates, duration, marks...): Épure shows its items as tiles instead of a table.
+
+    Example context (json):
+    {
+        "hasitems": true,
+        "items": [
+            {"title": "Status", "content": "Finished"},
+            {"title": "Started", "content": "Thursday, 23 November 2023, 9:29 AM"},
+            {"title": "Duration", "content": "3 minutes"},
+            {"title": "Grade", "content": "Not yet graded"}
+        ],
+        "caption": "Summary of attempt"
+    }
+}}
+{{#hasitems}}
+<div class="epure-quiz-summary">
+    {{#caption}}<h3 class="sr-only visually-hidden">{{caption}}</h3>{{/caption}}
+    <dl class="epure-quiz-summary-items">
+        {{#items}}
+            <div class="epure-quiz-summary-item">
+                <dt>{{{title}}}</dt>
+                <dd>{{{content}}}</dd>
+            </div>
+        {{/items}}
+    </dl>
+</div>
+{{/hasitems}}

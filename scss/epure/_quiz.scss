@@ -332,3 +332,183 @@
         transition: none;
     }
 }
+
+// Review of an attempt: the result at the top (grade, passed or not, questions right and wrong, the choice to show
+// only the questions to look at again), the details of the attempt as tiles, and in each question its state as a chip,
+// then its feedback and the right answer set apart.
+.epure-quiz-result {
+    margin: 0 0 1rem;
+    padding: 1.25rem;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+}
+
+.epure-quiz-result-main {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1rem;
+    margin-bottom: .75rem;
+}
+
+.epure-quiz-result-grade {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.epure-quiz-result-value {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.epure-quiz-result-max {
+    color: var(--epure-ink-muted);
+    font-size: 1.125rem;
+}
+
+.epure-quiz-result-bar {
+    height: .5rem;
+    margin-bottom: .875rem;
+}
+
+.epure-quiz-result-counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem 1.25rem;
+    margin: 0 0 .875rem;
+    padding: 0;
+    list-style: none;
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: .375rem;
+    }
+
+    .icon {
+        margin: 0;
+    }
+}
+
+.epure-quiz-result-correct .icon {
+    color: var(--epure-state-done);
+}
+
+.epure-quiz-result-partiallycorrect .icon {
+    color: var(--epure-state-soon);
+}
+
+.epure-quiz-result-incorrect .icon {
+    color: var(--epure-state-late);
+}
+
+.epure-quiz-result-notanswered .icon {
+    color: var(--epure-ink-muted);
+}
+
+.epure-quiz-result-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+body.epure-review-mistakes .que.correct {
+    display: none;
+}
+
+.epure-quiz-summary {
+    margin: 0 0 1.5rem;
+}
+
+.epure-quiz-summary-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+    gap: .5rem;
+    margin: 0;
+}
+
+.epure-quiz-summary-item {
+    padding: .625rem .875rem;
+    background-color: var(--epure-surface-muted);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius);
+
+    dt {
+        margin: 0 0 .125rem;
+        color: var(--epure-ink-muted);
+        font-size: .75rem;
+        font-weight: 600;
+    }
+
+    dd {
+        margin: 0;
+        overflow-wrap: anywhere;
+    }
+}
+
+.path-mod-quiz .que {
+    .info .state {
+        padding: .125rem .5rem;
+        color: var(--epure-ink);
+        font-weight: 600;
+        background-color: var(--epure-surface);
+        border: 1px solid var(--epure-border);
+        border-radius: var(--epure-radius-pill);
+    }
+
+    &.correct .info .state {
+        color: var(--epure-state-done);
+        background-color: var(--epure-state-done-soft);
+        border-color: var(--epure-state-done);
+    }
+
+    &.partiallycorrect .info .state {
+        color: var(--epure-state-soon);
+        background-color: var(--epure-state-soon-soft);
+        border-color: var(--epure-state-soon);
+    }
+
+    &.incorrect .info .state {
+        color: var(--epure-state-late);
+        background-color: var(--epure-state-late-soft);
+        border-color: var(--epure-state-late);
+    }
+
+    &.correct .outcome {
+        border-left-color: var(--epure-state-done);
+    }
+
+    &.partiallycorrect .outcome {
+        border-left-color: var(--epure-state-soon);
+    }
+
+    &.incorrect .outcome {
+        border-left-color: var(--epure-state-late);
+    }
+
+    .outcome {
+        padding: .875rem 1rem;
+
+        .specificfeedback,
+        .generalfeedback {
+            margin: 0 0 .5rem;
+        }
+
+        .generalfeedback {
+            padding-top: .5rem;
+            border-top: 1px solid var(--epure-border);
+        }
+
+        .rightanswer {
+            margin: .75rem 0 0;
+            padding: .5rem .75rem;
+            color: var(--epure-ink);
+            font-weight: 600;
+            background-color: var(--epure-state-done-soft);
+            border-radius: var(--epure-radius);
+        }
+    }
+}

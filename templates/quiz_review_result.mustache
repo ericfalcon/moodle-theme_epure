@@ -1,0 +1,53 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/quiz_review_result
+
+    Result of a quiz attempt reviewed: the grade, passed or not, the questions right and wrong, and the choice to show
+    only the questions to look at again.
+
+    Example context (json):
+    {
+        "grade": "75.00", "max": "100.00", "percent": 75,
+        "state": {"state": "passed", "icon": "fa fa-circle-check", "text": "Passed"},
+        "counts": [{"class": "correct", "icon": "fa fa-circle-check", "text": "Right: 3"},
+            {"class": "incorrect", "icon": "fa fa-triangle-exclamation", "text": "Wrong: 1"}],
+        "hascounts": true, "filter": {"count": 1}
+    }
+}}
+<section class="epure-quiz-result" aria-labelledby="epure-quiz-result-title">
+    <h2 class="sr-only visually-hidden" id="epure-quiz-result-title">{{#str}}quizreview, theme_epure{{/str}}</h2>
+    <div class="epure-quiz-result-main">
+        <p class="epure-quiz-result-grade"><span class="epure-quiz-result-value">{{grade}}</span><span class="epure-quiz-result-max"> / {{max}}</span></p>
+        {{#state}}{{>theme_epure/activity_state}}{{/state}}
+    </div>
+    <div class="progress epure-quiz-result-bar" role="progressbar" aria-label="{{#str}}quizreview, theme_epure{{/str}}"
+        aria-valuenow="{{percent}}" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar" style="width: {{percent}}%"></div>
+    </div>
+    {{#hascounts}}
+        <ul class="epure-quiz-result-counts">
+            {{#counts}}<li class="epure-quiz-result-{{class}}"><i class="icon {{icon}} fa-fw" aria-hidden="true"></i>{{text}}</li>{{/counts}}
+        </ul>
+    {{/hascounts}}
+    {{#filter}}
+        <div class="epure-quiz-result-filter" role="group" aria-label="{{#str}}quizreview_filter, theme_epure{{/str}}">
+            <button type="button" class="btn btn-sm btn-primary" data-epure-review="all" aria-pressed="true">{{#str}}quizreview_all, theme_epure{{/str}}</button>
+            <button type="button" class="btn btn-sm btn-outline-primary" data-epure-review="mistakes" aria-pressed="false">{{#str}}quizreview_mistakes, theme_epure, {{count}}{{/str}}</button>
+        </div>
+    {{/filter}}
+</section>
