@@ -24,7 +24,8 @@
     {
         "resume": {"id": 2, "name": "Safety at work", "url": "#", "image": "", "category": "Training", "hasprogress": true,
             "progress": 40, "next": {"name": "Quiz 1", "url": "#"}, "summary": "3 activities left · due tomorrow", "action": "Continue", "actionurl": "#"},
-        "inprogress": [{"id": 3, "name": "First aid", "url": "#", "hasprogress": true, "progress": 10}],
+        "inprogress": [{"id": 3, "name": "First aid", "url": "#", "hasprogress": true, "progress": 10,
+            "urgentstate": {"state": "soon", "icon": "fa-regular fa-clock", "text": "Due soon · 16 October"} }],
         "hasinprogress": true, "moreinprogress": false,
         "deadlines": [{"name": "Report due", "course": "Safety at work", "date": "Monday 12 October", "url": "#"}],
         "hasdeadlines": true,
@@ -70,7 +71,10 @@
                 <ul class="epure-learner-courses">
                     {{#inprogress}}
                         <li>
-                            <a class="epure-learner-course-name" href="{{actionurl}}">{{name}}</a>
+                            <div class="epure-learner-course-title">
+                                <a class="epure-learner-course-name" href="{{actionurl}}">{{name}}</a>
+                                {{#urgentstate}}{{>theme_epure/activity_state}}{{/urgentstate}}
+                            </div>
                             {{#hasprogress}}
                                 <div class="progress" role="progressbar" aria-label="{{#str}}mycourses_progress, theme_epure{{/str}} – {{name}}"
                                     aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">

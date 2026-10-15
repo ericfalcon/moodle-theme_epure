@@ -88,4 +88,32 @@ final class learner_dashboard_test extends \advanced_testcase {
         $this->assertFalse($data['hasdeadlines']);
         $this->assertNull($data['certificates']);
     }
+
+    /**
+     * With deadlines in several courses, the course whose activity to continue is due the soonest is resumed, even if
+     * another one was visited last; the others tell their deadline in the list of the courses in progress.
+     */
+    public function test_export_urgent(): void {
+        global $DB, $PAGE;
+        $this->resetAfterTest();
+        set_config('enablecompletion', 1);
+        $generator = $this->getDataGenerator();
+        $learner = $generator->create_user();
+        $courses = [];
+        foreach (['Visited' => time() + DAYSECS, 'Tonight' => time() + 5 * HOURSECS, 'Later' => null] as $name => $due) {
+            $courses[$name] = $generator->create_course(['fullname' => $name, 'enablecompletion' => 1]);
+            $generator->create_module('assign', ['course' => $courses[$name]->id, 'duedate' => $due ?? 0,
+                'completion' => COMPLETION_TRACKING_AUTOMATIC, 'completionsubmit' => 1]);
+            $generator->enrol_user($learner->id, $courses[$name]->id, 'student');
+        }
+        $DB->insert_record('user_lastaccess', ['userid' => $learner->id, 'courseid' => $courses['Visited']->id,
+            'timeaccess' => time()]);
+        $this->setUser($learner);
+
+        $data = learner_dashboard::export($PAGE->get_renderer('core'));
+        $this->assertSame('Tonight', $data['resume']['name']);
+        $states = array_column($data['inprogress'], 'urgentstate', 'name');
+        $this->assertSame('soon', $states['Visited']['state']);
+        $this->assertNull($states['Later']);
+    }
 }

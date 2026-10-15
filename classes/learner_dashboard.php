@@ -72,12 +72,16 @@ class learner_dashboard {
         $inprogress = array_values(array_filter($learning, fn($card) => empty($card['completed'])));
         $completed = array_values(array_filter($learning, fn($card) => !empty($card['completed'])));
 
-        // The course to resume: the last one visited, else the first one in the order of « My courses ».
+        // The course to resume: the one whose activity to continue is due the soonest, in the next two days (with
+        // deadlines in several courses, the others show theirs in the list of the courses in progress); else the last
+        // one visited, else the first one in the order of « My courses ».
         $resume = null;
         if ($inprogress) {
             $visited = $inprogress;
             usort($visited, fn($a, $b) => $b['lastaccess'] <=> $a['lastaccess']);
-            $resume = $visited[0];
+            $urgent = array_filter($visited, fn($card) => !empty($card['urgent']));
+            usort($urgent, fn($a, $b) => $a['urgent'] <=> $b['urgent']);
+            $resume = $urgent[0] ?? $visited[0];
             $inprogress = array_values(array_filter($inprogress, fn($card) => $card['id'] !== $resume['id']));
         }
 

@@ -156,6 +156,15 @@
     font-weight: 500;
 }
 
+// A course in progress whose activity to continue is due soon or late: its state beside its name.
+.epure-learner-course-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .25rem .5rem;
+    min-width: 0;
+}
+
 .epure-learner-course-percent {
     color: var(--epure-ink-muted);
     font-size: .875rem;
