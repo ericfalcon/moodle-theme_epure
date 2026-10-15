@@ -252,7 +252,7 @@ For a user who takes courses, the Dashboard starts with an overview, above Moodl
 
 - **Pick up where you left off**: the last course visited and not yet completed, with its image, progress, next activity and a button to continue;
 - **In progress**: the other courses in progress, with their progress, and a link to "My courses";
-- **Coming up**: the next deadlines across all their courses (assignments due, quizzes closing…);
+- **This week**: their week, day by day, across all their courses (deadlines of the activities with their state, sessions and events of the calendar), the activities overdue first;
 - **Completed**: completed courses, with their date, and a link to the user's certificates when the platform issues them (IOMAD, Certificate, Custom certificate).
 
 The overview can be turned off in the theme's Courses tab ("Learner overview on the dashboard"); with IOMAD, each company can make a different choice in its profile. On phones, the dashboard can show the overview only, without the blocks (Mobile tab, "Dashboard on phones").
@@ -335,7 +335,7 @@ A theme alone cannot make a platform compliant: course content matters too, and 
 - **Styles**: `scss/epure.scss` imports, in the order they are compiled, the files of `scss/epure/`, one per subject (header, course page, activities, dark mode…).
 - **IOMAD**: everything Épure uses of IOMAD goes through `theme_epure\iomad` (detection, API, company context, table names, addresses of the pages). IOMAD 5.1 renamed its tables and classes; this class knows both.
 - **Course order**: `theme_epure\course_structure` gives the activities of a course in the order of the course page, those of a subsection at the place of the subsection (Moodle lists them at the end of the course); the next activity, the position and the previous and next activities follow it.
-- **Cache**: the progress, next activity and next deadline of each course of a learner, and their next deadlines, are kept 5 minutes in the cache `learnerprogress`, and forgotten at once when an activity or a course is completed, an assignment or a quiz attempt is submitted, or the activities or the completion of the course change.
+- **Cache**: the progress, next activity and next deadline of each course of a learner, and the events of their week, are kept 5 minutes in the cache `learnerprogress`, and forgotten at once when an activity or a course is completed, an assignment or a quiz attempt is submitted, or the activities or the completion of the course change.
 - **Compatibility**: the continuous integration tests Moodle 4.5 to 5.3 and IOMAD 4.5, 5.1 and 5.2; the Behat tests cover the course formats Topics, Weeks (with a subsection), Single activity and Social, with axe-core, and run on IOMAD too (a learner of a company sees its colour and logo, a user without company the site's colour, IOMAD's My courses is Épure's page by role). The IOMAD scenarios are tagged `@theme_epure_iomad`.
 - **Performance** (Moodle 4.5, learner, against Boost): style sheet +9 %, JavaScript unchanged, HTML about +10 to 15 %, no layout shift; same server time except on the dashboard, where the learner overview computes the progress of each course (+130 ms before the cache of 0.26.0; once cached, the overview takes about 5 ms instead of 60 to 80 ms). Details in the wiki (Développement).
 

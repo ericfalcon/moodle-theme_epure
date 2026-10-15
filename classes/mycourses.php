@@ -305,6 +305,9 @@ class mycourses {
             // Detail of the progress (« 8 completed · 2 in progress · 1 overdue »), under its bar.
             'detail' => activity_state::detail((int) ($data['completedcount'] ?? 0), $data['pending'] ?? []),
             'urgent' => $urgent,
+            // Deadlines and activities finished, for the week of the dashboard ({@see learner_dashboard::week()}).
+            'dated' => $data['dated'] ?? [],
+            'finished' => $data['finished'] ?? [],
             // The state of the activity to continue when it is due soon or late, for the lists of courses.
             'urgentstate' => in_array($next['state']['state'] ?? '', ['soon', 'late'], true) ? $next['state'] : null,
             'action' => $action,
@@ -350,6 +353,8 @@ class mycourses {
         $started = false;
         $completedcount = 0;
         $pending = [];
+        $dated = [];
+        $finished = [];
         if ($completion->is_enabled() && !$completed) {
             $items = activity_state::items($course, (int) $user->id);
             $remaining = activity_state::remaining($items);
@@ -359,6 +364,15 @@ class mycourses {
             foreach ($items as $item) {
                 if (in_array($item['base'], ['todo', 'progress', 'failed'], true)) {
                     $pending[] = [$item['base'], $item['due']];
+                }
+                // For the week of the dashboard: the deadlines of the activities left to do, and the activities
+                // finished, whose deadline in the calendar shows them finished.
+                if ($item['due']) {
+                    $dated[] = ['cmid' => (int) $item['cm']->id, 'name' => $item['cm']->get_formatted_name(),
+                        'url' => $item['cm']->url ? $item['cm']->url->out(false) : null,
+                        'icon' => $item['cm']->get_icon_url()->out(false), 'base' => $item['base'], 'due' => $item['due']];
+                } else if (in_array($item['base'], ['done', 'passed', 'failed'], true)) {
+                    $finished[(int) $item['cm']->id] = $item['base'];
                 }
             }
             if (($key = activity_state::next($items)) !== null) {
@@ -385,6 +399,7 @@ class mycourses {
             debugging('Épure: could not read the deadlines: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
         return ['progress' => $progress, 'completed' => $completed, 'next' => $next, 'deadline' => $deadline,
-            'started' => $started, 'completedcount' => $completedcount, 'pending' => $pending] + $remaining;
+            'started' => $started, 'completedcount' => $completedcount, 'pending' => $pending, 'dated' => $dated,
+            'finished' => $finished] + $remaining;
     }
 }

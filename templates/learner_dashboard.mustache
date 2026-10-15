@@ -18,7 +18,7 @@
     @template theme_epure/learner_dashboard
 
     Overview of a learner at the top of the dashboard: the course to resume, the other courses in
-    progress, the next deadlines and the courses completed.
+    progress, the week (deadlines and sessions) and the courses completed.
 
     Example context (json):
     {
@@ -27,8 +27,9 @@
         "inprogress": [{"id": 3, "name": "First aid", "url": "#", "hasprogress": true, "progress": 10,
             "urgentstate": {"state": "soon", "icon": "fa-regular fa-clock", "text": "Due soon · 16 October"} }],
         "hasinprogress": true, "moreinprogress": false,
-        "deadlines": [{"name": "Report due", "course": "Safety at work", "date": "Monday 12 October", "url": "#"}],
-        "hasdeadlines": true,
+        "week": {"haslate": false, "late": [], "hasweek": true, "days": [{"label": "Today", "items": [{"name": "Report is due",
+            "course": "Safety at work", "url": "#", "icon": "", "faicon": "fa-regular fa-calendar", "time": "11:59 PM",
+            "state": {"state": "soon", "icon": "fa-regular fa-clock", "text": "Due soon"} }]}]},
         "completed": [{"id": 4, "name": "Welcome", "url": "#", "datecompleted": "01/09/26"}],
         "completedcount": 1, "hascompleted": true, "certificates": "#", "mycoursesurl": "#", "calendarurl": "#"
     }
@@ -91,23 +92,30 @@
     </div>
 
     <div class="epure-learner-side">
-        <section class="epure-learner-block" aria-labelledby="epure-learner-deadlines-title">
+        <section class="epure-learner-block" aria-labelledby="epure-learner-week-title">
             <div class="epure-learner-block-head">
-                <h2 class="epure-learner-heading" id="epure-learner-deadlines-title">{{#str}}learnerdeadlines, theme_epure{{/str}}</h2>
+                <h2 class="epure-learner-heading" id="epure-learner-week-title">{{#str}}learnerweek, theme_epure{{/str}}</h2>
                 <a href="{{calendarurl}}">{{#str}}calendar, calendar{{/str}}</a>
             </div>
-            {{#hasdeadlines}}
-                <ul class="epure-learner-deadlines">
-                    {{#deadlines}}
-                        <li>
-                            <span class="epure-learner-deadline-date">{{date}}</span>
-                            {{#url}}<a href="{{url}}">{{name}}</a>{{/url}}{{^url}}<span>{{name}}</span>{{/url}}
-                            <span class="epure-learner-deadline-course">{{course}}</span>
-                        </li>
-                    {{/deadlines}}
-                </ul>
-            {{/hasdeadlines}}
-            {{^hasdeadlines}}<p class="epure-learner-empty">{{#str}}learnernodeadlines, theme_epure{{/str}}</p>{{/hasdeadlines}}
+            {{#week}}
+                {{#haslate}}
+                    <div class="epure-week-day epure-week-late">
+                        <h3 class="epure-week-label">{{#str}}state_late, theme_epure{{/str}}</h3>
+                        <ul class="epure-week-items">
+                            {{#late}}{{>theme_epure/learner_week_item}}{{/late}}
+                        </ul>
+                    </div>
+                {{/haslate}}
+                {{#days}}
+                    <div class="epure-week-day">
+                        <h3 class="epure-week-label">{{label}}</h3>
+                        <ul class="epure-week-items">
+                            {{#items}}{{>theme_epure/learner_week_item}}{{/items}}
+                        </ul>
+                    </div>
+                {{/days}}
+                {{^hasweek}}<p class="epure-learner-empty">{{#str}}learnernoweek, theme_epure{{/str}}</p>{{/hasweek}}
+            {{/week}}
         </section>
 
         <section class="epure-learner-block" aria-labelledby="epure-learner-completed-title">

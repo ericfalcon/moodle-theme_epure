@@ -252,7 +252,7 @@ Pour un utilisateur qui suit des cours, le tableau de bord commence par un aper�
 
 - **Reprendre où vous en étiez** : le dernier cours visité et pas encore terminé, avec son image, sa progression, sa prochaine activité et un bouton pour continuer ;
 - **En cours** : les autres cours en cours, avec leur progression, et un lien vers « Mes cours » ;
-- **À venir** : les prochaines échéances de tous ses cours (devoirs à rendre, tests qui ferment…) ;
+- **Cette semaine** : sa semaine jour par jour dans tous ses cours (échéances des activités avec leur état, séances et événements du calendrier), les activités en retard d'abord ;
 - **Terminé** : les cours terminés, avec leur date, et un lien vers ses attestations quand la plateforme en délivre (IOMAD, Certificate, Custom certificate).
 
 L'aperçu se désactive dans l'onglet Cours du thème (« Aperçu de l'apprenant sur le tableau de bord ») ; avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche. Sur téléphone, le tableau de bord peut ne montrer que l'aperçu, sans les blocs (onglet Mobile, « Tableau de bord sur téléphone »).
@@ -337,7 +337,7 @@ Un thème ne rend pas une plateforme conforme à lui seul : les contenus des cou
 - **Styles** : `scss/epure.scss` importe, dans l'ordre de compilation, les fichiers de `scss/epure/`, un par sujet (en-tête, page de cours, activités, mode sombre…).
 - **IOMAD** : tout ce qu'Épure utilise d'IOMAD passe par `theme_epure\iomad` (détection, API, contexte d'entreprise, noms des tables, adresses des pages). IOMAD 5.1 a renommé ses tables et ses classes ; cette classe connaît les deux.
 - **Ordre du cours** : `theme_epure\course_structure` donne les activités d'un cours dans l'ordre de la page du cours, celles d'une sous-section à la place de la sous-section (Moodle les range à la fin du cours) ; la prochaine activité, la position et les activités précédente et suivante le suivent.
-- **Cache** : la progression, la prochaine activité et la prochaine échéance de chaque cours d'un apprenant, et ses prochaines échéances, sont gardées 5 minutes dans le cache `learnerprogress`, et oubliées aussitôt quand une activité ou un cours est terminé, un devoir ou une tentative de test remis, ou que les activités ou l'achèvement du cours changent.
+- **Cache** : la progression, la prochaine activité et la prochaine échéance de chaque cours d'un apprenant, et les événements de sa semaine, sont gardées 5 minutes dans le cache `learnerprogress`, et oubliées aussitôt quand une activité ou un cours est terminé, un devoir ou une tentative de test remis, ou que les activités ou l'achèvement du cours changent.
 - **Compatibilité** : l'intégration continue teste Moodle 4.5 à 5.3 et IOMAD 4.5, 5.1 et 5.2 ; les tests Behat couvrent les formats de cours thématique, hebdomadaire (avec une sous-section), activité unique et informel, avec axe-core, et tournent aussi sur IOMAD (un apprenant d'une entreprise voit sa couleur et son logo, un utilisateur sans entreprise la couleur du site, « Mes cours » d'IOMAD est la page par rôle d'Épure). Les scénarios IOMAD portent l'étiquette `@theme_epure_iomad`.
 - **Performances** (Moodle 4.5, apprenant, face à Boost) : feuille de style +9 %, JavaScript inchangé, HTML d'environ +10 à 15 %, aucun décalage de mise en page ; même temps serveur, sauf sur le tableau de bord, où la vue d'ensemble de l'apprenant calcule la progression de chaque cours (+130 ms avant le cache de 0.26.0 ; une fois en cache, la vue d'ensemble prend environ 5 ms au lieu de 60 à 80 ms). Détails dans le wiki (Développement).
 

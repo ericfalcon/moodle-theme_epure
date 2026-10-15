@@ -1,0 +1,38 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/learner_week_item
+
+    An item of the week of a learner: the deadline of an activity, or an event of the calendar.
+
+    Example context (json):
+    {
+        "name": "Report is due", "course": "Safety at work", "url": "#", "icon": "", "faicon": "fa-regular fa-calendar",
+        "time": "11:59 PM", "state": {"state": "soon", "icon": "fa-regular fa-clock", "text": "Due soon"}
+    }
+}}
+<li class="epure-week-item">
+    <span class="epure-week-icon" aria-hidden="true">
+        {{#icon}}<img src="{{icon}}" alt="" class="activityicon">{{/icon}}
+        {{^icon}}<i class="icon {{faicon}} fa-fw"></i>{{/icon}}
+    </span>
+    <span class="epure-week-body">
+        {{#url}}<a class="epure-week-name" href="{{url}}">{{name}}</a>{{/url}}{{^url}}<span class="epure-week-name">{{name}}</span>{{/url}}
+        <span class="epure-week-meta"><span class="epure-week-time">{{time}}</span>{{#course}} · {{course}}{{/course}}</span>
+        {{#state}}{{>theme_epure/activity_state}}{{/state}}
+    </span>
+</li>

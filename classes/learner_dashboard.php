@@ -20,7 +20,7 @@ namespace theme_epure;
  * Dashboard of a learner: an overview at the top of the dashboard, above the blocks.
  *
  * It shows the course to resume (the last one visited and not completed, with its next activity),
- * the other courses in progress, the next deadlines of all the courses, and the courses completed,
+ * the other courses in progress, the week in all the courses (deadlines and sessions), and the courses completed,
  * with a link to the certificates when the platform issues some (IOMAD, Certificate, Custom certificate).
  *
  * @package    theme_epure
@@ -31,8 +31,11 @@ class learner_dashboard {
     /** @var int Courses in progress shown besides the one to resume. */
     public const INPROGRESS = 4;
 
-    /** @var int Deadlines shown. */
-    public const DEADLINES = 5;
+    /** @var int Items of the week shown. */
+    public const WEEK = 12;
+
+    /** @var int Activities overdue shown. */
+    public const LATE = 5;
 
     /** @var int Completed courses shown. */
     public const COMPLETED = 3;
@@ -109,14 +112,13 @@ class learner_dashboard {
         unset($card);
         usort($completed, fn($a, $b) => $b['timecompleted'] <=> $a['timecompleted']);
 
-        $deadlines = self::deadlines($userid);
+        $week = self::week($learning, $userid);
         return [
             'resume' => $resume,
             'inprogress' => array_slice($inprogress, 0, self::INPROGRESS),
             'hasinprogress' => !empty($inprogress),
             'moreinprogress' => count($inprogress) > self::INPROGRESS,
-            'deadlines' => $deadlines,
-            'hasdeadlines' => !empty($deadlines),
+            'week' => $week,
             'completed' => array_slice($completed, 0, self::COMPLETED),
             'completedcount' => count($completed),
             'hascompleted' => !empty($completed),
@@ -127,60 +129,180 @@ class learner_dashboard {
     }
 
     /**
-     * Next deadlines of the user in all their courses: assignments due, quizzes closing…
+     * The week of the user, from today to the same day next week, in all the courses they take: the deadlines of the
+     * activities with their state ({@see activity_state}), the other events of the calendar (sessions of the courses,
+     * of their groups, their own events), grouped by day; and before them the activities overdue, still to do.
      *
-     * Kept a few minutes in the cache learnerprogress, like the progress of the courses.
-     *
+     * @param array[] $learning Cards of the courses the user takes, from mycourses::export().
      * @param int $userid User.
-     * @return array[] Each with name, course, date, url.
+     * @param int|null $now Time, now by default.
+     * @return array With days (each with label and items), late (items), haslate and hasweek.
      */
-    protected static function deadlines(int $userid): array {
-        $cache = \cache::make('theme_epure', 'learnerprogress');
-        $key = 'deadlines_' . $userid;
-        $data = $cache->get($key);
-        if (!is_array($data) || ($data['lang'] ?? null) !== current_language()) {
-            $data = ['lang' => current_language(), 'events' => self::read_deadlines($userid)];
-            $cache->set($key, $data);
+    public static function week(array $learning, int $userid, ?int $now = null): array {
+        $now = $now ?? time();
+        $today = usergetmidnight($now);
+        $end = $today + 7 * DAYSECS;
+        $entries = [];
+        $late = [];
+        $finished = [];
+        foreach ($learning as $card) {
+            foreach ($card['finished'] ?? [] as $cmid => $base) {
+                $finished[$cmid] = $base;
+            }
+            foreach ($card['dated'] ?? [] as $item) {
+                $state = activity_state::at($item['base'], $item['due'], $now);
+                $entry = ['cmid' => $item['cmid'], 'name' => $item['name'], 'course' => $card['name'], 'url' => $item['url'],
+                    'icon' => $item['icon'], 'time' => $item['due'], 'state' => $state];
+                if ($state === 'late') {
+                    $late[] = $entry;
+                } else if ($item['due'] < $end) {
+                    $entries[$item['cmid'] . '_' . $item['due']] = $entry;
+                }
+            }
         }
-        $deadlines = [];
-        foreach ($data['events'] as $event) {
-            // A deadline passed since it was read.
-            if ($event['time'] < time()) {
+        $names = array_column($learning, 'name', 'id');
+        foreach (self::events($userid, array_keys($names), $today, $end) as $event) {
+            $key = $event['cmid'] . '_' . $event['time'];
+            if ($event['cmid'] && isset($entries[$key])) {
+                // The deadline of an activity left to do, with its name in the calendar (« Report is due »).
+                $entries[$key]['name'] = $event['name'];
                 continue;
             }
-            $event['date'] = userdate($event['time'], get_string('strftimedaydatetime', 'langconfig'));
-            $deadlines[] = $event;
+            // An event that has ended, or the deadline of an activity left to do, already overdue.
+            if (($event['timeend'] < $now && !isset($finished[$event['cmid']])) || $event['time'] >= $end) {
+                continue;
+            }
+            $event['course'] = $names[$event['courseid']] ?? '';
+            $event['state'] = $finished[$event['cmid']] ?? null;
+            $entries[] = $event;
         }
-        return $deadlines;
+
+        usort($entries, fn($a, $b) => $a['time'] <=> $b['time']);
+        $entries = array_slice($entries, 0, self::WEEK);
+        $days = [];
+        foreach ($entries as $entry) {
+            $day = usergetmidnight($entry['time']);
+            if (!isset($days[$day])) {
+                if ($day === $today) {
+                    $label = get_string('today', 'calendar');
+                } else if ($day === usergetmidnight($today + DAYSECS + 2 * HOURSECS)) {
+                    $label = get_string('tomorrow', 'calendar');
+                } else {
+                    $label = userdate($day, get_string('strftimedayshort', 'langconfig'));
+                }
+                $days[$day] = ['label' => $label, 'items' => []];
+            }
+            $days[$day]['items'][] = self::export_entry($entry);
+        }
+        // The most recently overdue first.
+        usort($late, fn($a, $b) => $b['time'] <=> $a['time']);
+        $late = array_map(fn($entry) => self::export_entry($entry, true), array_slice($late, 0, self::LATE));
+        return ['days' => array_values($days), 'late' => $late, 'haslate' => !empty($late),
+            'hasweek' => !empty($days) || !empty($late)];
     }
 
     /**
-     * Reads the next deadlines of the user in all their courses.
+     * An item of the week, for the template.
+     *
+     * @param array $entry Item, with name, course, url, icon, time and state.
+     * @param bool $withdate Whether its date is shown, for the activities overdue.
+     * @return array
+     */
+    protected static function export_entry(array $entry, bool $withdate = false): array {
+        $state = $entry['state'] ?? null;
+        $export = $state ? activity_state::export($state) : null;
+        return [
+            'name' => $entry['name'],
+            'course' => $entry['course'],
+            'url' => $entry['url'],
+            'icon' => $entry['icon'],
+            'faicon' => $entry['faicon'] ?? null,
+            'time' => userdate($entry['time'], get_string($withdate ? 'strftimedatetimeshort' : 'strftimetime', 'langconfig')),
+            // The state of an activity, except to do (the time already tells when to do it) and overdue (under its heading).
+            'state' => $export && !in_array($state, ['todo', 'late'], true) ? ['state' => $state, 'icon' => $export['icon'], 'text' => $export['label']]
+                : null,
+        ];
+    }
+
+    /**
+     * The events of the calendar of the user in a time range, in the courses they take, their groups there, theirs and
+     * those of the site. Kept a few minutes in the cache learnerprogress, like the progress of the courses.
      *
      * @param int $userid User.
-     * @return array[] Each with name, course, time, url.
+     * @param int[] $courseids Courses the user takes.
+     * @param int $from Start of the range.
+     * @param int $to End of the range.
+     * @return array[] Each with cmid (0 for an event of no activity), courseid, name, url, icon or faicon, time and timeend.
      */
-    protected static function read_deadlines(int $userid): array {
-        global $CFG;
+    protected static function events(int $userid, array $courseids, int $from, int $to): array {
+        $cache = \cache::make('theme_epure', 'learnerprogress');
+        $key = 'week_' . $userid;
+        $version = $from . '_' . implode(',', $courseids) . '_' . current_language();
+        $data = $cache->get($key);
+        if (!is_array($data) || ($data['version'] ?? null) !== $version) {
+            $data = ['version' => $version, 'events' => self::read_events($userid, $courseids, $from, $to)];
+            $cache->set($key, $data);
+        }
+        return $data['events'];
+    }
+
+    /**
+     * Reads the events of the calendar of the user in a time range.
+     *
+     * @param int $userid User.
+     * @param int[] $courseids Courses the user takes.
+     * @param int $from Start of the range.
+     * @param int $to End of the range.
+     * @return array[] As events().
+     */
+    protected static function read_events(int $userid, array $courseids, int $from, int $to): array {
+        global $CFG, $DB;
         require_once($CFG->dirroot . '/calendar/lib.php');
-        $deadlines = [];
+        $events = [];
         try {
-            $user = \core_user::get_user($userid);
-            $events = \core_calendar\local\api::get_action_events_by_timesort(time(), null, null, self::DEADLINES, true, $user);
-            foreach ($events as $event) {
-                $course = $event->get_course();
-                $action = $event->get_action();
-                $deadlines[] = [
-                    'name' => format_string($event->get_name()),
-                    'course' => $course ? format_string($course->get('fullname')) : '',
-                    'time' => $event->get_times()->get_sort_time()->getTimestamp(),
-                    'url' => $action && $action->get_url() ? $action->get_url()->out(false) : null,
+            $groups = [];
+            if ($courseids) {
+                [$insql, $params] = $DB->get_in_or_equal($courseids, SQL_PARAMS_NAMED);
+                $groups = $DB->get_fieldset_sql(
+                    "SELECT g.id FROM {groups} g JOIN {groups_members} gm ON gm.groupid = g.id
+                      WHERE gm.userid = :userid AND g.courseid $insql",
+                    $params + ['userid' => $userid]
+                );
+            }
+            $records = calendar_get_events($from, $to - 1, [$userid], $groups ?: false, array_merge([SITEID], $courseids));
+            foreach ($records as $record) {
+                $cmid = 0;
+                $url = null;
+                $icon = null;
+                if (!empty($record->modulename) && !empty($record->instance) && $record->courseid) {
+                    $cm = get_fast_modinfo($record->courseid, $userid)->get_instances_of($record->modulename)[$record->instance]
+                        ?? null;
+                    if (!$cm || !$cm->uservisible) {
+                        continue;
+                    }
+                    $cmid = (int) $cm->id;
+                    $url = $cm->url ? $cm->url->out(false) : null;
+                    $icon = $cm->get_icon_url()->out(false);
+                } else {
+                    $url = (new \moodle_url('/calendar/view.php', ['view' => 'day', 'time' => $record->timestart]))->out(false)
+                        . '#event_' . $record->id;
+                }
+                $context = $record->courseid ? \context_course::instance($record->courseid, IGNORE_MISSING) : null;
+                $events[] = [
+                    'cmid' => $cmid,
+                    'courseid' => (int) $record->courseid,
+                    'name' => format_string($record->name, true, ['context' => $context ?: \context_system::instance()]),
+                    'url' => $url,
+                    'icon' => $icon,
+                    'faicon' => $icon ? null : 'fa-regular fa-calendar',
+                    'time' => (int) $record->timestart,
+                    'timeend' => (int) $record->timestart + (int) $record->timeduration,
                 ];
             }
         } catch (\Throwable $e) {
-            debugging('Épure: could not read the deadlines: ' . $e->getMessage(), DEBUG_DEVELOPER);
+            debugging('Épure: could not read the events of the week: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
-        return $deadlines;
+        return $events;
     }
 
     /**

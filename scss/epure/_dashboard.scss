@@ -129,7 +129,7 @@
 }
 
 .epure-learner-courses,
-.epure-learner-deadlines,
+.epure-week-items,
 .epure-learner-completed {
     margin: 0;
     padding: 0;
@@ -171,19 +171,59 @@
     text-align: right;
 }
 
-.epure-learner-deadlines li {
-    display: flex;
-    flex-direction: column;
-    padding: .5rem 0;
+// The week: the days, each with its deadlines and sessions; the activities overdue first.
+.epure-week-day + .epure-week-day {
+    margin-top: .75rem;
 }
 
-.epure-learner-deadline-date {
+.epure-week-label {
+    margin: 0 0 .125rem;
     color: var(--epure-brand-text);
     font-size: .8125rem;
     font-weight: 600;
 }
 
-.epure-learner-deadline-course,
+.epure-week-late .epure-week-label {
+    color: var(--epure-state-late);
+}
+
+.epure-week-item {
+    display: flex;
+    align-items: flex-start;
+    gap: .625rem;
+    padding: .5rem 0;
+}
+
+.epure-week-icon {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--epure-ink-muted);
+
+    .activityicon {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+}
+
+.epure-week-body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .125rem .5rem;
+    min-width: 0;
+}
+
+.epure-week-name {
+    flex-basis: 100%;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+}
+
+.epure-week-meta,
 .epure-learner-completed-date {
     color: var(--epure-ink-muted);
     font-size: .8125rem;
