@@ -46,7 +46,7 @@ const addBadge = (section) => {
 };
 
 /** Completion of an activity in the course index (data-value), and the state it gives. */
-const COMPLETION_STATES = {1: 'done', 2: 'passed', 3: 'failed'};
+const COMPLETION_STATES = {'1': 'done', '2': 'passed', '3': 'failed'};
 
 /**
  * Element of a state: icon and text, as the template theme_epure/activity_state.
@@ -141,8 +141,9 @@ export const init = () => {
                 }
                 const completed = COMPLETION_STATES[mutation.target.dataset.value];
                 const before = initial.get(cmid);
-                const after = completed ? all[completed]
-                    : (Object.values(COMPLETION_STATES).includes(before.state) ? all.todo : before);
+                // Unmarked, an activity that was completed when the page was shown is to do; another gets back its state.
+                const reset = Object.values(COMPLETION_STATES).includes(before.state) ? all.todo : before;
+                const after = completed ? all[completed] : reset;
                 if (after && after.state !== current.get(cmid).state) {
                     current.set(cmid, after);
                     showState(cmid, after);
