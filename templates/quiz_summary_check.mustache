@@ -1,0 +1,42 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/quiz_summary_check
+
+    Top of the summary of a quiz attempt: what is left before submitting, and the buttons to go back and to submit.
+
+    Example context (json):
+    {
+        "returnurl": "#", "hasitems": true,
+        "items": [{"icon": "fa fa-circle-exclamation", "text": "2 questions not answered", "warning": true},
+            {"icon": "fa fa-flag", "text": "1 question flagged"}]
+    }
+}}
+<section class="epure-quiz-check" aria-labelledby="epure-quiz-check-title">
+    <h4 class="epure-quiz-check-title" id="epure-quiz-check-title">{{#str}}quizcheck, theme_epure{{/str}}</h4>
+    {{#hasitems}}
+        <ul class="epure-quiz-check-items">
+            {{#items}}
+                <li{{#warning}} class="epure-quiz-check-warning"{{/warning}}><i class="icon {{icon}} fa-fw" aria-hidden="true"></i>{{text}}</li>
+            {{/items}}
+        </ul>
+    {{/hasitems}}
+    <div class="epure-quiz-check-actions">
+        <a class="btn btn-secondary" href="{{returnurl}}">{{#str}}returnattempt, quiz{{/str}}</a>
+        <button type="button" class="btn btn-primary" data-action="epure-quiz-finish">{{#str}}submitallandfinish, quiz{{/str}}</button>
+    </div>
+</section>

@@ -1,0 +1,179 @@
+// Taking a quiz calmly: what is left before submitting, at the top of the summary of the attempt; the meaning of
+// the marks of the panel of the questions; a timer that stays readable without alarming; the confirmation of the
+// submission at the bottom of the screen, near the button just pressed.
+
+// Top of the summary of an attempt: what is left, and the buttons to go back and to submit.
+.epure-quiz-check {
+    margin: 0 0 1.5rem;
+    padding: 1rem 1.25rem;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+}
+
+.epure-quiz-check-title {
+    margin: 0 0 .5rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.epure-quiz-check-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem 1.25rem;
+    margin: 0 0 .875rem;
+    padding: 0;
+    list-style: none;
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: .375rem;
+    }
+
+    .icon {
+        margin: 0;
+        color: var(--epure-state-done);
+    }
+
+    .epure-quiz-check-warning,
+    .epure-quiz-check-warning .icon {
+        color: var(--epure-state-soon);
+        font-weight: 600;
+    }
+
+    .fa-flag {
+        color: var(--epure-ink-muted);
+    }
+}
+
+.epure-quiz-check-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+// Meaning of the marks of the panel of the questions, under its buttons.
+.path-mod-quiz #mod_quiz_navblock .epure-quiz-legend {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .375rem .75rem;
+    margin: .5rem 0 .75rem;
+    padding: .625rem 0 0;
+    color: var(--epure-ink-muted);
+    font-size: .8125rem;
+    list-style: none;
+    border-top: 1px solid var(--epure-border);
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: .375rem;
+        min-width: 0;
+    }
+}
+
+.epure-quiz-legend-mark {
+    flex: none;
+    width: .875rem;
+    height: .875rem;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: calc(var(--epure-radius) / 2);
+}
+
+.epure-quiz-legend-answered {
+    background-color: var(--epure-brand-soft-2);
+}
+
+.epure-quiz-legend-current {
+    border: 2px solid var(--epure-brand);
+}
+
+.epure-quiz-legend-flag {
+    flex: none;
+    width: .875rem;
+    margin: 0;
+    color: #d0342c;
+}
+
+// The timer: a calm chip with figures that do not jump; the last seconds, which Moodle paints red, in the colour of
+// a deadline coming, not of an alarm.
+#quiz-timer-wrapper #quiz-timer {
+    color: var(--epure-ink);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    background-color: var(--epure-surface-muted);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-pill);
+}
+
+// During the attempt, the timer stays in sight while scrolling the questions; on the summary, under the button to go
+// back, in the middle.
+#page-mod-quiz-attempt #quiz-timer-wrapper {
+    position: sticky;
+    top: calc(#{$navbar-height} + .5rem);
+    z-index: 3;
+    // The row is as wide as the page: only the timer and its button catch the clicks.
+    pointer-events: none;
+
+    > * {
+        pointer-events: auto;
+    }
+}
+
+#page-mod-quiz-summary #quiz-timer-wrapper {
+    justify-content: center;
+
+    #quiz-timer {
+        margin-left: 0 !important; // stylelint-disable-line declaration-no-important
+    }
+}
+
+#quiz-timer-wrapper #quiz-timer[class*="timeleft"] {
+    color: var(--epure-state-soon);
+    background-color: var(--epure-state-soon-soft);
+    border-color: var(--epure-state-soon);
+}
+
+// The confirmation before submitting comes up at the bottom of the screen, near the button, above the navigation bar
+// of the phones.
+@keyframes epure-quiz-confirm {
+    from {
+        opacity: 0;
+        transform: translate(-50%, .75rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+#page-mod-quiz-summary,
+#page-mod-quiz-attempt {
+    .modal-dialog {
+        position: fixed;
+        bottom: calc(max(1rem, env(safe-area-inset-bottom)) + var(--epure-mobilenav-height, 0px));
+        left: 50%;
+        width: calc(100vw - 2rem);
+        max-width: 40rem;
+        min-height: 0;
+        margin: 0;
+        transform: translateX(-50%);
+        animation: epure-quiz-confirm .18s ease-out;
+    }
+
+    .modal-content {
+        border-radius: var(--epure-radius-lg);
+        box-shadow: 0 12px 40px rgba(16, 22, 32, .28);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #page-mod-quiz-summary .modal-dialog,
+    #page-mod-quiz-attempt .modal-dialog {
+        animation: none;
+    }
+}
