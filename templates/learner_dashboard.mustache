@@ -51,6 +51,7 @@
                                 aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">
                                 <div class="progress-bar" style="width: {{progress}}%"></div>
                             </div>
+                            {{#detail}}<p class="epure-progress-detail">{{detail}}</p>{{/detail}}
                         </div>
                     {{/hasprogress}}
                     {{#next}}<p class="epure-learner-resume-next">{{#str}}mycourses_next, theme_epure{{/str}} {{name}}{{#state}} {{>theme_epure/activity_state}}{{/state}}</p>{{/next}}

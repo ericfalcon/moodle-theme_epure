@@ -117,6 +117,7 @@ final class learner_dashboard_test extends \advanced_testcase {
         $this->assertSame(get_string('learnerresumedeadline', 'theme_epure'), $data['resume']['heading']);
         $this->assertSame(get_string('mycourses_start', 'theme_epure'), $data['resume']['action']);
         // Opened, with nothing done yet: « Continue ».
+        $this->assertSame('', $data['resume']['detail']);
         $actions = array_column($data['inprogress'], 'action', 'name');
         $this->assertSame(get_string('mycourses_continue', 'theme_epure'), $actions['Visited']);
         $states = array_column($data['inprogress'], 'urgentstate', 'name');

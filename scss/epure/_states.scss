@@ -103,3 +103,63 @@
     color: var(--epure-ink-muted);
     font-size: .875rem;
 }
+
+// Detail of the progress of a course, under its bar: « 8 completed · 2 in progress · 1 overdue ».
+.epure-progress-detail {
+    margin: .375rem 0 0;
+    color: var(--epure-ink-muted);
+    font-size: .8125rem;
+}
+
+// On phones, the button « Continue » of the course stays at the bottom of the screen, above the navigation bar, once
+// the banner and its own button are scrolled away.
+.epure-course-continue-sticky {
+    display: none;
+}
+
+@media (max-width: 767.98px) {
+    .epure-course-continue-sticky {
+        position: fixed;
+        right: 1rem;
+        bottom: calc(.75rem + var(--epure-mobilenav-height, 0px));
+        left: 1rem;
+        z-index: 1020;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: .5rem 1rem;
+        text-align: left;
+        box-shadow: var(--epure-shadow-hover);
+
+        &.epure-hidden {
+            display: none;
+        }
+    }
+
+    .epure-course-continue-sticky-action {
+        font-weight: 600;
+    }
+
+    // While it shows, the end of the page and the help buttons fixed at the bottom of the screen go above it.
+    body:has(.epure-course-continue-sticky:not(.epure-hidden)) {
+        .epure-footer {
+            padding-bottom: calc(5rem + var(--epure-mobilenav-height, 0px));
+        }
+
+        .btn-footer-popover {
+            bottom: calc(5.5rem + var(--epure-mobilenav-height, 0px));
+        }
+
+        .btn-footer-communication {
+            bottom: calc(8.5rem + var(--epure-mobilenav-height, 0px));
+        }
+    }
+
+    .epure-course-continue-sticky-name {
+        overflow: hidden;
+        max-width: 100%;
+        font-size: .8125rem;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}

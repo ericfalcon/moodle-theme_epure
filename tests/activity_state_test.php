@@ -156,6 +156,22 @@ final class activity_state_test extends \advanced_testcase {
     }
 
     /**
+     * Detail of the progress: completed, in progress (also when due soon), overdue and not passed.
+     */
+    public function test_detail(): void {
+        $now = 1000000;
+        $pending = [['progress', null], ['progress', $now + 3600], ['todo', $now - 3600], ['failed', null],
+            ['todo', null]];
+        $this->assertSame(implode(' · ', [
+            get_string('detail_done', 'theme_epure', 3),
+            get_string('detail_progress', 'theme_epure', 2),
+            get_string('detail_late_one', 'theme_epure', 1),
+            get_string('detail_failed_one', 'theme_epure', 1),
+        ]), activity_state::detail(3, $pending, $now));
+        $this->assertSame('', activity_state::detail(0, [['todo', null]], $now));
+    }
+
+    /**
      * No state without completion tracking in the course.
      */
     public function test_course_without_completion(): void {

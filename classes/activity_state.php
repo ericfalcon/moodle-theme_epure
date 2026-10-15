@@ -300,6 +300,35 @@ class activity_state {
     }
 
     /**
+     * Detail of the progress of a course: « 8 completed · 2 in progress · 1 overdue · 1 not passed ».
+     *
+     * @param int $completed Activities completed.
+     * @param array[] $pending Activities still to do, each as [base state, deadline].
+     * @param int|null $now Time, now by default.
+     * @return string Empty when nothing is completed nor started.
+     */
+    public static function detail(int $completed, array $pending, ?int $now = null): string {
+        $counts = ['done' => $completed, 'progress' => 0, 'late' => 0, 'failed' => 0];
+        foreach ($pending as [$base, $due]) {
+            // Due soon is still in progress, or to do: only late changes the count.
+            $state = self::at($base, $due, $now) === 'late' ? 'late' : $base;
+            if (isset($counts[$state])) {
+                $counts[$state]++;
+            }
+        }
+        if (!$counts['done'] && !$counts['progress'] && !$counts['late'] && !$counts['failed']) {
+            return '';
+        }
+        $parts = [];
+        foreach ($counts as $state => $count) {
+            if ($count) {
+                $parts[] = get_string('detail_' . $state . ($count === 1 ? '_one' : ''), 'theme_epure', $count);
+            }
+        }
+        return implode(' · ', $parts);
+    }
+
+    /**
      * States of the activities of a course, for its page, in the order of the page (subsections at their place).
      *
      * @param array[] $items Activities, from items().

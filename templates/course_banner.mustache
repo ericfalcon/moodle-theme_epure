@@ -24,7 +24,7 @@
     {
         "id": 2, "name": "Safety at work", "image": "", "category": "Training", "header": "<h1>Safety at work</h1>",
         "learning": true, "haslearnerpanel": true, "teaching": false, "hasprogress": true, "progress": 40, "completed": false,
-        "next": {"name": "Quiz 1", "url": "#"}, "summary": "3 activities left · due tomorrow", "action": "Continue", "actionurl": "#"
+        "next": {"name": "Quiz 1", "url": "#"}, "summary": "3 activities left · due tomorrow", "detail": "2 completed · 1 in progress", "action": "Continue", "actionurl": "#"
     }
 }}
 <div class="epure-course-banner {{#learning}}epure-course-banner-learning{{/learning}} {{#teaching}}epure-course-banner-teaching{{/teaching}}">
@@ -46,6 +46,7 @@
                                 aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">
                                 <div class="progress-bar" style="width: {{progress}}%"></div>
                             </div>
+                            {{#detail}}<p class="epure-progress-detail">{{detail}}</p>{{/detail}}
                         </div>
                     {{/hasprogress}}
                     {{#next}}
@@ -62,6 +63,11 @@
                 {{#next}}
                     <a class="btn btn-primary btn-lg epure-course-banner-action" href="{{url}}">
                         {{action}}<span class="sr-only visually-hidden"> – {{name}}</span>
+                    </a>
+                    {{! On phones, the same button stays at the bottom of the screen once the banner is scrolled away. }}
+                    <a class="btn btn-primary epure-course-continue-sticky" href="{{url}}" data-region="epure-continue-sticky">
+                        <span class="epure-course-continue-sticky-action">{{action}}</span>
+                        <span class="epure-course-continue-sticky-name">{{name}}</span>
                     </a>
                 {{/next}}
             </div>

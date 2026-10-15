@@ -205,12 +205,28 @@ const showIndexState = (cmid, state) => {
 };
 
 /**
+ * On phones, the button « Continue » at the bottom of the screen shows only once the one of the banner is scrolled
+ * away, so that the page never shows both.
+ */
+const followStickyContinue = () => {
+    const sticky = document.querySelector('[data-region="epure-continue-sticky"]');
+    const action = document.querySelector('.epure-course-banner-action');
+    if (!sticky || !action || !window.IntersectionObserver) {
+        return;
+    }
+    new IntersectionObserver(([entry]) => {
+        sticky.classList.toggle('epure-hidden', entry.isIntersecting);
+    }).observe(action);
+};
+
+/**
  * Starts the progress of the sections and the states of the activities, from the data in the page (script
  * epure-course-page-data): sections, the progress of each section with completion; states, the state of each
  * activity (cmid, state, icon, label, text, notable); all, all the states without dates, for an activity whose
  * completion changes on the page.
  */
 export const init = () => {
+    followStickyContinue();
     const data = document.getElementById('epure-course-page-data');
     if (!data) {
         return;
