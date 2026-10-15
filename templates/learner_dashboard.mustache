@@ -23,7 +23,7 @@
     Example context (json):
     {
         "resume": {"id": 2, "name": "Safety at work", "url": "#", "image": "", "category": "Training", "hasprogress": true,
-            "progress": 40, "next": {"name": "Quiz 1", "url": "#"}, "action": "Continue", "actionurl": "#"},
+            "progress": 40, "next": {"name": "Quiz 1", "url": "#"}, "summary": "3 activities left · due tomorrow", "action": "Continue", "actionurl": "#"},
         "inprogress": [{"id": 3, "name": "First aid", "url": "#", "hasprogress": true, "progress": 10}],
         "hasinprogress": true, "moreinprogress": false,
         "deadlines": [{"name": "Report due", "course": "Safety at work", "date": "Monday 12 October", "url": "#"}],
@@ -53,6 +53,7 @@
                         </div>
                     {{/hasprogress}}
                     {{#next}}<p class="epure-learner-resume-next">{{#str}}mycourses_next, theme_epure{{/str}} {{name}}{{#state}} {{>theme_epure/activity_state}}{{/state}}</p>{{/next}}
+                    {{#summary}}<p class="epure-continue-summary">{{summary}}</p>{{/summary}}
                     <a class="btn btn-primary btn-lg epure-learner-resume-action" href="{{actionurl}}">
                         {{action}}<span class="sr-only visually-hidden"> – {{name}}</span>
                     </a>

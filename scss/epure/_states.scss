@@ -96,3 +96,10 @@
         }
     }
 }
+
+// What is left to do in a course, under its activity to continue: « 3 activities left · due tomorrow ».
+.epure-continue-summary {
+    margin: .125rem 0 .5rem;
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+}

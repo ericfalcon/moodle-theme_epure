@@ -24,7 +24,7 @@
     {
         "id": 2, "name": "Safety at work", "image": "", "category": "Training", "header": "<h1>Safety at work</h1>",
         "learning": true, "haslearnerpanel": true, "teaching": false, "hasprogress": true, "progress": 40, "completed": false,
-        "next": {"name": "Quiz 1", "url": "#"}, "action": "Continue", "actionurl": "#"
+        "next": {"name": "Quiz 1", "url": "#"}, "summary": "3 activities left · due tomorrow", "action": "Continue", "actionurl": "#"
     }
 }}
 <div class="epure-course-banner {{#learning}}epure-course-banner-learning{{/learning}} {{#teaching}}epure-course-banner-teaching{{/teaching}}">
@@ -51,6 +51,9 @@
                     {{#next}}
                         <p class="epure-course-banner-next">{{#str}}mycourses_next, theme_epure{{/str}} <a href="{{url}}">{{name}}</a>{{#state}} {{>theme_epure/activity_state}}{{/state}}</p>
                     {{/next}}
+                    {{#summary}}
+                        <p class="epure-continue-summary">{{summary}}</p>
+                    {{/summary}}
                     {{#deadline}}
                         <p class="epure-course-banner-deadline"><i class="fa fa-calendar" aria-hidden="true"></i>
                             {{#url}}<a href="{{url}}">{{name}}</a>{{/url}}{{^url}}{{name}}{{/url}} – {{date}}</p>

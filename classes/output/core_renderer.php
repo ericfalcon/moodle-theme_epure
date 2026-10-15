@@ -165,7 +165,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if (\theme_epure\course_page::learner_applies($this->page, (int) $USER->id)) {
             $sections = \theme_epure\course_page::section_progress_applies($this->page, (int) $USER->id)
                 ? \theme_epure\course_page::sections($this->page->course, (int) $USER->id) : [];
-            $states = \theme_epure\activity_state::course($this->page->course, (int) $USER->id);
+            $items = \theme_epure\activity_state::items($this->page->course, (int) $USER->id);
+            $states = \theme_epure\activity_state::course($items);
+            $next = \theme_epure\activity_state::next($items);
             if ($sections || $states) {
                 // A course has many activities: their data goes in the page, not in the call of the script.
                 $this->page->requires->js_call_amd('theme_epure/course_page', 'init');
@@ -173,6 +175,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
                     'script',
                     json_encode(
                         ['sections' => $sections, 'states' => $states, 'all' => \theme_epure\activity_state::all(),
+                            'next' => $next === null ? null : (int) $items[$next]['cm']->id,
                             'labels' => [
                                 'activity' => get_string('currentactivity', 'theme_epure'),
                                 'section' => get_string('currentsection', 'theme_epure'),

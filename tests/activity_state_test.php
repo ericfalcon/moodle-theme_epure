@@ -96,7 +96,7 @@ final class activity_state_test extends \advanced_testcase {
             $completion->internal_set_data($cm, $data);
         }
 
-        $states = array_column(activity_state::course($course, (int) $user->id), 'state', 'cmid');
+        $states = array_column(activity_state::course(activity_state::items($course, (int) $user->id)), 'state', 'cmid');
         $this->assertSame([
             $todo->cmid => 'todo',
             $done->cmid => 'done',
@@ -110,9 +110,49 @@ final class activity_state_test extends \advanced_testcase {
         ], $states);
         // Each activity tells its section, for the highlight of the activity to continue.
         $section = (int) get_fast_modinfo($course)->get_cm($todo->cmid)->section;
-        $this->assertSame([$section], activity_state::course($course, (int) $user->id)[0]['sections']);
+        $this->assertSame([$section], activity_state::items($course, (int) $user->id)[0]['sections']);
         $cm = get_fast_modinfo($course, $user->id)->get_cm($late->cmid);
         $this->assertSame((int) $late->duedate, activity_state::deadline($cm, (int) $user->id));
+    }
+
+    /**
+     * The activity to continue: due in the next two days first, else started, else the one after the last completed.
+     */
+    public function test_next(): void {
+        $now = 1000000;
+        $item = fn(string $base, ?int $due = null) => ['base' => $base, 'due' => $due];
+        $this->assertNull(activity_state::next([$item('done'), $item('optional')], $now));
+        $this->assertSame(0, activity_state::next([$item('todo'), $item('todo')], $now));
+        // After the last activity completed, even with a first one left to do.
+        $this->assertSame(3, activity_state::next([$item('todo'), $item('done'), $item('passed'), $item('todo')], $now));
+        // Back to the first one when nothing is left after the last completed.
+        $this->assertSame(0, activity_state::next([$item('todo'), $item('done')], $now));
+        // A started activity before.
+        $this->assertSame(2, activity_state::next([$item('done'), $item('todo'), $item('progress')], $now));
+        // The closest deadline in the next two days before all; a passed one does not count.
+        $this->assertSame(3, activity_state::next([$item('progress'), $item('todo', $now + DAYSECS),
+            $item('todo', $now - DAYSECS), $item('todo', $now + 3600)], $now));
+    }
+
+    /**
+     * What is left to do, and its sentence.
+     */
+    public function test_remaining(): void {
+        $this->resetAfterTest();
+        $this->setUser($this->getDataGenerator()->create_user(['timezone' => 'UTC']));
+        $now = make_timestamp(2026, 10, 15, 10);
+        $items = [['base' => 'done', 'due' => null], ['base' => 'todo', 'due' => $now + DAYSECS],
+            ['base' => 'failed', 'due' => null], ['base' => 'progress', 'due' => $now + 5 * DAYSECS],
+            ['base' => 'locked', 'due' => null]];
+        $this->assertSame(['remaining' => 3, 'due' => $now + DAYSECS], activity_state::remaining($items, $now));
+        $this->assertSame(get_string('continue_remaining', 'theme_epure', 3) . ' · '
+            . get_string('continue_duetomorrow', 'theme_epure'), activity_state::summary(3, $now + DAYSECS, $now));
+        $this->assertSame(get_string('continue_remaining_one', 'theme_epure') . ' · '
+            . get_string('continue_duedays', 'theme_epure', 5), activity_state::summary(1, $now + 5 * DAYSECS, $now));
+        $today = explode(' · ', activity_state::summary(2, $now + 3600, $now))[1];
+        $this->assertSame(get_string('continue_duetoday', 'theme_epure'), $today);
+        $this->assertSame(get_string('continue_remaining', 'theme_epure', 2), activity_state::summary(2, null, $now));
+        $this->assertSame('', activity_state::summary(0, $now + DAYSECS, $now));
     }
 
     /**
@@ -125,6 +165,6 @@ final class activity_state_test extends \advanced_testcase {
         $user = $generator->create_user();
         $generator->enrol_user($user->id, $course->id, 'student');
         $generator->create_module('page', ['course' => $course->id]);
-        $this->assertSame([], activity_state::course($course, (int) $user->id));
+        $this->assertSame([], activity_state::items($course, (int) $user->id));
     }
 }

@@ -283,6 +283,8 @@ class mycourses {
             'completed' => $completed,
             'next' => $next,
             'deadline' => $deadline,
+            // What is left to do (« 3 activities left · due tomorrow »), under the activity to continue.
+            'summary' => activity_state::summary((int) ($data['remaining'] ?? 0), $data['due'] ?? null),
             'action' => $action,
             'actionurl' => $next['url'] ?? (new \moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
         ];
@@ -307,26 +309,17 @@ class mycourses {
             $completed = $completion->is_course_complete($user->id);
         }
 
-        // The next activity to do: the first visible one, in the order of the course page (subsections at their
-        // place), not completed yet.
+        // The activity to continue ({@see activity_state::next()}) and what is left to do.
+        // Its state is kept without the time: late or due soon is told when it is shown.
         $next = null;
-        $modinfo = get_fast_modinfo($course, $user->id);
+        $remaining = ['remaining' => 0, 'due' => null];
         if ($completion->is_enabled() && !$completed) {
-            foreach (course_structure::cms($modinfo) as $cm) {
-                if (
-                    !$cm->uservisible || !$cm->url || $cm->deletioninprogress
-                        || $completion->is_enabled($cm) == COMPLETION_TRACKING_NONE
-                ) {
-                    continue;
-                }
-                $state = $completion->get_data($cm, false, $user->id)->completionstate;
-                if ($state == COMPLETION_INCOMPLETE || $state == COMPLETION_COMPLETE_FAIL) {
-                    // Its state is kept without the time: late or due soon is told when it is shown.
-                    $base = activity_state::base($cm, $completion, (int) $user->id);
-                    $next = ['name' => $cm->get_formatted_name(), 'url' => $cm->url->out(false), 'base' => $base,
-                        'due' => $base ? activity_state::deadline($cm, (int) $user->id) : null];
-                    break;
-                }
+            $items = activity_state::items($course, (int) $user->id);
+            $remaining = activity_state::remaining($items);
+            if (($key = activity_state::next($items)) !== null) {
+                $cm = $items[$key]['cm'];
+                $next = ['name' => $cm->get_formatted_name(), 'url' => $cm->url->out(false), 'base' => $items[$key]['base'],
+                    'due' => $items[$key]['due']];
             }
         }
 
@@ -346,6 +339,6 @@ class mycourses {
         } catch (\Throwable $e) {
             debugging('Épure: could not read the deadlines: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
-        return ['progress' => $progress, 'completed' => $completed, 'next' => $next, 'deadline' => $deadline];
+        return ['progress' => $progress, 'completed' => $completed, 'next' => $next, 'deadline' => $deadline] + $remaining;
     }
 }

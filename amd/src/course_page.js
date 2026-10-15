@@ -89,19 +89,34 @@ const addIndexBar = (section) => {
 const PENDING = ['late', 'soon', 'failed', 'progress', 'todo'];
 
 /**
- * Highlights the activity to continue, the first one still to do in the order of the page, and its section (and
- * subsection), on the course page and in the course index.
+ * The activity to continue: the one chosen for the page (see \theme_epure\activity_state::next(), the same as on the
+ * dashboard), as long as it is still to do; once marked as done on the page, the next one still to do after it.
  *
  * @param {Array} states States of the activities, in the order of the page.
  * @param {Map} current Current state of each activity.
+ * @param {number|null} chosen Activity chosen for the page.
+ * @returns {Object|undefined}
+ */
+const nextState = (states, current, chosen) => {
+    const pending = (state) => PENDING.includes(current.get(state.cmid)?.state);
+    const index = states.findIndex((state) => state.cmid === chosen);
+    if (index >= 0 && pending(states[index])) {
+        return states[index];
+    }
+    return states.slice(index + 1).find(pending) || states.find(pending);
+};
+
+/**
+ * Highlights the activity to continue and its section (and subsection), on the course page and in the course index.
+ *
+ * @param {Object|undefined} next State of the activity to continue.
  * @param {{activity: string, section: string}} labels Labels of the activity and of its section.
  */
-const showCurrent = (states, current, labels) => {
+const showCurrent = (next, labels) => {
     document.querySelectorAll('.epure-current-label').forEach((label) => label.remove());
     document.querySelectorAll('.epure-current, .epure-current-section').forEach((element) => {
         element.classList.remove('epure-current', 'epure-current-section');
     });
-    const next = states.find((state) => PENDING.includes(current.get(state.cmid)?.state));
     if (!next) {
         return;
     }
@@ -200,13 +215,13 @@ export const init = () => {
     if (!data) {
         return;
     }
-    const {sections = [], states = [], all = {}, labels = {}} = JSON.parse(data.textContent);
+    const {sections = [], states = [], all = {}, labels = {}, next = null} = JSON.parse(data.textContent);
     sections.forEach(addBadge);
     sections.forEach(addIndexBar);
     const initial = new Map(states.map((state) => [state.cmid, state]));
     const current = new Map(initial);
     initial.forEach((state, cmid) => showState(cmid, state));
-    showCurrent(states, current, labels);
+    showCurrent(nextState(states, current, next), labels);
 
     const index = document.getElementById('courseindex');
     if (!index || (!current.size && !sections.length)) {
@@ -229,7 +244,7 @@ export const init = () => {
                 if (after && after.state !== current.get(cmid).state) {
                     current.set(cmid, after);
                     showState(cmid, after);
-                    showCurrent(states, current, labels);
+                    showCurrent(nextState(states, current, next), labels);
                 }
                 return;
             }
@@ -253,9 +268,9 @@ export const init = () => {
         });
         // Lines rendered again lose the bars and the highlight: they are added again, once for all the changes.
         sections.forEach(addIndexBar);
-        const next = states.find((state) => PENDING.includes(current.get(state.cmid)?.state));
-        if (next && !index.querySelector(`[data-for="cm"][data-id="${next.cmid}"].epure-current`)) {
-            showCurrent(states, current, labels);
+        const continued = nextState(states, current, next);
+        if (continued && !index.querySelector(`[data-for="cm"][data-id="${continued.cmid}"].epure-current`)) {
+            showCurrent(continued, labels);
         }
     }).observe(index, {childList: true, subtree: true, attributes: true, attributeFilter: ['data-value']});
 };
