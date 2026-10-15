@@ -38,14 +38,20 @@ class mycourses {
     public const LEARNING = 'learning';
 
     /**
-     * Whether the user teaches a course: they can see the grades of all the participants.
+     * Whether the user teaches a course: their roles let them see the grades of all the participants.
+     *
+     * A site administrator has every capability everywhere: they teach a course unless they take it as a learner, so
+     * that an administrator enrolled as a learner sees the course as the learners do.
      *
      * @param \context_course $context Course context.
      * @param int $userid User.
      * @return bool
      */
     public static function is_teaching(\context_course $context, int $userid): bool {
-        return has_capability('moodle/grade:viewall', $context, $userid);
+        if (has_capability('moodle/grade:viewall', $context, $userid, false)) {
+            return true;
+        }
+        return is_siteadmin($userid) && !is_enrolled($context, $userid, '', true);
     }
 
     /**
