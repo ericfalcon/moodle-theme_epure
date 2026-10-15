@@ -219,8 +219,8 @@ class learner_dashboard {
             'faicon' => $entry['faicon'] ?? null,
             'time' => userdate($entry['time'], get_string($withdate ? 'strftimedatetimeshort' : 'strftimetime', 'langconfig')),
             // The state of an activity, except to do (the time already tells when to do it) and overdue (under its heading).
-            'state' => $export && !in_array($state, ['todo', 'late'], true) ? ['state' => $state, 'icon' => $export['icon'], 'text' => $export['label']]
-                : null,
+            'state' => $export && !in_array($state, ['todo', 'late'], true)
+                ? ['state' => $state, 'icon' => $export['icon'], 'text' => $export['label']] : null,
         ];
     }
 
