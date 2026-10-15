@@ -439,6 +439,7 @@ $string['sitefigures_enrolments'] = 'Active enrolments';
 $string['sitefigures_visible'] = '{$a} visible';
 $string['state_failed'] = 'Not passed';
 $string['state_late'] = 'Overdue';
+$string['state_locked'] = 'Locked';
 $string['state_optional'] = 'Optional';
 $string['state_passed'] = 'Passed';
 $string['state_progress'] = 'In progress';

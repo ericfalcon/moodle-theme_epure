@@ -148,7 +148,6 @@ class activity_state {
         $label = match ($state) {
             'todo' => get_string('todo', 'completion'),
             'done' => get_string('done', 'completion'),
-            'locked' => get_string('locked', 'course'),
             default => get_string('state_' . $state, 'theme_epure'),
         };
         $text = $label;
