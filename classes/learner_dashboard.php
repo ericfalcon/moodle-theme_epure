@@ -82,6 +82,10 @@ class learner_dashboard {
             $urgent = array_filter($visited, fn($card) => !empty($card['urgent']));
             usort($urgent, fn($a, $b) => $a['urgent'] <=> $b['urgent']);
             $resume = $urgent[0] ?? $visited[0];
+            // Brought up by its deadline rather than by the last visit: « Next deadline » rather than « Pick up where
+            // you left off ».
+            $heading = $resume['id'] === $visited[0]['id'] ? 'learnerresume' : 'learnerresumedeadline';
+            $resume['heading'] = get_string($heading, 'theme_epure');
             $inprogress = array_values(array_filter($inprogress, fn($card) => $card['id'] !== $resume['id']));
         }
 

@@ -81,6 +81,7 @@ final class learner_dashboard_test extends \advanced_testcase {
 
         $data = learner_dashboard::export($output);
         $this->assertSame('Recent', $data['resume']['name']);
+        $this->assertSame(get_string('learnerresume', 'theme_epure'), $data['resume']['heading']);
         $this->assertSame(['Old'], array_column($data['inprogress'], 'name'));
         $this->assertSame(['Done', 'Done long ago'], array_column($data['completed'], 'name'));
         $this->assertSame(2, $data['completedcount']);
@@ -112,6 +113,12 @@ final class learner_dashboard_test extends \advanced_testcase {
 
         $data = learner_dashboard::export($PAGE->get_renderer('core'));
         $this->assertSame('Tonight', $data['resume']['name']);
+        // Brought up by its deadline, never opened and nothing done: « Next deadline », and « Start ».
+        $this->assertSame(get_string('learnerresumedeadline', 'theme_epure'), $data['resume']['heading']);
+        $this->assertSame(get_string('mycourses_start', 'theme_epure'), $data['resume']['action']);
+        // Opened, with nothing done yet: « Continue ».
+        $actions = array_column($data['inprogress'], 'action', 'name');
+        $this->assertSame(get_string('mycourses_continue', 'theme_epure'), $actions['Visited']);
         $states = array_column($data['inprogress'], 'urgentstate', 'name');
         $this->assertSame('soon', $states['Visited']['state']);
         $this->assertNull($states['Later']);

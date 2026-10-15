@@ -288,6 +288,7 @@ $string['learnerinprogress'] = 'In progress';
 $string['learnernocompleted'] = 'Nothing completed yet.';
 $string['learnernodeadlines'] = 'Nothing due in the coming days.';
 $string['learnerresume'] = 'Pick up where you left off';
+$string['learnerresumedeadline'] = 'Next deadline';
 $string['localepureinstalled'] = 'The former companion plugin “Épure tools” (local_epure) is still installed. Its settings were taken over by the theme: uninstall it in Site administration › Plugins › Plugins overview.';
 $string['loginimage'] = 'Background image';
 $string['loginimage_desc'] = 'Optional. A veil of the brand colour is laid over the image, with the opacity needed to keep the text readable (WCAG AA) whatever the image.';

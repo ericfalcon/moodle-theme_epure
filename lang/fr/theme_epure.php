@@ -288,6 +288,7 @@ $string['learnerinprogress'] = 'En cours';
 $string['learnernocompleted'] = 'Rien de terminé pour l’instant.';
 $string['learnernodeadlines'] = 'Rien à rendre dans les prochains jours.';
 $string['learnerresume'] = 'Reprendre où vous en étiez';
+$string['learnerresumedeadline'] = 'Prochaine échéance';
 $string['localepureinstalled'] = 'L\'ancien plugin compagnon « Outils Épure » (local_epure) est encore installé. Ses réglages ont été repris par le thème : désinstallez-le dans Administration du site › Plugins › Vue d\'ensemble des plugins.';
 $string['loginimage'] = 'Image de fond';
 $string['loginimage_desc'] = 'Facultative. Un voile de la couleur de marque est posé sur l\'image, avec l\'opacité nécessaire pour garder le texte lisible (contraste AA des WCAG), quelle que soit l\'image.';

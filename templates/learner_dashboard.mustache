@@ -22,7 +22,7 @@
 
     Example context (json):
     {
-        "resume": {"id": 2, "name": "Safety at work", "url": "#", "image": "", "category": "Training", "hasprogress": true,
+        "resume": {"id": 2, "heading": "Pick up where you left off", "name": "Safety at work", "url": "#", "image": "", "category": "Training", "hasprogress": true,
             "progress": 40, "next": {"name": "Quiz 1", "url": "#"}, "summary": "3 activities left · due tomorrow", "action": "Continue", "actionurl": "#"},
         "inprogress": [{"id": 3, "name": "First aid", "url": "#", "hasprogress": true, "progress": 10,
             "urgentstate": {"state": "soon", "icon": "fa-regular fa-clock", "text": "Due soon · 16 October"} }],
@@ -39,7 +39,7 @@
             <section class="epure-learner-resume" aria-labelledby="epure-learner-resume-title">
                 <div class="epure-learner-resume-image" style="background-image: url('{{image}}');"></div>
                 <div class="epure-learner-resume-body">
-                    <h2 class="epure-learner-heading" id="epure-learner-resume-title">{{#str}}learnerresume, theme_epure{{/str}}</h2>
+                    <h2 class="epure-learner-heading" id="epure-learner-resume-title">{{heading}}</h2>
                     {{#category}}<p class="epure-learner-resume-category">{{category}}</p>{{/category}}
                     <h3 class="epure-learner-resume-name"><a href="{{url}}">{{name}}</a></h3>
                     {{#hasprogress}}

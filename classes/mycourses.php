@@ -273,9 +273,11 @@ class mycourses {
             unset($next['base'], $next['due']);
         }
 
+        // Start only for a course never opened, where nothing was done yet.
+        // Continue as soon as the learner visited it or did something in it, even with a progress of 0 %.
         if ($completed) {
             $action = get_string('mycourses_review', 'theme_epure');
-        } else if ($progress) {
+        } else if ($progress || !empty($data['started']) || self::visited((int) $user->id, (int) $course->id)) {
             $action = get_string('mycourses_continue', 'theme_epure');
         } else {
             $action = get_string('mycourses_start', 'theme_epure');
@@ -294,6 +296,18 @@ class mycourses {
             'action' => $action,
             'actionurl' => $next['url'] ?? (new \moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
         ];
+    }
+
+    /**
+     * Whether a user already opened a course.
+     *
+     * @param int $userid User.
+     * @param int $courseid Course.
+     * @return bool
+     */
+    protected static function visited(int $userid, int $courseid): bool {
+        global $DB;
+        return $DB->record_exists('user_lastaccess', ['userid' => $userid, 'courseid' => $courseid]);
     }
 
     /**
@@ -319,9 +333,11 @@ class mycourses {
         // Its state is kept without the time: late or due soon is told when it is shown.
         $next = null;
         $remaining = ['remaining' => 0, 'due' => null];
+        $started = false;
         if ($completion->is_enabled() && !$completed) {
             $items = activity_state::items($course, (int) $user->id);
             $remaining = activity_state::remaining($items);
+            $started = (bool) array_filter($items, fn($item) => !in_array($item['base'], ['todo', 'locked', 'optional'], true));
             if (($key = activity_state::next($items)) !== null) {
                 $cm = $items[$key]['cm'];
                 $next = ['name' => $cm->get_formatted_name(), 'url' => $cm->url->out(false), 'base' => $items[$key]['base'],
@@ -345,6 +361,7 @@ class mycourses {
         } catch (\Throwable $e) {
             debugging('Épure: could not read the deadlines: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
-        return ['progress' => $progress, 'completed' => $completed, 'next' => $next, 'deadline' => $deadline] + $remaining;
+        return ['progress' => $progress, 'completed' => $completed, 'next' => $next, 'deadline' => $deadline,
+            'started' => $started] + $remaining;
     }
 }
