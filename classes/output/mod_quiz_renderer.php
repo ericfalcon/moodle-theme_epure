@@ -21,14 +21,32 @@ use mod_quiz\output\navigation_panel_base;
 use mod_quiz\quiz_attempt;
 
 /**
- * Renderer of the quizzes: the summary of an attempt tells what is left before submitting, with the buttons to submit
- * at the top as at the bottom; the panel of the questions explains its marks.
+ * Renderer of the quizzes: a choice is chosen by a click on its row; the summary of an attempt tells what is left
+ * before submitting, with the buttons to submit at the top as at the bottom; the panel of the questions explains its
+ * marks.
  *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_quiz_renderer extends \mod_quiz\output\renderer {
+    /**
+     * Page of an attempt: a choice is chosen by a click anywhere on its row.
+     *
+     * @param quiz_attempt $attemptobj Attempt.
+     * @param int $page Page.
+     * @param \mod_quiz\access_manager $accessmanager Access manager.
+     * @param array $messages Messages.
+     * @param array $slots Questions of the page.
+     * @param int $id Attempt id.
+     * @param int $nextpage Next page.
+     * @return string HTML.
+     */
+    public function attempt_page($attemptobj, $page, $accessmanager, $messages, $slots, $id, $nextpage) {
+        $this->page->requires->js_call_amd('theme_epure/quiz_attempt', 'init');
+        return parent::attempt_page($attemptobj, $page, $accessmanager, $messages, $slots, $id, $nextpage);
+    }
+
     /**
      * Summary of an attempt, with what is left to do and the buttons to submit above the table of the questions.
      *

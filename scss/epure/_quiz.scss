@@ -177,3 +177,158 @@
         animation: none;
     }
 }
+
+// Each question as a card: its number, state, mark and flag in a band at the top instead of Moodle's grey column on
+// the left; the text a little larger; the choices as rows easy to hit, in the brand colour once chosen. The colours
+// of the right and wrong answers of the review are kept, in the colours of the states.
+.path-mod-quiz .que {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    margin: 0 0 1.5rem;
+    overflow: hidden;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+
+    .info {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: .25rem 1rem;
+        float: none;
+        width: auto;
+        margin: 0;
+        padding: .75rem 1.25rem;
+        font-size: .875rem;
+        background-color: var(--epure-surface-muted);
+        border: 0;
+        border-bottom: 1px solid var(--epure-border);
+        border-radius: 0;
+
+        h3.no {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .qno {
+            font-size: inherit;
+        }
+
+        .state,
+        .grade,
+        .editquestion {
+            margin: 0;
+            color: var(--epure-ink-muted);
+        }
+
+        .questionflag {
+            margin: 0 0 0 auto;
+        }
+    }
+
+    .content {
+        margin: 0;
+        padding: 1.25rem;
+    }
+
+    .formulation {
+        margin: 0;
+        padding: 0;
+        color: var(--epure-ink);
+        background-color: transparent;
+        border: 0;
+    }
+
+    .qtext {
+        margin-bottom: 1rem;
+        font-size: 1.0625rem;
+    }
+
+    .ablock {
+        display: block;
+        width: 100%;
+        margin: 0;
+    }
+
+    &:is(.multichoice, .truefalse, .calculatedmulti, .multichoiceset) .answer {
+        width: 100%;
+        max-width: 42rem;
+    }
+
+    &:is(.multichoice, .truefalse, .calculatedmulti, .multichoiceset) .answer > div {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: .625rem;
+        margin: 0 0 .5rem;
+        padding: .75rem 1rem;
+        cursor: pointer;
+        background-color: var(--epure-surface);
+        border: 1px solid var(--epure-border);
+        border-radius: var(--epure-radius);
+        transition: border-color .15s ease, background-color .15s ease;
+
+        &:hover {
+            border-color: var(--epure-brand);
+        }
+
+        &:has(input:checked) {
+            background-color: var(--epure-brand-soft);
+            border-color: var(--epure-brand);
+            box-shadow: inset 0 0 0 1px var(--epure-brand);
+        }
+
+        // One ring around the row for the keyboard, instead of the ring of the button inside.
+        &:has(input:focus-visible) {
+            outline: 2px solid var(--epure-focus);
+            outline-offset: 2px;
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            flex: none;
+            width: 1.125rem;
+            height: 1.125rem;
+            margin: 0;
+
+            &:focus {
+                outline: 0;
+                box-shadow: none;
+            }
+        }
+
+        label,
+        [data-region="answer-label"] {
+            flex: 1;
+            margin: 0 !important; // stylelint-disable-line declaration-no-important
+            cursor: pointer;
+        }
+
+        &.correct,
+        &.correct:has(input:checked) {
+            background-color: var(--epure-state-done-soft);
+            border-color: var(--epure-state-done);
+            box-shadow: none;
+        }
+
+        &.incorrect,
+        &.incorrect:has(input:checked) {
+            background-color: var(--epure-state-late-soft);
+            border-color: var(--epure-state-late);
+            box-shadow: none;
+        }
+    }
+
+    .outcome {
+        margin: 1rem 0 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .path-mod-quiz .que .answer > div {
+        transition: none;
+    }
+}
