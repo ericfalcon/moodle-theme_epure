@@ -102,7 +102,7 @@
                     <div class="epure-week-day epure-week-late">
                         <h3 class="epure-week-label">{{#str}}state_late, theme_epure{{/str}}</h3>
                         <ul class="epure-week-items">
-                            {{#late}}{{>theme_epure/learner_week_item}}{{/late}}
+                            {{#late}}<li class="epure-week-item">{{>theme_epure/learner_week_item}}</li>{{/late}}
                         </ul>
                     </div>
                 {{/haslate}}
@@ -110,7 +110,7 @@
                     <div class="epure-week-day">
                         <h3 class="epure-week-label">{{label}}</h3>
                         <ul class="epure-week-items">
-                            {{#items}}{{>theme_epure/learner_week_item}}{{/items}}
+                            {{#items}}<li class="epure-week-item">{{>theme_epure/learner_week_item}}</li>{{/items}}
                         </ul>
                     </div>
                 {{/days}}

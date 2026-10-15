@@ -17,7 +17,8 @@
 {{!
     @template theme_epure/learner_week_item
 
-    An item of the week of a learner: the deadline of an activity, or an event of the calendar.
+    Content of an item of the week of a learner (its icon and text, in a li.epure-week-item): the deadline of an activity,
+    or an event of the calendar.
 
     Example context (json):
     {
@@ -25,14 +26,12 @@
         "time": "11:59 PM", "state": {"state": "soon", "icon": "fa-regular fa-clock", "text": "Due soon"}
     }
 }}
-<li class="epure-week-item">
-    <span class="epure-week-icon" aria-hidden="true">
-        {{#icon}}<img src="{{icon}}" alt="" class="activityicon">{{/icon}}
-        {{^icon}}<i class="icon {{faicon}} fa-fw"></i>{{/icon}}
-    </span>
-    <span class="epure-week-body">
-        {{#url}}<a class="epure-week-name" href="{{url}}">{{name}}</a>{{/url}}{{^url}}<span class="epure-week-name">{{name}}</span>{{/url}}
-        <span class="epure-week-meta"><span class="epure-week-time">{{time}}</span>{{#course}} · {{course}}{{/course}}</span>
-        {{#state}}{{>theme_epure/activity_state}}{{/state}}
-    </span>
-</li>
+<span class="epure-week-icon" aria-hidden="true">
+    {{#icon}}<img src="{{icon}}" alt="" class="activityicon">{{/icon}}
+    {{^icon}}<i class="icon {{faicon}} fa-fw"></i>{{/icon}}
+</span>
+<span class="epure-week-body">
+    {{#url}}<a class="epure-week-name" href="{{url}}">{{name}}</a>{{/url}}{{^url}}<span class="epure-week-name">{{name}}</span>{{/url}}
+    <span class="epure-week-meta"><span class="epure-week-time">{{time}}</span>{{#course}} · {{course}}{{/course}}</span>
+    {{#state}}{{>theme_epure/activity_state}}{{/state}}
+</span>
