@@ -144,6 +144,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 ['type' => 'application/json', 'id' => 'epure-iomad-course-categories']
             );
         }
+        // The user report of the gradebook: the course total first, the comments of the teachers set apart, cards on phones.
+        if ($this->page->pagetype === 'grade-report-user-index') {
+            $this->page->requires->js_call_amd('theme_epure/grade_user_report', 'init', [[
+                'total' => get_string('coursetotal', 'grades'),
+                'graded' => get_string('gradesgraded', 'theme_epure', (object) ['graded' => '{graded}', 'total' => '{total}']),
+            ]]);
+        }
         if (\theme_epure\course_presentation::applies($this->page)) {
             return $this->render_from_template(
                 'theme_epure/course_presentation',

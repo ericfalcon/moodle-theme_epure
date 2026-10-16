@@ -1,0 +1,183 @@
+// Grades of a learner (user report of the gradebook): the course total in a card above the table, the comments of the
+// teachers set apart in a bubble, and on phones each grade as a card, its values named by their column.
+
+.epure-grade-total {
+    margin: 0 0 1.25rem;
+    padding: 1.25rem;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+}
+
+.epure-grade-total-label {
+    margin: 0 0 .25rem;
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+    font-weight: 600;
+}
+
+.epure-grade-total-value {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: .25rem .75rem;
+    margin: 0 0 .75rem;
+    font-size: 2rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+}
+
+.epure-grade-total-max {
+    margin-left: -.5rem;
+    color: var(--epure-ink-muted);
+    font-size: 1.125rem;
+    font-weight: 400;
+}
+
+.epure-grade-total-percent {
+    padding: .125rem .5rem;
+    color: var(--epure-brand-text);
+    font-size: .9375rem;
+    font-weight: 600;
+    background-color: var(--epure-brand-soft);
+    border-radius: var(--epure-radius-pill);
+}
+
+.epure-grade-total-bar {
+    height: .5rem;
+    margin-bottom: .75rem;
+}
+
+.epure-grade-total-count {
+    margin: 0;
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+}
+
+// The comments of the teachers: a bubble marked with the brand, easy to spot in the table.
+.user-grade.epure-grade-table {
+    .column-grade {
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .column-range {
+        white-space: nowrap;
+    }
+
+    td.column-feedback:not(.epure-grade-empty) {
+        > * {
+            margin: 0;
+        }
+
+        // The text of the comment in a bubble.
+        & {
+            min-width: 14rem;
+        }
+
+        > :first-child,
+        &:not(:has(> *)) {
+            padding: .625rem .875rem;
+            color: var(--epure-ink);
+            font-size: .875rem;
+            text-align: left;
+            background-color: var(--epure-brand-soft);
+            border-left: 3px solid var(--epure-brand);
+            border-radius: var(--epure-radius);
+        }
+    }
+
+    .gradepass {
+        color: var(--epure-state-done);
+    }
+
+    .gradefail {
+        color: var(--epure-state-late);
+    }
+}
+
+// On phones: one card per grade, the name of the item on top, then its values named by their column.
+@media (max-width: 767.98px) {
+    .user-report-container .table-responsive,
+    .user-report-container .no-overflow {
+        overflow: visible;
+    }
+
+    .user-grade.epure-grade-table {
+        display: block;
+        width: 100%;
+
+        thead {
+            display: none;
+        }
+
+        tbody {
+            display: flex;
+            flex-direction: column;
+            gap: .75rem;
+        }
+
+        tr {
+            display: block;
+            padding: .75rem 1rem;
+            background-color: var(--epure-surface) !important; // stylelint-disable-line declaration-no-important
+            border: 1px solid var(--epure-border);
+            border-radius: var(--epure-radius-lg);
+        }
+
+        // Spacers and the indent of the categories are not needed on a card, nor the values Moodle leaves empty
+        // (the grade stays: « - » tells the item is not graded yet).
+        tr.spacer,
+        td[rowspan]:empty,
+        td.epure-grade-empty:not(.column-grade) {
+            display: none !important; // stylelint-disable-line declaration-no-important
+        }
+
+        tr:has(> th.category) {
+            padding: .25rem 0;
+            background-color: transparent !important; // stylelint-disable-line declaration-no-important
+            border: 0;
+        }
+
+        th,
+        td {
+            display: block;
+            width: auto;
+            padding: 0;
+            text-align: left;
+            background-color: transparent !important; // stylelint-disable-line declaration-no-important
+            border: 0;
+        }
+
+        th.column-itemname {
+            margin-bottom: .5rem;
+        }
+
+        td[data-label] {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: .25rem 0;
+            border-top: 1px solid var(--epure-border);
+
+            &::before {
+                content: attr(data-label);
+                color: var(--epure-ink-muted);
+                font-size: .8125rem;
+                font-weight: 600;
+            }
+        }
+
+        td.column-feedback:not(.epure-grade-empty) {
+            display: block;
+            min-width: 0;
+
+            &::before {
+                display: block;
+                margin-bottom: .375rem;
+            }
+        }
+    }
+}

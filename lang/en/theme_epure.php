@@ -273,6 +273,7 @@ $string['footerprivacyurl_desc'] = 'Address of the privacy policy. Empty: the si
 $string['footersettings'] = 'Footer';
 $string['footertext'] = 'Text';
 $string['footertext_desc'] = 'For example the address of the organisation. Markdown.';
+$string['gradesgraded'] = '{$a->graded} of {$a->total} items graded';
 $string['headerstyle'] = 'Header colour';
 $string['headerstyle_desc'] = 'White header with a brand-coloured underline, or a header filled with the brand colour. Text and icons switch to the colour that reads best on it.';
 $string['headerstylebrand'] = 'Brand colour';
