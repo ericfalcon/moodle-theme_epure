@@ -238,3 +238,15 @@ function theme_epure_get_precompiled_css() {
 function theme_epure_user_preferences(): array {
     return \theme_epure\a11y::definitions();
 }
+
+/**
+ * Adds to the own profile of the user, with Épure, the gallery of their achievements.
+ *
+ * @param \core_user\output\myprofile\tree $tree Profile.
+ * @param stdClass $user Owner of the profile.
+ * @param bool $iscurrentuser Whether it is the profile of the current user.
+ * @param stdClass|null $course Course of the profile.
+ */
+function theme_epure_myprofile_navigation(\core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
+    \theme_epure\achievements::myprofile($tree, $user, (bool) $iscurrentuser, $course ?: null);
+}

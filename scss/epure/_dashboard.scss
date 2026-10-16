@@ -258,6 +258,91 @@
     }
 }
 
+// Achievements: thumbnails of the latest badges, then the certificates. Also on the own profile.
+.epure-achievements-title {
+    margin: 0 0 .5rem;
+    color: var(--epure-ink-muted);
+    font-size: .8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+
+    * + & {
+        margin-top: 1rem;
+    }
+}
+
+.epure-achievements-badges {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
+    gap: .75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: .375rem;
+        padding: .5rem .25rem;
+        border-radius: var(--epure-radius-sm);
+        color: var(--epure-ink);
+        text-align: center;
+        text-decoration: none;
+
+        &:hover,
+        &:focus-visible {
+            background: var(--epure-brand-soft);
+        }
+    }
+
+    img {
+        width: 4rem;
+        height: 4rem;
+        object-fit: contain;
+    }
+}
+
+.epure-achievements-badge-name {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: .75rem;
+    line-height: 1.25;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.epure-achievements-more {
+    display: inline-block;
+    margin-top: .5rem;
+    font-size: .875rem;
+}
+
+.epure-achievements-certificates {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: .25rem .5rem;
+        padding: .375rem 0;
+    }
+
+    .fa {
+        color: var(--epure-brand-text);
+    }
+}
+
+.epure-achievements-date {
+    margin-left: auto;
+    color: var(--epure-ink-muted);
+    font-size: .8125rem;
+}
+
 // Aligned on the heading of the page and the blocks, which Boost indents on wide screens.
 @include media-breakpoint-up(md) {
     .epure-learner {

@@ -87,7 +87,7 @@ final class learner_dashboard_test extends \advanced_testcase {
         $this->assertSame(2, $data['completedcount']);
         $this->assertNotEmpty($data['completed'][0]['datecompleted']);
         $this->assertFalse($data['week']['hasweek']);
-        $this->assertNull($data['certificates']);
+        $this->assertNull($data['achievements']);
     }
 
     /**

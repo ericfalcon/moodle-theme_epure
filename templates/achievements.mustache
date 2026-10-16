@@ -1,0 +1,69 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/achievements
+
+    Achievements of a learner, on their dashboard and their own profile: the latest badges they earned, as
+    thumbnails, and their latest certificates.
+
+    Example context (json):
+    {
+        "hasbadges": true, "badges": [{"name": "Explorer", "image": "#", "date": "01/09/26", "url": "#"}],
+        "morebadges": 2, "badgesurl": "#",
+        "hascertificates": true, "certificates": [{"name": "Safety at work", "date": "01/09/26", "url": "#"}],
+        "certificatesurl": "#"
+    }
+}}
+<div class="epure-achievements">
+    {{#hasbadges}}
+        <h3 class="epure-achievements-title">{{#str}}badges, badges{{/str}}</h3>
+        <ul class="epure-achievements-badges">
+            {{#badges}}
+                <li>
+                    <a href="{{url}}" title="{{name}} · {{date}}">
+                        <img src="{{image}}" alt="" width="64" height="64" loading="lazy">
+                        <span class="epure-achievements-badge-name">{{name}}</span>
+                    </a>
+                </li>
+            {{/badges}}
+        </ul>
+        <a class="epure-achievements-more" href="{{badgesurl}}">
+            {{#morebadges}}{{#str}}achievementsmorebadges, theme_epure, {{morebadges}}{{/str}}{{/morebadges}}
+            {{^morebadges}}{{#str}}achievementsallbadges, theme_epure{{/str}}{{/morebadges}}
+        </a>
+    {{/hasbadges}}
+    {{#hascertificates}}
+        <h3 class="epure-achievements-title">{{#str}}learnercertificates, theme_epure{{/str}}</h3>
+        <ul class="epure-achievements-certificates">
+            {{#certificates}}
+                <li>
+                    <i class="fa fa-award" aria-hidden="true"></i>
+                    <a href="{{url}}">{{name}}</a>
+                    {{#date}}<span class="epure-achievements-date">{{date}}</span>{{/date}}
+                </li>
+            {{/certificates}}
+        </ul>
+    {{/hascertificates}}
+    {{^hasbadges}}{{^hascertificates}}
+        <p class="epure-learner-empty">{{#str}}achievementsnone, theme_epure{{/str}}</p>
+    {{/hascertificates}}{{/hasbadges}}
+    {{#certificatesurl}}
+        <a class="btn btn-outline-primary epure-learner-certificates" href="{{certificatesurl}}">
+            <i class="fa fa-award" aria-hidden="true"></i>{{#str}}learnercertificates, theme_epure{{/str}}
+        </a>
+    {{/certificatesurl}}
+</div>

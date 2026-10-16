@@ -357,7 +357,7 @@ class hook_callbacks {
      *
      * @return bool
      */
-    protected static function epure_page(): bool {
+    public static function epure_page(): bool {
         global $PAGE;
         try {
             return $PAGE->theme->name === 'epure' || in_array('epure', $PAGE->theme->parents ?? [], true);

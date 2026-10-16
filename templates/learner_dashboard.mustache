@@ -18,7 +18,7 @@
     @template theme_epure/learner_dashboard
 
     Overview of a learner at the top of the dashboard: the course to resume, the other courses in
-    progress, the week (deadlines and sessions) and the courses completed.
+    progress, the week (deadlines and sessions), the courses completed and the achievements.
 
     Example context (json):
     {
@@ -31,7 +31,9 @@
             "course": "Safety at work", "url": "#", "icon": "", "faicon": "fa-regular fa-calendar", "time": "11:59 PM",
             "state": {"state": "soon", "icon": "fa-regular fa-clock", "text": "Due soon"} }]}]},
         "completed": [{"id": 4, "name": "Welcome", "url": "#", "datecompleted": "01/09/26"}],
-        "completedcount": 1, "hascompleted": true, "certificates": "#", "mycoursesurl": "#", "calendarurl": "#"
+        "completedcount": 1, "hascompleted": true,
+        "achievements": {"hasbadges": true, "badges": [{"name": "Explorer", "image": "#", "date": "01/09/26", "url": "#"}],
+            "morebadges": 0, "badgesurl": "#", "hascertificates": false, "certificates": [], "certificatesurl": "#"}, "mycoursesurl": "#", "calendarurl": "#"
     }
 }}
 <div class="epure-learner">
@@ -135,11 +137,15 @@
                 </ul>
             {{/hascompleted}}
             {{^hascompleted}}<p class="epure-learner-empty">{{#str}}learnernocompleted, theme_epure{{/str}}</p>{{/hascompleted}}
-            {{#certificates}}
-                <a class="btn btn-outline-primary epure-learner-certificates" href="{{certificates}}">
-                    <i class="fa fa-award" aria-hidden="true"></i>{{#str}}learnercertificates, theme_epure{{/str}}
-                </a>
-            {{/certificates}}
         </section>
+
+        {{#achievements}}
+            <section class="epure-learner-block" aria-labelledby="epure-learner-achievements-title">
+                <div class="epure-learner-block-head">
+                    <h2 class="epure-learner-heading" id="epure-learner-achievements-title">{{#str}}achievements, theme_epure{{/str}}</h2>
+                </div>
+                {{>theme_epure/achievements}}
+            </section>
+        {{/achievements}}
     </div>
 </div>

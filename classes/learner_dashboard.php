@@ -122,7 +122,7 @@ class learner_dashboard {
             'completed' => array_slice($completed, 0, self::COMPLETED),
             'completedcount' => count($completed),
             'hascompleted' => !empty($completed),
-            'certificates' => self::certificates_url($userid),
+            'achievements' => achievements::export($userid, self::certificates_url($userid)),
             'mycoursesurl' => (new \moodle_url('/my/courses.php'))->out(false),
             'calendarurl' => (new \moodle_url('/calendar/view.php', ['view' => 'upcoming']))->out(false),
         ];
@@ -311,7 +311,7 @@ class learner_dashboard {
      * @param int $userid User.
      * @return string|null
      */
-    protected static function certificates_url(int $userid): ?string {
+    public static function certificates_url(int $userid): ?string {
         global $DB;
         // IOMAD: certificates of the completions tracked by the company.
         if (

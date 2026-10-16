@@ -49,7 +49,7 @@
     list-style: none;
 }
 
-.path-user section.node_category ul > li:not(.contentnode):not(.editprofile),
+.path-user section.node_category ul:not([class*="epure-achievements"]) > li:not(.contentnode):not(.editprofile),
 #page-user-preferences #region-main .card ul.card-text > li {
     margin: 0 !important; // stylelint-disable-line declaration-no-important
     border-bottom: 1px solid var(--epure-border);
