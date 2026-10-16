@@ -1,0 +1,32 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/empty_state
+
+    An empty state: an icon, what is empty in a clear sentence, what it will hold, and the next step. Its
+    parts are blocks, so that the strings can be given by the templates that use it, also in JavaScript:
+    icon (Font Awesome classes), title, text and actions (links with the classes btn).
+
+    Example context (json):
+    {}
+}}
+<div class="epure-empty">
+    <span class="epure-empty-icon" aria-hidden="true"><i class="{{$icon}}fa-regular fa-folder-open{{/icon}}"></i></span>
+    <p class="epure-empty-title">{{$title}}{{/title}}</p>
+    <p class="epure-empty-text">{{$text}}{{/text}}</p>
+    <div class="epure-empty-actions">{{$actions}}{{/actions}}</div>
+</div>

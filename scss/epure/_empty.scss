@@ -1,0 +1,73 @@
+// Empty states: an icon, a clear sentence, what will show there, and the next step.
+.epure-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 28rem;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+    text-align: center;
+}
+
+.epure-empty-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-bottom: .75rem;
+    color: var(--epure-brand-text);
+    font-size: 1.5rem;
+    background-color: var(--epure-brand-soft);
+    border-radius: 50%;
+}
+
+.epure-empty-title {
+    margin: 0;
+    color: var(--epure-ink);
+    font-size: 1.0625rem;
+    font-weight: 600;
+}
+
+.epure-empty-text {
+    margin: .375rem 0 0;
+    color: var(--epure-ink-muted);
+
+    &:empty {
+        display: none;
+    }
+}
+
+.epure-empty-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .5rem;
+    margin-top: 1rem;
+
+    &:not(:has(a, button)) {
+        display: none;
+    }
+}
+
+// Empty list of the notifications (Moodle's popover): its sentence under a bell, instead of grey text alone.
+.popover-region-notifications .empty-message {
+    padding: 2rem 1rem;
+    color: var(--epure-ink-muted);
+    text-align: center;
+
+    &::before {
+        display: block;
+        margin: 0 auto .75rem;
+        width: 3rem;
+        height: 3rem;
+        line-height: 3rem;
+        color: var(--epure-brand-text);
+        font-family: "Font Awesome 6 Free";
+        font-size: 1.25rem;
+        font-weight: 400;
+        content: "\f0f3";
+        background-color: var(--epure-brand-soft);
+        border-radius: 50%;
+    }
+}

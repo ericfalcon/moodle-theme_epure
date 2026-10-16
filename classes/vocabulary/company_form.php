@@ -50,10 +50,12 @@ class company_form {
         $languages = [];
         foreach (manager::languages() as $lang) {
             $concepts = [];
-            foreach (terms::IOMAD_CONCEPTS as $concept) {
+            foreach (array_merge(terms::CONCEPTS, terms::IOMAD_CONCEPTS) as $concept) {
                 $name = terms::setting($lang, $concept);
                 $current = self::posted($name, $values[$name] ?? '');
-                $inherited = terms::chosen($lang, $concept, $platform)
+                // Course, student, teacher: the word of the platform, chosen in Épure: vocabulary.
+                $inherited = (in_array($concept, terms::CONCEPTS, true)
+                        ? terms::chosen($lang, $concept) : terms::chosen($lang, $concept, $platform))
                     ?? $presets[$lang][$concept][terms::DEFAULTS[$lang][$concept]];
                 $options = [['value' => '', 'label' => get_string('vocabplatform', 'theme_epure', $inherited['plural']),
                     'selected' => $current === '']];
@@ -308,7 +310,7 @@ class company_form {
         }
         $values = [];
         foreach (terms::LANGUAGES as $lang) {
-            foreach (terms::IOMAD_CONCEPTS as $concept) {
+            foreach (terms::company_concepts($companyid) as $concept) {
                 $name = terms::setting($lang, $concept);
                 $choice = optional_param(self::PREFIX . $name, '', PARAM_ALPHANUMEXT);
                 if ($choice === '') {

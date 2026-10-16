@@ -160,7 +160,7 @@ The Épure settings:
 | Logo for the brand-coloured header | Optional: a version of the logo that is legible on the company's brand colour, often white on a transparent background. |
 | Font | As the site, one of the 8 bundled fonts, the font uploaded for the site, or a font uploaded for the company (name, normal and bold files in woff2 or woff; check that its licence allows its use on a website). Without a normal file, the font of the site is kept. |
 
-IOMAD's native fields (logos, custom CSS and menu) are placed in these steps; Épure declares itself an IOMAD theme so that IOMAD displays them. IOMAD's colours (heading, main, link), which are only used by IOMAD themes, are hidden as long as the company uses Épure; a heading colour that has already been saved is carried over as the brand colour. Finally, the **Vocabulary** section sets the company's words, that is, its words for "company" and "department", in French and in English ("client" and "team" for one company, "agency" and "service" for another). Épure declares itself an IOMAD theme so that IOMAD displays these fields. The words for all companies are chosen on the "Épure: vocabulary" page; a company without its own words uses those.
+IOMAD's native fields (logos, custom CSS and menu) are placed in these steps; Épure declares itself an IOMAD theme so that IOMAD displays them. IOMAD's colours (heading, main, link), which are only used by IOMAD themes, are hidden as long as the company uses Épure; a heading colour that has already been saved is carried over as the brand colour. Finally, the **Vocabulary** section sets the company's words, in French and in English: its words for "course", "student" and "teacher" ("programme" and "trainee" for one company, "module" and "employee" for another), and for "company" and "department" ("client" and "team", "agency" and "service"). Épure declares itself an IOMAD theme so that IOMAD displays these fields. The words of the platform are chosen on the "Épure: vocabulary" page; a company without its own words uses those.
 
 Since language packs are shared by the whole site, these words are applied when strings are loaded, by a string manager that the theme enables on each page (Moodle's `$CFG->customstringmanager` mechanism), with a cache per company. **No change to `config.php` is needed.** It is only enabled if words have been chosen; if `config.php` already defines another string manager, that one is kept and the "Épure: vocabulary" page says so.
 
@@ -191,7 +191,7 @@ How it works:
 
 After installing a new Moodle version or language pack, apply the vocabulary again to cover the new strings.
 
-With IOMAD, the same page offers the words "company" and "department" for all companies; each company can choose its own in its profile (see the IOMAD section).
+With IOMAD, the same page offers the words "company" and "department" for all companies; each company can choose its own in its profile, as well as its words for "course", "student" and "teacher" (see the IOMAD section).
 
 ### Advanced settings
 

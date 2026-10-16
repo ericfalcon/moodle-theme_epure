@@ -33,7 +33,7 @@
         "completed": [{"id": 4, "name": "Welcome", "url": "#", "datecompleted": "01/09/26"}],
         "completedcount": 1, "hascompleted": true,
         "achievements": {"hasbadges": true, "badges": [{"name": "Explorer", "image": "#", "date": "01/09/26", "url": "#"}],
-            "morebadges": 0, "badgesurl": "#", "hascertificates": false, "certificates": [], "certificatesurl": "#"}, "mycoursesurl": "#", "calendarurl": "#"
+            "morebadges": 0, "badgesurl": "#", "hascertificates": false, "certificates": [], "certificatesurl": "#"}, "mycoursesurl": "#", "calendarurl": "#", "catalogueurl": "#"
     }
 }}
 <div class="epure-learner">
@@ -91,6 +91,16 @@
                 </ul>
             </section>
         {{/hasinprogress}}
+        {{^resume}}{{^hasinprogress}}
+            <section class="epure-learner-block">
+                {{< theme_epure/empty_state }}
+                    {{$icon}}{{#hascompleted}}fa-solid fa-trophy{{/hascompleted}}{{^hascompleted}}fa-solid fa-graduation-cap{{/hascompleted}}{{/icon}}
+                    {{$title}}{{#hascompleted}}{{#str}}empty_alldone, theme_epure{{/str}}{{/hascompleted}}{{^hascompleted}}{{#str}}empty_mycourses, theme_epure{{/str}}{{/hascompleted}}{{/title}}
+                    {{$text}}{{#hascompleted}}{{#str}}empty_alldone_text, theme_epure{{/str}}{{/hascompleted}}{{^hascompleted}}{{#str}}empty_courses, theme_epure{{/str}}{{/hascompleted}}{{/text}}
+                    {{$actions}}<a class="btn btn-primary" href="{{catalogueurl}}">{{#str}}empty_catalogue, theme_epure{{/str}}</a>{{/actions}}
+                {{/ theme_epure/empty_state }}
+            </section>
+        {{/hasinprogress}}{{/resume}}
     </div>
 
     <div class="epure-learner-side">

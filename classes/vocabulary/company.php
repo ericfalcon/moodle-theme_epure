@@ -17,9 +17,10 @@
 namespace theme_epure\vocabulary;
 
 /**
- * Vocabulary of IOMAD: the words used for « company » and « department ».
+ * Vocabulary of IOMAD: the words used for « company » and « department », and for each company those used for
+ * « course », « student » and « teacher » when they differ from the words of the platform.
  *
- * They are chosen for all companies (the platform, stored as company 0) and, if needed, for each
+ * The words of IOMAD are chosen for all companies (the platform, stored as company 0) and, if needed, for each
  * company. Language packs are shared by the whole site, so the words of a company cannot be
  * written in them: they are applied when the strings are loaded, by {@see \theme_epure\string_manager},
  * for the users of the company and for the administrator who selected it.
@@ -77,11 +78,20 @@ class company {
     public static function chosen(int $companyid, string $lang): array {
         $values = self::values($companyid);
         $targets = [];
-        foreach (terms::IOMAD_CONCEPTS as $concept) {
+        foreach (terms::company_concepts($companyid) as $concept) {
             // For a company, the word of the language pack is a choice: it can differ from the word of the platform.
-            if ($values && ($term = terms::chosen($lang, $concept, $values, $companyid === 0))) {
-                $targets[$concept] = $term;
+            if (!$values || !($term = terms::chosen($lang, $concept, $values, $companyid === 0))) {
+                continue;
             }
+            // Course, student, teacher: the word of the platform, already in the strings, changes nothing.
+            if (in_array($concept, terms::CONCEPTS, true)) {
+                $platform = self::platform($lang, $concept)
+                    ?? terms::presets()[$lang][$concept][terms::DEFAULTS[$lang][$concept]];
+                if (self::same($term, $platform)) {
+                    continue;
+                }
+            }
+            $targets[$concept] = $term;
         }
         return $targets;
     }
@@ -97,7 +107,7 @@ class company {
         unset_config('company_' . $companyid, 'theme_epure');
         $keep = false;
         foreach (terms::LANGUAGES as $lang) {
-            foreach (terms::IOMAD_CONCEPTS as $concept) {
+            foreach (terms::company_concepts($companyid) as $concept) {
                 $keep = $keep || terms::chosen($lang, $concept, $values, $companyid === 0) !== null;
             }
         }
@@ -132,12 +142,41 @@ class company {
     public static function rewriter(int $companyid, string $lang): ?rewriter {
         if (!array_key_exists($lang, self::$rewriters[$companyid] ?? [])) {
             $targets = [];
+            $sources = [];
             if (in_array($lang, terms::LANGUAGES, true)) {
                 $targets = self::chosen($companyid, $lang) + ($companyid ? self::chosen(0, $lang) : []);
+                // The strings already have the words of the platform for course, student and teacher, written in the
+                // language pack; those it does not cover (customised, not translated) keep the words of the pack.
+                foreach (array_intersect(array_keys($targets), terms::CONCEPTS) as $concept) {
+                    $platform = self::platform($lang, $concept);
+                    $sources[$concept] = array_merge($platform ? [$platform] : [], terms::pack_words($lang, $concept));
+                }
             }
-            self::$rewriters[$companyid][$lang] = $targets ? rewriter::for_language($lang, $targets) : null;
+            self::$rewriters[$companyid][$lang] = $targets ? rewriter::for_language($lang, $targets, $sources) : null;
         }
         return self::$rewriters[$companyid][$lang];
+    }
+
+    /**
+     * The word of the platform for course, student or teacher, when it is not the word of the language pack.
+     *
+     * @param string $lang Language.
+     * @param string $concept Object.
+     * @return array<string, string>|null Term.
+     */
+    protected static function platform(string $lang, string $concept): ?array {
+        return terms::chosen($lang, $concept);
+    }
+
+    /**
+     * Whether two terms are the same words.
+     *
+     * @param array $term Term.
+     * @param array $other Other term.
+     * @return bool
+     */
+    protected static function same(array $term, array $other): bool {
+        return $term['singular'] === $other['singular'] && $term['plural'] === $other['plural'];
     }
 
     /**

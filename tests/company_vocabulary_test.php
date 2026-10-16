@@ -65,6 +65,40 @@ final class company_vocabulary_test extends \advanced_testcase {
     }
 
     /**
+     * A company chooses its words for course, student and teacher too: they replace those of the platform, already in
+     * the strings, or those of the language pack; the word of the platform changes nothing. Not for all companies.
+     */
+    public function test_platform_concepts(): void {
+        $this->resetAfterTest();
+        $presets = terms::presets()['fr'];
+
+        // The platform calls the courses « formations ».
+        set_config(terms::setting('fr', 'course'), 'formation', 'theme_epure');
+        company::save(5, [terms::setting('fr', 'course') => 'parcours', terms::setting('fr', 'teacher') => 'formateur']);
+        company::save(6, [terms::setting('fr', 'course') => 'formation']);
+        company::save(0, [terms::setting('fr', 'course') => 'module', terms::setting('fr', 'company') => 'client']);
+        // The choice of company 6 is kept: it matters again if the platform changes its word.
+        $this->assertSame([0, 5, 6], company::ids());
+
+        $this->assertSame(
+            ['course' => $presets['course']['parcours'], 'teacher' => $presets['teacher']['formateur']],
+            company::chosen(5, 'fr')
+        );
+        $rewriter = company::rewriter(5, 'fr');
+        $this->assertSame('Mes parcours', $rewriter->rewrite('Mes formations'));
+        $this->assertSame('Tous les parcours', $rewriter->rewrite('Toutes les formations'));
+        $this->assertSame('Mes parcours', $rewriter->rewrite('Mes cours'));
+        $this->assertSame('Ajouter un formateur', $rewriter->rewrite('Ajouter un enseignant'));
+        // All companies: the course of the platform.
+        $this->assertSame(['company' => $presets['company']['client']], company::chosen(0, 'fr'));
+        $this->assertNull(company::rewriter(6, 'fr')->rewrite('Mes formations'));
+
+        // The word of the language pack, when the platform has another one.
+        company::save(6, [terms::setting('fr', 'course') => 'cours']);
+        $this->assertSame('Mes cours', company::rewriter(6, 'fr')->rewrite('Mes formations'));
+    }
+
+    /**
      * The string manager applies the words of the company of the user, on top of the language pack.
      */
     public function test_string_manager(): void {
@@ -149,7 +183,9 @@ final class company_vocabulary_test extends \advanced_testcase {
         $_POST = [];
         $context = vocabulary\company_form::context(5);
         $english = array_values(array_filter($context['languages'], fn($l) => $l['lang'] === 'en'))[0];
-        $this->assertTrue($english['concepts'][1]['custom']);
-        $this->assertSame('squads', $english['concepts'][1]['plural']);
+        // Course, student and teacher first, then company and department.
+        $this->assertSame('epure_vocab_en_course', $english['concepts'][0]['name']);
+        $this->assertTrue($english['concepts'][4]['custom']);
+        $this->assertSame('squads', $english['concepts'][4]['plural']);
     }
 }

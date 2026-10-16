@@ -160,6 +160,7 @@ class mycourses {
             'sections' => $result,
             'showheadings' => count($result) > 1,
             'hascourses' => !empty($result),
+            'catalogueurl' => (new \moodle_url('/course/index.php'))->out(false),
             'filters' => [
                 ['value' => 'all', 'label' => get_string('all', 'block_myoverview'), 'selected' => true],
                 ['value' => 'inprogress', 'label' => get_string('inprogress', 'block_myoverview'), 'selected' => false],

@@ -51,6 +51,17 @@ class terms {
     ];
 
     /**
+     * Objects whose name a company can choose: those of IOMAD and, for a company (not for all companies, whose
+     * course, student and teacher are those of the platform), those of the platform too.
+     *
+     * @param int $companyid Company, 0 for all companies.
+     * @return string[]
+     */
+    public static function company_concepts(int $companyid): array {
+        return $companyid ? array_merge(self::CONCEPTS, self::IOMAD_CONCEPTS) : self::IOMAD_CONCEPTS;
+    }
+
+    /**
      * Whether a string keeps the words of the language pack: those of Épure that describe the vocabulary itself
      * (« Courses are called »). The other strings of Épure (« Search my courses ») take the vocabulary as Moodle's.
      *
@@ -59,7 +70,8 @@ class terms {
      * @return bool
      */
     public static function keeps_words(string $component, string $id): bool {
-        return $component === 'theme_epure' && (str_starts_with($id, 'vocab') || str_starts_with($id, 'companyvocab'));
+        return $component === 'theme_epure' && (str_starts_with($id, 'vocab') || str_starts_with($id, 'companyvocab')
+            || str_starts_with($id, 'companyformvocabulary'));
     }
 
     /**

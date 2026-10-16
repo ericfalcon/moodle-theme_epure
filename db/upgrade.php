@@ -105,15 +105,12 @@ function xmldb_theme_epure_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026100700, 'theme', 'epure');
     }
 
-    if ($oldversion < 2026103139) {
-        // The strings of Épure take the vocabulary too (« Search my courses »), but those describing it: applying it
-        // again writes them, in the languages it is used in.
-        foreach (\theme_epure\vocabulary\manager::languages() as $lang) {
-            if (\theme_epure\vocabulary\manager::count($lang)) {
-                \theme_epure\vocabulary\manager::apply($lang);
-            }
+    // The strings of Épure take the vocabulary too (« Search my courses »), but those describing it, and change with
+    // its versions: after each upgrade, it is applied again in the languages it is used in.
+    foreach (\theme_epure\vocabulary\manager::languages() as $lang) {
+        if (\theme_epure\vocabulary\manager::count($lang)) {
+            \theme_epure\vocabulary\manager::apply($lang);
         }
-        upgrade_plugin_savepoint(true, 2026103139, 'theme', 'epure');
     }
 
     return true;

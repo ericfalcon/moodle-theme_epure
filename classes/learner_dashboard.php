@@ -124,6 +124,7 @@ class learner_dashboard {
             'hascompleted' => !empty($completed),
             'achievements' => achievements::export($userid, self::certificates_url($userid)),
             'mycoursesurl' => (new \moodle_url('/my/courses.php'))->out(false),
+            'catalogueurl' => (new \moodle_url('/course/index.php'))->out(false),
             'calendarurl' => (new \moodle_url('/calendar/view.php', ['view' => 'upcoming']))->out(false),
         ];
     }

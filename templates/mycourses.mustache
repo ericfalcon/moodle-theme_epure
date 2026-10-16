@@ -27,7 +27,7 @@
 
     Example context (json):
     {
-        "hascourses": true, "showheadings": true,
+        "hascourses": true, "showheadings": true, "catalogueurl": "#",
         "filters": [{"value": "all", "label": "All", "selected": true}],
         "sections": [{"role": "learning", "title": "Courses I take", "count": 1, "courses": [{
             "id": 2, "name": "Safety", "url": "#", "image": "", "category": "Training", "status": "inprogress",
@@ -77,6 +77,11 @@
         {{/sections}}
     {{/hascourses}}
     {{^hascourses}}
-        <p class="epure-mycourses-none">{{#str}}nocourses{{/str}}</p>
+        {{< theme_epure/empty_state }}
+            {{$icon}}fa-solid fa-graduation-cap{{/icon}}
+            {{$title}}{{#str}}empty_mycourses, theme_epure{{/str}}{{/title}}
+            {{$text}}{{#str}}empty_courses, theme_epure{{/str}}{{/text}}
+            {{$actions}}<a class="btn btn-primary" href="{{catalogueurl}}">{{#str}}empty_catalogue, theme_epure{{/str}}</a>{{/actions}}
+        {{/ theme_epure/empty_state }}
     {{/hascourses}}
 </div>
