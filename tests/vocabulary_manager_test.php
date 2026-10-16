@@ -51,6 +51,9 @@ final class vocabulary_manager_test extends \advanced_testcase {
         $this->assertSame($stats['total'], manager::count('en'));
         $this->assertSame('My programs', $sm->get_string('mycourses', 'moodle', null, 'en'));
         $this->assertSame('Apprentice', $sm->get_string('defaultcoursestudent', 'moodle', null, 'en'));
+        // The strings of Épure too, but those describing the vocabulary.
+        $this->assertSame('Search my programs', $sm->get_string('mycourses_search', 'theme_epure', null, 'en'));
+        $this->assertSame('Courses are called', $sm->get_string('vocab_course', 'theme_epure', null, 'en'));
         $this->assertNotEmpty(manager::examples('en'));
 
         // The administrator customises a string in the language customisation tool.

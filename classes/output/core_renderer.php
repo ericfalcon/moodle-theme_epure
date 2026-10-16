@@ -121,6 +121,26 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
 
     /**
+     * A block; IOMAD's « My courses » takes the name of the page, « My courses » of Moodle, translated and in the words
+     * of the vocabulary, instead of its own string, often left in English or out of the vocabulary.
+     *
+     * @param \block_contents $bc Contents of the block.
+     * @param string $region Region of the block.
+     * @return string HTML.
+     */
+    public function block(\block_contents $bc, $region) {
+        $type = $bc->attributes['data-block'] ?? '';
+        if (
+            in_array($type, ['mycourses', 'iomad_mycourses'], true)
+                && (string) $bc->title === get_string('title', 'block_' . $type)
+        ) {
+            $bc = clone($bc);
+            $bc->title = get_string('mycourses');
+        }
+        return parent::block($bc, $region);
+    }
+
+    /**
      * Header of the page; on the page of a course, inside a banner with the image of the course and,
      * depending on the role of the user, their progress or the figures of the course; on the dashboard,
      * followed by the overview of the learner.

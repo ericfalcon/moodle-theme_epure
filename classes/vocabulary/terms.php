@@ -51,6 +51,18 @@ class terms {
     ];
 
     /**
+     * Whether a string keeps the words of the language pack: those of Épure that describe the vocabulary itself
+     * (« Courses are called »). The other strings of Épure (« Search my courses ») take the vocabulary as Moodle's.
+     *
+     * @param string $component Component.
+     * @param string $id Identifier of the string.
+     * @return bool
+     */
+    public static function keeps_words(string $component, string $id): bool {
+        return $component === 'theme_epure' && (str_starts_with($id, 'vocab') || str_starts_with($id, 'companyvocab'));
+    }
+
+    /**
      * Objects whose name can be chosen for the whole platform with the theme.
      *
      * The IOMAD objects are chosen apart, for all companies and for each one, see {@see company}.

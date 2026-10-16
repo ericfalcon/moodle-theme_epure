@@ -80,8 +80,8 @@ class manager {
             $record = $applied[$key] ?? null;
             unset($applied[$key]);
 
-            // The strings of the theme describe the vocabulary itself (« Courses are called »): they keep the original words.
-            $source = $row->component === 'theme_epure' ? null : self::source($lang, $row);
+            // The strings that describe the vocabulary itself (« Courses are called ») keep the original words.
+            $source = terms::keeps_words($row->component, $row->stringid) ? null : self::source($lang, $row);
             $new = ($rewriter && $source !== null) ? $rewriter->rewrite($source, (string) $row->original) : null;
 
             // A string the administrator customised stays as it is.

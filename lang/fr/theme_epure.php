@@ -352,6 +352,7 @@ $string['mycourses_availablebadge'] = 'Disponible';
 $string['mycourses_completed'] = 'Terminé';
 $string['mycourses_continue'] = 'Continuer';
 $string['mycourses_discover'] = 'Découvrir';
+$string['mycourses_downloadcertificates'] = 'Télécharger mes attestations';
 $string['mycourses_filter'] = 'Afficher les cours';
 $string['mycourses_learning'] = '{$a} que je suis';
 $string['mycourses_next'] = 'À faire :';

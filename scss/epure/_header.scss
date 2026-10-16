@@ -55,8 +55,26 @@ body.epure-header-brand .navbar.fixed-top .editmode-switch-form label,
 body.epure-header-brand .navbar.fixed-top .simplesearchform .btn-open,
 body.epure-header-brand .navbar.fixed-top .navbar-toggler,
 body.epure-header-brand .navbar.fixed-top .epure-a11y-toggle,
-body.epure-header-brand .navbar.fixed-top .langmenu .dropdown-toggle {
+body.epure-header-brand .navbar.fixed-top .langmenu .dropdown-toggle,
+body.epure-header-brand .navbar.fixed-top .usermenu .login,
+body.epure-header-brand .navbar.fixed-top .usermenu .login a {
     color: var(--epure-header-on);
+}
+
+// « Log in » for visitors: a link in the colour of the bar, as a button in the colour of the text of the bar.
+body.epure-header-brand .navbar.fixed-top .usermenu .login a {
+    display: inline-block;
+    padding: .375rem .875rem;
+    border: 1px solid var(--epure-header-on);
+    border-radius: var(--epure-radius-pill);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: var(--epure-header-on);
+        background-color: var(--epure-header-hover);
+    }
 }
 
 body.epure-header-brand .navbar.fixed-top .primary-navigation .navigation .nav-link.active,
