@@ -254,8 +254,18 @@ class mycourses {
             if ($cm->modname === 'assign' && has_capability('mod/assign:grade', $cm->context)) {
                 require_once($CFG->dirroot . '/mod/assign/locallib.php');
                 try {
-                    $count = $groups === [] ? 0
-                        : (new \assign($cm->context, $cm, $course))->count_submissions_need_grading($groups ?? 0);
+                    $assign = new \assign($cm->context, $cm, $course);
+                    if ($groups === []) {
+                        $count = 0;
+                    } else if (
+                        $groups !== null && !$assign->get_instance()->teamsubmission
+                        && method_exists($assign, 'count_submissions_need_grading_with_groups')
+                    ) {
+                        // From Moodle 5.1, count_submissions_need_grading() only takes one group.
+                        $count = $assign->count_submissions_need_grading_with_groups($groups);
+                    } else {
+                        $count = $assign->count_submissions_need_grading($groups ?? 0);
+                    }
                 } catch (\Throwable $e) {
                     debugging('Épure: could not count the submissions to grade: ' . $e->getMessage(), DEBUG_DEVELOPER);
                     $count = 0;
