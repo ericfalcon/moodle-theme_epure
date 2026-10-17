@@ -1,0 +1,124 @@
+// Long settings forms (course, activity, section; theme_epure/long_form): the buttons to save stay at the bottom of
+// the screen, and on wide screens the list of the sections goes beside the form.
+
+// The sections as cards, as on the preferences and the administration: the title in the size of the titles of the
+// cards, the content under it.
+.epure-longform-form fieldset.collapsible {
+    margin: 0 0 1rem;
+    padding: .625rem 1.25rem;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+
+    > .d-flex:first-of-type {
+        margin-bottom: 0 !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .ftoggler h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+    }
+
+    > .fcontainer {
+        padding-top: .5rem;
+        padding-bottom: .5rem;
+    }
+}
+
+// The buttons to save: a bar at the bottom of the screen while the form goes on below it, above the navigation bar
+// of the phones.
+.epure-longform-actions {
+    position: sticky;
+    bottom: var(--epure-mobilenav-height, 0px); // stylelint-disable-line length-zero-no-unit
+    z-index: 3;
+    margin-top: 1.5rem;
+    margin-bottom: 0;
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    background-color: var(--epure-surface);
+    border-top: 1px solid var(--epure-border);
+    box-shadow: 0 -6px 12px -8px rgba(16, 22, 32, .18);
+}
+
+// A section reached from the list is not hidden under the bar at the top of the screen.
+.epure-longform fieldset.collapsible {
+    scroll-margin-top: calc(#{$navbar-height} + 1rem);
+}
+
+// The list of the sections: hidden on narrow screens, where the folded sections already make a short list.
+.epure-longform-nav {
+    display: none;
+}
+
+body.epure-longform-side {
+    // The page widens by the width of the list, so that the form keeps its own width.
+    #page.drawers .main-inner {
+        max-width: calc(#{$course-content-maxwidth} + 16rem);
+    }
+
+    .epure-longform {
+        display: grid;
+        grid-template-columns: 14rem minmax(0, 1fr);
+        gap: 2rem;
+        align-items: start;
+    }
+
+    .epure-longform-nav {
+        position: sticky;
+        top: calc(#{$navbar-height} + 1rem);
+        display: block;
+        max-height: calc(100vh - #{$navbar-height} - 2rem);
+        padding: 2px;
+        overflow-y: auto;
+    }
+}
+
+// The list as the rows of a menu in a card, as on the preferences; the section being read on a tint of the brand.
+.epure-longform-nav ul {
+    @include epure-menu-rows;
+    padding: .25rem 1rem;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+}
+
+// #page #region-main: above the colour of the links of the dark mode.
+#page #region-main .epure-longform-nav a {
+    min-height: 2.25rem;
+    color: var(--epure-ink);
+    font-size: .875rem;
+    line-height: 1.35;
+
+    &:hover,
+    &:focus {
+        color: var(--epure-ink);
+    }
+
+    &[aria-current="true"] {
+        color: var(--epure-brand-text);
+        font-weight: 600;
+        background-color: var(--epure-brand-soft);
+    }
+
+    // A section with an error: a dot in the colour of the errors, and the word read by the screen readers.
+    &.epure-longform-invalid {
+        color: $danger;
+
+        &::after {
+            display: inline-block;
+            width: .5rem;
+            height: .5rem;
+            margin-left: .375rem;
+            vertical-align: middle;
+            content: "";
+            background-color: currentColor;
+            border-radius: 50%;
+        }
+    }
+
+    &:not(.epure-longform-invalid) .epure-longform-error {
+        display: none;
+    }
+}

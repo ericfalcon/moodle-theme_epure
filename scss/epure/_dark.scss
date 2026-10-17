@@ -125,6 +125,11 @@
         color: var(--epure-brand-text);
     }
 
+    // The text editor stays white: its links keep the colour of the light palette.
+    .tox .tox-statusbar a {
+        color: var(--epure-light-brand-text) !important; // stylelint-disable-line declaration-no-important
+    }
+
     .text-primary {
         color: var(--epure-brand-text) !important; // stylelint-disable-line declaration-no-important
     }
@@ -614,7 +619,8 @@
     .uninstall a,
     .error,
     .form-control-feedback.invalid-feedback,
-    .invalid-feedback {
+    .invalid-feedback,
+    .epure-longform-nav a.epure-longform-invalid {
         color: #ff8f85 !important; // stylelint-disable-line declaration-no-important
     }
 

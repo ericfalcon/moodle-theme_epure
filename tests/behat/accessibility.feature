@@ -128,3 +128,15 @@ Feature: Accessibility of the Épure theme
     And I set the field with xpath "//input[contains(@class, 'epure-qs-input')]" to "risks"
     Then I should see "Risks of the place" in the "#epure-qs" "css_element"
     And the page should meet accessibility standards
+
+  Scenario: The long settings forms list their sections and keep the buttons to save in view
+    Given the following "courses" exist:
+      | fullname       | shortname |
+      | Safety at work | SAFE      |
+    And I log in as "admin"
+    And I change window size to "large"
+    When I am on the "SAFE" "course editing" page
+    Then ".epure-longform-actions" "css_element" should exist
+    And "Completion tracking" "link" should exist in the ".epure-longform-nav" "css_element"
+    And I click on "Completion tracking" "link" in the ".epure-longform-nav" "css_element"
+    And "Enable completion tracking" "field" should be visible

@@ -34,7 +34,7 @@
     font-size: 1.125rem;
     font-weight: 600;
 
-    a {
+    #page-admin-search #page & a {
         color: var(--epure-ink);
         text-decoration: none;
 
@@ -58,20 +58,10 @@
     border-radius: var(--epure-radius);
 }
 
-.epure-admin-card-tasks {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-
-    li + li {
-        margin-top: .125rem;
-    }
-
-    a {
-        display: block;
-        padding: .25rem 0;
-        color: var(--epure-brand-text);
-    }
+// The tasks as the rows of a menu, as on the preferences.
+// #page: above the colour of the links of the dark mode.
+#page-admin-search #page .epure-admin-card-tasks {
+    @include epure-menu-rows;
 }
 
 @include media-breakpoint-down(lg) {
@@ -86,10 +76,11 @@
     }
 }
 
-// Each tab of the site administration (General, Users, Courses…): its parts as cards in a grid, rather than rows
-// separated by lines. Moodle's markup is the same from 4.5 to 5.3; only the look changes.
-// Columns rather than a grid: the parts, of very different lengths (« Plugins »), pile up without holes.
-#page-admin-search .tab-content > .tab-pane[id^="link"] > .container-fluid {
+// Each tab of the site administration (General, Users, Courses…) and of the administration of a course: its parts as
+// cards in a grid, rather than rows separated by lines. Moodle's markup is the same from 4.5 to 5.3; only the look
+// changes. Columns rather than a grid: the parts, of very different lengths (« Plugins »), pile up without holes.
+#page-admin-search #page .tab-content > .tab-pane[id^="link"] > .container-fluid,
+#page-course-admin #page .tab-content > .tab-pane[id^="link"] > .container-fluid {
     column-count: 3;
     column-gap: 1rem;
     padding: 0;
@@ -137,48 +128,101 @@
             font-weight: 600;
         }
 
-        ul {
-            margin-bottom: 0;
+        // The pages as the rows of a menu, as on the preferences; the sub-lists (« Plugins ») indented.
+        ul.list-unstyled {
+            @include epure-menu-rows;
+
+            ul.list-unstyled {
+                margin-left: .75rem !important; // stylelint-disable-line declaration-no-important
+            }
         }
 
-        li a {
-            display: inline-block;
-            padding: .1875rem 0;
+        // An entry without a page of its own (in « Plugins »): a title above the following rows.
+        li > strong {
+            display: block;
+            padding: .5rem 0 .25rem;
+            font-size: .875rem;
+        }
+
+        // The part of the tab without pages of its own (« Users »): its title alone, no empty card.
+        &:not(:has(li)) {
+            display: none;
         }
     }
 }
 
+// Fewer columns on narrower screens.
 @include media-breakpoint-down(lg) {
-    #page-admin-search .tab-content > .tab-pane[id^="link"] > .container-fluid {
+    #page-admin-search #page .tab-content > .tab-pane[id^="link"] > .container-fluid,
+    #page-course-admin #page .tab-content > .tab-pane[id^="link"] > .container-fluid {
         column-count: 2;
     }
 }
 
-@include media-breakpoint-down(sm) {
-    #page-admin-search .tab-content > .tab-pane[id^="link"] > .container-fluid {
+@include media-breakpoint-down(md) {
+    #page-admin-search #page .tab-content > .tab-pane[id^="link"] > .container-fluid,
+    #page-course-admin #page .tab-content > .tab-pane[id^="link"] > .container-fluid {
         column-count: 1;
     }
 }
 
-// On phones, the search of the administration goes under the title instead of cutting it in the middle of a word.
-@include media-breakpoint-down(sm) {
-    .path-admin #page-header > .w-100 > .d-flex.align-items-center {
-        flex-wrap: wrap;
-        row-gap: .75rem;
+// A category of the administration (« Category: Users »): its pages and sub-categories as the rows of a menu in a
+// card, as on the preferences. The page of a category has no class of its own: its links are the only headings
+// without a class that are direct children of the fieldset of its form.
+.path-admin #adminsettings > fieldset:has(> h3:not([class]) > a) {
+    padding: .5rem 1.25rem;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+}
 
-        > .header-actions-container {
-            width: 100%;
-            margin-left: 0 !important; // stylelint-disable-line declaration-no-important
+.path-admin #page #adminsettings > fieldset > h3:not([class]) {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    border-bottom: 1px solid var(--epure-border);
 
-            .header-action {
-                width: 100%;
-                margin-left: 0 !important; // stylelint-disable-line declaration-no-important
-            }
+    &:last-child {
+        border-bottom: 0;
+    }
 
-            .simplesearchform,
-            .input-group {
-                width: 100%;
-            }
+    > a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .5rem;
+        min-height: 2.5rem;
+        margin: 0 -.5rem;
+        padding: .375rem .5rem;
+        color: var(--epure-ink);
+        text-decoration: none;
+        border-radius: var(--epure-radius-sm);
+
+        &::after {
+            content: "\203A";
+            color: var(--epure-ink-muted);
+            font-size: 1.25rem;
+            line-height: 1;
+        }
+
+        &:hover,
+        &:focus {
+            color: var(--epure-ink);
+            background-color: var(--epure-brand-soft);
         }
     }
+}
+
+// The reports of a course (« Reports » of the course, report/view.php, which has no class of its own): a card of rows.
+.path-course-view #page #region-main [role="main"] > h2 + .container-fluid > .row > ul.list-unstyled {
+    @include epure-menu-rows;
+    width: 100%;
+    max-width: 40rem;
+    padding: .5rem 1.25rem;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
 }

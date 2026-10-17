@@ -302,6 +302,7 @@ $string['footerprivacyurl_desc'] = 'Adresse de la politique de confidentialité.
 $string['footersettings'] = 'Pied de page';
 $string['footertext'] = 'Texte';
 $string['footertext_desc'] = 'Par exemple l’adresse de l’établissement. Markdown.';
+$string['formsections'] = 'Sections du formulaire';
 $string['gradesgraded'] = '{$a->graded} éléments notés sur {$a->total}';
 $string['headerstyle'] = 'Couleur de l\'en-tête';
 $string['headerstyle_desc'] = 'En-tête blanc avec un soulignement de la couleur de marque, ou en-tête rempli de la couleur de marque. Les textes et icônes prennent automatiquement la couleur la plus lisible.';

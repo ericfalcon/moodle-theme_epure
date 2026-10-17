@@ -179,6 +179,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 'graded' => get_string('gradesgraded', 'theme_epure', (object) ['graded' => '{graded}', 'total' => '{total}']),
             ]]);
         }
+        // Long settings forms: the buttons to save at the bottom of the screen, the list of the sections beside the form.
+        if (\theme_epure\long_form::applies($this->page)) {
+            $this->page->requires->js_call_amd('theme_epure/long_form', 'init');
+        }
         if (\theme_epure\course_presentation::applies($this->page)) {
             return $this->render_from_template(
                 'theme_epure/course_presentation',

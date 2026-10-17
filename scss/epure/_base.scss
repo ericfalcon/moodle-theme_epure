@@ -1,3 +1,46 @@
+// Lists of links read as the rows of a menu, as on the profile, the preferences and the administration: the whole row
+// is the target, a line between the rows, an arrow on the right, the colour of the text rather than that of the links.
+@mixin epure-menu-rows {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    > li {
+        margin: 0 !important; // stylelint-disable-line declaration-no-important
+        border-bottom: 1px solid var(--epure-border);
+
+        &:last-child {
+            border-bottom: 0;
+        }
+    }
+
+    > li > a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .5rem;
+        min-height: 2.5rem;
+        margin: 0 -.5rem;
+        padding: .375rem .5rem;
+        color: var(--epure-ink);
+        text-decoration: none;
+        border-radius: var(--epure-radius-sm);
+
+        &::after {
+            content: "\203A";
+            color: var(--epure-ink-muted);
+            font-size: 1.25rem;
+            line-height: 1;
+        }
+
+        &:hover,
+        &:focus {
+            color: var(--epure-ink);
+            background-color: var(--epure-brand-soft);
+        }
+    }
+}
+
 // Typography.
 body {
     -webkit-font-smoothing: antialiased;
