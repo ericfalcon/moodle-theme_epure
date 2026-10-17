@@ -82,6 +82,27 @@ class company_style {
     /** @var string[] File areas of the files uploaded for a company, served by the theme. */
     public const FILE_AREAS = ['companylogoonbrand', 'companyfontregular', 'companyfontbold'];
 
+    /** @var string[][] Extensions of the files each of those areas may hold: only those are kept and served. */
+    public const FILE_TYPES = [
+        'companylogoonbrand' => ['svg', 'png', 'webp', 'jpg', 'jpeg'],
+        'companyfontregular' => ['woff2', 'woff'],
+        'companyfontbold' => ['woff2', 'woff'],
+    ];
+
+    /**
+     * Whether a file may be kept and served in a file area of a company: its extension is one of the area's. The
+     * types offered by the file picker are not checked by the server: without this, a company manager could upload
+     * an HTML page that would open from the site itself.
+     *
+     * @param string $filearea File area.
+     * @param string $filename File name.
+     * @return bool
+     */
+    public static function allowed_file(string $filearea, string $filename): bool {
+        $extension = \core_text::strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        return in_array($extension, self::FILE_TYPES[$filearea] ?? [], true);
+    }
+
     /** @var string[] Texts of the login page that a company can set instead of those of the site. */
     public const LOGIN_FIELDS = ['logintagline', 'logintext'];
 

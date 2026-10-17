@@ -61,6 +61,7 @@ class block_iomad_company_admin_renderer extends \block_iomad_company_admin\outp
      * @return string HTML.
      */
     public function render_adminblock(\block_iomad_company_admin\output\adminblock $adminblock) {
+        global $USER;
         $data = $adminblock->export_for_template($this);
         $company = company_style::current_company();
         $category = $company ? company_style::company_category($company) : null;
@@ -75,7 +76,8 @@ class block_iomad_company_admin_renderer extends \block_iomad_company_admin\outp
         }, $data['panes']);
         $data['company'] = $this->company_header($data['companyselect'] ?? null);
         $data['company']['category'] = $category;
-        $data['figures'] = $company ? \theme_epure\iomad_figures::export((int) $company->id) : [];
+        $data['figures'] = $company && \theme_epure\iomad_figures::visible_to((int) $company->id, (int) $USER->id)
+            ? \theme_epure\iomad_figures::export((int) $company->id) : [];
         $data['hasfigures'] = !empty($data['figures']);
         $data['label'] = get_string('iomadfigures', 'theme_epure');
         return $this->render_from_template('theme_epure/iomad_dashboard', $data);

@@ -188,4 +188,28 @@ final class company_vocabulary_test extends \advanced_testcase {
         $this->assertTrue($english['concepts'][4]['custom']);
         $this->assertSame('squads', $english['concepts'][4]['plural']);
     }
+
+    /**
+     * A word typed by a company manager cannot carry HTML into the strings of Moodle: quotes and brackets are removed,
+     * the length is limited; the words of real languages stay as they are.
+     */
+    public function test_clean_word(): void {
+        $this->assertSame('Formation', terms::clean_word(' Formation '));
+        $this->assertSame('l’atelier', terms::clean_word('l’atelier'));
+        $this->assertSame('Ma-classe 2.0', terms::clean_word('Ma-classe   2.0'));
+        $this->assertSame(
+            'Course onfocusalert1 autofocus x',
+            terms::clean_word('Course" onfocus="alert(1)" autofocus x="')
+        );
+        $this->assertSame('bxb', terms::clean_word('<b>x</b>'));
+        $this->assertSame(40, \core_text::strlen(terms::clean_word(str_repeat('a', 60))));
+
+        // A word saved before this check is cleaned when it is read.
+        $term = terms::chosen('en', 'course', [
+            'vocab_en_course' => 'custom',
+            'vocab_en_course_singular' => 'Course" onfocus="alert(1)',
+        ], false);
+        $this->assertStringNotContainsString('"', $term['singular']);
+        $this->assertStringNotContainsString('"', $term['plural']);
+    }
 }

@@ -320,7 +320,8 @@ class company_form {
                 $values[$name] = $choice;
                 foreach (['singular', 'plural', 'gender'] as $suffix) {
                     $field = terms::setting($lang, $concept, $suffix);
-                    $values[$field] = trim(optional_param(self::PREFIX . $field, '', PARAM_TEXT));
+                    $value = optional_param(self::PREFIX . $field, '', PARAM_TEXT);
+                    $values[$field] = $suffix === 'gender' ? ($value === 'f' ? 'f' : 'm') : terms::clean_word($value);
                 }
             }
         }
@@ -333,7 +334,14 @@ class company_form {
             ] as $field => [$area, $options]
         ) {
             if ($draftid = optional_param(self::PREFIX . $field, 0, PARAM_INT)) {
-                file_save_draft_area_files($draftid, \context_system::instance()->id, 'theme_epure', $area, $companyid, $options);
+                $contextid = \context_system::instance()->id;
+                file_save_draft_area_files($draftid, $contextid, 'theme_epure', $area, $companyid, $options);
+                // Only the types of the area are kept (see company_style::allowed_file()).
+                foreach (get_file_storage()->get_area_files($contextid, 'theme_epure', $area, $companyid, '', false) as $file) {
+                    if (!\theme_epure\company_style::allowed_file($area, $file->get_filename())) {
+                        $file->delete();
+                    }
+                }
             }
         }
         $posted = fn(array $names, string $type) => array_combine($names, array_map(

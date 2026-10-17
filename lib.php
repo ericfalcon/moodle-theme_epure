@@ -81,7 +81,8 @@ function theme_epure_pluginfile($course, $cm, $context, $filearea, $args, $force
     ) {
         $companyid = (int) array_shift($args);
         $filename = array_pop($args);
-        $file = get_file_storage()->get_file($context->id, 'theme_epure', $filearea, $companyid, '/', $filename);
+        $file = \theme_epure\company_style::allowed_file($filearea, $filename)
+            ? get_file_storage()->get_file($context->id, 'theme_epure', $filearea, $companyid, '/', $filename) : false;
         if ($file && !$file->is_directory()) {
             send_stored_file($file, YEARSECS, 0, $forcedownload, ['cacheability' => 'public'] + $options);
         }

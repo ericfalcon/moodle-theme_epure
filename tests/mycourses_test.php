@@ -106,6 +106,31 @@ final class mycourses_test extends \advanced_testcase {
     }
 
     /**
+     * A hidden course is not shown to a learner enrolled in it, as in Moodle's « My courses »; its teacher sees it.
+     */
+    public function test_hidden_course(): void {
+        global $PAGE;
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $learner = $generator->create_user();
+        $teacher = $generator->create_user();
+        $shown = $generator->create_course();
+        $hidden = $generator->create_course(['visible' => 0]);
+        foreach ([$shown, $hidden] as $course) {
+            $generator->enrol_user($learner->id, $course->id, 'student');
+            $generator->enrol_user($teacher->id, $course->id, 'editingteacher');
+        }
+        $ids = fn(array $data) => array_merge(...array_map(fn($section) => array_column($section['courses'], 'id'),
+            $data['sections']));
+
+        $this->setUser($learner);
+        $this->assertSame([(int) $shown->id], $ids(mycourses::export($PAGE->get_renderer('core'))));
+        $this->setUser($teacher);
+        $this->assertEqualsCanonicalizing([(int) $shown->id, (int) $hidden->id],
+            $ids(mycourses::export($PAGE->get_renderer('core'))));
+    }
+
+    /**
      * The progress kept in the cache follows the completion of the activities: a completion forgets it at once.
      */
     public function test_progress_cache(): void {

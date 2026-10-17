@@ -68,7 +68,7 @@ class observer {
             return;
         }
         $cache = \cache::make('theme_epure', 'learnerprogress');
-        $cache->delete_many([$userid . '_' . (int) $event->courseid, 'deadlines_' . $userid]);
+        $cache->delete_many([$userid . '_' . (int) $event->courseid, 'week_' . $userid]);
     }
 
     /**

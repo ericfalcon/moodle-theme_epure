@@ -206,4 +206,19 @@ final class company_style_test extends \advanced_testcase {
         $this->assertSame(fonts::CUSTOM, company_style::settings(12)['font']);
         $this->assertStringNotContainsString('font-family', company_style::css($company));
     }
+
+    /**
+     * A company's logo and fonts are kept and served only with the extensions of their area: an HTML page or a script
+     * uploaded there (the file picker's types are not checked by the server) is neither.
+     */
+    public function test_allowed_file(): void {
+        $this->assertTrue(company_style::allowed_file('companylogoonbrand', 'logo.SVG'));
+        $this->assertTrue(company_style::allowed_file('companylogoonbrand', 'logo.png'));
+        $this->assertTrue(company_style::allowed_file('companyfontregular', 'font.woff2'));
+        $this->assertFalse(company_style::allowed_file('companyfontregular', 'x.html'));
+        $this->assertFalse(company_style::allowed_file('companylogoonbrand', 'x.htm'));
+        $this->assertFalse(company_style::allowed_file('companyfontbold', 'font.woff2.html'));
+        $this->assertFalse(company_style::allowed_file('companylogoonbrand', 'logo.woff2'));
+        $this->assertFalse(company_style::allowed_file('other', 'logo.png'));
+    }
 }

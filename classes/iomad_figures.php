@@ -104,6 +104,24 @@ class iomad_figures {
     }
 
     /**
+     * Whether a user may see the key figures of a company: whoever sees all the companies, or a manager of this one.
+     * IOMAD's dashboard opens to every user (its actions are filtered by capabilities); the figures of a company are
+     * not for its learners, its department managers or the users of other companies.
+     *
+     * @param int $companyid Company.
+     * @param int $userid User.
+     * @return bool
+     */
+    public static function visible_to(int $companyid, int $userid): bool {
+        global $DB;
+        if (iomad::has_capability('block/iomad_company_admin:company_view_all', \context_system::instance())) {
+            return true;
+        }
+        return $DB->record_exists(iomad::table('company_users'), ['userid' => $userid, 'companyid' => $companyid,
+            'managertype' => 1, 'suspended' => 0]);
+    }
+
+    /**
      * Context of the key figures of a company, for the template theme_epure/iomad_dashboard.
      *
      * @param int $companyid Company.

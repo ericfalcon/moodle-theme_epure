@@ -206,7 +206,10 @@ class quick_search {
         $pages = [];
         foreach ($root->search($query) as $found) {
             $page = $found->page;
-            if (!$page->is_hidden() && ($page instanceof \admin_externalpage || $page instanceof \admin_settingpage)) {
+            if (
+                !$page->is_hidden() && $page->check_access()
+                    && ($page instanceof \admin_externalpage || $page instanceof \admin_settingpage)
+            ) {
                 $pages[] = $page;
             }
         }

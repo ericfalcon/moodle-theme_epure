@@ -227,8 +227,8 @@ class terms {
             return null;
         }
         if ($choice === self::CUSTOM) {
-            $singular = trim($get(self::setting($lang, $concept, 'singular')));
-            $plural = trim($get(self::setting($lang, $concept, 'plural')));
+            $singular = self::clean_word($get(self::setting($lang, $concept, 'singular')));
+            $plural = self::clean_word($get(self::setting($lang, $concept, 'plural')));
             $gender = $get(self::setting($lang, $concept, 'gender')) === 'f' ? 'f' : 'm';
             if ($singular === '') {
                 return null;
@@ -236,6 +236,20 @@ class terms {
             return ['singular' => $singular, 'plural' => $plural === '' ? $singular : $plural, 'gender' => $gender];
         }
         return self::presets()[$lang][$concept][$choice] ?? null;
+    }
+
+    /**
+     * A word typed by an administrator or an IOMAD company manager, as it may go into the strings of Moodle: letters,
+     * digits, spaces, apostrophes, hyphens and dots only, 40 characters at most. The strings of Moodle are trusted HTML,
+     * also written in attributes: a quote or a bracket in a word would let its author inject HTML or script into every
+     * page of the users of the company.
+     *
+     * @param string $word Word.
+     * @return string
+     */
+    public static function clean_word(string $word): string {
+        $word = preg_replace('/[^\p{L}\p{M}\p{N} \'’.\-]+/u', '', $word) ?? '';
+        return trim(\core_text::substr(trim(preg_replace('/\s+/u', ' ', $word)), 0, 40));
     }
 
     /**

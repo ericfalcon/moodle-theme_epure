@@ -100,6 +100,10 @@ class mycourses {
                 continue;
             }
             $context = \context_course::instance($course->id);
+            // A hidden course stays hidden to whoever cannot see hidden courses, as in Moodle's « My courses ».
+            if (!$course->visible && !has_capability('moodle/course:viewhiddencourses', $context, $userid)) {
+                continue;
+            }
             $teaching = self::is_teaching($context, $userid);
             $card = self::card($course, $context, $output, $user, $teaching);
             $card['favourite'] = isset($favourites[$course->id]);

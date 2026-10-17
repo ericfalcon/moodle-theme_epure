@@ -91,4 +91,29 @@ final class iomad_figures_test extends \advanced_testcase {
         $this->assertSame(4, $figures['licences']['value']);
         $this->assertSame(1, $figures['completions']['value']);
     }
+
+    /**
+     * The figures of a company are for the managers of this company and whoever sees all companies, not for its
+     * learners, its department managers or the users of other companies.
+     */
+    public function test_visible_to(): void {
+        global $DB;
+        if (!company_style::iomad_installed()) {
+            $this->markTestSkipped('IOMAD is not installed.');
+        }
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $users = [];
+        foreach (['learner' => [1, 0], 'manager' => [1, 1], 'department' => [1, 2], 'other' => [2, 1]] as $name => $row) {
+            $users[$name] = $generator->create_user();
+            $DB->insert_record(iomad::table('company_users'), ['companyid' => $row[0], 'userid' => $users[$name]->id,
+                'departmentid' => 0, 'managertype' => $row[1], 'suspended' => 0]);
+        }
+        foreach (['learner' => false, 'manager' => true, 'department' => false, 'other' => false] as $name => $visible) {
+            $this->setUser($users[$name]);
+            $this->assertSame($visible, iomad_figures::visible_to(1, (int) $users[$name]->id), $name);
+        }
+        $this->setAdminUser();
+        $this->assertTrue(iomad_figures::visible_to(1, (int) get_admin()->id));
+    }
 }
