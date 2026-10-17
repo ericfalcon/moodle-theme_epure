@@ -353,6 +353,20 @@ class hook_callbacks {
     }
 
     /**
+     * Before the header of a page: the navigation and the user menu of the simplified view of the learner, the badges
+     * of a course in its navigation only when it has some ({@see simple_view}).
+     *
+     * @param \core\hook\output\before_http_headers $hook The hook.
+     */
+    public static function before_http_headers(\core\hook\output\before_http_headers $hook): void {
+        global $PAGE;
+        if (during_initial_install() || !self::epure_page()) {
+            return;
+        }
+        simple_view::prepare($PAGE);
+    }
+
+    /**
      * Whether the page is displayed with Épure (the hooks also run for the other themes).
      *
      * @return bool

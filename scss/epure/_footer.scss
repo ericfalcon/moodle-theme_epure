@@ -81,3 +81,17 @@
 .epure-a11y-statement-contact {
     margin-bottom: 1.5rem;
 }
+
+// Simplified view of the learner: the help button of the corner, discreet until it is pointed at or reached.
+.epure-simpleview .btn-footer-popover {
+    opacity: .5;
+    transform: scale(.85);
+    transition: opacity .15s, transform .15s;
+
+    &:hover,
+    &:focus,
+    &:focus-visible {
+        opacity: 1;
+        transform: none;
+    }
+}

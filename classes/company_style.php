@@ -60,6 +60,7 @@ class company_style {
         'breadcrumb' => ['show', 'desktop', 'hide'],
         'mobileblocks' => ['drawer', 'hidden'],
         'mobiledashboard' => ['full', 'overview'],
+        'simpleview' => ['off', 'on'],
     ];
 
     /** @var array<string, string> Choice of the site when it was never saved ({@see self::CHOICES}). */
@@ -69,6 +70,7 @@ class company_style {
         'breadcrumb' => 'show',
         'mobileblocks' => 'drawer',
         'mobiledashboard' => 'full',
+        'simpleview' => 'off',
     ];
 
     /** @var string Font of a company: the one uploaded for it in its form. */

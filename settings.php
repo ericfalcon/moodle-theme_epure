@@ -153,6 +153,18 @@ if ($ADMIN->fulltree) {
 
     $heading($page, 'usermenu', get_string('settingsusermenu_desc', 'theme_epure', $adminlink('themesettingsadvanced')));
 
+    // Simplified view of the learner.
+    $page->add(new admin_setting_configselect(
+        'theme_epure/simpleview',
+        get_string('simpleview', 'theme_epure'),
+        get_string('simpleview_desc', 'theme_epure'),
+        'off',
+        [
+            'off' => get_string('simpleviewoff', 'theme_epure'),
+            'on' => get_string('simpleviewon', 'theme_epure'),
+        ]
+    ));
+
     $settings->add($page);
 
     // Courses: the cards, the progress, the activities and the previous and next activities.

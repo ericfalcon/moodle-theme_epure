@@ -40,6 +40,7 @@ The tab ends with the **e-mails** in the colours of the brand (see Branded e-mai
 | Quick search | The search window of the header, Ctrl+K (see Quick search). |
 | Breadcrumb | The path of the page above its title: shown, shown on large screens only, or hidden. |
 | User menu | Links are added in Appearance › Advanced theme settings (User menu items); the tab links to it. |
+| Simplified view of the learner | Off by default; can be set per IOMAD company. For whoever manages no activities: the navigation of a course reduced to Course, Grades and Badges (the other pages under « More »), the other pages of an activity under « More », the user menu without calendar, private files and reports, the drawer of the blocks closed when a page opens, a discreet help button. Nothing is removed. Whatever the setting, « Badges » shows in a course only when it has an active badge, or for whoever can create badges there. |
 
 ### Courses
 
