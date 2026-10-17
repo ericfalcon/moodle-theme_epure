@@ -148,8 +148,9 @@ const followScroll = (nav, items) => {
             return;
         }
         const line = (document.querySelector('.navbar.fixed-top')?.offsetHeight || 0) + 96;
-        const current = items.filter((fieldset) => fieldset.getBoundingClientRect().top <= line).pop() || items[0];
-        setCurrent(nav, current.id);
+        // Above the first section (the fields before it), none is marked.
+        const current = items.filter((fieldset) => fieldset.getBoundingClientRect().top <= line).pop();
+        setCurrent(nav, current ? current.id : '');
     };
     const later = () => {
         if (!waiting) {
@@ -161,6 +162,31 @@ const followScroll = (nav, items) => {
     window.addEventListener('scroll', later, {passive: true});
     document.getElementById('page')?.addEventListener('scroll', later, {passive: true});
     update();
+};
+
+/**
+ * Puts the fields before the first section (IOMAD's forms start so, some have no section at all) in a card of their
+ * own, as the sections.
+ *
+ * @param {HTMLFormElement} form Form.
+ * @param {HTMLElement|null} actions Buttons to save, left out.
+ */
+const gatherLead = (form, actions) => {
+    const lead = [];
+    for (const child of form.children) {
+        if (child.tagName === 'FIELDSET') {
+            break;
+        }
+        if (child !== actions && child.matches('.fitem, .form-group')) {
+            lead.push(child);
+        }
+    }
+    if (lead.length) {
+        const box = document.createElement('div');
+        box.className = 'epure-longform-lead';
+        lead[0].before(box);
+        box.append(...lead);
+    }
 };
 
 /**
@@ -178,6 +204,7 @@ export const init = async() => {
     const actions = form.querySelector('[id^="fgroup_id_buttonar"]')
         || form.querySelector('[name="submitbutton"]')?.closest('.fitem, .form-group');
     actions?.classList.add('epure-longform-actions');
+    gatherLead(form, actions);
 
     const items = sections(form);
     if (items.length < MIN_SECTIONS) {

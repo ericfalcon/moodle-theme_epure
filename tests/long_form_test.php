@@ -44,11 +44,13 @@ final class long_form_test extends \basic_testcase {
      */
     public function test_applies(): void {
         $long = ['course-edit', 'course-editsection', 'mod-assign-mod', 'mod-quiz-mod',
-            'blocks-iomad_company_admin-company_course_create_form'];
+            'blocks-iomad_company_admin-company_course_create_form', 'blocks-iomad_company_admin-company_user_create_form',
+            'blocks-iomad_company_admin-editadvanced'];
         foreach ($long as $type) {
             $this->assertTrue(long_form::applies($this->page($type)), $type);
         }
-        $other = ['course-view-topics', 'mod-assign-view', 'mod-quiz-attempt', 'admin-setting-themesettingepure', 'my-index'];
+        $other = ['course-view-topics', 'mod-assign-view', 'mod-quiz-attempt', 'admin-setting-themesettingepure', 'my-index',
+            'blocks-iomad_company_admin-index', 'blocks-iomad_company_admin-company_license_list'];
         foreach ($other as $type) {
             $this->assertFalse(long_form::applies($this->page($type)), $type);
         }

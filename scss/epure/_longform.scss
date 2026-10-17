@@ -3,7 +3,8 @@
 
 // The sections as cards, as on the preferences and the administration: the title in the size of the titles of the
 // cards, the content under it.
-.epure-longform-form fieldset.collapsible {
+.epure-longform-form fieldset.collapsible,
+.epure-longform-lead {
     margin: 0 0 1rem;
     padding: .625rem 1.25rem;
     background-color: var(--epure-surface);
@@ -24,6 +25,12 @@
         padding-top: .5rem;
         padding-bottom: .5rem;
     }
+}
+
+// The fields before the first section, without a title.
+.epure-longform-lead {
+    padding-top: 1.25rem;
+    padding-bottom: .25rem;
 }
 
 // The buttons to save: a bar at the bottom of the screen while the form goes on below it, above the navigation bar

@@ -17,8 +17,8 @@
 namespace theme_epure;
 
 /**
- * Long settings forms (course, activity, section): the buttons to save stay at the bottom of the screen, and a list
- * of the sections of the form beside it leads to each one.
+ * Long settings forms (course, activity, section, the forms of IOMAD's dashboard): the sections as cards, the buttons
+ * to save at the bottom of the screen, and a list of the sections of the form beside it that leads to each one.
  *
  * Only the look and the way to reach the sections change: the fields, their order and the saving stay Moodle's.
  *
@@ -27,11 +27,13 @@ namespace theme_epure;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class long_form {
-    /** @var string[] Types of the pages of the long forms, besides the settings of the activities (mod-*-mod). */
+    /** @var string[] Types of the pages of the long forms, besides the settings of the activities (mod-*-mod) and the
+     * forms of IOMAD's dashboard (blocks-iomad_company_admin-*_form). */
     public const PAGETYPES = [
         'course-edit',
         'course-editsection',
-        'blocks-iomad_company_admin-company_course_create_form',
+        'blocks-iomad_company_admin-editadvanced',
+        'blocks-iomad_company_admin-company_advanced_settings',
     ];
 
     /**
@@ -42,6 +44,7 @@ class long_form {
      */
     public static function applies(\moodle_page $page): bool {
         $type = $page->pagetype;
-        return in_array($type, self::PAGETYPES, true) || preg_match('/^mod-[a-z0-9_]+-mod$/', $type) === 1;
+        return in_array($type, self::PAGETYPES, true) || preg_match('/^mod-[a-z0-9_]+-mod$/', $type) === 1
+            || preg_match('/^blocks-iomad_company_admin-[a-z0-9_]+_form$/', $type) === 1;
     }
 }

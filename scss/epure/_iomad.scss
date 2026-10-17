@@ -155,54 +155,50 @@
     margin-right: .375rem;
 }
 
-.epure-iomad-group + .epure-iomad-group {
-    margin-top: 1.75rem;
+// Each tab: its groups (Create, Configure, Manage…) as cards in columns, their links as the rows of a menu, as on the
+// preferences and the site administration. Columns rather than a grid: groups of very different lengths pile up
+// without holes.
+.epure-iomad-pane {
+    column-count: 3;
+    column-gap: 1rem;
 }
 
-.epure-iomad-group-title {
-    margin-bottom: .75rem;
-    color: var(--epure-ink-muted);
-    font-size: .8125rem;
-    font-weight: 600;
-    letter-spacing: .04em;
-    text-transform: uppercase;
-}
-
-.epure-iomad-actions {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-    gap: .75rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-// The whole card is the link: a large, comfortable target.
-.epure-iomad-action {
-    display: flex;
-    align-items: center;
-    gap: .875rem;
-    height: 100%;
-    min-height: 4rem;
-    padding: .75rem 1rem;
-    color: $body-color;
+.epure-iomad-group {
+    margin: 0 0 1rem;
+    padding: 1rem 1.25rem .75rem;
+    break-inside: avoid;
     background-color: var(--epure-surface);
     border: 1px solid var(--epure-border);
     border-radius: var(--epure-radius-lg);
     box-shadow: var(--epure-shadow);
-    transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
 }
 
-.epure-iomad-action:hover,
-.epure-iomad-action:focus {
-    color: $body-color;
-    text-decoration: none;
-    border-color: var(--epure-brand);
-    box-shadow: var(--epure-shadow-hover);
+.epure-iomad-group-title {
+    margin: 0 0 .5rem;
+    color: var(--epure-ink);
+    font-size: 1.125rem;
+    font-weight: 600;
 }
 
-.epure-iomad-action:hover {
-    transform: translateY(-1px);
+.epure-iomad-actions {
+    @include epure-menu-rows;
+}
+
+// #page #region-main: above the colour of the links of the dark mode.
+#page #region-main .epure-iomad-actions > li > a.epure-iomad-action {
+    justify-content: flex-start;
+    gap: .75rem;
+    color: var(--epure-ink);
+
+    &:hover,
+    &:focus {
+        color: var(--epure-ink);
+    }
+
+    // The arrow at the end of the row.
+    &::after {
+        margin-left: auto;
+    }
 }
 
 .epure-iomad-action-icon {
@@ -210,17 +206,28 @@
     flex: none;
     align-items: center;
     justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2rem;
+    height: 2rem;
     color: var(--epure-brand-text);
-    font-size: 1.125rem;
+    font-size: 1rem;
     background-color: var(--epure-brand-soft);
-    border-radius: var(--epure-radius);
+    border-radius: var(--epure-radius-sm);
 }
 
 .epure-iomad-action-label {
-    font-weight: 500;
     line-height: 1.35;
+}
+
+@include media-breakpoint-down(lg) {
+    .epure-iomad-pane {
+        column-count: 2;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    .epure-iomad-pane {
+        column-count: 1;
+    }
 }
 
 // Épure fields of the IOMAD company form, in numbered sections inside its Appearance section,
