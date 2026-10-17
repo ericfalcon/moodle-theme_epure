@@ -120,14 +120,18 @@ final class mycourses_test extends \advanced_testcase {
             $generator->enrol_user($learner->id, $course->id, 'student');
             $generator->enrol_user($teacher->id, $course->id, 'editingteacher');
         }
-        $ids = fn(array $data) => array_merge(...array_map(fn($section) => array_column($section['courses'], 'id'),
-            $data['sections']));
+        $ids = fn(array $data) => array_merge(...array_map(
+            fn($section) => array_column($section['courses'], 'id'),
+            $data['sections']
+        ));
 
         $this->setUser($learner);
         $this->assertSame([(int) $shown->id], $ids(mycourses::export($PAGE->get_renderer('core'))));
         $this->setUser($teacher);
-        $this->assertEqualsCanonicalizing([(int) $shown->id, (int) $hidden->id],
-            $ids(mycourses::export($PAGE->get_renderer('core'))));
+        $this->assertEqualsCanonicalizing(
+            [(int) $shown->id, (int) $hidden->id],
+            $ids(mycourses::export($PAGE->get_renderer('core')))
+        );
     }
 
     /**
