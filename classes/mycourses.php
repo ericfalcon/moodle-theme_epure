@@ -208,6 +208,60 @@ class mycourses {
     }
 
     /**
+     * The activities of a course with something to grade by the user: the submissions of the assignments, the
+     * attempts of the quizzes with answers to grade by hand (essays…).
+     *
+     * @param \stdClass $course Course.
+     * @return array[] Each with name, count and url (its grading page), in the order of the course.
+     */
+    public static function to_grade(\stdClass $course): array {
+        global $CFG, $DB;
+        $items = [];
+        $modinfo = get_fast_modinfo($course);
+        $quizzes = [];
+        foreach ($modinfo->get_cms() as $cm) {
+            if (!$cm->uservisible || !in_array($cm->modname, ['assign', 'quiz'], true)) {
+                continue;
+            }
+            if ($cm->modname === 'assign' && has_capability('mod/assign:grade', $cm->context)) {
+                require_once($CFG->dirroot . '/mod/assign/locallib.php');
+                try {
+                    $count = (new \assign($cm->context, $cm, $course))->count_submissions_need_grading();
+                } catch (\Throwable $e) {
+                    debugging('Épure: could not count the submissions to grade: ' . $e->getMessage(), DEBUG_DEVELOPER);
+                    $count = 0;
+                }
+                $items[$cm->id] = ['name' => $cm->get_formatted_name(), 'count' => $count,
+                    'url' => (new \moodle_url('/mod/assign/view.php', ['id' => $cm->id, 'action' => 'grader']))->out(false)];
+            } else if ($cm->modname === 'quiz' && has_capability('mod/quiz:grade', $cm->context)) {
+                $quizzes[$cm->instance] = $cm;
+                $items[$cm->id] = ['name' => $cm->get_formatted_name(), 'count' => 0,
+                    'url' => (new \moodle_url('/mod/quiz/report.php', ['id' => $cm->id, 'mode' => 'grading']))->out(false)];
+            }
+        }
+        if ($quizzes) {
+            // Finished attempts (not previews) whose last step of a question is « needs grading ».
+            [$insql, $params] = $DB->get_in_or_equal(array_keys($quizzes), SQL_PARAMS_NAMED);
+            $counts = $DB->get_records_sql_menu(
+                "SELECT quiza.quiz, COUNT(DISTINCT quiza.id)
+                   FROM {quiz_attempts} quiza
+                   JOIN {question_attempts} qa ON qa.questionusageid = quiza.uniqueid
+                   JOIN {question_attempt_steps} qas ON qas.questionattemptid = qa.id
+                  WHERE quiza.quiz $insql AND quiza.state = :finished AND quiza.preview = 0
+                    AND qas.state = :needsgrading
+                    AND qas.sequencenumber = (SELECT MAX(last.sequencenumber) FROM {question_attempt_steps} last
+                                               WHERE last.questionattemptid = qa.id)
+               GROUP BY quiza.quiz",
+                $params + ['finished' => 'finished', 'needsgrading' => 'needsgrading']
+            );
+            foreach ($counts as $quizid => $count) {
+                $items[$quizzes[$quizid]->id]['count'] = (int) $count;
+            }
+        }
+        return array_values(array_filter($items, fn($item) => $item['count'] > 0));
+    }
+
+    /**
      * Figures and links of a course the user teaches.
      *
      * @param \stdClass $course Course.
@@ -215,7 +269,7 @@ class mycourses {
      * @return array
      */
     protected static function teacher_data(\stdClass $course, \context_course $context): array {
-        global $CFG, $DB;
+        global $DB;
         // Learners: the users whose progress is followed in the course.
         $learners = get_enrolled_sql($context, 'moodle/course:isincompletionreports', 0, true);
         $participants = (int) $DB->count_records_sql("SELECT COUNT(1) FROM ($learners[0]) l", $learners[1]);
@@ -225,20 +279,9 @@ class mycourses {
             $learners[1] + ['courseid' => $course->id, 'since' => time() - WEEKSECS]
         );
 
-        // Submissions waiting for a grade, in the assignments the user can grade.
-        $tograde = 0;
-        $modinfo = get_fast_modinfo($course);
-        foreach ($modinfo->get_instances_of('assign') as $cm) {
-            if (!$cm->uservisible || !has_capability('mod/assign:grade', $cm->context)) {
-                continue;
-            }
-            require_once($CFG->dirroot . '/mod/assign/locallib.php');
-            try {
-                $tograde += (new \assign($cm->context, $cm, $course))->count_submissions_need_grading();
-            } catch (\Throwable $e) {
-                debugging('Épure: could not count the submissions to grade: ' . $e->getMessage(), DEBUG_DEVELOPER);
-            }
-        }
+        // What waits for a grade: the submissions of the assignments, the answers of the quizzes graded by hand.
+        $items = self::to_grade($course);
+        $tograde = array_sum(array_column($items, 'count'));
 
         $link = fn(string $label, string $path, string $icon) => [
             'label' => $label,
@@ -257,7 +300,11 @@ class mycourses {
             'active' => $active,
             'tograde' => $tograde,
             'hastograde' => $tograde > 0,
-            'gradeurl' => (new \moodle_url('/mod/assign/index.php', ['id' => $course->id]))->out(false),
+            // One activity: its grading page; several: their list, under the figures of the course page.
+            'gradeurl' => count($items) === 1 ? $items[0]['url']
+                : (new \moodle_url('/course/view.php', ['id' => $course->id], 'epure-tograde'))->out(false),
+            'togradeitems' => count($items) > 1 ? $items : [],
+            'hastogradeitems' => count($items) > 1,
             'links' => $links,
         ];
     }

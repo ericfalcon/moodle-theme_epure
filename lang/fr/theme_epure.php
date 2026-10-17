@@ -374,6 +374,7 @@ $string['mycourses_shown'] = '{$a} cours affichés.';
 $string['mycourses_start'] = 'Commencer';
 $string['mycourses_teaching'] = '{$a} que j\'anime';
 $string['mycourses_tograde'] = 'À corriger';
+$string['mycourses_togradelist'] = 'Activités à corriger';
 $string['mycoursesbyrole'] = 'Mes cours par rôle';
 $string['mycoursesbyrole_desc'] = 'Sur la page Mes cours, les cours que vous animez et ceux que vous suivez sont présentés en deux sections, avec des cartes adaptées à chaque rôle : progression, prochaine activité et échéance pour un apprenant ; participants, travaux à corriger et accès directs pour un enseignant. Décochez pour retrouver le bloc de Moodle.';
 $string['pluginname'] = 'Épure';

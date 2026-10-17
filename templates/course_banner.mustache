@@ -83,6 +83,16 @@
                         <dd>{{#hastograde}}<a href="{{gradeurl}}">{{tograde}}</a>{{/hastograde}}{{^hastograde}}0{{/hastograde}}</dd>
                     </div>
                 </dl>
+                {{#hastogradeitems}}
+                    <div class="epure-course-banner-tograde" id="epure-tograde">
+                        <p class="epure-course-banner-tograde-title">{{#str}}mycourses_togradelist, theme_epure{{/str}}</p>
+                        <ul>
+                            {{#togradeitems}}
+                                <li><a href="{{url}}">{{name}}</a> <span class="badge rounded-pill">{{count}}</span></li>
+                            {{/togradeitems}}
+                        </ul>
+                    </div>
+                {{/hastogradeitems}}
                 <ul class="epure-course-banner-links">
                     {{#links}}
                         <li><a href="{{url}}"><i class="fa {{icon}}" aria-hidden="true"></i>{{label}}</a></li>

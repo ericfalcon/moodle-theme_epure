@@ -119,6 +119,39 @@
     }
 }
 
+// The activities with something to grade, when there are several: each with its count, leading to its grading page.
+.epure-course-banner-tograde {
+    flex: 1 1 100%;
+    scroll-margin-top: 5rem;
+
+    ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .375rem .75rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    li {
+        display: inline-flex;
+        align-items: center;
+        gap: .375rem;
+    }
+
+    .badge {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand);
+    }
+}
+
+.epure-course-banner-tograde-title {
+    margin: 0 0 .25rem;
+    color: var(--epure-ink-muted);
+    font-size: .75rem;
+    font-weight: 500;
+}
+
 .epure-course-banner-links {
     display: flex;
     flex-wrap: wrap;

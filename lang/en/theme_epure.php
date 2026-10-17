@@ -374,6 +374,7 @@ $string['mycourses_shown'] = '{$a} courses shown.';
 $string['mycourses_start'] = 'Start';
 $string['mycourses_teaching'] = '{$a} I teach';
 $string['mycourses_tograde'] = 'To grade';
+$string['mycourses_togradelist'] = 'Activities to grade';
 $string['mycoursesbyrole'] = 'My courses by role';
 $string['mycoursesbyrole_desc'] = 'On the My courses page, the courses you teach and the courses you take are shown in two sections, with cards suited to each role: progress, next activity and deadline for a learner; participants, submissions to grade and quick links for a teacher. Untick to show Moodle\'s own block.';
 $string['pluginname'] = 'Épure';

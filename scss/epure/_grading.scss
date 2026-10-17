@@ -1,0 +1,139 @@
+// Grading of the assignments (the grader of Moodle): a sober header (the learner in ink with their picture round,
+// the assignment and its due date in grey), the arrows to the previous and next learners as round buttons, the
+// states of the submission as chips in the colours of the states, the submission and the grade in a card, the
+// grade field large enough to type quickly, the actions in a bar at the bottom.
+#page-mod-assign-grader {
+    background-color: var(--epure-page);
+
+    [data-region="grading-navigation-panel"] {
+        background-color: var(--epure-surface);
+        border-bottom: 1px solid var(--epure-border);
+    }
+
+    [data-region="assignment-info"] {
+        font-size: .875rem;
+        line-height: 1.6;
+    }
+
+    [data-region="user-info"] {
+        h4 {
+            margin: 0;
+            font-size: 1.125rem;
+            font-weight: 600;
+
+            a {
+                color: var(--epure-ink);
+                text-decoration: none;
+
+                &:hover,
+                &:focus {
+                    text-decoration: underline;
+                }
+            }
+
+            img {
+                border-radius: 50%;
+            }
+        }
+
+        h4 ~ *,
+        h4 small {
+            color: var(--epure-ink-muted);
+            font-size: .875rem;
+        }
+    }
+
+    [data-region="user-selector"] {
+        a[data-action="previous-user"],
+        a[data-action="next-user"] {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.25rem;
+            height: 2.25rem;
+            color: var(--epure-brand-text);
+            text-decoration: none;
+            vertical-align: middle;
+            background-color: var(--epure-brand-soft);
+            border-radius: 50%;
+
+            &:hover,
+            &:focus {
+                color: var(--epure-on-brand);
+                background-color: var(--epure-brand);
+            }
+        }
+    }
+
+    [data-region="grade-panel"] {
+        background-color: var(--epure-page);
+    }
+
+    [data-region="grade"] {
+        max-width: 56rem;
+        margin: 1.5rem auto;
+        padding: 1.5rem;
+        background-color: var(--epure-surface);
+        border: 1px solid var(--epure-border);
+        border-radius: var(--epure-radius-lg);
+
+        h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        // The grade field: larger, its value easy to read.
+        #id_grade {
+            max-width: 9rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+    }
+
+    // The states of the submission, as chips side by side.
+    .submissionstatustable {
+        .submissionstatussubmitted,
+        .submissionstatusdraft,
+        .submissionstatusnew,
+        .submissiongraded,
+        .submissionnotgraded,
+        .latesubmission,
+        .earlysubmission,
+        .overdue,
+        .submissionnoteditable {
+            display: inline-flex;
+            align-items: center;
+            margin: 0 .375rem .375rem 0;
+            padding: .125rem .625rem;
+            color: var(--epure-ink);
+            font-size: .8125rem;
+            font-weight: 500;
+            background-color: var(--epure-surface-muted);
+            border-radius: var(--epure-radius-pill);
+        }
+
+        .submissionstatussubmitted,
+        .submissiongraded,
+        .earlysubmission {
+            color: var(--epure-state-ink);
+            background-color: var(--epure-state-done-soft);
+        }
+
+        .latesubmission,
+        .overdue {
+            color: var(--epure-state-ink);
+            background-color: var(--epure-state-late-soft);
+        }
+
+        .submissionnotgraded {
+            color: var(--epure-state-ink);
+            background-color: var(--epure-state-soon-soft);
+        }
+    }
+
+    [data-region="grade-actions-panel"] {
+        background-color: var(--epure-surface);
+        border-top: 1px solid var(--epure-border);
+        box-shadow: var(--epure-shadow);
+    }
+}
