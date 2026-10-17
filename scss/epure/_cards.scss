@@ -1,0 +1,94 @@
+// Tables read as cards on phones (participants, grades overview, logs, outline, report builder, IOMAD reports):
+// each row a card, its first cell with a text as the title, then each value with the name of its column; the cells
+// left empty are not shown. The cells are named by the module theme_epure/table_cards.
+@media (max-width: 767.98px) {
+    // The bar of the types of report: Boost pulls it beyond the margins, which Épure narrows on phones.
+    .tertiary-navigation.full-width-bottom-border {
+        width: auto;
+        margin-right: 0;
+        margin-left: 0;
+    }
+
+    .table-responsive:has(> table.epure-cards),
+    .no-overflow:has(> table.epure-cards),
+    .table-dynamic:has(table.epure-cards) {
+        overflow: visible;
+    }
+
+    table.epure-cards {
+        display: block;
+        width: 100%;
+        background: none;
+
+        thead,
+        tfoot {
+            display: none;
+        }
+
+        tbody {
+            display: flex;
+            flex-direction: column;
+            gap: .75rem;
+        }
+
+        tr {
+            display: block;
+            padding: .75rem 1rem;
+            background-color: var(--epure-surface) !important; // stylelint-disable-line declaration-no-important
+            border: 1px solid var(--epure-border);
+            border-radius: var(--epure-radius-lg);
+
+            &.emptyrow {
+                display: none;
+            }
+        }
+
+        td,
+        th {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: .125rem .75rem;
+            width: auto !important; // stylelint-disable-line declaration-no-important
+            padding: .25rem 0 !important; // stylelint-disable-line declaration-no-important
+            text-align: start;
+            background: none !important; // stylelint-disable-line declaration-no-important
+            border: 0 !important; // stylelint-disable-line declaration-no-important
+
+            &[data-label]::before {
+                content: attr(data-label);
+                color: var(--epure-ink-muted);
+                font-size: .8125rem;
+                font-weight: 400;
+                text-align: start;
+            }
+
+            &.epure-cards-empty {
+                display: none;
+            }
+        }
+
+        // The title of the card, on its own line; a checkbox to select the row stays beside it.
+        .epure-cards-title {
+            justify-content: flex-start;
+            padding-bottom: .5rem !important; // stylelint-disable-line declaration-no-important
+            font-weight: 600;
+            text-align: start;
+
+            &::before {
+                display: none;
+            }
+        }
+
+        td:has(> input[type="checkbox"]:only-child),
+        td:has(> .form-check:only-child) {
+            float: right;
+            padding: 0 !important; // stylelint-disable-line declaration-no-important
+
+            &::before {
+                display: none;
+            }
+        }
+    }
+}
