@@ -15,6 +15,22 @@
         line-height: 1.6;
     }
 
+    // Back to the course: a button in place of the link of the course, at the top of the header.
+    .epure-grader-back {
+        display: inline-flex;
+        align-items: center;
+        gap: .25rem;
+        padding: .125rem .625rem;
+
+        .icon {
+            margin: 0;
+        }
+
+        + a[href*="/course/view.php"] {
+            display: none;
+        }
+    }
+
     [data-region="user-info"] {
         h4 {
             margin: 0;

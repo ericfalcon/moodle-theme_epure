@@ -292,6 +292,19 @@ class hook_callbacks {
      */
     public static function before_footer_html_generation(\core\hook\output\before_footer_html_generation $hook): void {
         global $CFG, $PAGE, $OUTPUT;
+        // Grading of an assignment: a button back to the course, at the top of its header.
+        if ($PAGE->pagetype === 'mod-assign-grader' && !during_initial_install() && self::epure_page()) {
+            $hook->add_html(\html_writer::link(
+                new \moodle_url('/course/view.php', ['id' => $PAGE->course->id]),
+                $OUTPUT->pix_icon('i/previous', '') . get_string('activityback', 'theme_epure'),
+                ['class' => 'btn btn-outline-secondary btn-sm epure-grader-back', 'id' => 'epure-grader-back',
+                    'title' => format_string($PAGE->course->fullname, true, ['context' => $PAGE->context])]
+            ));
+            $PAGE->requires->js_amd_inline("var back = document.getElementById('epure-grader-back'),
+                info = document.querySelector('[data-region=\"assignment-info\"]');
+                if (back && info) { info.prepend(back); }");
+            return;
+        }
         if (
             $PAGE->pagetype !== 'blocks-iomad_company_admin-company_edit_form' || !company_style::iomad_installed()
                 || during_initial_install()
