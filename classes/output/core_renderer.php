@@ -196,6 +196,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $data = \theme_epure\learner_dashboard::export($this);
             return $data ? $header . $this->render_from_template('theme_epure/learner_dashboard', $data) : $header;
         }
+        // In edit mode, a bar under the header of the course to leave it.
+        $editbar = \theme_epure\course_page::edit_bar($this->page);
+        $editbar = $editbar ? $this->render_from_template('theme_epure/edit_bar', $editbar) : '';
         // The progress of the sections and the state of the activities, with or without the banner.
         if (\theme_epure\course_page::learner_applies($this->page, (int) $USER->id)) {
             $sections = \theme_epure\course_page::section_progress_applies($this->page, (int) $USER->id)
@@ -222,10 +225,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
             }
         }
         if (!\theme_epure\course_page::applies($this->page)) {
-            return $header;
+            return $header . $editbar;
         }
         $data = \theme_epure\course_page::export($this, $this->page->course, $header);
-        return $this->render_from_template('theme_epure/course_banner', $data);
+        return $this->render_from_template('theme_epure/course_banner', $data) . $editbar;
     }
 
     /**

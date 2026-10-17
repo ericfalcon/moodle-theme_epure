@@ -1,0 +1,43 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/edit_bar
+
+    At the top of a course page in edit mode: that the edit mode is on, and a button to leave it, which does what
+    the switch « Edit mode » of the header does.
+
+    Example context (json):
+    {
+        "action": "https://example.com/editmode.php",
+        "contextid": 2,
+        "pageurl": "https://example.com/course/view.php?id=2",
+        "sesskey": "abc"
+    }
+}}
+<div class="epure-editbar">
+    <p class="epure-editbar-text">
+        <span class="epure-editbar-icon" aria-hidden="true"><i class="fa fa-pen"></i></span>
+        <span><strong>{{#str}}editbar, theme_epure{{/str}}</strong> <span class="epure-editbar-hint">{{#str}}editbar_text, theme_epure{{/str}}</span></span>
+    </p>
+    <form method="post" action="{{action}}">
+        <input type="hidden" name="setmode" value="0">
+        <input type="hidden" name="context" value="{{contextid}}">
+        <input type="hidden" name="pageurl" value="{{pageurl}}">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <button type="submit" class="btn btn-primary">{{#str}}editbar_done, theme_epure{{/str}}</button>
+    </form>
+</div>

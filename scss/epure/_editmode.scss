@@ -1,0 +1,211 @@
+// Course page in edit mode. Moodle's course editor (reactive JavaScript) stays as it is: only its look changes,
+// with the same classes from Moodle 4.5 to 5.3.
+
+// Bar at the top of the course, to leave the edit mode.
+.epure-editbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem 1rem;
+    margin: 0 0 1.25rem;
+    padding: .5rem .5rem .5rem 1rem;
+    color: var(--epure-ink);
+    background-color: var(--epure-brand-soft);
+    border: 1px solid var(--epure-brand);
+    border-radius: var(--epure-radius);
+
+    form {
+        margin: 0;
+    }
+}
+
+.epure-editbar-text {
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    margin: 0;
+}
+
+.epure-editbar-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    color: var(--epure-on-brand);
+    background-color: var(--epure-brand);
+    border-radius: 50%;
+}
+
+.epure-editbar-hint {
+    color: var(--epure-ink-muted);
+}
+
+// « Bulk edit », in the header of the course: a button rather than a link.
+.bulkEnable.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    padding: .375rem .875rem;
+    color: var(--epure-brand-text) !important; // stylelint-disable-line declaration-no-important
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-pill);
+
+    &:hover,
+    &:focus {
+        background-color: var(--epure-brand-soft);
+        border-color: var(--epure-brand);
+    }
+
+    .icon {
+        margin: 0;
+    }
+}
+
+// Buttons to add content and sections: outlined in the colour of the brand, filled when pointed at.
+.course-content .btn.add-content,
+.course-content .divider .btn.add-content {
+    min-width: 2rem;
+    min-height: 2rem;
+    padding: .375rem .875rem;
+    color: var(--epure-brand-text);
+    font-size: .875rem;
+    font-weight: 600;
+    line-height: 1.25;
+    background-color: var(--epure-surface);
+    border: 1px dashed var(--epure-brand);
+    border-radius: var(--epure-radius-pill);
+
+    &:hover,
+    &:focus {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand);
+        border-style: solid;
+    }
+
+    &.p-1 {
+        padding: .25rem !important; // stylelint-disable-line declaration-no-important
+    }
+}
+
+.course-content .divider {
+    hr {
+        border-top-color: var(--epure-border);
+    }
+
+    &:has(.btn.add-content:hover) hr {
+        border-top-color: var(--epure-brand);
+    }
+
+    .divider-content {
+        background: none;
+    }
+}
+
+// On touch screens, nothing is pointed at: the buttons to add between the activities and the sections stay visible.
+@media (hover: none) {
+    .editing .course-content .divider .divider-content {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+// Menus of the sections and the activities: a larger target, the actions easier to read.
+.editing .course-content .action-menu .dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    color: var(--epure-ink);
+    border-radius: var(--epure-radius-sm);
+
+    &:hover {
+        background-color: var(--epure-surface-muted);
+    }
+}
+
+.editing .course-content .action-menu .dropdown-menu {
+    padding: .375rem;
+    border-color: var(--epure-border);
+    border-radius: var(--epure-radius);
+    box-shadow: var(--epure-shadow-hover);
+
+    // The items Moodle hides (« Move left » of an activity not moved right…) stay hidden.
+    .dropdown-item:not(.hidden):not(.d-none):not([hidden]) {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .4375rem .75rem;
+        border-radius: var(--epure-radius-sm);
+
+        .icon {
+            margin: 0;
+            color: var(--epure-ink-muted);
+        }
+    }
+
+    // Deleting stays apart, in red.
+    .dropdown-item.editing_delete {
+        margin-top: .25rem;
+        color: var(--epure-state-late) !important; // stylelint-disable-line declaration-no-important
+        box-shadow: 0 -1px 0 var(--epure-border);
+
+        .icon {
+            color: inherit;
+        }
+
+        &:hover,
+        &:focus {
+            background-color: var(--epure-state-late-soft);
+        }
+    }
+}
+
+// Bulk edit: larger boxes to tick, and the bar of the actions at the bottom in the style of the theme.
+.editing .course-content .bulkselect .form-check-input,
+.bulkactions #selectall {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+#sticky-footer[data-for="bulkedittools"] {
+    background-color: var(--epure-surface) !important; // stylelint-disable-line declaration-no-important
+    border-color: var(--epure-border) !important; // stylelint-disable-line declaration-no-important
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, .08);
+
+    [data-for="bulkaction"] {
+        color: var(--epure-ink);
+        border-radius: var(--epure-radius-sm);
+
+        &:hover:not(:disabled),
+        &:focus:not(:disabled) {
+            color: var(--epure-brand-text);
+            background-color: var(--epure-brand-soft);
+        }
+    }
+}
+
+// « Add section » at the bottom of the course: its label in the readable brand colour, its frame in the brand colour.
+.course-content .btn.add-section {
+    color: var(--epure-brand-text);
+    font-weight: 600;
+    border: 2px dashed var(--epure-brand);
+    border-radius: var(--epure-radius);
+
+    &:hover,
+    &:focus {
+        color: var(--epure-brand-text);
+        background-color: var(--epure-brand-soft);
+    }
+}
+
+// The restrictions of access shown to the teachers, on a tint of the surface rather than a fixed light grey.
+.course-content .activity-availability.isfullinfo {
+    color: var(--epure-ink);
+    background-color: var(--epure-surface-muted);
+    border: 1px solid var(--epure-border);
+}

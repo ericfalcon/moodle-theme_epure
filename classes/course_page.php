@@ -76,6 +76,28 @@ class course_page {
     }
 
     /**
+     * Context of the template theme_epure/edit_bar, at the top of the main page of a course in edit mode, with a
+     * button to leave it: null outside the edit mode.
+     *
+     * @param \moodle_page $page Page.
+     * @return array|null
+     */
+    public static function edit_bar(\moodle_page $page): ?array {
+        if (
+            !str_starts_with((string) $page->pagetype, 'course-view-') || empty($page->course->id)
+                || (int) $page->course->id === (int) SITEID || !$page->user_is_editing()
+        ) {
+            return null;
+        }
+        return [
+            'action' => (new \moodle_url('/editmode.php'))->out(false),
+            'contextid' => $page->context->id,
+            'pageurl' => $page->url->out(false),
+            'sesskey' => sesskey(),
+        ];
+    }
+
+    /**
      * Context of the template theme_epure/course_banner.
      *
      * @param \renderer_base $output Renderer, for the generated course image.

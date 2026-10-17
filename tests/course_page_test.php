@@ -159,4 +159,41 @@ final class course_page_test extends \advanced_testcase {
         $this->setUser($teacher);
         $this->assertFalse(course_page::section_progress_applies($page, (int) $teacher->id));
     }
+
+    /**
+     * The bar to leave the edit mode is on the pages of a course in edit mode only, and posts to editmode.php.
+     */
+    public function test_edit_bar(): void {
+        global $USER;
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course();
+        $teacher = $generator->create_and_enrol($course, 'editingteacher');
+        $this->setUser($teacher);
+        $page = new \moodle_page();
+        $page->set_course($course);
+        $page->set_pagetype('course-view-topics');
+        $page->set_url(new \moodle_url('/course/view.php', ['id' => $course->id]));
+
+        // Outside the edit mode: no bar.
+        $this->assertNull(course_page::edit_bar($page));
+
+        $USER->editing = 1;
+        $bar = course_page::edit_bar($page);
+        $this->assertNotNull($bar);
+        $this->assertStringEndsWith('/editmode.php', $bar['action']);
+        $this->assertEquals(\context_course::instance($course->id)->id, $bar['contextid']);
+        $this->assertStringContainsString('/course/view.php?id=' . $course->id, $bar['pageurl']);
+        $this->assertEquals(sesskey(), $bar['sesskey']);
+
+        // Not on the page of an activity, nor on the site home.
+        $page = new \moodle_page();
+        $page->set_course($course);
+        $page->set_pagetype('mod-page-view');
+        $this->assertNull(course_page::edit_bar($page));
+        $page = new \moodle_page();
+        $page->set_course(get_site());
+        $page->set_pagetype('course-view-site');
+        $this->assertNull(course_page::edit_bar($page));
+    }
 }
