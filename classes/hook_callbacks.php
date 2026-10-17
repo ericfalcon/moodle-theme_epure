@@ -292,6 +292,13 @@ class hook_callbacks {
      */
     public static function before_footer_html_generation(\core\hook\output\before_footer_html_generation $hook): void {
         global $CFG, $PAGE, $OUTPUT;
+        // The teachers: the contents of the editors checked for the common mistakes of accessibility when a form is saved.
+        if (
+            !during_initial_install() && isloggedin() && !isguestuser() && self::epure_page()
+                && has_capability('moodle/course:manageactivities', $PAGE->context)
+        ) {
+            $PAGE->requires->js_call_amd('theme_epure/content_check', 'init');
+        }
         // Grading of an assignment: a button back to the course, at the top of its header.
         if ($PAGE->pagetype === 'mod-assign-grader' && !during_initial_install() && self::epure_page()) {
             $hook->add_html(\html_writer::link(

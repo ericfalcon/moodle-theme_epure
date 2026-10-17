@@ -139,3 +139,22 @@ body .tox {
         outline-color: var(--epure-light-brand-text);
     }
 }
+
+// Accessibility of the contents, before saving (theme_epure/content_check): the mistakes, field by field.
+.epure-contentcheck-field {
+    margin-top: 1rem;
+    padding: .75rem 1rem;
+    background-color: var(--epure-surface-muted);
+    border-radius: var(--epure-radius);
+
+    h3 {
+        margin: 0 0 .5rem;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    ul {
+        margin: 0 0 .5rem;
+        padding-left: 1.25rem;
+    }
+}

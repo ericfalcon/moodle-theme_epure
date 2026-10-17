@@ -317,6 +317,8 @@ In Moodle 4 and 5, with the side course index, the links to the previous and nex
 
 The theme targets WCAG 2.2 level AA, RGAA 4.1.2 and EN 301 549: calculated contrast, keyboard focus always visible, a skip link, targets of at least 24 × 24 px, underlined links within text, and respect for the "reduce motion" setting.
 
+**Accessibility of the contents.** When a teacher saves a form, Épure reads the contents of its editors for the common mistakes (images without a text alternative, tables without headers, links such as "click here", levels of titles skipped) and, when it finds some, lists them with "Fix", "Open the accessibility checker" (the one of TinyMCE) and "Save anyway". Nothing is blocked; no account is needed.
+
 **Display preferences.** The **Aa** button in the header (shortcut Alt + A) opens a panel in which each logged-in user chooses:
 
 - the text size: small, normal, large or very large (90, 100, 115 or 130%);
