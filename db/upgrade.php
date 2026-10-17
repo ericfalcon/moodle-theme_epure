@@ -105,6 +105,12 @@ function xmldb_theme_epure_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026100700, 'theme', 'epure');
     }
 
+    // Getting started by role (0.50): the user tours of the learner, the teacher and the manager.
+    if ($oldversion < 2026103150) {
+        \theme_epure\onboarding::install();
+        upgrade_plugin_savepoint(true, 2026103150, 'theme', 'epure');
+    }
+
     // The strings of Épure take the vocabulary too (« Search my courses »), but those describing it, and change with
     // its versions: after each upgrade, it is applied again in the languages it is used in.
     foreach (\theme_epure\vocabulary\manager::languages() as $lang) {

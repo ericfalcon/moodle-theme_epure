@@ -49,4 +49,8 @@ $callbacks = [
         'hook' => \core\hook\output\before_http_headers::class,
         'callback' => [\theme_epure\hook_callbacks::class, 'before_http_headers'],
     ],
+    [
+        'hook' => \tool_usertours\hook\before_serverside_filter_fetch::class,
+        'callback' => [\theme_epure\hook_callbacks::class, 'before_serverside_filter_fetch'],
+    ],
 ];

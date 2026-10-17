@@ -52,3 +52,19 @@ span[data-flexitour="container"] {
     outline: 2px solid var(--epure-brand);
     outline-offset: 2px;
 }
+
+// The steps without a target (welcome and end messages): in the middle of the screen. Moodle places them from the
+// top of the page, so that after a scroll (on phones, after the steps further down) they were out of sight.
+span[data-flexitour="container"].orphan {
+    top: 50% !important; // stylelint-disable-line declaration-no-important
+    left: 50% !important; // stylelint-disable-line declaration-no-important
+    width: calc(100vw - 2rem);
+    max-width: 32rem;
+    margin: 0 !important; // stylelint-disable-line declaration-no-important
+    transform: translate(-50%, -50%);
+
+    .modal-dialog {
+        max-width: none;
+        margin: 0;
+    }
+}

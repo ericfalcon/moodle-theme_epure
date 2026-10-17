@@ -64,7 +64,7 @@ class simple_view {
      * @param int $userid User.
      * @return bool
      */
-    protected static function manages_activities(int $userid): bool {
+    public static function manages_activities(int $userid): bool {
         static $manages = [];
         if (!isset($manages[$userid])) {
             $manages[$userid] = (bool) get_user_capability_course('moodle/course:manageactivities', $userid, false, '', '', 1);

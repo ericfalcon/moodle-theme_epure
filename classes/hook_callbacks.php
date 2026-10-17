@@ -400,4 +400,14 @@ class hook_callbacks {
             return false;
         }
     }
+
+    /**
+     * Before the filters of the user tours are read: the filter by audience of Épure, used by the tours of
+     * getting started ({@see onboarding}).
+     *
+     * @param \tool_usertours\hook\before_serverside_filter_fetch $hook The hook.
+     */
+    public static function before_serverside_filter_fetch(\tool_usertours\hook\before_serverside_filter_fetch $hook): void {
+        $hook->add_filter_by_classname(usertours\audience_filter::class);
+    }
 }
