@@ -82,4 +82,71 @@ final class to_grade_test extends \advanced_testcase {
         $this->assertStringContainsString('action=grader', $items[0]['url']);
         $this->assertStringContainsString('mode=grading', $items[1]['url']);
     }
+
+    /**
+     * In separate groups, a teacher who cannot see all the groups counts only the learners of their groups: their
+     * participants, those active this week, their submissions to grade. An editing teacher counts all of them.
+     */
+    public function test_separate_groups(): void {
+        global $CFG, $DB, $PAGE;
+        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course(['groupmode' => SEPARATEGROUPS, 'groupmodeforce' => 1]);
+        $mine = $generator->create_and_enrol($course, 'student');
+        $other = $generator->create_and_enrol($course, 'student');
+        $teacher = $generator->create_and_enrol($course, 'teacher');
+        $editor = $generator->create_and_enrol($course, 'editingteacher');
+        $groupa = $generator->create_group(['courseid' => $course->id]);
+        $groupb = $generator->create_group(['courseid' => $course->id]);
+        $generator->create_group_member(['groupid' => $groupa->id, 'userid' => $mine->id]);
+        $generator->create_group_member(['groupid' => $groupb->id, 'userid' => $other->id]);
+        $generator->create_group_member(['groupid' => $groupa->id, 'userid' => $teacher->id]);
+
+        $assign = $generator->create_module('assign', ['course' => $course->id, 'name' => 'Report',
+            'assignsubmission_onlinetext_enabled' => 1]);
+        $cm = get_coursemodule_from_instance('assign', $assign->id);
+        $instance = new \assign(\context_module::instance($cm->id), $cm, $course);
+        foreach ([$mine, $other] as $learner) {
+            $submission = $instance->get_user_submission($learner->id, true);
+            $submission->status = ASSIGN_SUBMISSION_STATUS_SUBMITTED;
+            $submission->timemodified = time();
+            $DB->update_record('assign_submission', $submission);
+        }
+
+        // A quiz with an essay, answered by both learners.
+        require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+        $quiz = $generator->create_module('quiz', ['course' => $course->id, 'name' => 'Essay']);
+        $questions = $generator->get_plugin_generator('core_question');
+        $category = $questions->create_question_category(['contextid' => \context_module::instance($quiz->cmid)->id]);
+        quiz_add_quiz_question($questions->create_question('essay', null, ['category' => $category->id])->id, $quiz);
+        quiz_settings::create($quiz->id)->get_grade_calculator()->recompute_quiz_sumgrades();
+        foreach ([$mine, $other] as $learner) {
+            $this->setUser($learner);
+            $attempt = quiz_prepare_and_start_new_attempt(quiz_settings::create($quiz->id, $learner->id), 1, null);
+            $attempt = quiz_attempt::create($attempt->id);
+            $attempt->process_submitted_actions(time(), false, [1 => ['answer' => 'Wash hands.', 'answerformat' => FORMAT_HTML]]);
+            if (method_exists($attempt, 'process_submit')) {
+                $attempt->process_submit(time(), false);
+                $attempt->process_grade_submission(time());
+            } else {
+                $attempt->process_finish(time(), false);
+            }
+        }
+
+        $figures = function () use ($PAGE, $course) {
+            $data = mycourses::export($PAGE->get_renderer('core'));
+            $cards = array_merge(...array_column($data['sections'], 'courses'));
+            return $cards[array_search((int) $course->id, array_column($cards, 'id'))];
+        };
+        $this->setUser($teacher);
+        $this->assertSame([1, 1], array_column(mycourses::to_grade($course), 'count'));
+        $this->assertSame(1, $figures()['participants']);
+        $this->assertSame([(int) $groupa->id], mycourses::visible_groups($course));
+
+        $this->setUser($editor);
+        $this->assertSame([2, 2], array_column(mycourses::to_grade($course), 'count'));
+        $this->assertSame(2, $figures()['participants']);
+        $this->assertNull(mycourses::visible_groups($course));
+    }
 }

@@ -212,6 +212,28 @@ class mycourses {
     }
 
     /**
+     * The groups whose members the current user may see in a course, or in one of its activities: in separate groups,
+     * without the capability to see all of them, their own groups (of the grouping of the activity); else null, for
+     * all the users. An empty list means no one.
+     *
+     * @param \stdClass $course Course.
+     * @param \cm_info|null $cm Activity, or null for the course.
+     * @return int[]|null
+     */
+    public static function visible_groups(\stdClass $course, ?\cm_info $cm = null): ?array {
+        global $USER;
+        if (!isset($course->groupmode, $course->groupmodeforce)) {
+            $course = get_course($course->id);
+        }
+        $context = $cm ? $cm->context : \context_course::instance($course->id);
+        $mode = $cm ? groups_get_activity_groupmode($cm, $course) : groups_get_course_groupmode($course);
+        if ((int) $mode !== SEPARATEGROUPS || has_capability('moodle/site:accessallgroups', $context)) {
+            return null;
+        }
+        return array_map('intval', array_keys(groups_get_all_groups($course->id, $USER->id, $cm ? $cm->groupingid : 0, 'g.id')));
+    }
+
+    /**
      * The activities of a course with something to grade by the user: the submissions of the assignments, the
      * attempts of the quizzes with answers to grade by hand (essays…).
      *
@@ -227,10 +249,13 @@ class mycourses {
             if (!$cm->uservisible || !in_array($cm->modname, ['assign', 'quiz'], true)) {
                 continue;
             }
+            // In separate groups, only the learners of the groups of the teacher.
+            $groups = self::visible_groups($course, $cm);
             if ($cm->modname === 'assign' && has_capability('mod/assign:grade', $cm->context)) {
                 require_once($CFG->dirroot . '/mod/assign/locallib.php');
                 try {
-                    $count = (new \assign($cm->context, $cm, $course))->count_submissions_need_grading();
+                    $count = $groups === [] ? 0
+                        : (new \assign($cm->context, $cm, $course))->count_submissions_need_grading($groups ?? 0);
                 } catch (\Throwable $e) {
                     debugging('Épure: could not count the submissions to grade: ' . $e->getMessage(), DEBUG_DEVELOPER);
                     $count = 0;
@@ -238,20 +263,34 @@ class mycourses {
                 $items[$cm->id] = ['name' => $cm->get_formatted_name(), 'count' => $count,
                     'url' => (new \moodle_url('/mod/assign/view.php', ['id' => $cm->id, 'action' => 'grader']))->out(false)];
             } else if ($cm->modname === 'quiz' && has_capability('mod/quiz:grade', $cm->context)) {
-                $quizzes[$cm->instance] = $cm;
+                $quizzes[$cm->instance] = [$cm, $groups];
                 $items[$cm->id] = ['name' => $cm->get_formatted_name(), 'count' => 0,
                     'url' => (new \moodle_url('/mod/quiz/report.php', ['id' => $cm->id, 'mode' => 'grading']))->out(false)];
             }
         }
-        if ($quizzes) {
+        // The quizzes seen for all the learners at once, those in separate groups each with its groups.
+        $all = array_keys(array_filter($quizzes, fn($quiz) => $quiz[1] === null));
+        $batches = $all ? [[$all, null]] : [];
+        foreach ($quizzes as $quizid => [$cm, $groups]) {
+            if ($groups) {
+                $batches[] = [[$quizid], $groups];
+            }
+        }
+        foreach ($batches as [$quizids, $groups]) {
             // Finished attempts (not previews) whose last step of a question is « needs grading ».
-            [$insql, $params] = $DB->get_in_or_equal(array_keys($quizzes), SQL_PARAMS_NAMED);
+            [$insql, $params] = $DB->get_in_or_equal($quizids, SQL_PARAMS_NAMED);
+            $ingroups = '';
+            if ($groups) {
+                [$groupsql, $groupparams] = $DB->get_in_or_equal($groups, SQL_PARAMS_NAMED, 'grp');
+                $ingroups = "AND quiza.userid IN (SELECT gm.userid FROM {groups_members} gm WHERE gm.groupid $groupsql)";
+                $params += $groupparams;
+            }
             $counts = $DB->get_records_sql_menu(
                 "SELECT quiza.quiz, COUNT(DISTINCT quiza.id)
                    FROM {quiz_attempts} quiza
                    JOIN {question_attempts} qa ON qa.questionusageid = quiza.uniqueid
                    JOIN {question_attempt_steps} qas ON qas.questionattemptid = qa.id
-                  WHERE quiza.quiz $insql AND quiza.state = :finished AND quiza.preview = 0
+                  WHERE quiza.quiz $insql AND quiza.state = :finished AND quiza.preview = 0 $ingroups
                     AND qas.state = :needsgrading
                     AND qas.sequencenumber = (SELECT MAX(last.sequencenumber) FROM {question_attempt_steps} last
                                                WHERE last.questionattemptid = qa.id)
@@ -259,7 +298,7 @@ class mycourses {
                 $params + ['finished' => 'finished', 'needsgrading' => 'needsgrading']
             );
             foreach ($counts as $quizid => $count) {
-                $items[$quizzes[$quizid]->id]['count'] = (int) $count;
+                $items[$quizzes[$quizid][0]->id]['count'] = (int) $count;
             }
         }
         return array_values(array_filter($items, fn($item) => $item['count'] > 0));
@@ -274,14 +313,19 @@ class mycourses {
      */
     protected static function teacher_data(\stdClass $course, \context_course $context): array {
         global $DB;
-        // Learners: the users whose progress is followed in the course.
-        $learners = get_enrolled_sql($context, 'moodle/course:isincompletionreports', 0, true);
-        $participants = (int) $DB->count_records_sql("SELECT COUNT(1) FROM ($learners[0]) l", $learners[1]);
-        $active = (int) $DB->count_records_sql(
-            "SELECT COUNT(1) FROM {user_lastaccess} la JOIN ($learners[0]) l ON l.id = la.userid
-              WHERE la.courseid = :courseid AND la.timeaccess > :since",
-            $learners[1] + ['courseid' => $course->id, 'since' => time() - WEEKSECS]
-        );
+        // Learners: the users whose progress is followed in the course; in separate groups, those of the groups of
+        // the teacher.
+        $groups = self::visible_groups($course);
+        $participants = $active = 0;
+        if ($groups !== []) {
+            $learners = get_enrolled_sql($context, 'moodle/course:isincompletionreports', $groups ?? 0, true);
+            $participants = (int) $DB->count_records_sql("SELECT COUNT(1) FROM ($learners[0]) l", $learners[1]);
+            $active = (int) $DB->count_records_sql(
+                "SELECT COUNT(1) FROM {user_lastaccess} la JOIN ($learners[0]) l ON l.id = la.userid
+                  WHERE la.courseid = :courseid AND la.timeaccess > :since",
+                $learners[1] + ['courseid' => $course->id, 'since' => time() - WEEKSECS]
+            );
+        }
 
         // What waits for a grade: the submissions of the assignments, the answers of the quizzes graded by hand.
         $items = self::to_grade($course);

@@ -53,9 +53,18 @@ class catalogue {
         global $CFG, $OUTPUT;
         require_once($CFG->dirroot . '/course/renderer.php');
         $options = ['recursive' => true, 'summary' => true, 'coursecontacts' => true, 'sort' => ['sortorder' => 1]];
-        $total = $category->get_courses_count($options);
-        $page = max(0, min($page, (int) ceil($total / self::PERPAGE) - 1));
-        $courses = $category->get_courses($options + ['offset' => $page * self::PERPAGE, 'limit' => self::PERPAGE]);
+        if (iomad::installed()) {
+            // IOMAD keeps the courses of the company of the user only after taking the page, and counts all the
+            // courses of the site: the courses are counted and paged here, once they are filtered.
+            $all = $category->get_courses($options);
+            $total = count($all);
+            $page = max(0, min($page, (int) ceil($total / self::PERPAGE) - 1));
+            $courses = array_slice($all, $page * self::PERPAGE, self::PERPAGE, true);
+        } else {
+            $total = $category->get_courses_count($options);
+            $page = max(0, min($page, (int) ceil($total / self::PERPAGE) - 1));
+            $courses = $category->get_courses($options + ['offset' => $page * self::PERPAGE, 'limit' => self::PERPAGE]);
+        }
 
         $baseurl = new \moodle_url('/course/index.php', $category->id ? ['categoryid' => $category->id] : []);
         $chelper = new \coursecat_helper();
@@ -88,7 +97,9 @@ class catalogue {
         }
         $list = [];
         foreach ($children as $child) {
-            $count = $child->get_courses_count(['recursive' => true]);
+            // With IOMAD, the courses of the company only (see export()).
+            $count = iomad::installed() ? count($child->get_courses(['recursive' => true]))
+                : $child->get_courses_count(['recursive' => true]);
             $list[] = [
                 'name' => $child->get_formatted_name(),
                 'url' => (new \moodle_url('/course/index.php', ['categoryid' => $child->id]))->out(false),
