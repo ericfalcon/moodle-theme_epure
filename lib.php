@@ -240,7 +240,7 @@ function theme_epure_user_preferences(): array {
 }
 
 /**
- * Adds to the own profile of the user, with Épure, the gallery of their achievements.
+ * Adds to the own profile of the user, with Épure, the gallery of their achievements, and notes it for its summary.
  *
  * @param \core_user\output\myprofile\tree $tree Profile.
  * @param stdClass $user Owner of the profile.
@@ -248,5 +248,6 @@ function theme_epure_user_preferences(): array {
  * @param stdClass|null $course Course of the profile.
  */
 function theme_epure_myprofile_navigation(\core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
+    \theme_epure\profile::myprofile($tree, $user, (bool) $iscurrentuser, $course ?: null);
     \theme_epure\achievements::myprofile($tree, $user, (bool) $iscurrentuser, $course ?: null);
 }

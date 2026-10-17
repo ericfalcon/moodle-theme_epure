@@ -1,0 +1,53 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/profile_summary
+
+    Summary at the top of the own profile of a user: their courses, badges and certificates as figures, each a
+    link, their previous login and the button to edit their profile.
+
+    Example context (json):
+    {
+        "hasfigures": true,
+        "figures": [{"value": 3, "label": "Courses in progress", "url": "#"}, {"value": 2, "label": "Badges", "url": "#"}],
+        "lastlogin": "Previous login: Friday, 16 October 2026, 9:23 AM",
+        "editurl": "#"
+    }
+}}
+<section class="epure-profile-summary" aria-labelledby="epure-profile-summary-title">
+    <h2 class="sr-only visually-hidden" id="epure-profile-summary-title">{{#str}}profile_summary, theme_epure{{/str}}</h2>
+    {{#hasfigures}}
+        <ul class="epure-profile-figures">
+            {{#figures}}
+                <li>
+                    {{#url}}<a href="{{url}}">{{/url}}
+                        <span class="epure-profile-figure">{{value}}</span>
+                        <span class="epure-profile-figure-label">{{label}}</span>
+                    {{#url}}</a>{{/url}}
+                </li>
+            {{/figures}}
+        </ul>
+    {{/hasfigures}}
+    <div class="epure-profile-summary-foot">
+        {{#lastlogin}}<p class="epure-profile-lastlogin">{{lastlogin}}</p>{{/lastlogin}}
+        {{#editurl}}
+            <a class="btn btn-primary epure-profile-edit" href="{{editurl}}">
+                <i class="fa fa-pen" aria-hidden="true"></i>{{#str}}editmyprofile{{/str}}
+            </a>
+        {{/editurl}}
+    </div>
+</section>

@@ -107,6 +107,123 @@
     }
 }
 
+// Own profile: a summary under the header, its figures as tiles that lead to the courses, badges and certificates,
+// the previous login and « Edit profile » in sight, also on phones; the button of the card « User details » then
+// goes, it would say the same thing.
+.epure-profile-summary {
+    margin: 0 0 1.5rem;
+}
+
+.epure-profile-figures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+    gap: .75rem;
+    margin: 0 0 1rem;
+    padding: 0;
+    list-style: none;
+
+    li > a,
+    li > span {
+        display: flex;
+        flex-direction: column;
+        gap: .125rem;
+        height: 100%;
+        padding: .875rem 1rem;
+        color: var(--epure-ink);
+        text-decoration: none;
+        background-color: var(--epure-surface);
+        border: 1px solid var(--epure-border);
+        border-radius: var(--epure-radius);
+    }
+
+    li > a:hover,
+    li > a:focus {
+        border-color: var(--epure-brand);
+        box-shadow: var(--epure-shadow-hover);
+    }
+}
+
+.epure-profile-figure {
+    color: var(--epure-brand-text);
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.epure-profile-figure-label {
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+}
+
+.epure-profile-summary-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+}
+
+.epure-profile-lastlogin {
+    margin: 0;
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+}
+
+.epure-profile-edit .fa {
+    margin-right: .375rem;
+}
+
+@include media-breakpoint-down(sm) {
+    .epure-profile-edit {
+        width: 100%;
+    }
+}
+
+#region-main:has(.epure-profile-summary .epure-profile-edit) section.node_category li.editprofile {
+    display: none;
+}
+
+// The cards that matter less, under « More information », folded.
+.epure-profile-more {
+    margin-top: .5rem;
+
+    > summary {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        margin-bottom: 1rem;
+        padding: .5rem 1rem;
+        color: var(--epure-ink);
+        font-weight: 600;
+        list-style: none;
+        cursor: pointer;
+        background-color: var(--epure-surface);
+        border: 1px solid var(--epure-border);
+        border-radius: var(--epure-radius-pill);
+
+        &::-webkit-details-marker {
+            display: none;
+        }
+
+        &::after {
+            content: "\203A";
+            color: var(--epure-ink-muted);
+            font-size: 1.25rem;
+            line-height: 1;
+            transition: transform .15s;
+        }
+
+        &:hover,
+        &:focus-visible {
+            background-color: var(--epure-brand-soft);
+        }
+    }
+
+    &[open] > summary::after {
+        transform: rotate(90deg);
+    }
+}
+
 // Messaging, on its page and in its drawer: the conversations as a list of people, the messages as bubbles (mine in
 // a tint of the brand on the right, the others' neutral on the left), the days as separators, the field to write
 // at the bottom.

@@ -39,22 +39,29 @@ class fonts {
     /**
      * Bundled fonts, keyed by setting value.
      *
-     * @return array<string, array{family: string, file: string, weights: int[], readability: bool}>
+     * A variable font is one file for all its weights, lighter than a file per weight: its weights are then the range
+     * of its weight axis. The fonts that do not exist as variable fonts have a file per weight.
+     *
+     * @return array<string, array{family: string, file: string, weights: int[], variable: bool, readability: bool}>
      */
     public static function all(): array {
         return [
-            'ibmplexsans' => ['family' => 'IBM Plex Sans', 'file' => 'ibm-plex-sans', 'weights' => [400, 500, 600, 700],
+            'ibmplexsans' => ['family' => 'IBM Plex Sans', 'file' => 'ibm-plex-sans', 'weights' => [100, 700],
+                'variable' => true, 'readability' => false],
+            'inter' => ['family' => 'Inter', 'file' => 'inter', 'weights' => [100, 900], 'variable' => true,
                 'readability' => false],
-            'inter' => ['family' => 'Inter', 'file' => 'inter', 'weights' => [400, 500, 600, 700], 'readability' => false],
-            'sourcesans3' => ['family' => 'Source Sans 3', 'file' => 'source-sans-3', 'weights' => [400, 500, 600, 700],
+            'sourcesans3' => ['family' => 'Source Sans 3', 'file' => 'source-sans-3', 'weights' => [200, 900],
+                'variable' => true, 'readability' => false],
+            'figtree' => ['family' => 'Figtree', 'file' => 'figtree', 'weights' => [300, 900], 'variable' => true,
                 'readability' => false],
-            'figtree' => ['family' => 'Figtree', 'file' => 'figtree', 'weights' => [400, 500, 600, 700], 'readability' => false],
-            'lato' => ['family' => 'Lato', 'file' => 'lato', 'weights' => [400, 700], 'readability' => false],
+            'lato' => ['family' => 'Lato', 'file' => 'lato', 'weights' => [400, 700], 'variable' => false,
+                'readability' => false],
             'atkinson' => ['family' => 'Atkinson Hyperlegible', 'file' => 'atkinson-hyperlegible', 'weights' => [400, 700],
+                'variable' => false, 'readability' => true],
+            'lexend' => ['family' => 'Lexend', 'file' => 'lexend', 'weights' => [100, 900], 'variable' => true,
                 'readability' => true],
-            'lexend' => ['family' => 'Lexend', 'file' => 'lexend', 'weights' => [400, 500, 600, 700], 'readability' => true],
             'opendyslexic' => ['family' => 'OpenDyslexic', 'file' => 'opendyslexic', 'weights' => [400, 700],
-                'readability' => true],
+                'variable' => false, 'readability' => true],
         ];
     }
 
@@ -62,7 +69,7 @@ class fonts {
      * Returns the definition of a font, falling back to the default one.
      *
      * @param string|null $key Setting value.
-     * @return array{family: string, file: string, weights: int[], readability: bool}
+     * @return array{family: string, file: string, weights: int[], variable: bool, readability: bool}
      */
     public static function get(?string $key): array {
         $all = self::all();
@@ -98,9 +105,11 @@ class fonts {
      */
     public static function font_face_css(?string $key, callable $url): string {
         $font = self::get($key);
+        // A variable font: one rule, for the range of its weights.
+        $weights = $font['variable'] ? [implode(' ', $font['weights'])] : $font['weights'];
         $css = '';
-        foreach ($font['weights'] as $weight) {
-            $file = $font['file'] . '-latin-' . $weight . '-normal.woff2';
+        foreach ($weights as $weight) {
+            $file = $font['file'] . '-latin-' . ($font['variable'] ? 'wght' : $weight) . '-normal.woff2';
             $css .= "@font-face {\n" .
                 "  font-family: \"{$font['family']}\";\n" .
                 "  font-style: normal;\n" .

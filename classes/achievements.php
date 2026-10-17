@@ -137,9 +137,10 @@ class achievements {
      * the completions tracked.
      *
      * @param int $userid User.
+     * @param int $limit Number of certificates, 0 for all of them.
      * @return array[] Each with name, date and url, the latest first.
      */
-    public static function certificates(int $userid): array {
+    public static function certificates(int $userid, int $limit = self::CERTIFICATES): array {
         global $DB;
         $certificates = [];
         try {
@@ -152,7 +153,7 @@ class achievements {
                    ORDER BY i.timecreated DESC',
                     ['userid' => $userid],
                     0,
-                    self::CERTIFICATES
+                    $limit
                 );
                 foreach ($records as $record) {
                     $certificates[] = ['name' => format_string($record->name), 'time' => (int) $record->timecreated,
@@ -168,7 +169,7 @@ class achievements {
                    ORDER BY i.timecreated DESC',
                     ['userid' => $userid],
                     0,
-                    self::CERTIFICATES
+                    $limit
                 );
                 foreach ($records as $record) {
                     $cm = get_coursemodule_from_instance('customcert', $record->customcertid, $record->course);
@@ -188,7 +189,7 @@ class achievements {
                    ORDER BY t.timecompleted DESC',
                     ['userid' => $userid],
                     0,
-                    self::CERTIFICATES
+                    $limit
                 );
                 $area = iomad::renamed() ? '/local_iomad/certificate_issue/' : '/local_iomad_track/issue/';
                 foreach ($records as $record) {
@@ -201,7 +202,7 @@ class achievements {
             debugging('Épure could not read the certificates: ' . $e->getMessage(), DEBUG_DEVELOPER);
         }
         usort($certificates, fn($a, $b) => $b['time'] <=> $a['time']);
-        $certificates = array_slice($certificates, 0, self::CERTIFICATES);
+        $certificates = $limit ? array_slice($certificates, 0, $limit) : $certificates;
         foreach ($certificates as &$certificate) {
             $certificate['date'] = $certificate['time']
                 ? userdate($certificate['time'], get_string('strftimedatefullshort', 'langconfig')) : '';

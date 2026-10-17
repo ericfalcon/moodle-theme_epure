@@ -330,6 +330,91 @@ table.quizreviewsummary {
     }
 }
 
+// Lessons: each page read as a text. Its title as a heading, not as a fold of a form (Moodle draws it as a
+// collapsible section); its content at a reading width of about 70 characters, which follows the size of the
+// text chosen in the display preferences, with room between paragraphs, lists and titles; images and tables
+// within the page, the wide tables scrolled; the score so far as a discreet line.
+.path-mod-lesson #region-main {
+    #id_pageheader {
+        .ftoggler .icons-collapse-expand {
+            width: 0;
+            min-width: 0;
+            margin: 0 !important; // stylelint-disable-line declaration-no-important
+            padding: 0;
+            border: 0;
+            pointer-events: none;
+
+            .expanded-icon,
+            .collapsed-icon {
+                display: none;
+            }
+        }
+
+        .ftoggler h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        #id_pageheadercontainer.collapse:not(.show) {
+            display: block;
+        }
+    }
+
+    .box.contents > .no-overflow {
+        max-width: 70ch;
+        line-height: 1.7;
+
+        p,
+        ul,
+        ol {
+            margin-bottom: 1rem;
+        }
+
+        li + li {
+            margin-top: .25rem;
+        }
+
+        // Under the title of the page, which stays the largest.
+        h2,
+        h3,
+        h4,
+        h5 {
+            margin: 1.75rem 0 .75rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            line-height: 1.3;
+
+            &:first-child {
+                margin-top: 0;
+            }
+        }
+
+        h4,
+        h5 {
+            font-size: 1.0625rem;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        table {
+            display: block;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+    }
+
+    .box.ongoing {
+        margin-bottom: .75rem;
+        padding: 0 !important; // stylelint-disable-line declaration-no-important
+        color: var(--epure-ink-muted);
+        font-size: .875rem;
+        text-align: start;
+    }
+}
+
 // Lessons: the answers one under the other, as cards, and the buttons aligned with the content.
 .path-mod-lesson .answeroptiongroup {
     > .col-md-3 {
