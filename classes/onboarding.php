@@ -127,7 +127,9 @@ class onboarding {
             $tour->set_name("tour_{$audience}_name,theme_epure");
             $tour->set_description("tour_{$audience}_description,theme_epure");
             $tour->set_pathmatch($definition['pathmatch']);
-            $tour->set_enabled(tour::ENABLED);
+            // As Moodle does with its own tours, disabled in the automated tests, where they would cover the pages.
+            $testing = defined('BEHAT_SITE_RUNNING') || (defined('PHPUNIT_TEST') && PHPUNIT_TEST);
+            $tour->set_enabled($testing ? tour::DISABLED : tour::ENABLED);
             $tour->set_filter_values('theme', ['epure']);
             $tour->set_filter_values(usertours\audience_filter::get_filter_name(), [$audience]);
             $tour->set_display_step_numbers(true);

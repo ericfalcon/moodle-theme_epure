@@ -55,7 +55,6 @@ final class onboarding_test extends \advanced_testcase {
             $this->assertEquals([$audience], $tour->get_filter_values('epure_audience'));
             $this->assertEquals(onboarding::TOURS[$audience]['pathmatch'], $tour->get_pathmatch());
             $this->assertCount(count(onboarding::TOURS[$audience]['steps']), $tour->get_steps());
-            $this->assertTrue($tour->is_enabled());
         }
         // Its strings exist in English and in French.
         foreach (onboarding::TOURS as $audience => $definition) {
@@ -79,6 +78,10 @@ final class onboarding_test extends \advanced_testcase {
 
         onboarding::install();
         $this->assertCount(3, $this->tours());
+        // Disabled in the automated tests, as Moodle's own tours, where they would cover the pages.
+        foreach ($this->tours() as $tour) {
+            $this->assertFalse($tour->is_enabled());
+        }
     }
 
     /**
