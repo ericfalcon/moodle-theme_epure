@@ -201,7 +201,8 @@ export const init = async() => {
     // The sections as cards, as on the preferences.
     form.classList.add('epure-longform-form');
     // The buttons to save, at the bottom of the screen.
-    const actions = form.querySelector('[id^="fgroup_id_buttonar"]')
+    // Moodle 4.5 gives the group of the buttons an id, Moodle 5.x the name of the group.
+    const actions = form.querySelector('[id^="fgroup_id_buttonar"], [data-groupname="buttonar"]')
         || form.querySelector('[name="submitbutton"]')?.closest('.fitem, .form-group');
     actions?.classList.add('epure-longform-actions');
     gatherLead(form, actions);
