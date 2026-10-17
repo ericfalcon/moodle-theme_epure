@@ -1,0 +1,184 @@
+// Home of the site administration: the common tasks in cards, above Moodle's tree.
+.epure-admin-home {
+    margin: 1rem 0 2rem;
+}
+
+.epure-admin-home-title {
+    margin-bottom: .75rem;
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.epure-admin-home-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.epure-admin-card {
+    padding: 1rem 1.25rem 1.125rem;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow);
+}
+
+.epure-admin-card-title {
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    margin: 0 0 .75rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+
+    a {
+        color: var(--epure-ink);
+        text-decoration: none;
+
+        &:hover,
+        &:focus {
+            color: var(--epure-brand-text);
+            text-decoration: underline;
+        }
+    }
+}
+
+.epure-admin-card-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    color: var(--epure-brand-text);
+    background-color: var(--epure-brand-soft);
+    border-radius: var(--epure-radius);
+}
+
+.epure-admin-card-tasks {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li + li {
+        margin-top: .125rem;
+    }
+
+    a {
+        display: block;
+        padding: .25rem 0;
+        color: var(--epure-brand-text);
+    }
+}
+
+@include media-breakpoint-down(lg) {
+    .epure-admin-home-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    .epure-admin-home-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+// Each tab of the site administration (General, Users, Courses…): its parts as cards in a grid, rather than rows
+// separated by lines. Moodle's markup is the same from 4.5 to 5.3; only the look changes.
+// Columns rather than a grid: the parts, of very different lengths (« Plugins »), pile up without holes.
+#page-admin-search .tab-content > .tab-pane[id^="link"] > .container-fluid {
+    column-count: 3;
+    column-gap: 1rem;
+    padding: 0;
+
+    > hr {
+        display: none;
+    }
+
+    > .row {
+        flex-direction: column;
+        margin: 0 0 1rem;
+        break-inside: avoid;
+        padding: 1rem 1.25rem 1.125rem;
+        background-color: var(--epure-surface);
+        border: 1px solid var(--epure-border);
+        border-radius: var(--epure-radius-lg);
+        box-shadow: var(--epure-shadow);
+
+        > [class*="col"] {
+            flex: none;
+            width: 100%;
+            max-width: none;
+            padding: 0;
+        }
+
+        // The links of the tab without a part of their own (the first ones of « General »).
+        > .col-sm-3:empty {
+            display: none;
+        }
+
+        h4 {
+            margin: 0 0 .625rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+
+            a {
+                color: var(--epure-ink);
+            }
+        }
+
+        // The sub-parts, as in « Plugins ».
+        h5 {
+            margin: .75rem 0 .25rem;
+            font-size: .9375rem;
+            font-weight: 600;
+        }
+
+        ul {
+            margin-bottom: 0;
+        }
+
+        li a {
+            display: inline-block;
+            padding: .1875rem 0;
+        }
+    }
+}
+
+@include media-breakpoint-down(lg) {
+    #page-admin-search .tab-content > .tab-pane[id^="link"] > .container-fluid {
+        column-count: 2;
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    #page-admin-search .tab-content > .tab-pane[id^="link"] > .container-fluid {
+        column-count: 1;
+    }
+}
+
+// On phones, the search of the administration goes under the title instead of cutting it in the middle of a word.
+@include media-breakpoint-down(sm) {
+    .path-admin #page-header > .w-100 > .d-flex.align-items-center {
+        flex-wrap: wrap;
+        row-gap: .75rem;
+
+        > .header-actions-container {
+            width: 100%;
+            margin-left: 0 !important; // stylelint-disable-line declaration-no-important
+
+            .header-action {
+                width: 100%;
+                margin-left: 0 !important; // stylelint-disable-line declaration-no-important
+            }
+
+            .simplesearchform,
+            .input-group {
+                width: 100%;
+            }
+        }
+    }
+}

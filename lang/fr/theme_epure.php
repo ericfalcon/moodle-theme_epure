@@ -133,6 +133,7 @@ $string['activitynavigation'] = 'Activités du cours';
 $string['activitynext'] = 'Suivant';
 $string['activityposition'] = 'Activité {$a->position} sur {$a->total}';
 $string['activityprevious'] = 'Précédent';
+$string['adminhome'] = 'Tâches courantes';
 $string['advancedsettings'] = 'Réglages avancés';
 $string['audience_learner'] = 'Apprenant';
 $string['audience_manager'] = 'Gestionnaire';

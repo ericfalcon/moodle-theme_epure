@@ -133,6 +133,7 @@ $string['activitynavigation'] = 'Activities of the course';
 $string['activitynext'] = 'Next';
 $string['activityposition'] = 'Activity {$a->position} of {$a->total}';
 $string['activityprevious'] = 'Previous';
+$string['adminhome'] = 'Common tasks';
 $string['advancedsettings'] = 'Advanced settings';
 $string['audience_learner'] = 'Learner';
 $string['audience_manager'] = 'Manager';

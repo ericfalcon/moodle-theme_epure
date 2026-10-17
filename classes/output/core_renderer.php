@@ -192,6 +192,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 \theme_epure\activity_page::strip($this->page->cm, (int) $USER->id)
             );
         }
+        if (\theme_epure\admin_home::applies($this->page)) {
+            return $header . $this->render_from_template('theme_epure/admin_home', \theme_epure\admin_home::export());
+        }
         if (\theme_epure\learner_dashboard::applies($this->page)) {
             $data = \theme_epure\learner_dashboard::export($this);
             return $data ? $header . $this->render_from_template('theme_epure/learner_dashboard', $data) : $header;
