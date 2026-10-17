@@ -1,0 +1,285 @@
+// File picker and file manager. Moodle draws them with YUI (core_files_renderer), with the same classes from
+// Moodle 4.5 to 5.3: only their look changes here, never their behaviour.
+
+// Windows of the file picker and of the file manager (details of a file, new folder): only the picker has a class of
+// its own.
+.moodle-dialogue-base .moodle-dialogue.filepicker .moodle-dialogue-wrap,
+.moodle-dialogue-base .moodle-dialogue-wrap:has(.file-picker, .filemanager) {
+    overflow: hidden;
+    border: 0;
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow-hover);
+}
+
+.moodle-dialogue-base .closebutton {
+    color: var(--epure-ink);
+}
+
+// Repositories: a side menu, the open one marked like the current page of the menus of the theme.
+.file-picker .fp-repo-area {
+    gap: .125rem;
+
+    .fp-repo .nav-link {
+        display: flex;
+        align-items: center;
+        gap: .375rem;
+        padding: .5rem .75rem;
+        color: var(--epure-ink);
+        font-weight: 500;
+        background-color: transparent;
+        border-radius: var(--epure-radius-sm);
+
+        &:hover,
+        &:focus {
+            background-color: var(--epure-surface-muted);
+        }
+    }
+
+    .fp-repo.active .nav-link,
+    .fp-repo .nav-link.active.active:not(:disabled):not(.disabled) {
+        color: var(--epure-brand-text);
+        background-color: var(--epure-brand-soft);
+        box-shadow: inset 3px 0 0 var(--epure-brand);
+    }
+
+    .fp-repo-icon {
+        flex-shrink: 0;
+        padding: 0;
+    }
+}
+
+// On phones, the repositories wrap as chips above the files instead of filling the screen.
+@include media-breakpoint-down(md) {
+    .file-picker .fp-repo-area {
+        flex-direction: row !important; // stylelint-disable-line declaration-no-important
+        flex-wrap: wrap;
+        gap: .375rem;
+        margin-bottom: .75rem;
+        padding-right: 0 !important; // stylelint-disable-line declaration-no-important
+
+        .fp-repo .nav-link {
+            padding: .375rem .75rem;
+            font-size: .875rem;
+            border: 1px solid var(--epure-border);
+            border-radius: var(--epure-radius-pill);
+        }
+
+        .fp-repo.active .nav-link,
+        .fp-repo .nav-link.active.active:not(:disabled):not(.disabled) {
+            border-color: var(--epure-brand);
+            box-shadow: none;
+        }
+    }
+}
+
+// Area of the files, in the picker and in the forms.
+.file-picker .fp-repo-items {
+    overflow: hidden;
+    border-color: var(--epure-border);
+    border-radius: var(--epure-radius);
+}
+
+.file-picker .fp-content,
+.filemanager .fp-content {
+    background-color: var(--epure-surface);
+}
+
+.file-picker .fp-navbar,
+.filemanager .fp-navbar,
+.filepicker .fp-navbar {
+    padding: .5rem;
+    background-color: var(--epure-surface-muted);
+    border-color: var(--epure-border);
+}
+
+.filemanager .fp-navbar {
+    border-top-left-radius: var(--epure-radius);
+    border-top-right-radius: var(--epure-radius);
+}
+
+.filemanager-container,
+.filepicker-filelist {
+    border-color: var(--epure-border);
+    border-bottom-right-radius: var(--epure-radius);
+    border-bottom-left-radius: var(--epure-radius);
+}
+
+.filemanager-toolbar {
+    padding: 0;
+}
+
+// Buttons of the toolbars: square and quiet, the view switch as a segmented control.
+.fp-toolbar .btn,
+.fp-viewbar .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    color: var(--epure-ink);
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-sm);
+    box-shadow: none;
+
+    &:hover {
+        color: var(--epure-brand-text);
+        background-color: var(--epure-brand-soft);
+        border-color: var(--epure-brand);
+    }
+}
+
+.fp-toolbar div {
+    margin-right: .375rem;
+}
+
+.fp-viewbar {
+    padding: .125rem;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-sm);
+
+    .btn {
+        min-height: 2rem;
+        background-color: transparent;
+        border-color: transparent;
+        border-radius: calc(var(--epure-radius-sm) - 2px) !important; // stylelint-disable-line declaration-no-important
+    }
+
+    &:not(.disabled) .btn.checked {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand);
+        border-color: var(--epure-brand);
+    }
+}
+
+.fp-pathbar {
+    padding-top: .375rem;
+    font-weight: 500;
+}
+
+// Icon view: tiles with rounded corners, the name in the colour of the text.
+.fp-iconview .fp-thumbnail {
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius);
+    transition: border-color .15s ease, background-color .15s ease;
+
+    &:hover {
+        background-color: var(--epure-brand-soft);
+        border-color: var(--epure-brand);
+        box-shadow: none;
+    }
+
+    img {
+        padding: 0;
+        border: 0;
+        border-radius: var(--epure-radius-sm);
+        box-shadow: none;
+    }
+}
+
+.fp-iconview .fp-file:focus-visible {
+    outline: 0;
+
+    .fp-thumbnail {
+        box-shadow: 0 0 0 .2rem var(--epure-focus-ring);
+    }
+}
+
+.fp-iconview .fp-filename-field .fp-filename {
+    color: var(--epure-ink);
+    font-size: .8125rem;
+    background-color: var(--epure-surface);
+}
+
+// Table view.
+.file-picker .yui3-datatable,
+.filemanager .yui3-datatable {
+    color: var(--epure-ink);
+    font-size: .875rem;
+
+    .yui3-datatable-header {
+        padding: .5rem .75rem;
+        color: var(--epure-ink-muted) !important; // stylelint-disable-line declaration-no-important
+        font-weight: 600;
+        background: var(--epure-surface-muted) !important; // stylelint-disable-line declaration-no-important
+        border-bottom: 1px solid var(--epure-border) !important; // stylelint-disable-line declaration-no-important
+        border-left: 0 !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .yui3-datatable-cell {
+        padding: .5rem .75rem;
+        color: var(--epure-ink);
+        background-color: var(--epure-surface) !important; // stylelint-disable-line declaration-no-important
+        border-bottom: 1px solid var(--epure-border);
+        border-left: 0;
+    }
+
+    tr:hover .yui3-datatable-cell {
+        background-color: var(--epure-surface-muted) !important; // stylelint-disable-line declaration-no-important
+    }
+}
+
+// Tree view.
+.fp-treeview .ygtvlabel {
+    padding: .125rem .375rem;
+    color: var(--epure-brand-text);
+    border-radius: var(--epure-radius-sm);
+
+    &:hover {
+        background-color: var(--epure-brand-soft);
+    }
+}
+
+// Area to drop files: a soft dashed frame, in the colour of the brand when a file is over it.
+.filemanager.fm-noitems .fm-empty-container,
+.filepicker-filelist .dndupload-target,
+.filemanager-container .dndupload-target {
+    color: var(--epure-ink-muted);
+    border: 2px dashed var(--epure-border);
+    border-radius: var(--epure-radius);
+}
+
+.filepicker-filelist .dndupload-target,
+.filemanager-container .dndupload-target,
+.filepicker-filelist.dndupload-over .dndupload-target,
+.filemanager-container.dndupload-over .dndupload-target {
+    color: var(--epure-brand-text);
+    background-color: var(--epure-brand-soft);
+    border-color: var(--epure-brand);
+    box-shadow: none;
+}
+
+.dndupload-arrow {
+    color: var(--epure-brand);
+}
+
+// File input of « Upload a file »: its button like the others.
+.file-picker input[type="file"]::file-selector-button {
+    margin-right: .75rem;
+    padding: .375rem .875rem;
+    color: var(--epure-ink);
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    background-color: var(--epure-surface-muted);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-sm);
+}
+
+.file-picker input[type="file"]:hover::file-selector-button {
+    background-color: var(--epure-brand-soft);
+    border-color: var(--epure-brand);
+}
+
+// Details of a file, before choosing it or in the file manager.
+.fp-select .fp-thumbnail {
+    background-color: var(--epure-surface-muted);
+    border-color: var(--epure-border);
+    border-radius: var(--epure-radius);
+
+    img {
+        border: 0;
+    }
+}

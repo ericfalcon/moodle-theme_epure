@@ -330,11 +330,23 @@
     }
 
     // Names of the files in the file manager.
-    .fp-iconview .fp-filename-field .fp-filename,
     .fp-filename-field,
     .fp-file .fp-filename {
         color: var(--epure-ink);
         background: transparent;
+    }
+
+    // Icons of the types of files, drawn in black: light on the dark surfaces. The thumbnails of the images keep
+    // their colours.
+    .file-picker img[src*="/f/"],
+    .filemanager img[src*="/f/"],
+    .fp-select img[src*="/f/"] {
+        filter: invert(1) hue-rotate(180deg);
+    }
+
+    // In the icon view, a long name unfolds over the tiles below it on hover: it keeps the surface behind it.
+    .fp-iconview .fp-filename-field .fp-filename {
+        background: var(--epure-surface);
     }
 
     // Swagger UI of the web services (Site administration › Development): its own light styles.
