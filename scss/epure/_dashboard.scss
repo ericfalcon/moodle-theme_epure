@@ -245,6 +245,17 @@
     margin-left: auto;
 }
 
+// How many items a list leaves out, under it.
+.epure-learner-more {
+    display: inline-block;
+    margin: .5rem 0 0;
+    font-size: .875rem;
+}
+
+p.epure-learner-more {
+    color: var(--epure-ink-muted);
+}
+
 .epure-learner-empty {
     margin: 0;
     color: var(--epure-ink-muted);

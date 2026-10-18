@@ -210,7 +210,8 @@ class activity_state {
 
     /**
      * The activity to continue, the same on the dashboard, the banner of the course and its page: an activity due in
-     * the next two days comes first (the closest deadline); else the activity started and not finished; else the one
+     * the next two days comes first (the closest deadline), as it can still be done in time; else an activity overdue
+     * (the most recently, the likeliest to be still accepted); else the activity started and not finished; else the one
      * after the last activity completed; else the first one still to do.
      *
      * @param array[] $items Activities, from items().
@@ -227,6 +228,11 @@ class activity_state {
         if ($soon) {
             uasort($soon, fn($a, $b) => $a['due'] <=> $b['due']);
             return array_key_first($soon);
+        }
+        $late = array_filter($items, fn($item) => self::at($item['base'], $item['due'], $now) === 'late');
+        if ($late) {
+            uasort($late, fn($a, $b) => $b['due'] <=> $a['due']);
+            return array_key_first($late);
         }
         foreach ($pending as $key => $item) {
             if ($item['base'] === 'progress') {

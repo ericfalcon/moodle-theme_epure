@@ -92,7 +92,8 @@ final class learner_dashboard_test extends \advanced_testcase {
 
     /**
      * With deadlines in several courses, the course whose activity to continue is due the soonest is resumed, even if
-     * another one was visited last; the others tell their deadline in the list of the courses in progress.
+     * another one was visited last; the others tell their deadline in the list of the courses in progress, those
+     * overdue first.
      */
     public function test_export_urgent(): void {
         global $DB, $PAGE;
@@ -101,7 +102,8 @@ final class learner_dashboard_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $learner = $generator->create_user();
         $courses = [];
-        foreach (['Visited' => time() + DAYSECS, 'Tonight' => time() + 5 * HOURSECS, 'Later' => null] as $name => $due) {
+        $plan = ['Visited' => time() + DAYSECS, 'Tonight' => time() + 5 * HOURSECS, 'Later' => null, 'Missed' => time() - DAYSECS];
+        foreach ($plan as $name => $due) {
             $courses[$name] = $generator->create_course(['fullname' => $name, 'enablecompletion' => 1]);
             $generator->create_module('assign', ['course' => $courses[$name]->id, 'duedate' => $due ?? 0,
                 'completion' => COMPLETION_TRACKING_AUTOMATIC, 'completionsubmit' => 1]);
@@ -123,6 +125,10 @@ final class learner_dashboard_test extends \advanced_testcase {
         $states = array_column($data['inprogress'], 'urgentstate', 'name');
         $this->assertSame('soon', $states['Visited']['state']);
         $this->assertNull($states['Later']);
+        // The courses with an activity overdue first, then those due soon.
+        $this->assertSame('late', $states['Missed']['state']);
+        $this->assertSame(['Missed', 'Visited', 'Later'], array_column($data['inprogress'], 'name'));
+        $this->assertSame('', $data['moreinprogress']);
     }
 
     /**
@@ -160,8 +166,35 @@ final class learner_dashboard_test extends \advanced_testcase {
         $this->assertSame(userdate($now - HOURSECS, get_string('strftimedatetimeshort', 'langconfig')), $week['late'][0]['time']);
         $this->assertTrue($week['haslate']);
 
+        $this->assertSame('', $week['morelate']);
+        $this->assertSame('', $week['moreweek']);
+
         $empty = learner_dashboard::week([['id' => 2, 'name' => 'Safety']], (int) $GLOBALS['USER']->id, $now);
         $this->assertFalse($empty['hasweek']);
+    }
+
+    /**
+     * A long week tells how many items it leaves out, overdue and to come.
+     */
+    public function test_week_more(): void {
+        $this->resetAfterTest();
+        $this->setUser($this->getDataGenerator()->create_user(['timezone' => 'UTC']));
+        $now = make_timestamp(2026, 10, 15, 10);
+        $dated = [];
+        for ($i = 1; $i <= learner_dashboard::LATE + 2; $i++) {
+            $dated[] = ['cmid' => $i, 'name' => 'Missed ' . $i, 'url' => '#', 'icon' => '', 'base' => 'todo',
+                'due' => $now - $i * HOURSECS];
+        }
+        for ($i = 1; $i <= learner_dashboard::WEEK + 1; $i++) {
+            $dated[] = ['cmid' => 100 + $i, 'name' => 'Due ' . $i, 'url' => '#', 'icon' => '', 'base' => 'todo',
+                'due' => $now + $i * HOURSECS];
+        }
+        $card = ['id' => 2, 'name' => 'Safety', 'finished' => [], 'dated' => $dated];
+        $week = learner_dashboard::week([$card], (int) $GLOBALS['USER']->id, $now);
+        $this->assertCount(learner_dashboard::LATE, $week['late']);
+        $this->assertSame(get_string('learnermorelate', 'theme_epure', 2), $week['morelate']);
+        $this->assertCount(learner_dashboard::WEEK, array_merge(...array_column($week['days'], 'items')));
+        $this->assertSame(get_string('learnermoreweek_one', 'theme_epure'), $week['moreweek']);
     }
 
     /**

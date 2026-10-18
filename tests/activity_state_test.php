@@ -116,7 +116,8 @@ final class activity_state_test extends \advanced_testcase {
     }
 
     /**
-     * The activity to continue: due in the next two days first, else started, else the one after the last completed.
+     * The activity to continue: due in the next two days first, else overdue, else started, else the one after the last
+     * completed.
      */
     public function test_next(): void {
         $now = 1000000;
@@ -132,6 +133,9 @@ final class activity_state_test extends \advanced_testcase {
         // The closest deadline in the next two days before all; a passed one does not count.
         $this->assertSame(3, activity_state::next([$item('progress'), $item('todo', $now + DAYSECS),
             $item('todo', $now - DAYSECS), $item('todo', $now + 3600)], $now));
+        // Else the activity overdue the most recently, before a started one; one done or failed is not overdue.
+        $this->assertSame(2, activity_state::next([$item('progress'), $item('todo', $now - 3 * DAYSECS),
+            $item('progress', $now - 3600), $item('done', $now - 60), $item('failed', $now - 60)], $now));
     }
 
     /**

@@ -90,6 +90,10 @@ class learner_dashboard {
             $heading = $resume['id'] === $visited[0]['id'] ? 'learnerresume' : 'learnerresumedeadline';
             $resume['heading'] = get_string($heading, 'theme_epure');
             $inprogress = array_values(array_filter($inprogress, fn($card) => $card['id'] !== $resume['id']));
+            // The others with an activity overdue first, then those due soon, each in the order of « My courses »: a
+            // course with a deadline is never left out of the list by the courses without.
+            $rank = fn($card) => ['late' => 0, 'soon' => 1][$card['urgentstate']['state'] ?? ''] ?? 2;
+            usort($inprogress, fn($a, $b) => $rank($a) <=> $rank($b));
         }
 
         // Date of completion of the completed courses, the most recent first.
@@ -117,7 +121,7 @@ class learner_dashboard {
             'resume' => $resume,
             'inprogress' => array_slice($inprogress, 0, self::INPROGRESS),
             'hasinprogress' => !empty($inprogress),
-            'moreinprogress' => count($inprogress) > self::INPROGRESS,
+            'moreinprogress' => self::more('learnermoreinprogress', count($inprogress) - self::INPROGRESS),
             'week' => $week,
             'completed' => array_slice($completed, 0, self::COMPLETED),
             'completedcount' => count($completed),
@@ -137,7 +141,8 @@ class learner_dashboard {
      * @param array[] $learning Cards of the courses the user takes, from mycourses::export().
      * @param int $userid User.
      * @param int|null $now Time, now by default.
-     * @return array With days (each with label and items), late (items), haslate and hasweek.
+     * @return array With days (each with label and items), late (items), haslate, morelate and moreweek (how many
+     *     items overdue and of the week are left out, empty when none) and hasweek.
      */
     public static function week(array $learning, int $userid, ?int $now = null): array {
         $now = $now ?? time();
@@ -179,6 +184,7 @@ class learner_dashboard {
         }
 
         usort($entries, fn($a, $b) => $a['time'] <=> $b['time']);
+        $moreweek = self::more('learnermoreweek', count($entries) - self::WEEK);
         $entries = array_slice($entries, 0, self::WEEK);
         $days = [];
         foreach ($entries as $entry) {
@@ -197,9 +203,25 @@ class learner_dashboard {
         }
         // The most recently overdue first.
         usort($late, fn($a, $b) => $b['time'] <=> $a['time']);
+        $morelate = self::more('learnermorelate', count($late) - self::LATE);
         $late = array_map(fn($entry) => self::export_entry($entry, true), array_slice($late, 0, self::LATE));
-        return ['days' => array_values($days), 'late' => $late, 'haslate' => !empty($late),
-            'hasweek' => !empty($days) || !empty($late)];
+        // Those left out are counted, so that a long list never looks complete.
+        return ['days' => array_values($days), 'late' => $late, 'haslate' => !empty($late), 'morelate' => $morelate,
+            'moreweek' => $moreweek, 'hasweek' => !empty($days) || !empty($late)];
+    }
+
+    /**
+     * How many items a list leaves out: « 3 more overdue ».
+     *
+     * @param string $key String, with a variant _one for a single item.
+     * @param int $count Items left out.
+     * @return string Empty when none.
+     */
+    protected static function more(string $key, int $count): string {
+        if ($count <= 0) {
+            return '';
+        }
+        return $count === 1 ? get_string($key . '_one', 'theme_epure') : get_string($key, 'theme_epure', $count);
     }
 
     /**
