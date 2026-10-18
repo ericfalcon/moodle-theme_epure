@@ -253,8 +253,9 @@ class rewriter_fr extends rewriter {
      */
     private static function agree(string $after, bool $feminine): string {
         $patterns = [
-            // After être: « est masqué », « a été créé », « n'est pas visible ».
-            "/^(\\s+(?:n['’])?(?:est|sont|sera|seront|était|étaient|soit|soient|a\\s+été|ont\\s+été|avait\\s+été|avaient\\s+été)"
+            // After être: « est masqué », « a été créé », « n'est pas visible », « peuvent être ouverts ».
+            "/^(\\s+(?:n['’])?(?:est|sont|sera|seront|était|étaient|soit|soient|a\\s+été|ont\\s+été|avait\\s+été|avaient\\s+été"
+                . "|(?:peut|peuvent|pourra|pourront|doit|doivent|devra|devront)(?:\\s+(?:ne\\s+)?pas)?\\s+être)"
                 . "(?:\\s+(?:pas|plus|bien|déjà|encore|toujours|automatiquement|correctement))*\\s+)(\\p{L}+)/iu",
             // Right after the noun: « masqué », « non commencés ».
             '/^(\s+(?:(?:non|pas|déjà|bien)\s+)?)(\p{L}+)/iu',
