@@ -25,6 +25,7 @@
 require(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
+use core\output\single_button;
 use theme_epure\certificate_frame;
 use theme_epure\certificate_template;
 use theme_epure\palette;
@@ -49,11 +50,11 @@ if (!$available) {
     echo $OUTPUT->notification(get_string('certtemplate_unavailable', 'theme_epure'), 'info', false);
 } else {
     $brand = palette::normalise(get_config('theme_epure', 'brandcolor'));
-    echo html_writer::img(certificate_frame::preview($brand), get_string('certtemplate_preview', 'theme_epure'), [
-        'class' => 'epure-certtemplate-preview',
+    echo html_writer::div(html_writer::img(certificate_frame::preview($brand), get_string('certtemplate_preview', 'theme_epure'), [
+        'class' => 'epure-certtemplate-preview mw-100 h-auto',
         'width' => 351,
         'height' => 248,
-    ]);
+    ]), 'my-3');
     if (!certificate_template::logo()) {
         echo $OUTPUT->notification(get_string('certtemplate_nologo', 'theme_epure'), 'info', false);
     }
@@ -61,7 +62,7 @@ if (!$available) {
         new moodle_url(certificate_template::url(), ['create' => 1]),
         get_string('certtemplate_create', 'theme_epure'),
         'post',
-        ['primary' => true]
+        ['type' => single_button::BUTTON_PRIMARY]
     );
 }
 echo $OUTPUT->footer();

@@ -74,4 +74,14 @@ final class certificate_template_test extends \advanced_testcase {
         certificate_template::create();
         $this->assertSame($before + 2, $DB->count_records('tool_certificate_templates'));
     }
+
+    /**
+     * A logo keeps its proportions in its box, whatever its shape, in whole millimetres.
+     */
+    public function test_fit(): void {
+        $this->assertSame([24, 24], certificate_template::fit(['width' => 512, 'height' => 512], 60, 24));
+        $this->assertSame([60, 15], certificate_template::fit(['width' => 800, 'height' => 200], 60, 24));
+        $this->assertSame([12, 24], certificate_template::fit(['width' => 100, 'height' => 200], 60, 24));
+        $this->assertSame([24, 24], certificate_template::fit([], 60, 24));
+    }
 }

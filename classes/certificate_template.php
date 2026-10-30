@@ -33,6 +33,12 @@ class certificate_template {
     /** @var int Middle of the landscape A4 page (297 mm wide), in whole millimetres as the plugin keeps them. */
     protected const MIDDLE = 148;
 
+    /** @var int Width of the box of the logo, in millimetres. */
+    protected const LOGO_WIDTH = 60;
+
+    /** @var int Height of the box of the logo, in millimetres: from 24 mm, it stops well above the title at 58 mm. */
+    protected const LOGO_HEIGHT = 24;
+
     /** @var string Colour of the texts that are not in the colour of the brand. */
     protected const INK = '#1f2937';
 
@@ -107,11 +113,13 @@ class certificate_template {
             'data' => json_encode(['width' => 0, 'height' => 0, 'isbackground' => true]),
         ], ['filename' => 'epure-frame.png', 'content' => certificate_frame::png($brand)]);
 
-        // The logo of the site, centred at the top.
+        // The logo of the site, centred at the top, in a box that keeps it clear of the title.
         if ($logo = self::logo()) {
+            [$width, $height] = self::fit($logo->get_imageinfo() ?: [], self::LOGO_WIDTH, self::LOGO_HEIGHT);
             $add([
-                'name' => get_string('logo', 'admin'), 'element' => 'image', 'posx' => self::MIDDLE - 25, 'posy' => 24,
-                'data' => json_encode(['width' => 50, 'height' => 0, 'isbackground' => false]),
+                'name' => get_string('logo', 'admin'), 'element' => 'image',
+                'posx' => self::MIDDLE - intdiv($width, 2), 'posy' => 24 + intdiv(self::LOGO_HEIGHT - $height, 2),
+                'data' => json_encode(['width' => $width, 'height' => $height, 'isbackground' => false]),
             ], ['filename' => $logo->get_filename(), 'content' => $logo->get_content()]);
         }
 
@@ -140,6 +148,22 @@ class certificate_template {
             'colour' => self::INK, 'posx' => 267, 'posy' => 172, 'width' => 0, 'refpoint' => 2,
         ]);
         return $template;
+    }
+
+    /**
+     * The size in whole millimetres of an image fitted in a box, keeping its proportions.
+     *
+     * @param array $info The image info, with the width and the height in pixels
+     * @param int $boxwidth The width of the box in millimetres
+     * @param int $boxheight The height of the box in millimetres
+     * @return int[] The width and the height in millimetres
+     */
+    public static function fit(array $info, int $boxwidth, int $boxheight): array {
+        if (empty($info['width']) || empty($info['height'])) {
+            return [$boxheight, $boxheight];
+        }
+        $scale = min($boxwidth / $info['width'], $boxheight / $info['height']);
+        return [max(1, (int) round($info['width'] * $scale)), max(1, (int) round($info['height'] * $scale))];
     }
 
     /**

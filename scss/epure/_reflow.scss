@@ -43,9 +43,14 @@ html,
     }
 }
 
-// From 1200 pixels, the help button floats in the margin: on a long form, it goes above the bar of its buttons to
+// From 1200 pixels, the help button floats in the margin, over nothing: on a long form, it goes above the bar of its buttons to
 // save, which stays at the bottom of the screen.
 @media (min-width: 1200px) {
+    // At the end of the page, the links of the footer stop above it.
+    body:has(.btn-footer-popover) .epure-footer {
+        padding-bottom: 5.5rem;
+    }
+
     body:has(.epure-longform-actions) .btn-footer-popover {
         bottom: 6.5rem;
     }
