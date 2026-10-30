@@ -1,0 +1,89 @@
+// Nothing fixed over the content (WCAG 1.4.10, 2.4.11): on phones, tablets and with a zoom of 200 % on a computer,
+// where Moodle lays its floating buttons over the text, they take a place of their own in the page.
+
+// A field or a link reached with the keyboard is never hidden under the bar at the top of the screen, nor under
+// the navigation bar at the bottom of the phones. Moodle scrolls the window, or the page itself with the drawers.
+html,
+#page.drawers {
+    scroll-padding-top: calc(#{$navbar-height} + 1rem);
+}
+
+@media (max-width: 767.98px) {
+    html:has(body.epure-has-mobilenav:not(.hasstickyfooter)),
+    body.epure-has-mobilenav:not(.hasstickyfooter) #page.drawers {
+        scroll-padding-bottom: calc(4.75rem + env(safe-area-inset-bottom));
+    }
+
+    // The button « Continue » of the course page, while it shows above that bar, is kept clear too; the end of the
+    // page, after the footer, leaves room to scroll its last links out from under it.
+    html:has(.epure-course-continue-sticky:not(.epure-hidden)),
+    body:has(.epure-course-continue-sticky:not(.epure-hidden)) #page.drawers {
+        scroll-padding-bottom: calc(10rem + env(safe-area-inset-bottom));
+    }
+
+    body:has(.epure-course-continue-sticky:not(.epure-hidden)) #page-footer {
+        padding-bottom: 5.5rem;
+    }
+}
+
+// Below 1200 pixels, the help button « ? » floats over the text: its contents (help of the page, support, login,
+// guided tours) are shown at the end of the page instead, as Moodle does on the smallest screens.
+@media (max-width: 1199.98px) {
+    .jsenabled .btn-footer-popover,
+    .jsenabled .btn-footer-communication {
+        display: none !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .jsenabled #page-footer .footer-content-popover {
+        display: block !important; // stylelint-disable-line declaration-no-important
+        max-width: none;
+        color: var(--epure-ink);
+        background-color: var(--epure-surface);
+        border-top: 1px solid var(--epure-border);
+    }
+}
+
+// From 1200 pixels, the help button floats in the margin: on a long form, it goes above the bar of its buttons to
+// save, which stays at the bottom of the screen.
+@media (min-width: 1200px) {
+    body:has(.epure-longform-actions) .btn-footer-popover {
+        bottom: 6.5rem;
+    }
+
+    body:has(.epure-longform-actions) .btn-footer-communication {
+        bottom: 9.5rem;
+    }
+}
+
+// Below 992 pixels, the drawers open over the page: their buttons (index of the course, blocks) go at the top of
+// the content, in its flow, rather than at the edges of the screen over the text.
+@media (max-width: 991.98px) {
+    #page.drawers .drawer-toggles {
+        display: flex;
+        justify-content: space-between;
+        gap: .5rem;
+        margin-bottom: .75rem;
+
+        .drawer-toggler {
+            position: static;
+            top: auto;
+            transform: none;
+            visibility: visible;
+
+            .btn {
+                padding: .625rem .875rem;
+                border-radius: var(--epure-radius-pill);
+                box-shadow: none;
+
+                &:hover {
+                    padding: .625rem .875rem;
+                }
+            }
+        }
+
+        // Alone, the button of the blocks stays on the right.
+        .drawer-right-toggle {
+            margin-left: auto;
+        }
+    }
+}

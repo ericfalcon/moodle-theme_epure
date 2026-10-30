@@ -345,6 +345,8 @@ The change takes effect immediately and is then saved in the preferences of the 
 
 **Step by step.** The same settings can be filled in a guided form (Site administration › Appearance › Themes › « Accessibility statement, step by step », also linked from the Accessibility tab and, for the administrators, from the statement itself): who publishes the statement, the audit, the compliance status, the contents not accessible, the contact. Each step says what the RGAA asks for; the status step recalls the rate entered and the rule of the RGAA (fully compliant at 100 %, partially from 50 %, non compliant below or without an audit), but the theme never computes the status: the audit gives it. The statement has a button to print it, or to save it as PDF.
 
+**Nothing fixed over the content.** On phones, tablets and with a zoom of 200 %, the floating buttons of Moodle take a place of their own: below 1200 pixels, the contents of the help button « ? » show at the end of the page; below 992 pixels, the buttons of the drawers (index of the course, blocks) go at the top of the content. An element reached with the keyboard is never hidden, even in part, under the bars fixed at the top and the bottom of the screen: the page scrolls it into the clear.
+
 A theme alone cannot make a platform compliant: course content matters too, and a manual audit is still required before declaring compliance.
 
 ## Development

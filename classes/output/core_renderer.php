@@ -168,6 +168,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 ['type' => 'application/json', 'id' => 'epure-iomad-course-categories']
             );
         }
+        // Focus never hidden under the bars fixed at the top and at the bottom of the screen.
+        $this->page->requires->js_call_amd('theme_epure/focus_clear', 'init');
         // Tables read as cards on phones: participants, grades overview, logs, outline, the reports of the report builder.
         if (isloggedin()) {
             $this->page->requires->js_call_amd('theme_epure/table_cards', 'init', [self::CARD_TABLES]);
