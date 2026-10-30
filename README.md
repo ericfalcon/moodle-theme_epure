@@ -269,6 +269,10 @@ The overview can be turned off in the theme's Courses tab ("Learner overview on 
 
 With the setting "My summary" (Courses tab, off by default), the learner finds a link "My summary" in the "Completed" part of their overview. The page lists the courses they take with their progress, the date of completion, their grade (when the course shows the grades to the learners) and the activities they completed with their date, then their certificates. A button prints it, or saves it as PDF with the browser, in the colours of the brand. Their own data only. A note says what it proves: what the platform recorded, not on its own attendance nor the achievement of the objectives.
 
+## Certificate template
+
+With the plugin Certificate (tool_certificate), the page Site administration › Appearance › Themes › « Certificate template in the colours of the brand » creates, on a click, a template ready to use: a landscape A4 page with a frame in the colour of the brand, the logo of the site, the title, the name of the learner, the name of the course, the date of issue and a QR code to check the certificate. It is then a template like the others, edited and used in the courses with the Course certificate activity (mod_coursecertificate), and it stays if the site leaves the theme. With IOMAD, the frame of the certificates of each company stays an option of the company.
+
 ## Course page
 
 At the top of each course, a **banner** shows the course image (or a generated pattern), its category and its title, with the breadcrumb and Moodle's usual actions. Then, depending on the role:

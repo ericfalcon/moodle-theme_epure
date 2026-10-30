@@ -598,6 +598,13 @@ $ADMIN->add('themes', new admin_externalpage(
     new moodle_url('/theme/epure/a11ystatement.php')
 ));
 
+// A template of certificate in the colours of the brand, for the plugin Certificate (tool_certificate).
+$ADMIN->add('themes', new admin_externalpage(
+    'theme_epure_certificate',
+    new lang_string('certtemplate', 'theme_epure'),
+    new moodle_url('/theme/epure/certificate.php')
+));
+
 // Vocabulary of the platform: a page of its own, as applying it rewrites the language strings.
 $ADMIN->add('themes', new admin_externalpage(
     'theme_epure_vocabulary',
