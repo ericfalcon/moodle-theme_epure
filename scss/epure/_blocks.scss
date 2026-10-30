@@ -1,0 +1,166 @@
+// Adding a block (templates core/add_block_button and core/add_block_body, script theme_epure/add_block).
+
+// The place to add a block, in edit mode: a dashed card in the colour of the brand, filled when pointed at, as the
+// buttons to add of the course page. The link covers the whole card.
+.epure-addblock-button {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .25rem;
+    margin: 0 0 1rem;
+    padding: 1rem;
+    text-align: center;
+    background-color: var(--epure-surface);
+    border: 1px dashed var(--epure-brand);
+    border-radius: var(--epure-radius-lg);
+
+    &:hover,
+    &:focus-within {
+        background-color: var(--epure-brand-soft);
+        border-style: solid;
+    }
+
+    // The link has no ring of its own: the card shows it, around its whole surface.
+    &:has(:focus-visible) {
+        outline: 2px solid var(--epure-focus);
+        outline-offset: 2px;
+    }
+}
+
+.epure-addblock-plus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    color: var(--epure-brand-text);
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: 50%;
+}
+
+// The colour of the text, above the colour of the links of the dark mode (in the page, the drawer and the window).
+.epure-addblock-open.block-add,
+.epure-addblock-open.block-add:hover,
+.epure-addblock-open.block-add:focus {
+    width: auto;
+    padding: 0;
+    color: var(--epure-ink) !important; // stylelint-disable-line declaration-no-important
+    font-weight: 600;
+    text-decoration: none;
+    background: none;
+    border: 0;
+    box-shadow: none;
+
+    &::after {
+        position: absolute;
+        inset: 0;
+        content: "";
+    }
+}
+
+.epure-addblock-hint {
+    color: var(--epure-ink-muted);
+    font-size: .8125rem;
+}
+
+// The window « Add a block »: a search, which stays at the top while the list scrolls, then the blocks as the rows
+// of a menu, as on the preferences.
+.epure-addblock-search {
+    position: sticky;
+    top: -1rem;
+    z-index: 1;
+    margin: -1rem 0 .75rem;
+    padding: 1rem 0 .5rem;
+    background-color: var(--epure-surface);
+
+    // In the middle of the field, below the space left above it (1rem) rather than below it (.5rem).
+    .fa {
+        position: absolute;
+        top: calc(50% + .25rem);
+        left: .875rem;
+        color: var(--epure-ink-muted);
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    .form-control {
+        padding-left: 2.5rem;
+    }
+}
+
+.epure-addblock-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.epure-addblock-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    min-height: 3rem;
+    padding: .375rem .5rem;
+    border-bottom: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-sm);
+
+    &:last-child {
+        border-bottom: 0;
+    }
+
+    &:hover,
+    &:focus-within {
+        background-color: var(--epure-brand-soft);
+    }
+
+    &:has(:focus-visible) {
+        outline: 2px solid var(--epure-focus);
+        outline-offset: -2px;
+    }
+}
+
+.epure-addblock-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    color: var(--epure-brand-text);
+    background-color: var(--epure-surface-raised);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-sm);
+}
+
+.epure-addblock-link {
+    flex: 1;
+    min-width: 0;
+    color: var(--epure-ink) !important; // stylelint-disable-line declaration-no-important
+    text-decoration: none;
+
+    &::after {
+        position: absolute;
+        inset: 0;
+        content: "";
+    }
+}
+
+.epure-addblock-action {
+    flex: none;
+    color: var(--epure-brand-text);
+    font-size: .875rem;
+    font-weight: 600;
+}
+
+.epure-addblock-none {
+    margin: .75rem .5rem 0;
+    color: var(--epure-ink-muted);
+}
+
+// The ring of the keyboard focus goes around the whole card or row, rather than around the name only.
+.epure-addblock-open:focus-visible,
+.epure-addblock-link:focus-visible {
+    outline: 0 !important; // stylelint-disable-line declaration-no-important
+}

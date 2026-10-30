@@ -140,3 +140,17 @@ Feature: Accessibility of the Épure theme
     And "Completion tracking" "link" should exist in the ".epure-longform-nav" "css_element"
     And I click on "Completion tracking" "link" in the ".epure-longform-nav" "css_element"
     And "Enable completion tracking" "field" should be visible
+
+  Scenario: The window to add a block searches the blocks and meets accessibility standards
+    Given I log in as "admin"
+    And I am on homepage
+    And I follow "Dashboard"
+    And I turn editing mode on
+    Then I should see "Timeline, calendar, badges and more" in the "[data-region='add-block-button']" "css_element"
+    And I click on "Add a block" "link" in the "#block-region-content" "css_element"
+    And I set the field "Search for a block" to "badges"
+    And I should see "Latest badges" in the "Add a block" "dialogue"
+    And I should not see "Comments" in the "Add a block" "dialogue"
+    And the page should meet accessibility standards
+    And I click on "Latest badges" "link" in the "Add a block" "dialogue"
+    And "Latest badges" "block" should exist
