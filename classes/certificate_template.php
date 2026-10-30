@@ -30,8 +30,8 @@ namespace theme_epure;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class certificate_template {
-    /** @var float Middle of the landscape A4 page, in millimetres. */
-    protected const MIDDLE = 148.5;
+    /** @var int Middle of the landscape A4 page (297 mm wide), in whole millimetres as the plugin keeps them. */
+    protected const MIDDLE = 148;
 
     /** @var string Colour of the texts that are not in the colour of the brand. */
     protected const INK = '#1f2937';
@@ -96,7 +96,7 @@ class certificate_template {
             }
         };
         // A line of text centred on the page.
-        $text = fn(string $name, string $element, string $data, string $font, int $size, string $colour, float $y) => [
+        $text = fn(string $name, string $element, string $data, string $font, int $size, string $colour, int $y) => [
             'name' => $name, 'element' => $element, 'data' => $data, 'font' => $font, 'fontsize' => $size,
             'colour' => $colour, 'posx' => self::MIDDLE, 'posy' => $y, 'width' => 0, 'refpoint' => 1,
         ];
