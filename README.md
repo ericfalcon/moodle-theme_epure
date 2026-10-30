@@ -52,6 +52,7 @@ The tab ends with the **e-mails** in the colours of the brand (see Branded e-mai
 | Course banner | See Course page. |
 | Progress of the sections | On the course page, how many of its activities the learner has completed in each section and subsection. |
 | Learner overview on the dashboard | See Learner dashboard. |
+| My summary | Off by default. See Learner dashboard › My summary. |
 | Activity icons | In the brand colour (the default), in Moodle's colours, one per kind of activity (assessment, content, communication…), or hidden for more sober course pages (the activity chooser keeps them). With IOMAD, each company can make another choice. |
 | Activity pages | The strip at the top and the previous and next activities (see Activity pages). |
 
@@ -263,6 +264,10 @@ For a user who takes courses, the Dashboard starts with an overview, above Moodl
 - **Completed**: completed courses, with their date, and a link to the user's certificates when the platform issues them (IOMAD, Certificate, Custom certificate).
 
 The overview can be turned off in the theme's Courses tab ("Learner overview on the dashboard"); with IOMAD, each company can make a different choice in its profile. On phones, the dashboard can show the overview only, without the blocks (Mobile tab, "Dashboard on phones").
+
+### My summary
+
+With the setting "My summary" (Courses tab, off by default), the learner finds a link "My summary" in the "Completed" part of their overview. The page lists the courses they take with their progress, the date of completion, their grade (when the course shows the grades to the learners) and the activities they completed with their date, then their certificates. A button prints it, or saves it as PDF with the browser, in the colours of the brand. Their own data only. A note says what it proves: what the platform recorded, not on its own attendance nor the achievement of the objectives.
 
 ## Course page
 

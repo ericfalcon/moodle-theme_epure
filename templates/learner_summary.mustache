@@ -1,0 +1,91 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/learner_summary
+
+    « My summary »: what the platform recorded of a learner, on a page they print or save as PDF. The figures, then
+    each course with its progress, its date of completion, its grade and the activities completed with their date,
+    then the certificates, and a note on what the summary proves.
+
+    Example context (json):
+    {
+        "fullname": "Lea Learner", "date": "30/10/26", "taken": 2, "completedcount": 1, "certificatecount": 1,
+        "hascourses": true, "courses": [
+            {"name": "Safety at work", "url": "#", "category": "Training", "hasprogress": true, "progress": 100,
+                "completed": true, "datecompleted": "12/10/26", "grade": "16.00 (80.00 %)", "hasactivities": true,
+                "activities": [{"name": "Risks", "date": "02/10/26"}, {"name": "Final quiz", "date": "12/10/26"}]},
+            {"name": "First aid", "url": "#", "category": "", "hasprogress": true, "progress": 40, "completed": false,
+                "datecompleted": "", "grade": "", "hasactivities": false, "activities": []}
+        ],
+        "hascertificates": true, "certificates": [{"name": "Safety at work", "date": "12/10/26", "url": "#"}]
+    }
+}}
+<div class="epure-summary">
+    <div class="epure-summary-head">
+        <div>
+            <p class="epure-summary-name">{{fullname}}</p>
+            <p class="epure-summary-date">{{#str}}mysummary_date, theme_epure, {{date}}{{/str}}</p>
+        </div>
+        <button type="button" class="btn btn-primary d-print-none" data-action="epure-summary-print">
+            <i class="fa fa-print" aria-hidden="true"></i> {{#str}}mysummary_print, theme_epure{{/str}}
+        </button>
+    </div>
+
+    <dl class="epure-summary-figures">
+        <div><dt>{{#str}}mysummary_taken, theme_epure{{/str}}</dt><dd>{{taken}}</dd></div>
+        <div><dt>{{#str}}mysummary_completed, theme_epure{{/str}}</dt><dd>{{completedcount}}</dd></div>
+        <div><dt>{{#str}}mysummary_certificates, theme_epure{{/str}}</dt><dd>{{certificatecount}}</dd></div>
+    </dl>
+
+    {{#hascourses}}
+        <h2 class="epure-summary-heading">{{#str}}mysummary_taken, theme_epure{{/str}}</h2>
+        {{#courses}}
+            <section class="epure-summary-course">
+                {{#category}}<p class="epure-summary-category">{{category}}</p>{{/category}}
+                <h3 class="epure-summary-course-name"><a href="{{url}}">{{name}}</a></h3>
+                <ul class="epure-summary-facts">
+                    {{#hasprogress}}<li>{{#str}}mysummary_progress, theme_epure, {{progress}}{{/str}}</li>{{/hasprogress}}
+                    {{#datecompleted}}<li>{{#str}}mysummary_completedon, theme_epure, {{datecompleted}}{{/str}}</li>{{/datecompleted}}
+                    {{#grade}}<li>{{#str}}mysummary_grade, theme_epure, {{grade}}{{/str}}</li>{{/grade}}
+                </ul>
+                {{#hasactivities}}
+                    <h4 class="epure-summary-subheading">{{#str}}mysummary_activities, theme_epure{{/str}}</h4>
+                    <ul class="epure-summary-activities">
+                        {{#activities}}<li><span>{{name}}</span><span class="epure-summary-activity-date">{{date}}</span></li>{{/activities}}
+                    </ul>
+                {{/hasactivities}}
+            </section>
+        {{/courses}}
+    {{/hascourses}}
+    {{^hascourses}}<p class="epure-summary-empty">{{#str}}mysummary_none, theme_epure{{/str}}</p>{{/hascourses}}
+
+    {{#hascertificates}}
+        <h2 class="epure-summary-heading">{{#str}}mysummary_certificates, theme_epure{{/str}}</h2>
+        <ul class="epure-summary-activities">
+            {{#certificates}}<li><a href="{{url}}">{{name}}</a><span class="epure-summary-activity-date">{{date}}</span></li>{{/certificates}}
+        </ul>
+    {{/hascertificates}}
+
+    <p class="epure-summary-note">{{#str}}mysummary_note, theme_epure{{/str}}</p>
+</div>
+{{#js}}
+    document.querySelectorAll('[data-action="epure-summary-print"]').forEach(function(button) {
+        button.addEventListener('click', function() {
+            window.print();
+        });
+    });
+{{/js}}

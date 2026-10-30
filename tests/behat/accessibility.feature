@@ -154,3 +154,20 @@ Feature: Accessibility of the Épure theme
     And the page should meet accessibility standards
     And I click on "Latest badges" "link" in the "Add a block" "dialogue"
     And "Latest badges" "block" should exist
+
+  Scenario: My summary lists the courses of the learner and meets accessibility standards
+    Given the following config values are set as admin:
+      | mysummary | 1 | theme_epure |
+    And the following "courses" exist:
+      | fullname       | shortname |
+      | Safety at work | SAFE      |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | learner1 | SAFE   | student |
+    And I log in as "learner1"
+    And I follow "Dashboard"
+    When I follow "My summary"
+    Then I should see "Courses taken"
+    And I should see "Safety at work" in the ".epure-summary" "css_element"
+    And "Print or save as PDF" "button" should exist
+    And the page should meet accessibility standards

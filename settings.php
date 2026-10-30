@@ -224,6 +224,14 @@ if ($ADMIN->fulltree) {
         1
     ));
 
+    // The page « My summary »: what the learners print or save as PDF, linked from their dashboard.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/mysummary',
+        get_string('mysummary', 'theme_epure'),
+        get_string('mysummary_desc', 'theme_epure'),
+        0
+    ));
+
     $heading($page, 'activities');
 
     // Activity icons: in the colour of the brand, in Moodle's colours by purpose, or hidden.

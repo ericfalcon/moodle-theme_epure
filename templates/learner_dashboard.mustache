@@ -33,7 +33,7 @@
         "completed": [{"id": 4, "name": "Welcome", "url": "#", "datecompleted": "01/09/26"}],
         "completedcount": 1, "hascompleted": true,
         "achievements": {"hasbadges": true, "badges": [{"name": "Explorer", "image": "#", "date": "01/09/26", "url": "#"}],
-            "morebadges": 0, "badgesurl": "#", "hascertificates": false, "certificates": [], "certificatesurl": "#"}, "mycoursesurl": "#", "calendarurl": "#", "catalogueurl": "#"
+            "morebadges": 0, "badgesurl": "#", "hascertificates": false, "certificates": [], "certificatesurl": "#"}, "mycoursesurl": "#", "calendarurl": "#", "catalogueurl": "#", "summaryurl": "#"
     }
 }}
 <div class="epure-learner">
@@ -137,6 +137,7 @@
             <div class="epure-learner-block-head">
                 <h2 class="epure-learner-heading" id="epure-learner-completed-title">{{#str}}learnercompleted, theme_epure{{/str}}</h2>
                 {{#hascompleted}}<span class="epure-learner-count">{{completedcount}}</span>{{/hascompleted}}
+                {{#summaryurl}}<a href="{{summaryurl}}">{{#str}}mysummary, theme_epure{{/str}}</a>{{/summaryurl}}
             </div>
             {{#hascompleted}}
                 <ul class="epure-learner-completed">

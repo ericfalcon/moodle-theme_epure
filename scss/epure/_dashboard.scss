@@ -119,6 +119,11 @@
     }
 }
 
+// With a link after it (« My summary »), the count stays beside the heading.
+.epure-learner-count:not(:last-child) {
+    margin-right: auto;
+}
+
 .epure-learner-count {
     padding: .125rem .625rem;
     color: var(--epure-on-brand);
