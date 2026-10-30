@@ -33,5 +33,9 @@ $PAGE->set_title(get_string('a11ystatement', 'theme_epure'));
 $PAGE->set_heading(format_string($SITE->fullname));
 
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template('theme_epure/accessibility_statement', \theme_epure\accessibility_statement::export());
+$data = \theme_epure\accessibility_statement::export();
+// The administrators find the guided form from the statement.
+$data['editurl'] = has_capability('moodle/site:config', context_system::instance())
+    ? \theme_epure\accessibility_statement::edit_url()->out(false) : '';
+echo $OUTPUT->render_from_template('theme_epure/accessibility_statement', $data);
 echo $OUTPUT->footer();

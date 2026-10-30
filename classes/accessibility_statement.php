@@ -36,6 +36,15 @@ class accessibility_statement {
     /** @var string[] Free text settings of the statement. */
     public const TEXTS = ['noncompliant', 'derogations', 'disproportionate', 'contact'];
 
+    /** @var array<string, string[]> Steps of the guided form, each with its settings, in the order of the statement. */
+    public const STEPS = [
+        'entity' => ['a11yentity', 'a11ystatementdate'],
+        'audit' => ['a11yauditor', 'a11yauditdate', 'a11yrate'],
+        'status' => ['a11ystatus'],
+        'contents' => ['a11ynoncompliant', 'a11yderogations', 'a11ydisproportionate'],
+        'contact' => ['a11ycontact'],
+    ];
+
     /**
      * The compliance status chosen by the administrator.
      *
@@ -53,6 +62,16 @@ class accessibility_statement {
      */
     public static function enabled(): bool {
         return self::status() !== null;
+    }
+
+    /**
+     * Address of the guided form, at a step.
+     *
+     * @param int $step Step, from 1.
+     * @return \moodle_url
+     */
+    public static function edit_url(int $step = 1): \moodle_url {
+        return new \moodle_url('/theme/epure/a11ystatement.php', ['step' => $step]);
     }
 
     /**

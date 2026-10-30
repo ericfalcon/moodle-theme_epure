@@ -19,6 +19,7 @@ namespace theme_epure;
 #[\PHPUnit\Framework\Attributes\CoversClass(a11y::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(accessibility_statement::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(privacy\provider::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(form\a11y_statement_form::class)]
 /**
  * Tests for the display preferences and the accessibility statement.
  *
@@ -29,6 +30,7 @@ namespace theme_epure;
  * @covers     \theme_epure\a11y
  * @covers     \theme_epure\accessibility_statement
  * @covers     \theme_epure\privacy\provider
+ * @covers     \theme_epure\form\a11y_statement_form
  */
 final class a11y_test extends \advanced_testcase {
     /**
@@ -177,6 +179,48 @@ final class a11y_test extends \advanced_testcase {
 
         set_config('a11ystatus', 'other', 'theme_epure');
         $this->assertFalse(accessibility_statement::enabled());
+    }
+
+    /**
+     * The statement filled step by step: its steps hold all its settings, and each step saves its own only.
+     */
+    public function test_statement_steps(): void {
+        global $CFG;
+        require_once($CFG->libdir . '/formslib.php');
+        // The steps hold every setting of the statement, each once.
+        $names = array_merge(...array_values(accessibility_statement::STEPS));
+        $texts = array_map(fn($name) => 'a11y' . $name, accessibility_statement::TEXTS);
+        $fields = ['a11ystatus', 'a11yentity', 'a11yrate', 'a11yauditor', 'a11yauditdate', 'a11ystatementdate'];
+        $expected = array_merge($fields, $texts);
+        sort($names);
+        sort($expected);
+        $this->assertSame($expected, $names);
+
+        // The values of a step only, trimmed; an unknown status leaves the statement unpublished.
+        $data = (object) ['step' => 3, 'a11ystatus' => 'perfect', 'a11yentity' => 'Other'];
+        $this->assertSame(['a11ystatus' => ''], form\a11y_statement_form::values_from($data));
+        $data = (object) ['step' => 1, 'a11yentity' => '  Clinique  ', 'a11ystatementdate' => '30 October 2026'];
+        $values = form\a11y_statement_form::values_from($data);
+        $this->assertSame(['a11yentity' => 'Clinique', 'a11ystatementdate' => '30 October 2026'], $values);
+        $this->assertSame('2', accessibility_statement::edit_url(2)->get_param('step'));
+    }
+
+    /**
+     * Each step of the guided form shows its settings, with their current values.
+     */
+    public function test_statement_form(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        set_config('a11yrate', '78 %', 'theme_epure');
+        foreach (array_keys(accessibility_statement::STEPS) as $i => $key) {
+            $form = new form\a11y_statement_form(null, ['step' => $i + 1]);
+            $html = $form->render();
+            foreach (accessibility_statement::STEPS[$key] as $name) {
+                $this->assertStringContainsString('name="' . $name . '"', $html, $name);
+            }
+        }
+        $html = (new form\a11y_statement_form(null, ['step' => 3]))->render();
+        $this->assertStringContainsString(get_string('a11ywizard_rate', 'theme_epure', '78 %'), $html);
     }
 
     /**

@@ -342,6 +342,8 @@ The change takes effect immediately and is then saved in the preferences of the 
 - the statement is published at `/theme/epure/accessibility.php` and can be read without an account. It also lists the accessibility measures taken by the theme (contrast, keyboard, structure, zoom, display preferences, automated tests) and the ways to seek redress from the Défenseur des droits (the French rights ombudsman); an e-mail address entered as the contact becomes a link;
 - the notice "Accessibility: partially compliant" (depending on the status) appears at the bottom of every page, along with a link in the footer.
 
+**Step by step.** The same settings can be filled in a guided form (Site administration › Appearance › Themes › « Accessibility statement, step by step », also linked from the Accessibility tab and, for the administrators, from the statement itself): who publishes the statement, the audit, the compliance status, the contents not accessible, the contact. Each step says what the RGAA asks for; the status step recalls the rate entered and the rule of the RGAA (fully compliant at 100 %, partially from 50 %, non compliant below or without an audit), but the theme never computes the status: the audit gives it. The statement has a button to print it, or to save it as PDF.
+
 A theme alone cannot make a platform compliant: course content matters too, and a manual audit is still required before declaring compliance.
 
 ## Development

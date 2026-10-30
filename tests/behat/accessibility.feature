@@ -171,3 +171,22 @@ Feature: Accessibility of the Épure theme
     And I should see "Safety at work" in the ".epure-summary" "css_element"
     And "Print or save as PDF" "button" should exist
     And the page should meet accessibility standards
+
+  Scenario: The accessibility statement is filled in step by step and published
+    Given I log in as "admin"
+    When I visit "/theme/epure/a11ystatement.php"
+    Then I should see "Step 1 of 5: Who publishes the statement"
+    And I set the field "Entity" to "Clinique des Tilleuls"
+    And I press "Save and continue"
+    And I should see "Step 2 of 5: The audit"
+    And I set the field "Compliance rate" to "78 %"
+    And I press "Save and continue"
+    And I should see "Rate of compliance entered at the previous step: 78 %."
+    And the page should meet accessibility standards
+    And I set the field "Compliance status" to "partially compliant"
+    And I press "Save and continue"
+    And I press "Save and continue"
+    And I press "Save changes"
+    And I should see "The statement is saved and published."
+    And I should see "Clinique des Tilleuls is committed"
+    And "Print the statement" "button" should exist

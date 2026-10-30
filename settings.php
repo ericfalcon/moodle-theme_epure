@@ -305,7 +305,11 @@ if ($ADMIN->fulltree) {
     }
 
     $statementurl = theme_epure\accessibility_statement::url()->out();
-    $heading($page, 'statement', get_string('a11ysettings_desc', 'theme_epure', html_writer::link($statementurl, $statementurl)));
+    $heading($page, 'statement', get_string('a11ysettings_desc', 'theme_epure', html_writer::link($statementurl, $statementurl))
+        . ' ' . get_string('a11ywizard_link', 'theme_epure', html_writer::link(
+            new moodle_url('/theme/epure/a11ystatement.php'),
+            get_string('a11ywizard', 'theme_epure')
+        )));
 
     $statuses = ['' => get_string('a11ystatus_unpublished', 'theme_epure')];
     foreach (theme_epure\accessibility_statement::STATUSES as $status) {
@@ -586,6 +590,13 @@ if ($ADMIN->fulltree) {
 
     $settings->add($page);
 }
+
+// Accessibility statement, filled step by step: a page of its own, with the same settings as the Accessibility tab.
+$ADMIN->add('themes', new admin_externalpage(
+    'theme_epure_a11ystatement',
+    new lang_string('a11ywizard', 'theme_epure'),
+    new moodle_url('/theme/epure/a11ystatement.php')
+));
 
 // Vocabulary of the platform: a page of its own, as applying it rewrites the language strings.
 $ADMIN->add('themes', new admin_externalpage(

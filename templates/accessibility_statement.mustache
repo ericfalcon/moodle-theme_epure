@@ -27,11 +27,21 @@
         "hasaudit": true, "rate": "75 %", "auditor": "Example", "auditdate": "October 2026",
         "statementdate": "4 October 2026", "noncompliant": "<p>Some PDF documents</p>",
         "derogations": "", "disproportionate": "", "contact": "support@example.com",
-        "measures": ["Every function can be used with the keyboard."]
+        "measures": ["Every function can be used with the keyboard."], "editurl": ""
     }
 }}
 <article class="epure-a11y-statement">
-    <h2>{{#str}}a11ystatement, theme_epure{{/str}}</h2>
+    <div class="epure-a11y-statement-head">
+        <h2>{{#str}}a11ystatement, theme_epure{{/str}}</h2>
+        <div class="epure-a11y-statement-actions d-print-none">
+            {{#editurl}}<a class="btn btn-secondary" href="{{editurl}}">{{#str}}a11ywizard_edit, theme_epure{{/str}}</a>{{/editurl}}
+            {{#published}}
+                <button type="button" class="btn btn-secondary" data-action="epure-a11y-print">
+                    <i class="fa fa-print" aria-hidden="true"></i> {{#str}}a11ystatement_print, theme_epure{{/str}}
+                </button>
+            {{/published}}
+        </div>
+    </div>
     {{^published}}
         <p>{{#str}}a11ystatement_unpublished, theme_epure{{/str}}</p>
     {{/published}}
@@ -85,3 +95,10 @@
         </ul>
     {{/published}}
 </article>
+{{#js}}
+    document.querySelectorAll('[data-action="epure-a11y-print"]').forEach(function(button) {
+        button.addEventListener('click', function() {
+            window.print();
+        });
+    });
+{{/js}}
