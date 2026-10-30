@@ -147,7 +147,7 @@ Feature: Accessibility of the Épure theme
     And I follow "Dashboard"
     And I turn editing mode on
     Then I should see "Timeline, calendar, badges and more" in the "[data-region='add-block-button']" "css_element"
-    And I click on "Add a block" "link" in the "#block-region-content" "css_element"
+    And I click on "a[data-key='addblock'][data-blockregion='content']" "css_element"
     And I set the field "Search for a block" to "badges"
     And I should see "Latest badges" in the "Add a block" "dialogue"
     And I should not see "Comments" in the "Add a block" "dialogue"
