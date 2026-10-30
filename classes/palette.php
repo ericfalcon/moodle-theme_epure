@@ -171,6 +171,31 @@ class palette {
     }
 
     /**
+     * The fill of the brand and the colour of the text on it, at 4.5:1 at least (WCAG 1.4.3: the text of the buttons
+     * and of the header is normal text). When neither white nor the dark ink reaches it on the brand colour, the fill
+     * is moved, as little as needed, away from the ink that reads best on it; in dark mode, the fill also stays at
+     * 3:1 at least on the surface, else it goes lighter, with the dark ink on it.
+     *
+     * @param string $fill The fill before the adjustment.
+     * @param string $surface The surface of the page.
+     * @param bool $dark Whether this is the dark mode.
+     * @return string[] The fill and the colour of the text on it.
+     */
+    protected static function readable_fill(string $fill, string $surface, bool $dark): array {
+        $on = self::on_colour($fill);
+        if (self::contrast($on, $fill) >= self::AA_TEXT) {
+            return [$fill, $on];
+        }
+        $away = $on === self::SURFACE_LIGHT ? '#000000' : '#FFFFFF';
+        $moved = self::towards($fill, $away, $on, self::AA_TEXT)[0];
+        if ($dark && self::contrast($moved, $surface) < self::AA_UI) {
+            $on = self::INK;
+            $moved = self::towards($fill, '#FFFFFF', $on, self::AA_TEXT)[0];
+        }
+        return [$moved, $on];
+    }
+
+    /**
      * Derives the full palette from a brand colour.
      *
      * @param string|null $brand Brand colour; the default is used when it is not a valid colour.
@@ -184,7 +209,7 @@ class palette {
 
         // In dark mode, fills must stand out from the surface (3:1 for interface components).
         $fill = $dark ? self::towards($brand, '#FFFFFF', $surface, self::AA_UI)[0] : $brand;
-        $on = self::on_colour($fill);
+        [$fill, $on] = self::readable_fill($fill, $surface, $dark);
 
         $soft = $dark ? self::mix($surface, $brand, 0.2) : self::mix($brand, '#FFFFFF', 0.9);
         $soft2 = $dark ? self::mix($surface, $brand, 0.32) : self::mix($brand, '#FFFFFF', 0.8);
@@ -201,6 +226,10 @@ class palette {
             $hover = self::mix($fill, '#FFFFFF', 0.12);
         } else {
             $hover = self::mix($fill, '#000000', $on === self::SURFACE_LIGHT ? 0.14 : 0.08);
+        }
+        // The text stays readable on the hover too: else the hover goes the other way, away from the text.
+        if (self::contrast($on, $hover) < self::AA_TEXT) {
+            $hover = self::mix($fill, $on === self::SURFACE_LIGHT ? '#000000' : '#FFFFFF', 0.12);
         }
 
         // Opacity of the brand-coloured veil over the login image: the lowest that keeps the text

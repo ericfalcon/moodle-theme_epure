@@ -98,8 +98,9 @@ final class palette_test extends \basic_testcase {
             $p = palette::derive($brand, $dark);
             $surface = $dark ? palette::SURFACE_DARK : palette::SURFACE_LIGHT;
 
-            // Text on the brand fill: large text and components at least, normal text whenever possible.
-            $this->assertGreaterThanOrEqual(palette::AA_UI, palette::contrast($p['on'], $p['fill']));
+            // Text on the brand fill and on its hover: normal text (buttons, header).
+            $this->assertGreaterThanOrEqual(palette::AA_TEXT, palette::contrast($p['on'], $p['fill']));
+            $this->assertGreaterThanOrEqual(palette::AA_TEXT, palette::contrast($p['on'], $p['hover']));
             // Brand text and links, on the surface and on both tinted backgrounds.
             $this->assertGreaterThanOrEqual(palette::AA_TEXT, palette::contrast($p['text'], $surface));
             $this->assertGreaterThanOrEqual(palette::AA_TEXT, palette::contrast($p['text'], $p['soft']));
@@ -143,6 +144,45 @@ final class palette_test extends \basic_testcase {
         $this->assertSame(palette::INK, $yellow['on']);
         $this->assertTrue($yellow['textadjusted']);
         $this->assertNotSame('#F2C200', $yellow['text']);
+    }
+
+    /**
+     * Whatever the brand colour, the text on the fill and on its hover reads at 4.5:1, in light and dark mode: a
+     * sweep of the colours, 51 apart on each channel.
+     */
+    public function test_on_fill_is_normal_text_for_any_brand(): void {
+        foreach ([false, true] as $dark) {
+            for ($r = 0; $r < 256; $r += 51) {
+                for ($g = 0; $g < 256; $g += 51) {
+                    for ($b = 0; $b < 256; $b += 51) {
+                        $brand = sprintf('#%02X%02X%02X', $r, $g, $b);
+                        $p = palette::derive($brand, $dark);
+                        $this->assertGreaterThanOrEqual(palette::AA_TEXT, palette::contrast($p['on'], $p['fill']), $brand);
+                        $this->assertGreaterThanOrEqual(palette::AA_TEXT, palette::contrast($p['on'], $p['hover']), $brand);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * A mid-tone brand colour on which neither white nor the dark ink reaches 4.5:1 is moved as little as needed:
+     * a little darker under white text.
+     */
+    public function test_mid_tone_fill_is_moved_a_little(): void {
+        $p = palette::derive('#2D78E1');
+        $this->assertSame('#FFFFFF', $p['on']);
+        $this->assertNotSame('#2D78E1', $p['fill']);
+        $this->assertGreaterThanOrEqual(palette::AA_TEXT, $p['oncontrast']);
+        $this->assertLessThan(palette::luminance('#2D78E1'), palette::luminance($p['fill']));
+        foreach (array_map(null, palette::to_rgb('#2D78E1'), palette::to_rgb($p['fill'])) as [$before, $after]) {
+            $this->assertLessThanOrEqual(16, abs($before - $after));
+        }
+
+        // A grey where the dark ink reads well is kept.
+        $grey = palette::derive('#808080');
+        $this->assertSame('#808080', $grey['fill']);
+        $this->assertSame(palette::INK, $grey['on']);
     }
 
     /**
