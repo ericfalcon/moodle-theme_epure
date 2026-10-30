@@ -20,8 +20,8 @@ namespace theme_epure;
  * Display preferences of each user (button « Aa » in the header), saved in their profile.
  *
  * They are applied as classes on the html element, read by the theme's styles, so that they
- * hold on every page from the first paint: text size, reading font, text spacing, enhanced
- * contrast, underlined links and reduced motion.
+ * hold on every page from the first paint: text size, reading font, text spacing, shorter lines,
+ * enhanced contrast, underlined links and reduced motion.
  *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
@@ -38,7 +38,7 @@ class a11y {
     public const SCHEMES = ['light', 'dark', 'auto'];
 
     /** @var string[] Preferences that are on or off. */
-    public const SWITCHES = ['spacing', 'contrast', 'underline', 'motion'];
+    public const SWITCHES = ['spacing', 'lines', 'contrast', 'underline', 'motion'];
 
     /**
      * Definitions of the preferences, for Moodle's user preference API.
@@ -68,7 +68,8 @@ class a11y {
     /**
      * Preferences of the current user.
      *
-     * @return array{text: int, font: string, scheme: string, spacing: bool, contrast: bool, underline: bool, motion: bool}
+     * @return array{text: int, font: string, scheme: string, spacing: bool, lines: bool, contrast: bool, underline: bool,
+     *     motion: bool}
      */
     public static function preferences(): array {
         $enabled = isloggedin() && !isguestuser();
@@ -93,7 +94,7 @@ class a11y {
      * Display of the site for the users who did not choose theirs, and for the visitors: the settings « Display by
      * default » of the theme.
      *
-     * @return array{text: int, font: string, spacing: bool, contrast: bool, underline: bool, motion: bool}
+     * @return array{text: int, font: string, spacing: bool, lines: bool, contrast: bool, underline: bool, motion: bool}
      */
     public static function site_defaults(): array {
         $config = get_config('theme_epure');

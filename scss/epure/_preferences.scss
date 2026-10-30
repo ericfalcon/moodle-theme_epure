@@ -33,6 +33,23 @@ html.epure-a11y-spacing body {
     }
 }
 
+// Shorter lines: the long texts of the courses (pages, books, lessons, descriptions and instructions of the
+// activities, summaries of the sections, posts of the forums) at 70 characters per line at most. A ch is the width
+// of a « 0 », wider than the average letter: 47ch hold at most 70 characters of a text. The width follows the size of
+// the text, so a zoom of 200 % keeps the same length of line, narrower than the screen, without scrolling across.
+html.epure-a11y-lines #region-main {
+    .box.generalbox > .no-overflow,
+    .box.contents > .no-overflow,
+    .book_content > .no-overflow,
+    .activity-description .no-overflow,
+    #intro .no-overflow,
+    .course-content .summarytext,
+    .post-content-container,
+    .text_to_html {
+        max-width: 47ch;
+    }
+}
+
 html.epure-a11y-contrast {
     --epure-border: #6b7280;
     --epure-surface-muted: var(--epure-surface);

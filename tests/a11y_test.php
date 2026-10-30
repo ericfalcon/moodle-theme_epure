@@ -42,7 +42,7 @@ final class a11y_test extends \advanced_testcase {
         $this->setUser($this->getDataGenerator()->create_user());
         $this->assertSame('', a11y::html_classes());
         $this->assertSame(['text' => 100, 'font' => '', 'scheme' => '',
-            'spacing' => false, 'contrast' => false, 'underline' => false,
+            'spacing' => false, 'lines' => false, 'contrast' => false, 'underline' => false,
             'motion' => false], a11y::preferences());
     }
 
@@ -55,15 +55,17 @@ final class a11y_test extends \advanced_testcase {
         $this->setUser($user);
         set_user_preference('theme_epure_a11y_text', 130);
         set_user_preference('theme_epure_a11y_font', 'opendyslexic');
+        set_user_preference('theme_epure_a11y_lines', 1);
         set_user_preference('theme_epure_a11y_contrast', 1);
         set_user_preference('theme_epure_a11y_motion', 1);
         $this->assertSame(
-            'epure-a11y-text-130 epure-a11y-font-opendyslexic epure-a11y-contrast epure-a11y-motion',
+            'epure-a11y-text-130 epure-a11y-font-opendyslexic epure-a11y-lines epure-a11y-contrast epure-a11y-motion',
             a11y::html_classes()
         );
 
         set_user_preference('theme_epure_a11y_text', 400);
         set_user_preference('theme_epure_a11y_font', 'comicsans');
+        set_user_preference('theme_epure_a11y_lines', 0);
         $this->assertSame('epure-a11y-contrast epure-a11y-motion', a11y::html_classes());
 
         // Dark mode: the choice of the user, else the setting of the site.
