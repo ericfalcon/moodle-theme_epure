@@ -23,7 +23,7 @@
     Example context (json):
     {
         "id": 2, "name": "Safety at work", "image": "", "category": "Training", "header": "<h1>Safety at work</h1>",
-        "learning": true, "haslearnerpanel": true, "teaching": false, "hasprogress": true, "progress": 40, "completed": false,
+        "learning": true, "haslearnerpanel": true, "teaching": false, "outline": "", "hasprogress": true, "progress": 40, "completed": false,
         "next": {"name": "Quiz 1", "url": "#"}, "summary": "3 activities left · due tomorrow", "detail": "2 completed · 1 in progress", "action": "Continue", "actionurl": "#"
     }
 }}
@@ -32,6 +32,7 @@
     <div class="epure-course-banner-body">
         {{#category}}<p class="epure-course-banner-category">{{category}}</p>{{/category}}
         {{{header}}}
+        {{#outline}}<p class="epure-course-banner-outline">{{outline}}</p>{{/outline}}
 
         {{#haslearnerpanel}}
             <div class="epure-course-banner-panel">

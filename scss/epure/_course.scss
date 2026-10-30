@@ -44,6 +44,13 @@
     text-transform: uppercase;
 }
 
+// For a teacher, what the course holds, under its title: « 5 sections · 26 activities ».
+.epure-course-banner-outline {
+    margin: -.25rem 0 1rem;
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+}
+
 .epure-course-banner-panel {
     display: flex;
     flex-wrap: wrap;

@@ -269,7 +269,7 @@ The overview can be turned off in the theme's Courses tab ("Learner overview on 
 At the top of each course, a **banner** shows the course image (or a generated pattern), its category and its title, with the breadcrumb and Moodle's usual actions. Then, depending on the role:
 
 - **learner**: their progress, the next activity to do, the next deadline, and a **Continue** button that leads there;
-- **teacher**: participants, learners active this week, assignments to grade, and shortcuts (participants, grades, settings);
+- **teacher**: what the course holds under its title ("5 sections · 26 activities"), participants, learners active this week, assignments to grade, and shortcuts (participants, grades, settings);
 - **visitor** (guest, non-enrolled user): the image, category and title only.
 
 For learners, the title of each section shows how many of its activities they have completed ("2/5", with a tick once the section is complete). The banner can be turned off in the theme's Courses tab ("Course banner"); with IOMAD, each company can make a different choice in its profile. The progress of the sections stays without the banner, and can be turned off on its own ("Progress of the sections"). The progress bars and the completed sections take the accent colour, when one is set (Identity tab).

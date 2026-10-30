@@ -100,6 +100,7 @@ final class course_page_test extends \advanced_testcase {
         $data = course_page::export($output, $course, '');
         $this->assertTrue($data['teaching']);
         $this->assertSame(1, $data['participants']);
+        $this->assertNotSame('', $data['outline']);
 
         // A teacher who switched to the role of a student previews the banner of a learner.
         $this->setUser($teacher);
@@ -116,6 +117,31 @@ final class course_page_test extends \advanced_testcase {
         $this->assertFalse($data['teaching']);
         $this->assertFalse($data['haslearnerpanel']);
         $this->assertArrayNotHasKey('progress', $data);
+    }
+
+    /**
+     * What a course holds, for its teachers: its sections and the activities that open a page, hidden ones included,
+     * not the text and media areas.
+     */
+    public function test_outline(): void {
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course(['numsections' => 3]);
+        $generator->create_module('page', ['course' => $course->id, 'section' => 1]);
+        $generator->create_module('assign', ['course' => $course->id, 'section' => 2, 'visible' => 0]);
+        $generator->create_module('label', ['course' => $course->id, 'section' => 2]);
+        $expected = get_string('courseoutline_sections', 'theme_epure', 4) . ' · '
+            . get_string('catalogue_activities', 'theme_epure', 2);
+        $this->assertSame($expected, course_page::outline($course));
+
+        $generator->create_module('forum', ['course' => $course->id]);
+        $this->assertStringEndsWith(get_string('catalogue_activities', 'theme_epure', 3), course_page::outline($course));
+
+        $single = $generator->create_course(['numsections' => 0]);
+        $this->assertSame('', course_page::outline($single));
+        $generator->create_module('page', ['course' => $single->id]);
+        $this->assertSame(get_string('courseoutline_sections_one', 'theme_epure') . ' · '
+            . get_string('catalogue_activities_one', 'theme_epure'), course_page::outline($single));
     }
 
     /**

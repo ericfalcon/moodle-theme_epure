@@ -131,7 +131,39 @@ class course_page {
         $data['haslearnerpanel'] = $learning
             && (!empty($data['hasprogress']) || !empty($data['next']) || !empty($data['deadline']));
         $data['teaching'] = $teaching;
+        // For a teacher, what the course holds: « 5 sections · 26 activities ».
+        $data['outline'] = $teaching ? self::outline($course) : '';
         return $data;
+    }
+
+    /**
+     * What a course holds, for its teachers: « 5 sections · 26 activities ». The sections of the page (not the
+     * subsections, shown inside them) and the activities and resources that open a page of their own (not the text
+     * and media areas), hidden ones included.
+     *
+     * @param \stdClass $course Course.
+     * @return string Empty for a course without activities nor sections beyond the first.
+     */
+    public static function outline(\stdClass $course): string {
+        $modinfo = get_fast_modinfo($course);
+        $sections = 0;
+        foreach ($modinfo->get_section_info_all() as $section) {
+            if (!$section->is_delegated()) {
+                $sections++;
+            }
+        }
+        $activities = 0;
+        foreach ($modinfo->get_cms() as $cm) {
+            if (!$cm->deletioninprogress && $cm->has_view() && !$cm->get_delegated_section_info()) {
+                $activities++;
+            }
+        }
+        if (!$activities && $sections <= 1) {
+            return '';
+        }
+        $count = fn(string $key, int $n) => $n === 1 ? get_string($key . '_one', 'theme_epure')
+            : get_string($key, 'theme_epure', $n);
+        return $count('courseoutline_sections', $sections) . ' · ' . $count('catalogue_activities', $activities);
     }
 
     /**
