@@ -37,7 +37,14 @@
     * placeholder The place holder text when the field is empty
 
     Example context (json):
-    { "inputID": 1, "suggestionsId": 2, "selectionId": 3, "downArrowId": 4, "placeholder": "Select something" }
+    {
+        "showSuggestions": true,
+        "inputId": "epure-autocomplete-example",
+        "suggestionsId": "epure-autocomplete-example-arrow",
+        "selectionId": "epure-autocomplete-example",
+        "downArrowId": "epure-autocomplete-example-arrow",
+        "placeholder": "Select something"
+    }
 }}
 {{#showSuggestions}}
 <div class="form-autocomplete-input d-md-inline-block me-md-2 position-relative">
