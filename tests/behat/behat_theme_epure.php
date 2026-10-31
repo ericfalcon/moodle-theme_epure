@@ -165,13 +165,13 @@ class behat_theme_epure extends behat_base {
                     );
                     $this->getSession()->wait(500);
                 }
-                // The axe audit sometimes reads no results while the page is still settling (« No data »): it runs once more.
+                // While the page is still settling, axe may not be loaded yet or read no results: it runs once more.
                 for ($attempt = 1; $attempt <= 2; $attempt++) {
                     try {
                         $this->execute('behat_accessibility::run_axe_validation_for_tags', ['', 'wcag22aa']);
                         break;
                     } catch (\Exception $e) {
-                        if ($attempt === 1 && trim($e->getMessage()) === 'No data') {
+                        if ($attempt === 1 && preg_match('/^No data$|axe is not defined/', trim($e->getMessage()))) {
                             $this->getSession()->wait(1000);
                             continue;
                         }
