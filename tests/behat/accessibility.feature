@@ -173,7 +173,7 @@ Feature: Accessibility of the Épure theme
     And the page should meet accessibility standards
     # The summary is also in the user menu and in the reports of the profile.
     And I follow "Profile" in the user menu
-    And "My summary" "link" should exist in the ".profile_tree" "css_element"
+    And "My summary" "link" should exist in the ".epure-profile-more" "css_element"
     And I follow "My summary" in the user menu
     And I should see "Courses taken"
 
