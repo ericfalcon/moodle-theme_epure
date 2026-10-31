@@ -165,7 +165,18 @@ class behat_theme_epure extends behat_base {
                     );
                     $this->getSession()->wait(500);
                 }
-                // While the page is still settling, axe may not be loaded yet or read no results: it runs once more.
+                // The script of axe is loaded here, and waited for: on the first page after the caches are purged,
+                // the one web server of the tests may answer it only once the styles are built.
+                $this->getSession()->executeScript(
+                    "if (!document.querySelector('script[data-purpose=\"axe\"]')) {" .
+                    "const tag = document.createElement('script');" .
+                    "tag.src = M.cfg.wwwroot + '/lib/behat/axe/axe.min.js';" .
+                    "tag.dataset.purpose = 'axe';" .
+                    "document.head.append(tag);" .
+                    "}"
+                );
+                $this->getSession()->wait(30000, "typeof window.axe !== 'undefined'");
+                // While the page is still settling, axe may read no results: it runs once more.
                 for ($attempt = 1; $attempt <= 2; $attempt++) {
                     try {
                         $this->execute('behat_accessibility::run_axe_validation_for_tags', ['', 'wcag22aa']);
