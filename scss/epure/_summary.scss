@@ -34,7 +34,7 @@
 
 .epure-summary-figures {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: .5rem;
     margin: 0 0 1.5rem;
 
@@ -46,10 +46,13 @@
         border-radius: var(--epure-radius);
     }
 
+    // On the smallest phones, a long word of a label goes on two lines rather than past the edge.
     dt {
         color: var(--epure-ink-muted);
         font-size: .8125rem;
         font-weight: 500;
+        hyphens: auto;
+        overflow-wrap: anywhere;
     }
 
     dd {

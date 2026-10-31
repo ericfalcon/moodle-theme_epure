@@ -140,6 +140,8 @@ html,
     // Lists of choices in a box as wide as their longest option (IOMAD's choice of template, Moodle's defaults).
     #page .main-inner .singleselect,
     #page .main-inner .singleselect form,
+    #page .main-inner .urlselect,
+    #page .main-inner .urlselect form,
     #page .main-inner .defaultsnext {
         max-width: 100%;
     }
@@ -210,4 +212,10 @@ html,
     .navbar.fixed-top .usermenu .dropdown-toggle::after {
         display: none;
     }
+}
+
+// The lists of a date (day, month, year, time) keep apart when they go on several lines.
+[data-fieldtype="date_selector"],
+[data-fieldtype="date_time_selector"] {
+    row-gap: .5rem;
 }
