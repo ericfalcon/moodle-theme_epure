@@ -80,9 +80,87 @@ class behat_theme_epure extends behat_base {
             $field = iomad::renamed() ? 'companyid' : 'company';
             $parent = iomad::renamed() ? 'parentid' : 'parent';
             $departmentid = $DB->get_field(iomad::table('department'), 'id', [$field => $companyid, $parent => 0], MUST_EXIST);
+            if (!empty($row['manager'])) {
+                // A company manager, through IOMAD itself, which also gives the role of the company.
+                $this->iomad_company_class()::upsert_company_user($userid, $companyid, $departmentid, 1);
+                continue;
+            }
             $DB->insert_record(iomad::table('company_users'), (object) ['companyid' => $companyid, 'userid' => $userid,
                 'managertype' => 0, 'departmentid' => $departmentid]);
         }
+    }
+
+    /**
+     * The class of the IOMAD companies: local_iomad\company from IOMAD 5.1, company before.
+     *
+     * @return string
+     */
+    protected function iomad_company_class(): string {
+        global $CFG;
+        if (iomad::renamed()) {
+            return '\local_iomad\company';
+        }
+        require_once($CFG->dirroot . '/local/iomad/lib/company.php');
+        return '\company';
+    }
+
+    /**
+     * The pre-audit: each page in the four displays (light and dark on a computer, light on phones of 390 and 320
+     * pixels), with the axe audit of Moodle (WCAG 2.2 A and AA) and, on phones, no scroll across the page (WCAG
+     * 1.4.10). All the pages are checked before the step fails, with the list of what failed.
+     *
+     * A path can name a course by its short name, {course SAFE}, and an activity by its ID number, {cm page1}. The
+     * column « except » takes « wide table »: a table in two dimensions, which may scroll across (WCAG 1.4.10).
+     *
+     * @Then /^the following pages should meet accessibility standards in the four displays:$/
+     * @param TableNode $data Columns path and, optionally, except.
+     */
+    public function the_following_pages_should_meet_accessibility_standards_in_the_four_displays(TableNode $data): void {
+        $displays = ['light 1300' => [1300, false], 'dark 1300' => [1300, true], 'light 390' => [390, false],
+            'light 320' => [320, false]];
+        $failures = [];
+        foreach ($data->getHash() as $row) {
+            $path = $this->epure_path($row['path']);
+            foreach ($displays as $label => [$width, $dark]) {
+                $this->getSession()->resizeWindow($width, 900);
+                $this->getSession()->visit($this->locate_path($path));
+                $this->wait_for_pending_js();
+                if ($dark) {
+                    $this->getSession()->executeScript("document.documentElement.classList.add('epure-dark');");
+                }
+                try {
+                    $this->execute('behat_accessibility::run_axe_validation_for_tags', ['', 'wcag22aa']);
+                } catch (\Exception $e) {
+                    $failures[] = "{$row['path']} ({$label}): " . trim($e->getMessage());
+                }
+                if ($width < 1000 && ($row['except'] ?? '') !== 'wide table') {
+                    $script = 'return document.scrollingElement.scrollWidth - window.innerWidth;';
+                    $across = $this->getSession()->evaluateScript($script);
+                    if ($across > 1) {
+                        $failures[] = "{$row['path']} ({$label}): the page scrolls across, by {$across} px";
+                    }
+                }
+            }
+        }
+        $this->getSession()->resizeWindow(1366, 900);
+        if ($failures) {
+            throw new ExpectationException(count($failures) . " failures:\n" . implode("\n", $failures), $this->getSession());
+        }
+    }
+
+    /**
+     * A path of the pre-audit, its courses and activities replaced by their ids.
+     *
+     * @param string $path Path with {course SHORTNAME} and {cm IDNUMBER}.
+     * @return string
+     */
+    protected function epure_path(string $path): string {
+        global $DB;
+        return preg_replace_callback('/\{(course|cm) ([^}]+)\}/', function (array $m) use ($DB): string {
+            return $m[1] === 'course'
+                ? (string) $DB->get_field('course', 'id', ['shortname' => $m[2]], MUST_EXIST)
+                : (string) $DB->get_field('course_modules', 'id', ['idnumber' => $m[2]], MUST_EXIST);
+        }, $path);
     }
 
     /**
