@@ -115,22 +115,22 @@
     margin-bottom: .75rem;
 }
 
-// The links of the blocks (« My courses », « Calendar », « My summary », what a list leaves out) read as those of the
-// lists of links of the theme: the colour of the text and an arrow on the right.
+// The links of the blocks (« My courses », « Calendar », « My summary », what a list leaves out), as every link that
+// stands on its own: the colour of the brand and an arrow on the right.
 .epure-learner-block-head a,
 a.epure-learner-more {
     display: inline-flex;
     align-items: center;
     gap: .375rem;
     min-height: 1.5rem;
-    color: var(--epure-ink);
+    color: var(--epure-brand-text);
     font-size: .875rem;
     font-weight: 500;
     text-decoration: none;
 
     &::after {
         content: "\203A";
-        color: var(--epure-ink-muted);
+        color: var(--epure-brand-text);
         font-size: 1.25rem;
         line-height: 1;
     }

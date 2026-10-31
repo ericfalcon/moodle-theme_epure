@@ -66,13 +66,13 @@
         min-height: 2.5rem;
         margin: 0 -.5rem;
         padding: .375rem .5rem;
-        color: var(--epure-ink);
+        color: var(--epure-brand-text);
         text-decoration: none;
         border-radius: var(--epure-radius-sm);
 
         &::after {
             content: "\203A";
-            color: var(--epure-ink-muted);
+            color: var(--epure-brand-text);
             font-size: 1.25rem;
             line-height: 1;
         }

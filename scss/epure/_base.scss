@@ -1,5 +1,6 @@
 // Lists of links read as the rows of a menu, as on the profile, the preferences and the administration: the whole row
-// is the target, a line between the rows, an arrow on the right, the colour of the text rather than that of the links.
+// is the target, a line between the rows, the colour of the brand and an arrow on the right, as every link that stands
+// on its own.
 @mixin epure-menu-rows {
     margin: 0;
     padding: 0;
@@ -22,13 +23,13 @@
         min-height: 2.5rem;
         margin: 0 -.5rem;
         padding: .375rem .5rem;
-        color: var(--epure-ink);
+        color: var(--epure-brand-text);
         text-decoration: none;
         border-radius: var(--epure-radius-sm);
 
         &::after {
             content: "\203A";
-            color: var(--epure-ink-muted);
+            color: var(--epure-brand-text);
             font-size: 1.25rem;
             line-height: 1;
         }

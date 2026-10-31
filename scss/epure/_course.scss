@@ -351,3 +351,18 @@
         background-color: var(--epure-surface);
     }
 }
+
+// Activities of the course page, as every link that stands on its own: the colour of the brand and an arrow after the
+// name (on the name: the link stretched over the row keeps its own ::after).
+.activity-item .activityname a.aalink {
+    color: var(--epure-brand-text);
+    font-weight: 600;
+
+    .instancename::after {
+        content: "\203A";
+        margin-left: .375rem;
+        font-size: 1.25rem;
+        font-weight: 400;
+        line-height: 1;
+    }
+}
