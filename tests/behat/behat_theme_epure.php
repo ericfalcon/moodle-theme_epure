@@ -165,10 +165,19 @@ class behat_theme_epure extends behat_base {
                     );
                     $this->getSession()->wait(500);
                 }
-                try {
-                    $this->execute('behat_accessibility::run_axe_validation_for_tags', ['', 'wcag22aa']);
-                } catch (\Exception $e) {
-                    $failures[] = "{$row['path']} ({$label}): " . trim($e->getMessage());
+                // axe sometimes reads no results while the page is still settling (« No data »): it runs once more.
+                for ($attempt = 1; $attempt <= 2; $attempt++) {
+                    try {
+                        $this->execute('behat_accessibility::run_axe_validation_for_tags', ['', 'wcag22aa']);
+                        break;
+                    } catch (\Exception $e) {
+                        if ($attempt === 1 && trim($e->getMessage()) === 'No data') {
+                            $this->getSession()->wait(1000);
+                            continue;
+                        }
+                        $failures[] = "{$row['path']} ({$label}): " . trim($e->getMessage());
+                        break;
+                    }
                 }
                 if ($width < 1000 && ($row['except'] ?? '') !== 'wide table') {
                     $script = 'return document.scrollingElement.scrollWidth - window.innerWidth;';
