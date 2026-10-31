@@ -165,7 +165,7 @@ class behat_theme_epure extends behat_base {
                     );
                     $this->getSession()->wait(500);
                 }
-                // axe sometimes reads no results while the page is still settling (« No data »): it runs once more.
+                // The axe audit sometimes reads no results while the page is still settling (« No data »): it runs once more.
                 for ($attempt = 1; $attempt <= 2; $attempt++) {
                     try {
                         $this->execute('behat_accessibility::run_axe_validation_for_tags', ['', 'wcag22aa']);
