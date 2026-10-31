@@ -638,8 +638,9 @@
         color: var(--epure-state-late);
     }
 
-    // The fields of the login page (Moodle 5.3 gives them a light grey of their own), and its link to the
+    // The fields of the login page (Moodle 5.2 and 5.3 give them a light grey of their own), and its link to the
     // cookies notice.
+    .pagelayout-login .login-form .form-control,
     .pagelayout-login .login-input-wrapper .form-control {
         &,
         &:hover,
