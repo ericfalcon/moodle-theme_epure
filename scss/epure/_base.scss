@@ -94,7 +94,8 @@ table th a[data-bs-toggle="popover"],
 #page-admin-search .list-unstyled > li > a,
 #page-admin-category .list-unstyled > li > a,
 #course-category-listings .categoryname,
-.resettable > a {
+.resettable > a,
+table td a[role="button"] {
     display: inline-flex;
     align-items: center;
     min-width: 24px;
