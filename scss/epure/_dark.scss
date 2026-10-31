@@ -622,8 +622,9 @@
     }
 
     // The overview of completion of IOMAD writes its table and its sticky headers in white.
-    #page-local-report_completion_overview-index {
+    #page-local-report_completion_overview-index #region-main {
         .table-responsive > table,
+        .table-responsive > table td,
         th.header {
             background-color: var(--epure-surface);
         }
@@ -651,6 +652,15 @@
 
     .pagelayout-login .btn-link {
         color: var(--epure-brand-text);
+    }
+
+    // Days of the month of the calendar block and dates of the activities (Moodle 5.x), in Moodle's mid greys.
+    .calendarmonth td:not(.today) .day-number,
+    .activity-dates .date-item,
+    .activity-dates .date-item-label,
+    .date-item,
+    .date-item-label {
+        color: var(--epure-ink-muted);
     }
 
     // « Collapse all » of the course page, in Moodle's mid grey.
@@ -713,6 +723,11 @@
         .langmenu .dropdown-toggle,
         .companymenu .btn {
             color: var(--epure-ink);
+        }
+
+        // « Log in » of the visitors, a link in the colour of the site compiled by Moodle.
+        .usermenu .login a {
+            color: var(--epure-brand-text);
         }
 
         .navbar-toggler-icon {

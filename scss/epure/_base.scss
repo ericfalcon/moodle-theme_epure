@@ -101,6 +101,14 @@ table th a[data-bs-toggle="popover"],
     min-height: 24px;
 }
 
+// The boxes of the settings of the administration (course contacts, for one): 20 px, apart from each other.
+#adminsettings input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: .125rem .25rem .125rem 0;
+    vertical-align: middle;
+}
+
 // The box « Download submissions in folders » of the assignments, clear of its label.
 .path-mod-assign .form-check:has(> .form-check-input[id^="downloadasfolders"]) {
     padding-left: 2.25rem;
@@ -337,4 +345,13 @@ a.badge-primary.focus {
 .progress-bar {
     color: var(--epure-on-accent);
     background-color: var(--epure-accent);
+}
+
+// Today in the calendars: the fill of the brand and the colour of the text on it, those of the IOMAD company too.
+.calendarmonth .today .day-number-circle {
+    background-color: var(--epure-brand);
+
+    .day-number {
+        color: var(--epure-on-brand);
+    }
 }

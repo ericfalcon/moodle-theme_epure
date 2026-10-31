@@ -103,7 +103,14 @@ html,
         margin-left: -.5rem;
     }
 
-    #page .main-inner select {
+    // Long words and addresses go on the next line rather than past the edge.
+    #page .main-inner {
+        overflow-wrap: break-word;
+    }
+
+    #page .main-inner select,
+    #page .main-inner input,
+    .admin_colourpicker img {
         max-width: 100%;
     }
 
@@ -122,6 +129,19 @@ html,
     #page .main-inner .btn {
         max-width: 100%;
         white-space: normal;
+    }
+
+    // The scroll frames of the tables hold the hidden texts of their cells too.
+    .no-overflow,
+    .table-responsive {
+        position: relative;
+    }
+
+    // Lists of choices in a box as wide as their longest option (IOMAD's choice of template, Moodle's defaults).
+    #page .main-inner .singleselect,
+    #page .main-inner .singleselect form,
+    #page .main-inner .defaultsnext {
+        max-width: 100%;
     }
 
     // In the header, the switch of the edit mode keeps its name for screen readers only, as Moodle 5.3 does.
@@ -163,4 +183,31 @@ html,
 .form-description pre {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
+}
+
+// On the smallest phones (320 px), the header holds its buttons and the switch of the edit mode: narrower margins,
+// without the line before the switch.
+@media (max-width: 399.98px) {
+    .navbar.fixed-top > .container-fluid {
+        padding-right: .5rem;
+        padding-left: .5rem;
+    }
+
+    .navbar.fixed-top .navbar-nav > .divider {
+        display: none;
+    }
+
+    .navbar.fixed-top .editmode-switch-form {
+        margin-left: .25rem;
+    }
+
+    // The messages are in the navigation at the bottom of the screen: their button leaves the header. The arrow of
+    // the user menu, which only decorates it, too.
+    body.epure-has-mobilenav .navbar.fixed-top [data-region="popover-region-messages"] {
+        display: none;
+    }
+
+    .navbar.fixed-top .usermenu .dropdown-toggle::after {
+        display: none;
+    }
 }
