@@ -155,7 +155,15 @@ class behat_theme_epure extends behat_base {
                 $this->getSession()->visit($this->locate_path($path));
                 $this->wait_for_pending_js();
                 if ($dark) {
-                    $this->getSession()->executeScript("document.documentElement.classList.add('epure-dark');");
+                    // Without the transitions of the colours, axe reads the colours of the dark mode, not those on
+                    // the way to it.
+                    $this->getSession()->executeScript(
+                        "const style = document.createElement('style');" .
+                        "style.textContent = '*, *::before, *::after { transition: none !important; }';" .
+                        "document.head.appendChild(style);" .
+                        "document.documentElement.classList.add('epure-dark');"
+                    );
+                    $this->getSession()->wait(500);
                 }
                 try {
                     $this->execute('behat_accessibility::run_axe_validation_for_tags', ['', 'wcag22aa']);
