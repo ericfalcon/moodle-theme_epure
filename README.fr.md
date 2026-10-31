@@ -320,15 +320,16 @@ Le **mode lecture** masque les panneaux latéraux et centre le contenu ; il est 
 
 ## Accessibilité
 
-Le thème vise les WCAG 2.2 niveau AA, le RGAA 4.1.2 et l'EN 301 549 : contrastes calculés, focus clavier toujours visible, lien d'évitement, cibles d'au moins 24 × 24 px, liens soulignés dans le texte, respect du réglage « réduire les animations ».
+Le thème vise les WCAG 2.2 niveau AA, le RGAA 4.1.2 et l'EN 301 549 : contrastes calculés (le texte sur la couleur de marque à 4,5:1 au moins, quelle qu'elle soit, au survol compris), focus clavier toujours visible, lien d'évitement, cibles d'au moins 24 × 24 px, liens soulignés dans le texte, respect du réglage « réduire les animations ».
 
-**Préférences d'affichage.** Le bouton **Aa** de l'en-tête (raccourci Alt + A) ouvre un panneau où chaque utilisateur connecté choisit :
+**Préférences d'affichage.** Le bouton **Aa** de l'en-tête (raccourci Alt + A, sauf pendant la saisie dans un champ : sur Mac, Option + A écrit « å ») ouvre un panneau où chaque utilisateur connecté choisit :
 
 - la taille du texte : petite, normale, grande ou très grande (90, 100, 115 ou 130 %) ;
 - une police de lecture : celle du site, Atkinson Hyperlegible ou OpenDyslexic ;
-- un texte plus espacé (valeurs du critère WCAG 1.4.12), un contraste renforcé, des liens soulignés, des animations réduites.
+- un texte plus espacé (valeurs du critère WCAG 1.4.12), des lignes courtes, un contraste renforcé, des liens soulignés, des animations réduites ;
+- **lignes courtes** : les textes longs des cours (pages, livres, leçons, descriptions et consignes des activités, résumés des sections, messages des forums) à 70 caractères par ligne au plus (WCAG 1.4.8). La largeur suit la taille du texte : avec un zoom à 200 % ou un texte agrandi, une ligne garde au plus 70 caractères et tient dans l'écran, sans défilement horizontal.
 
-Le changement est immédiat, puis enregistré dans les préférences de son profil Moodle : il vaut sur toutes les pages et tous ses appareils, dès le premier affichage. Les visiteurs non connectés et les invités ont l'affichage par défaut du site, comme les utilisateurs qui n'ont pas choisi le leur : dans l'onglet Accessibilité du thème, l'administrateur règle par défaut la taille du texte, la police de lecture, le texte plus espacé, le contraste renforcé, les liens soulignés et les animations réduites. Le bouton « Aa » se désactive dans le même onglet ; les préférences déjà choisies continuent de s'appliquer. Ces préférences sont déclarées à l'API de confidentialité et exportées avec les données de l'utilisateur.
+Le changement est immédiat, puis enregistré dans les préférences de son profil Moodle, une requête à la fois, pour que le dernier choix soit celui gardé même quand plusieurs sont changés très vite : il vaut sur toutes les pages et tous ses appareils, dès le premier affichage. Les visiteurs non connectés et les invités ont l'affichage par défaut du site, comme les utilisateurs qui n'ont pas choisi le leur : dans l'onglet Accessibilité du thème, l'administrateur règle par défaut la taille du texte, la police de lecture, le texte plus espacé, les lignes courtes, le contraste renforcé, les liens soulignés et les animations réduites. Le bouton « Aa » se désactive dans le même onglet ; les préférences déjà choisies continuent de s'appliquer. Ces préférences sont déclarées à l'API de confidentialité et exportées avec les données de l'utilisateur.
 
 **Déclaration d'accessibilité.** L'onglet **Accessibilité** des réglages du thème la remplit au format français (RGAA) : état de conformité, entité, taux de conformité, auditeur et date de l'audit, non-conformités, dérogations, contenus non soumis, contact (par défaut, le courriel du support). Tant qu'aucun état n'est choisi, rien n'est publié. Une fois l'état choisi :
 
@@ -355,7 +356,7 @@ vendor/bin/phpunit --testsuite theme_epure_testsuite
 vendor/bin/behat --config <behat_dataroot>/behatrun/behat/behat.yml --tags @theme_epure
 ```
 
-Les tests Behat passent l'audit axe-core de Moodle (« the page should meet accessibility standards ») sur le tableau de bord, le panneau des préférences et la déclaration d'accessibilité.
+Les tests Behat passent l'audit axe-core de Moodle (« the page should meet accessibility standards ») sur le tableau de bord, les préférences d'affichage, la déclaration d'accessibilité et son formulaire pas à pas, la page de cours, les pages d'activité, le catalogue, la recherche rapide, les formulaires longs, la fenêtre « Ajouter un bloc », Ma synthèse et le réglage des émoticônes. Le pré-audit de la version courante (Moodle 4.5, Moodle 5.3 et IOMAD, par rôle, en clair, en sombre et sur téléphone, contrôles au clavier) est dans le wiki (Pré-audit d'accessibilité).
 
 ## Licence
 

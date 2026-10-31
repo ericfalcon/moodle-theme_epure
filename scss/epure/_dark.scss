@@ -39,6 +39,21 @@
     --bs-tertiary-bg: var(--epure-surface-raised);
     --bs-border-color: var(--epure-border);
     --bs-border-color-translucent: rgba(255, 255, 255, .15);
+    // The design system of Moodle 5.3 (navigation pills, switches) reads its colours from these properties: Moodle
+    // sets them for its own dark mode only.
+    --mds-text-default: var(--epure-ink);
+    --mds-text-emphasis: #fff;
+    --mds-text-subtle: var(--epure-ink-muted);
+    --mds-text-muted: var(--epure-ink-muted);
+    --mds-text-inverse: var(--epure-page);
+    --mds-bg-surface-default: var(--epure-surface);
+    --mds-bg-surface-subtle: var(--epure-surface-muted);
+    --mds-bg-surface-strong: var(--epure-surface-raised);
+    --mds-bg-nav-pill-hover: var(--epure-surface-raised);
+    --mds-bg-nav-pill-pressed: var(--epure-border);
+    --mds-bg-nav-pill-selected: var(--epure-surface-raised);
+    --mds-border-default: var(--epure-border);
+    --mds-border-subtle: var(--epure-border);
 
     &.epure-a11y-contrast {
         --epure-ink: #fff;
@@ -503,14 +518,6 @@
         background-color: var(--epure-brand);
     }
 
-    .courseindex .courseindex-item.pageitem {
-        background-color: var(--epure-brand);
-
-        .courseindex-link {
-            color: var(--epure-on-brand);
-        }
-    }
-
     .progress {
         background-color: var(--epure-surface-raised);
     }
@@ -614,8 +621,47 @@
         background-color: var(--epure-brand);
     }
 
+    // The overview of completion of IOMAD writes its table and its sticky headers in white.
+    #page-local-report_completion_overview-index {
+        .table-responsive > table,
+        th.header {
+            background-color: var(--epure-surface);
+        }
+    }
+
+    // Grades passed and failed (grader report), in the colours of the states.
+    .gradepass {
+        color: var(--epure-state-done);
+    }
+
+    .gradefail {
+        color: var(--epure-state-late);
+    }
+
+    // The fields of the login page (Moodle 5.3 gives them a light grey of their own), and its link to the
+    // cookies notice.
+    .pagelayout-login .login-input-wrapper .form-control {
+        &,
+        &:hover,
+        &:focus {
+            background-color: var(--epure-surface-raised);
+        }
+    }
+
+    .pagelayout-login .btn-link {
+        color: var(--epure-brand-text);
+    }
+
+    // « Collapse all » of the course page, in Moodle's mid grey.
+    .collapsemenu,
+    .collapsemenu-text {
+        color: var(--epure-ink-muted);
+    }
+
     // Red texts and links (deletion, errors): lightened for the dark surfaces.
     .text-danger,
+    td.overdue,
+    .overduesubmission,
     .uninstall a,
     .error,
     .form-control-feedback.invalid-feedback,

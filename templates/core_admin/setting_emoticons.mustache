@@ -1,0 +1,66 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template core_admin/setting_emoticons
+
+    The setting of the emoticons, as Moodle's, with a name for each field: the header of its column (the fields of
+    the alternative text, which share one header, say which part they are). Moodle leaves the fields unnamed for
+    screen readers (WCAG 1.3.1, 4.1.2).
+
+    Example context (json):
+    {
+        "emoticons": [
+            { "fields": [
+                { "name": "Smile", "field": "f1", "value": ":)", "index": 0 }
+            ]}
+        ],
+        "reseturl": "#"
+    }
+}}
+<div class="mb-3 epure-emoticons">
+    <table id="emoticonsetting" class="admintable table generaltable">
+        <thead>
+            <tr>
+                <th id="emoticonsetting-h0">{{#str}}emoticontext, admin{{/str}}</th>
+                <th id="emoticonsetting-h1">{{#str}}emoticonimagename, admin{{/str}}</th>
+                <th id="emoticonsetting-h2">{{#str}}emoticoncomponent, admin{{/str}}</th>
+                <th colspan="2" id="emoticonsetting-h3">{{#str}}emoticonalt, admin{{/str}}<span id="emoticonsetting-h4" hidden>{{#str}}emoticonalt, admin{{/str}} ({{#str}}emoticoncomponent, admin{{/str}})</span></th>
+                <th><span class="visually-hidden sr-only">{{#str}}preview{{/str}}</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#emoticons}}
+                <tr>
+                    {{#fields}}
+                        <td class="c{{index}}">
+                            <input type="text" name="{{name}}[{{field}}]" class="form-text form-control text-ltr" value="{{value}}"
+                                aria-labelledby="emoticonsetting-h{{index}}">
+                        </td>
+                    {{/fields}}
+                    <td>
+                        {{#icon}}
+                            {{>core/pix_icon}}
+                        {{/icon}}
+                    </td>
+                </tr>
+            {{/emoticons}}
+        </tbody>
+    </table>
+</div>
+<div>
+    <a href="{{reseturl}}">{{#str}}emoticonsreset, admin{{/str}}</a>
+</div>

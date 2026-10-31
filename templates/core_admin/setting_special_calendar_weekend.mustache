@@ -1,0 +1,46 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template core_admin/setting_special_calendar_weekend
+
+    The days of the weekend of the calendar, as Moodle's: the same fields, each box with its day beside it, in a row
+    that wraps on a narrow screen rather than a table of seven columns wider than a phone (WCAG 1.4.10).
+
+    Context variables required for this template:
+    * name - form element name
+    * id - form element id
+    * days - list of days containing index, label, checked
+
+    Example context (json):
+    {
+        "name": "test",
+        "id": "i1",
+        "days": [
+            { "index": 0, "label": "Monday", "checked": true },
+            { "index": 1, "label": "Tuesday", "checked": false }
+        ]
+    }
+}}
+<div class="epure-weekend d-flex flex-wrap">
+    <input type="hidden" name="{{name}}[xxxxx]" value="1">
+    {{#days}}
+        <div class="form-check">
+            <input type="checkbox" class="form-checkbox form-check-input" id="{{id}}{{index}}" name="{{name}}[]" value="{{index}}" {{#checked}}checked{{/checked}}>
+            <label class="form-check-label" for="{{id}}{{index}}">{{label}}</label>
+        </div>
+    {{/days}}
+</div>

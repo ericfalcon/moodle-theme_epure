@@ -190,3 +190,8 @@ Feature: Accessibility of the Épure theme
     And I should see "The statement is saved and published."
     And I should see "Clinique des Tilleuls is committed"
     And "Print the statement" "button" should exist
+
+  Scenario: The fields of the setting of the emoticons have a name
+    Given I log in as "admin"
+    When I visit "/admin/settings.php?section=htmlsettings"
+    Then the page should meet accessibility standards

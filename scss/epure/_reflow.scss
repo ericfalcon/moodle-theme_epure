@@ -92,3 +92,75 @@ html,
         }
     }
 }
+
+// On phones, the margins of the page (8 px) are narrower than the gutters of Moodle's rows, and the lists of
+// choices of the bulk actions are as wide as their longest option: nothing goes past the edge of the screen. The
+// tables of the submissions of an assignment and of the emoticons scroll in their own frame, not the whole page
+// (WCAG 1.4.10). The grader report keeps Moodle's layout, a table in two dimensions.
+@media (max-width: 575.98px) {
+    #page .main-inner .row {
+        margin-right: -.5rem;
+        margin-left: -.5rem;
+    }
+
+    #page .main-inner select {
+        max-width: 100%;
+    }
+
+    #page .main-inner .d-flex.flex-wrap > *,
+    #page .main-inner .fitem > span,
+    .tertiary-navigation .navitem {
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    // Fieldsets are as wide as their widest content by default; long labels of buttons wrap.
+    #page .main-inner fieldset {
+        min-width: 0;
+    }
+
+    #page .main-inner .btn {
+        max-width: 100%;
+        white-space: normal;
+    }
+
+    // In the header, the switch of the edit mode keeps its name for screen readers only, as Moodle 5.3 does.
+    .navbar .editmode-switch-form label.me-2 {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    // The bar of actions above a page (Moodle 5.3: grading of an assignment, management of the courses) goes on
+    // several lines rather than past the edge.
+    .tertiary-navigation > .d-flex {
+        flex-wrap: wrap;
+        row-gap: .5rem;
+    }
+
+    .path-mod-assign .box:has(> table#submissions),
+    .epure-emoticons {
+        position: relative;
+        overflow-x: auto;
+    }
+
+    // The days of the weekend of the calendar settings: one row of seven, a little tighter.
+    #page .main-inner .form-setting table:not(.table) td {
+        padding-right: .125rem;
+        padding-left: .125rem;
+    }
+}
+
+// The examples of the help of the settings (menus, for one) wrap rather than scroll in a frame the keyboard
+// cannot reach.
+#adminsettings pre,
+.form-description pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}

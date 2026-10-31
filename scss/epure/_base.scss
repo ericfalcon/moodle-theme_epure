@@ -76,7 +76,8 @@ p a:not(.btn),
 dd a:not(.btn),
 .footer-section a:not(.btn),
 .epure-a11y-statement a:not(.btn),
-.text_to_html a:not(.btn) {
+.text_to_html a:not(.btn),
+.noticebox a:not(.btn) {
     text-decoration: underline;
     text-underline-offset: .15em;
 }
@@ -91,11 +92,25 @@ table th a[data-bs-toggle="popover"],
 .generaltable th a[data-sortable],
 .action-menu-trigger .dropdown-toggle,
 #page-admin-search .list-unstyled > li > a,
-#page-admin-category .list-unstyled > li > a {
+#page-admin-category .list-unstyled > li > a,
+#course-category-listings .categoryname,
+.resettable > a {
     display: inline-flex;
     align-items: center;
     min-width: 24px;
     min-height: 24px;
+}
+
+// The box « Download submissions in folders » of the assignments, clear of its label.
+.path-mod-assign .form-check:has(> .form-check-input[id^="downloadasfolders"]) {
+    padding-left: 2.25rem;
+
+    .form-check-input {
+        width: 1.5rem;
+        height: 1.5rem;
+        margin-top: 0;
+        margin-left: -2.25rem;
+    }
 }
 
 // The help icons of the headers of the tables touch the links around them.

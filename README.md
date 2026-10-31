@@ -329,18 +329,18 @@ In Moodle 4 and 5, with the side course index, the links to the previous and nex
 
 ## Accessibility
 
-The theme targets WCAG 2.2 level AA, RGAA 4.1.2 and EN 301 549: calculated contrast, keyboard focus always visible, a skip link, targets of at least 24 × 24 px, underlined links within text, and respect for the "reduce motion" setting.
+The theme targets WCAG 2.2 level AA, RGAA 4.1.2 and EN 301 549: calculated contrast (the text on the brand colour at 4.5:1 at least, whatever the colour, on hover too), keyboard focus always visible, a skip link, targets of at least 24 × 24 px, underlined links within text, and respect for the "reduce motion" setting.
 
 **Accessibility of the contents.** When a teacher saves a form, Épure reads the contents of its editors for the common mistakes (images without a text alternative, tables without headers, links such as "click here", levels of titles skipped) and, when it finds some, lists them with "Fix", "Open the accessibility checker" (the one of TinyMCE) and "Save anyway". Nothing is blocked; no account is needed.
 
-**Display preferences.** The **Aa** button in the header (shortcut Alt + A) opens a panel in which each logged-in user chooses:
+**Display preferences.** The **Aa** button in the header (shortcut Alt + A, except while typing in a field: on a Mac, Option + A writes « å ») opens a panel in which each logged-in user chooses:
 
 - the text size: small, normal, large or very large (90, 100, 115 or 130%);
 - a reading font: the site's font, Atkinson Hyperlegible or OpenDyslexic;
 - more text spacing (the values from WCAG success criterion 1.4.12), shorter lines, enhanced contrast, underlined links, reduced motion;
 - **shorter lines**: the long texts of the courses (pages, books, lessons, descriptions and instructions of the activities, summaries of the sections, posts of the forums) at 70 characters per line at most (WCAG 1.4.8). The width follows the size of the text: with a zoom of 200 % or a larger text, a line keeps at most 70 characters and fits the screen, without scrolling across.
 
-The change takes effect immediately and is then saved in the preferences of the user's Moodle profile: it applies on every page and on all their devices, from the very first page load. Visitors who are not logged in and guests get the display by default of the site, as do the users who have not chosen theirs: in the theme's Accessibility tab, the administrator sets the text size, the reading font, more text spacing, shorter lines, enhanced contrast, underlined links and reduced motion by default. The button « Aa » can be turned off in the same tab; preferences already chosen still apply. These preferences are declared to the Privacy API and exported with the user's data.
+The change takes effect immediately and is then saved in the preferences of the user's Moodle profile, one request at a time so that the last choice is the one kept, even when several are changed quickly: it applies on every page and on all their devices, from the very first page load. Visitors who are not logged in and guests get the display by default of the site, as do the users who have not chosen theirs: in the theme's Accessibility tab, the administrator sets the text size, the reading font, more text spacing, shorter lines, enhanced contrast, underlined links and reduced motion by default. The button « Aa » can be turned off in the same tab; preferences already chosen still apply. These preferences are declared to the Privacy API and exported with the user's data.
 
 **Accessibility statement.** The **Accessibility** tab of the theme settings fills it in using the French (RGAA) format: compliance status, entity, compliance rate, auditor and audit date, non-compliant content, exemptions, content not subject to the requirements, contact (by default, the support e-mail address). Until a status is chosen, nothing is published. Once the status is chosen:
 
@@ -371,7 +371,7 @@ vendor/bin/phpunit --testsuite theme_epure_testsuite
 vendor/bin/behat --config <behat_dataroot>/behatrun/behat/behat.yml --tags @theme_epure
 ```
 
-The Behat tests pass Moodle's axe-core audit ("the page should meet accessibility standards") on the Dashboard, the preferences panel and the accessibility statement.
+The Behat tests pass Moodle's axe-core audit ("the page should meet accessibility standards") on the dashboard, the display preferences, the accessibility statement and its step-by-step form, the course page, the pages of the activities, the catalogue, the quick search, the long forms, the window « Add a block », My summary and the setting of the emoticons. The pre-audit of the current version (Moodle 4.5, Moodle 5.3 and IOMAD, by role, light, dark and phone, keyboard checks) is in the wiki (Pré-audit d'accessibilité).
 
 ## Licence
 

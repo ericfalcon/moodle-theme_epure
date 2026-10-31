@@ -285,6 +285,27 @@
     box-shadow: inset 4px 0 0 var(--epure-brand);
 }
 
+// The page being read, in the index of the course: the fill of the brand and the colour of the text on it,
+// readable on any brand colour (Moodle draws it in white).
+.courseindex .courseindex-item.pageitem,
+.courseindex .courseindex-item.dimmed.pageitem {
+    background-color: var(--epure-brand);
+
+    .courseindex-link,
+    .courseindex-chevron,
+    a {
+        color: var(--epure-on-brand);
+    }
+}
+
+// Hidden and locked activities: Moodle's pale grey falls under 4.5:1 on the grey of the hovered row.
+.courseindex .courseindex-item.dimmed:not(.pageitem) {
+    .courseindex-link,
+    .courseindex-chevron {
+        color: var(--epure-ink-muted);
+    }
+}
+
 #courseindex {
     .courseindex-item.epure-current,
     .courseindex-section-title.epure-current-section {

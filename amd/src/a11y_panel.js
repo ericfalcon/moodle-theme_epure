@@ -93,6 +93,42 @@ const save = async(panel, choices) => {
 };
 
 /**
+ * Saves the choices one request at a time: changed quickly, they would otherwise be saved in parallel, and an
+ * earlier state that is saved last would replace the last choice.
+ *
+ * @param {HTMLElement} panel The panel.
+ * @return {function(Object): Promise} Saves the choices once the previous save has ended; only the last waits.
+ */
+const saver = (panel) => {
+    let running = null;
+    let waiting = null;
+    return (choices) => {
+        waiting = choices;
+        if (!running) {
+            running = (async() => {
+                while (waiting) {
+                    const next = waiting;
+                    waiting = null;
+                    await save(panel, next);
+                }
+                running = null;
+            })();
+        }
+        return running;
+    };
+};
+
+/**
+ * Whether the user is typing: in a field, a list or an editor, the keys are theirs.
+ *
+ * @param {EventTarget} target The target of the key.
+ * @return {boolean}
+ */
+const typing = (target) => target instanceof HTMLElement
+    && (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))
+    && !(target.tagName === 'INPUT' && ['checkbox', 'radio', 'button', 'submit'].includes(target.type));
+
+/**
  * Starts the panel.
  */
 export const init = () => {
@@ -136,8 +172,10 @@ export const init = () => {
             close(false);
         }
     });
+    // Alt + A, except while typing: on a Mac, Option + A writes « å ».
     document.addEventListener('keydown', (e) => {
-        if (e.altKey && !e.ctrlKey && !e.metaKey && (e.key === 'a' || e.key === 'A' || e.code === 'KeyA')) {
+        if (e.altKey && !e.ctrlKey && !e.metaKey && !typing(e.target)
+                && (e.key === 'a' || e.key === 'A' || e.code === 'KeyA')) {
             e.preventDefault();
             if (panel.hidden) {
                 open();
@@ -147,10 +185,11 @@ export const init = () => {
         }
     });
 
+    const queue = saver(panel);
     panel.addEventListener('change', () => {
         const choices = read(panel);
         applyToPage(choices, defaultScheme);
-        save(panel, choices);
+        queue(choices);
     });
     region.querySelector('[data-action="reset"]').addEventListener('click', () => {
         panel.querySelector('[name="epure-a11y-text"][value="100"]').checked = true;
@@ -161,6 +200,6 @@ export const init = () => {
         });
         const choices = read(panel);
         applyToPage(choices, defaultScheme);
-        save(panel, choices);
+        queue(choices);
     });
 };
