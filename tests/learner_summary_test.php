@@ -91,4 +91,21 @@ final class learner_summary_test extends \advanced_testcase {
         $data = learner_summary::export($PAGE->get_renderer('core'), (int) $learner->id);
         $this->assertSame('', array_column($data['courses'], null, 'name')['First aid']['grade']);
     }
+
+    /**
+     * The summary in the user menu, after the grades, once; first when the menu has no grades.
+     */
+    public function test_user_menu_items(): void {
+        $items = "profile,moodle|/user/profile.php\ngrades,grades|/grade/report/mygrades.php\n"
+            . "calendar,core_calendar|/calendar/view.php?view=month";
+        $expected = "profile,moodle|/user/profile.php\ngrades,grades|/grade/report/mygrades.php\n"
+            . "mysummary,theme_epure|/theme/epure/summary.php\ncalendar,core_calendar|/calendar/view.php?view=month";
+        $this->assertSame($expected, learner_summary::user_menu_items($items));
+        $this->assertSame($expected, learner_summary::user_menu_items($expected));
+        $this->assertSame(
+            "mysummary,theme_epure|/theme/epure/summary.php\nHelp|https://example.com/help",
+            learner_summary::user_menu_items("Help|https://example.com/help")
+        );
+        $this->assertSame('mysummary,theme_epure|/theme/epure/summary.php', learner_summary::user_menu_items(''));
+    }
 }

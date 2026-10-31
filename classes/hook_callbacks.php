@@ -383,7 +383,7 @@ class hook_callbacks {
 
     /**
      * Before the header of a page: the navigation and the user menu of the simplified view of the learner, the badges
-     * of a course in its navigation only when it has some ({@see simple_view}).
+     * of a course in its navigation only when it has some ({@see simple_view}), « My summary » in the user menu.
      *
      * @param \core\hook\output\before_http_headers $hook The hook.
      */
@@ -393,6 +393,7 @@ class hook_callbacks {
             return;
         }
         simple_view::prepare($PAGE);
+        learner_summary::add_to_user_menu();
     }
 
     /**

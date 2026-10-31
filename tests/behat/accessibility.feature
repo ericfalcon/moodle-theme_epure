@@ -166,11 +166,16 @@ Feature: Accessibility of the Épure theme
       | learner1 | SAFE   | student |
     And I log in as "learner1"
     And I follow "Dashboard"
-    When I follow "My summary"
+    When I click on "My summary" "link" in the ".epure-learner" "css_element"
     Then I should see "Courses taken"
     And I should see "Safety at work" in the ".epure-summary" "css_element"
     And "Print or save as PDF" "button" should exist
     And the page should meet accessibility standards
+    # The summary is also in the user menu and in the reports of the profile.
+    And I follow "Profile" in the user menu
+    And "My summary" "link" should exist in the ".profile_tree" "css_element"
+    And I follow "My summary" in the user menu
+    And I should see "Courses taken"
 
   Scenario: The accessibility statement is filled in step by step and published
     Given I log in as "admin"

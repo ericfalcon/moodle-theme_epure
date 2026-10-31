@@ -47,6 +47,60 @@ class learner_summary {
     }
 
     /**
+     * The summary in the user menu, after the grades (else first), for this page only: the setting
+     * customusermenuitems itself stays as the administrator left it.
+     */
+    public static function add_to_user_menu(): void {
+        global $CFG;
+        if (!isloggedin() || isguestuser() || !self::enabled()) {
+            return;
+        }
+        $CFG->customusermenuitems = self::user_menu_items((string) ($CFG->customusermenuitems ?? ''));
+    }
+
+    /**
+     * The items of the user menu with the summary.
+     *
+     * @param string $items Items, one per line, as in the setting customusermenuitems.
+     * @return string
+     */
+    public static function user_menu_items(string $items): string {
+        if (str_contains($items, '/theme/epure/summary.php')) {
+            return $items;
+        }
+        $lines = trim($items) === '' ? [] : preg_split('/\R/', $items);
+        $at = 0;
+        foreach ($lines as $i => $line) {
+            if (str_contains($line, '/grade/report/mygrades.php')) {
+                $at = $i + 1;
+                break;
+            }
+        }
+        array_splice($lines, $at, 0, ['mysummary,theme_epure|/theme/epure/summary.php']);
+        return implode("\n", $lines);
+    }
+
+    /**
+     * Adds the summary to the reports of the own profile of the user.
+     *
+     * @param \core_user\output\myprofile\tree $tree Profile.
+     * @param \stdClass $user Owner of the profile.
+     * @param bool $iscurrentuser Whether it is the profile of the current user.
+     */
+    public static function myprofile(\core_user\output\myprofile\tree $tree, \stdClass $user, bool $iscurrentuser): void {
+        if (!$iscurrentuser || isguestuser($user) || !self::enabled()) {
+            return;
+        }
+        $tree->add_node(new \core_user\output\myprofile\node(
+            'reports',
+            'epuremysummary',
+            get_string('mysummary', 'theme_epure'),
+            null,
+            self::url()
+        ));
+    }
+
+    /**
      * Context of the template theme_epure/learner_summary.
      *
      * @param \renderer_base $output Renderer, for the generated course images of « My courses ».

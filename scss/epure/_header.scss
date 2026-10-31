@@ -215,3 +215,23 @@ body.epure-header-brand .navbar.fixed-top .divider {
         }
     }
 }
+
+// User menu: each link of its main list ends with the same arrow as the lists of links of the theme, the link to the
+// submenu of the language too (instead of the caret of Moodle); the items of the submenus have none.
+.usermenu #carousel-item-main a.dropdown-item {
+    position: relative;
+
+    &::after {
+        content: "\203A";
+        position: absolute;
+        top: 50%;
+        right: .75rem;
+        padding: 0;
+        color: var(--epure-ink-muted);
+        font-family: inherit;
+        font-size: 1.25rem;
+        font-weight: 400;
+        line-height: 1;
+        transform: translateY(-50%);
+    }
+}

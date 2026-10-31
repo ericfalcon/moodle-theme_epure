@@ -267,7 +267,7 @@ The overview can be turned off in the theme's Courses tab ("Learner overview on 
 
 ### My summary
 
-With the setting "My summary" (Courses tab, off by default), the learner finds a link "My summary" in the "Completed" part of their overview. The page lists the courses they take with their progress, the date of completion, their grade (when the course shows the grades to the learners) and the activities they completed with their date, then their certificates. A button prints it, or saves it as PDF with the browser, in the colours of the brand. Their own data only. A note says what it proves: what the platform recorded, not on its own attendance nor the achievement of the objectives.
+With the setting "My summary" (Courses tab, off by default), the learner finds a link "My summary" in the "Completed" part of their overview, in the user menu (after "Grades") and in the reports of their profile. The page lists the courses they take with their progress, the date of completion, their grade (when the course shows the grades to the learners) and the activities they completed with their date, then their certificates. A button prints it, or saves it as PDF with the browser, in the colours of the brand. Their own data only. A note says what it proves: what the platform recorded, not on its own attendance nor the achievement of the objectives.
 
 ## Certificate template
 
