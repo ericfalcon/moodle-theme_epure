@@ -8,6 +8,7 @@ Feature: The course formats of Moodle with the Épure theme
     Given the following "users" exist:
       | username | firstname | lastname | email                |
       | learner1 | Lea       | Learner  | learner1@example.com |
+    And the users belong to an IOMAD company when IOMAD is installed
     And the following config values are set as admin:
       | theme            | epure |
       | enablecompletion | 1     |

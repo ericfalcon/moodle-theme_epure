@@ -12,6 +12,7 @@ Feature: Pre-audit of accessibility of the Épure theme
       | username | firstname | lastname | email                |
       | learner1 | Camille   | Martin   | learner1@example.com |
       | teacher1 | Paul      | Durand   | teacher1@example.com |
+    And the users belong to an IOMAD company when IOMAD is installed
     And the following "courses" exist:
       | fullname        | shortname | enablecompletion |
       | Safety at work  | SAFE      | 1                |

@@ -91,6 +91,35 @@ class behat_theme_epure extends behat_base {
     }
 
     /**
+     * On IOMAD, puts the users who have no company in a company with the Épure theme: IOMAD sends a user without a
+     * company back to the home page of the site. Nothing without IOMAD, so that the same scenarios run on both.
+     *
+     * @Given /^the users belong to an IOMAD company when IOMAD is installed$/
+     */
+    public function the_users_belong_to_an_iomad_company_when_iomad_is_installed(): void {
+        global $DB;
+        if (!iomad::installed()) {
+            return;
+        }
+        if (!$DB->record_exists(iomad::table('company'), ['shortname' => 'epuretests'])) {
+            $this->the_following_iomad_companies_exist(new TableNode([
+                ['name', 'shortname', 'theme'],
+                ['Épure tests', 'epuretests', 'epure'],
+            ]));
+        }
+        $rows = [['user', 'company']];
+        $users = $DB->get_records_select('user', "deleted = 0 AND username NOT IN ('guest', 'admin')", null, 'id', 'id, username');
+        foreach ($users as $user) {
+            if (!$DB->record_exists(iomad::table('company_users'), ['userid' => $user->id])) {
+                $rows[] = [$user->username, 'epuretests'];
+            }
+        }
+        if (count($rows) > 1) {
+            $this->the_following_iomad_company_users_exist(new TableNode($rows));
+        }
+    }
+
+    /**
      * The class of the IOMAD companies: local_iomad\company from IOMAD 5.1, company before.
      *
      * @return string
