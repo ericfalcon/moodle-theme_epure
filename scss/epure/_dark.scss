@@ -2,6 +2,39 @@
 // device asks for it), from the choice of the user, else of their IOMAD company, else of the site.
 // The palette swaps to its dark variant, computed in PHP to keep the AA contrasts on dark
 // surfaces; Moodle's and Bootstrap's components follow. The brand-coloured header keeps its colour.
+// A light island in dark mode: what a plugin paints white whatever the mode, with text colours of its own for a
+// light background. The palette of the theme goes back to its light values inside, so that the text, the links and
+// the boxes of the theme within stay readable on it.
+@mixin epure-light-island {
+    color-scheme: light;
+    --epure-brand-text: var(--epure-light-brand-text);
+    --epure-brand-soft: var(--epure-light-brand-soft);
+    --epure-focus: var(--epure-light-brand-text);
+    --epure-state-done: #1b7a33;
+    --epure-state-done-soft: #e9f6ec;
+    --epure-state-late: #b42318;
+    --epure-state-late-soft: #fdecea;
+    --epure-state-soon: #8a4b00;
+    --epure-state-soon-soft: #fff3dc;
+    --epure-page: #f5f6f8;
+    --epure-surface: #{$white};
+    --epure-surface-muted: #f5f6f8;
+    --epure-surface-raised: #{$white};
+    --epure-border: #e2e5ea;
+    --epure-ink: #{$body-color};
+    --epure-ink-muted: #{$gray-700};
+    --bs-body-bg: var(--epure-surface);
+    --bs-body-color: var(--epure-ink);
+    --bs-emphasis-color: #{$body-color};
+    --bs-heading-color: var(--epure-ink);
+    --bs-secondary-color: var(--epure-ink-muted);
+    --bs-secondary-bg: var(--epure-surface-muted);
+    --bs-tertiary-bg: var(--epure-surface-muted);
+    --bs-border-color: var(--epure-border);
+    color: var(--epure-ink);
+    background-color: var(--epure-surface);
+}
+
 @mixin epure-dark {
     color-scheme: dark;
     --epure-brand: var(--epure-dark-brand);
@@ -921,6 +954,35 @@
     .format-tiles .sectionbutton {
         color: var(--epure-ink);
         background-color: var(--epure-surface-muted);
+    }
+
+    // Edwiser course formats (format_remuiformat): its cards, its activities of the general section, its sections of
+    // the list and its badges painted white whatever the mode, with text colours of their own for a light background.
+    // They stay white, light islands.
+    .format-remuiformat {
+        .remui-format-card .single-card:not(.modtype_label .single-card),
+        .remui-format-card .activity-cards .activity:not(.modtype_label) > div,
+        .general-section-activities .activity,
+        .remui-format-list .sections .section:not(#section-0),
+        .header-main-section .category .badge,
+        .instructor-info .stat {
+            @include epure-light-island;
+        }
+    }
+
+    // Its summary of the course and its link « Show more », on the page: in the colours of the mode (#page
+    // #region-main: above the two identifiers of its rules).
+    #page #region-main #section-0 .generalsectioninfo .coursesummary {
+        color: var(--epure-ink-muted);
+    }
+
+    #page #region-main #section-0 .generalsectioninfo .readbtn {
+        color: var(--epure-brand-text);
+    }
+
+    // Its labels, without a card, on the page: their text in the colour of the mode.
+    #page #region-main .remui-format-card .activity-cards .modtype_label .activity-content {
+        color: var(--epure-ink);
     }
 }
 
