@@ -319,6 +319,16 @@
         background-color: var(--epure-brand-soft);
         box-shadow: inset 3px 0 0 var(--epure-brand);
     }
+
+    // Their text in the colour of the brand reads at 4.5:1 on the tints of the brand, not on the grey of Moodle under
+    // the pointer or on the active section (4.18:1 with a yellow brand, Moodle 5.x): the tint stays in every state.
+    .courseindex-section-title.epure-current-section,
+    .courseindex-section-title.epure-current-section:hover,
+    .courseindex-section-title.epure-current-section.active,
+    .courseindex-item.epure-current:hover,
+    .courseindex-item.epure-current.active {
+        background-color: var(--epure-brand-soft);
+    }
 }
 
 // Corners of the course page, each level a step less rounded than the one holding it: the sections the large
