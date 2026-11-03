@@ -198,9 +198,15 @@ class behat_theme_epure extends behat_base {
                         $wide = $this->getSession()->evaluateScript(<<<'JS'
                             return (() => {
                                 const edge = document.documentElement.clientWidth + 1;
+                                // Inside a frame that clips it, or inside a fixed element (a drawer, a bar), an element
+                                // does not make the page scroll.
                                 const clipped = (element) => {
-                                    for (let node = element.parentElement; node; node = node.parentElement) {
-                                        if (getComputedStyle(node).overflowX !== 'visible') {
+                                    for (let node = element; node; node = node.parentElement) {
+                                        const style = getComputedStyle(node);
+                                        if (style.position === 'fixed' || style.visibility === 'hidden') {
+                                            return true;
+                                        }
+                                        if (node !== element && style.overflowX !== 'visible') {
                                             return node !== document.body && node !== document.documentElement;
                                         }
                                     }
