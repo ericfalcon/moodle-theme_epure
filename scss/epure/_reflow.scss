@@ -214,6 +214,30 @@ html,
     }
 }
 
+// On phones, the header keeps the size of its buttons whatever the size of text chosen in « Aa »: at 115 and 130 %,
+// its buttons and the switch of the edit mode went past 390 pixels, the user menu off the screen (WCAG 1.4.10). Its
+// buttons are icons; the zoom of the browser still enlarges it with the rest of the page.
+@media (max-width: 575.98px) {
+    html.epure-a11y-text-115 .navbar.fixed-top {
+        zoom: .87;
+    }
+
+    html.epure-a11y-text-130 .navbar.fixed-top {
+        zoom: .77;
+    }
+}
+
+// On the smallest phones (320 px), a little more.
+@media (max-width: 399.98px) {
+    html.epure-a11y-text-115 .navbar.fixed-top {
+        zoom: .8;
+    }
+
+    html.epure-a11y-text-130 .navbar.fixed-top {
+        zoom: .7;
+    }
+}
+
 // The lists of a date (day, month, year, time) keep apart when they go on several lines.
 [data-fieldtype="date_selector"],
 [data-fieldtype="date_time_selector"] {
