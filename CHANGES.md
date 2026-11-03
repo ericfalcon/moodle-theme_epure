@@ -1,7 +1,8 @@
 # Changes
 
-## 1.0.1 — focused links in the colours of the page
+## 1.0.1 — focused links in the colours of the page, the company logo readable
 
+- IOMAD: in the brand-coloured header, the logo of the company in the company switcher, made by IOMAD from its main logo for a white background, was dull or unreadable on the colour of the header. It is shown on a white backing, as on the login page (IOMAD 4.5 to 5.2).
 - A focused link (also after a click) was tinted by Moodle with the colour of the site, lightened at build time: with an IOMAD company in another colour, a line of the colour of the site showed above the link, for example a turquoise line above the section chosen in the list of a long form. Focused links are now tinted in the colours of the page, those of the company when it has its own, in light and dark mode. The rows of the list of a long form keep their look once clicked; the outline of the theme still shows the focus reached with the keyboard.
 
 ## 1.0.0 — stable
