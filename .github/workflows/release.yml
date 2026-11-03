@@ -1,0 +1,44 @@
+name: Release
+
+# A tag v<release> (v1.0.1) publishes the release of the plugin: the zip of the directory of the plugins of Moodle
+# (git archive, without the files of .gitattributes export-ignore) and the notes of its version in CHANGES.md.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out the tag
+        uses: actions/checkout@v4
+
+      - name: Check the tag against version.php
+        run: |
+          release=$(sed -n "s/^\$plugin->release *= *'\(.*\)';.*/\1/p" version.php)
+          if [ "v$release" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::The tag $GITHUB_REF_NAME does not match the release $release of version.php."
+            exit 1
+          fi
+          echo "RELEASE=$release" >> "$GITHUB_ENV"
+
+      - name: Build the zip of the plugin
+        run: git archive --format=zip --prefix=epure/ -o "theme_epure-$RELEASE.zip" HEAD
+
+      - name: Take the notes of the version from CHANGES.md
+        run: |
+          awk -v head="## $RELEASE " 'index($0, "## ") == 1 { if (found) exit; found = index($0, head) == 1; next } found' \
+            CHANGES.md > notes.md
+          if [ ! -s notes.md ]; then
+            echo "::error::No section « ## $RELEASE » in CHANGES.md."
+            exit 1
+          fi
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" "theme_epure-$RELEASE.zip" --title "Épure $RELEASE" --notes-file notes.md
