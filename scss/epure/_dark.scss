@@ -980,6 +980,16 @@
         color: var(--epure-brand-text);
     }
 
+    // Trail format (format_trail): the box of a section opened from the trail and the edit actions of its images are
+    // white whatever the mode, under the text of the mode. They take the surface of the mode.
+    #trailshadebox_content {
+        background: var(--epure-surface);
+    }
+
+    .course-content ul.trailicons li .trail_edit_actions {
+        background: color-mix(in srgb, var(--epure-surface) 85%, transparent);
+    }
+
     // Its labels, without a card, on the page: their text in the colour of the mode.
     #page #region-main .remui-format-card .activity-cards .modtype_label .activity-content {
         color: var(--epure-ink);
