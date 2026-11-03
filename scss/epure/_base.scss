@@ -357,3 +357,11 @@ a.badge-primary.focus {
         color: var(--epure-on-brand);
     }
 }
+
+// The frames of the contents of Moodle (.no-overflow) scroll across, for the wide tables, never down: the glyphs of
+// some fonts (OpenDyslexic) and the text spacing of WCAG 1.4.12 overflow them by a little, which made a frame that
+// scrolls and that the keyboard cannot reach (WCAG 2.1.1). Their long words wrap rather than scroll.
+.no-overflow {
+    overflow-y: hidden;
+    overflow-wrap: break-word;
+}
