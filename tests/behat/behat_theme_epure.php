@@ -194,7 +194,29 @@ class behat_theme_epure extends behat_base {
                     $script = 'return document.scrollingElement.scrollWidth - window.innerWidth;';
                     $across = $this->getSession()->evaluateScript($script);
                     if ($across > 1) {
-                        $failures[] = "{$row['path']} ({$label}): the page scrolls across, by {$across} px";
+                        // The elements past the edge, not clipped by a frame: the deepest ones, to find the cause.
+                        $wide = $this->getSession()->evaluateScript(<<<'JS'
+                            return (() => {
+                                const edge = document.documentElement.clientWidth + 1;
+                                const clipped = (element) => {
+                                    for (let node = element.parentElement; node; node = node.parentElement) {
+                                        if (getComputedStyle(node).overflowX !== 'visible') {
+                                            return node !== document.body && node !== document.documentElement;
+                                        }
+                                    }
+                                    return false;
+                                };
+                                return Array.from(document.querySelectorAll('body *')).filter((element) =>
+                                    element.getBoundingClientRect().right > edge && !clipped(element)
+                                    && !Array.from(element.children).some((child) =>
+                                        child.getBoundingClientRect().right > edge)
+                                ).slice(0, 3).map((element) => element.tagName.toLowerCase()
+                                    + (element.id ? '#' + element.id : '')
+                                    + (element.className ? '.' + String(element.className).trim().split(/\s+/)
+                                        .slice(0, 2).join('.') : '')).join(', ');
+                            })();
+                        JS);
+                        $failures[] = "{$row['path']} ({$label}): the page scrolls across, by {$across} px ({$wide})";
                     }
                 }
             }
