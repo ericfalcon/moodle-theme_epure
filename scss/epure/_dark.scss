@@ -937,6 +937,26 @@
         color: $body-color;
     }
 
+    // Colours written in the content itself (often pasted from a word processor or a web page): chosen for a white
+    // page, black or dark text could not be read in dark mode, and dark or vivid colours fell under 4.5:1. In the
+    // texts of the teachers, a colour of text takes the ink of the mode, a link the colour of the links; a passage on a
+    // background of its own keeps it, with the text of the light mode (a light island).
+    :is(.no-overflow, .text_to_html, .book_content, .generalbox, .posting, .summary, .activity-altcontent) {
+        [style*="color"]:not([style*="background"]),
+        font[color] {
+            color: var(--epure-ink) !important; // stylelint-disable-line declaration-no-important
+        }
+
+        a[style*="color"],
+        [style*="color"] a {
+            color: var(--epure-brand-text) !important; // stylelint-disable-line declaration-no-important
+        }
+
+        [style*="background"]:not([style*="transparent"]):not([style*="background-image"]) {
+            @include epure-light-island;
+        }
+    }
+
     // Moodle's light tint of the primary colour (headers of the sections in edit mode, among others), fixed at build.
     .bg-primary-light {
         background-color: var(--epure-brand-soft);
