@@ -18,6 +18,7 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le
 
   ![Le panneau « Aa » des préférences d'affichage, en mode clair](screenshots/display-preferences-light.webp)
   ![La même page en mode sombre](screenshots/display-preferences-dark.webp)
+  ![Le tableau de bord de l'apprenant en mode sombre](screenshots/dashboard-dark.webp)
 
 - Des pages qui s'adaptent aux téléphones jusqu'à 320 px, un focus toujours visible et jamais caché sous une barre fixe, des cibles de 24 px.
 - Une déclaration d'accessibilité remplie pas à pas, mentionnée sur chaque page.
@@ -39,6 +40,10 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le
 
 ![Une page d'activité : sa place dans le cours, la progression, le mode lecture, les activités précédente et suivante](screenshots/activity-navigation.webp)
 
+<img src="screenshots/phone-dashboard.webp" width="320" alt="Le tableau de bord sur téléphone, avec la barre de navigation en bas de l'écran">
+
+![Les préférences de l'utilisateur, rangées en cartes](screenshots/preferences.webp)
+
 ![La page de connexion aux couleurs de la marque](screenshots/login.webp)
 
 ### Pour les formateurs et les administrateurs
@@ -49,6 +54,10 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le
 - Des e-mails aux couleurs de la marque, un modèle d'attestation aux couleurs de la marque pour le plugin Certificate (tool_certificate), utilisable avec l'activité Attestation de formation.
 
 ![Un cours côté formateur : participants, actifs cette semaine, à corriger](screenshots/course-teacher.webp)
+
+![Les paramètres d'un cours : ses sections listées sur le côté, les boutons d'enregistrement toujours visibles](screenshots/course-settings.webp)
+
+![L'accueil de l'administration : les tâches courantes en cartes, puis les onglets de l'administration](screenshots/administration.webp)
 
 ### Compatibilité
 

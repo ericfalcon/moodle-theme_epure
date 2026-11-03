@@ -18,6 +18,7 @@ Choose a brand colour (or click a colour of your logo): the theme derives the wh
 
   ![The panel « Aa » of display preferences, in light mode](screenshots/display-preferences-light.webp)
   ![The same page in dark mode](screenshots/display-preferences-dark.webp)
+  ![The learner's dashboard in dark mode](screenshots/dashboard-dark.webp)
 
 - Pages that reflow on phones down to 320 px, focus always visible and never hidden under fixed bars, 24 px targets.
 - An accessibility statement filled in step by step, with a mention on every page.
@@ -39,6 +40,10 @@ Choose a brand colour (or click a colour of your logo): the theme derives the wh
 
 ![An activity page: its place in the course, progress, reading mode, previous and next activities](screenshots/activity-navigation.webp)
 
+<img src="screenshots/phone-dashboard.webp" width="320" alt="The dashboard on a phone, with the navigation bar at the bottom of the screen">
+
+![The preferences of the user, grouped in cards](screenshots/preferences.webp)
+
 ![The login page in the colours of the brand](screenshots/login.webp)
 
 ### For teachers and administrators
@@ -49,6 +54,10 @@ Choose a brand colour (or click a colour of your logo): the theme derives the wh
 - Branded e-mails, a certificate template in the brand colours for the plugin Certificate (tool_certificate), usable with the activity Course certificate.
 
 ![A course for a teacher: participants, active this week, to grade](screenshots/course-teacher.webp)
+
+![The settings of a course: its sections listed on the side, the save buttons always in view](screenshots/course-settings.webp)
+
+![The administration home: the common tasks in cards, then the tabs of the administration](screenshots/administration.webp)
 
 ### Compatibility
 
