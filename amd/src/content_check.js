@@ -15,9 +15,11 @@
 
 /**
  * Accessibility of the contents, when a teacher saves a form: the editors are read for the common mistakes (images
- * without a text alternative, tables without headers, links whose text does not say where they go, levels of titles
- * skipped). When some are found, a window lists them, field by field, with « Fix », « Open the accessibility checker »
- * (the one of the editor TinyMCE) and « Save anyway »: nothing is ever blocked.
+ * without a text alternative, tables without headers, links whose text does not say where they go even with the
+ * sentence around them, levels of titles skipped), without false alerts on what is right: decorative images (alt=""),
+ * tables of layout, headers on several rows, short links clear in their sentence. When some are found, a window lists
+ * them, field by field, with « Fix », « Open the accessibility checker » (the one of the editor TinyMCE) and « Save
+ * anyway »: nothing is ever blocked.
  *
  * @module     theme_epure/content_check
  * @copyright  2026 Eric Falcon
@@ -33,6 +35,9 @@ import {getString, getStrings} from 'core/str';
 const VAGUE_LINKS = ['ici', 'cliquez ici', 'cliquer ici', 'ce lien', 'lien', 'en savoir plus', 'plus', 'suite', 'lire la suite',
     'here', 'click here', 'this link', 'link', 'more', 'read more', 'learn more'];
 
+/** @var {string} Blocks that give a link its context: the sentence, the item of a list, the cell, the caption. */
+const BLOCKS = 'p, li, td, th, dd, dt, figcaption, blockquote, caption, h1, h2, h3, h4, h5, h6';
+
 const text = (element) => element.textContent.replace(/\s+/g, ' ').trim();
 
 /**
@@ -45,21 +50,29 @@ export const check = (html) => {
     const doc = new DOMParser().parseFromString(html, 'text/html');
     const found = {images: 0, tables: 0, links: 0, headings: 0};
     doc.querySelectorAll('img').forEach((img) => {
-        // Decorative images: alt="" with role="presentation", as the editor marks them.
-        const alt = img.getAttribute('alt');
-        if (alt === null || (alt.trim() === '' && img.getAttribute('role') !== 'presentation')) {
+        // Only an image without alt: alt="" marks a decorative one (WCAG H67), with or without role="presentation".
+        if (!img.hasAttribute('alt')) {
             found.images++;
         }
     });
     doc.querySelectorAll('table').forEach((table) => {
-        if (!table.querySelector('th')) {
+        // A table of layout (role="presentation" or "none") has no header to give. Headers on several rows, or in the
+        // first column, are headers.
+        if (!table.querySelector('th') && !['presentation', 'none'].includes(table.getAttribute('role'))) {
             found.tables++;
         }
     });
     doc.querySelectorAll('a[href]').forEach((link) => {
         const label = (link.getAttribute('aria-label') || text(link)).toLowerCase().replace(/[.…:!]+$/, '');
         const image = link.querySelector('img[alt]:not([alt=""])');
-        if ((label === '' && !image) || VAGUE_LINKS.includes(label)) {
+        if (label === '' && !image) {
+            found.links++;
+            return;
+        }
+        // A short text (« here ») is clear with the sentence, the item of the list or the cell around it (WCAG 2.4.4,
+        // RGAA 6.1): only one alone in its block says nothing.
+        const block = link.parentElement ? link.parentElement.closest(BLOCKS) : null;
+        if (VAGUE_LINKS.includes(label) && (!block || text(block) === text(link))) {
             found.links++;
         }
     });
@@ -160,7 +173,13 @@ const watch = (form) => {
     form.addEventListener('submit', async(event) => {
         const submitter = event.submitter;
         // Cancel and the buttons that do not save (add a field, for instance) go through.
-        if (confirmed || !submitter || submitter.name === 'cancel' || submitter.hasAttribute('formnovalidate')
+        // Saved anyway: this submission goes through, the next one is checked again (the form may come back, refused
+        // for another field, and be changed before it is saved again).
+        if (confirmed) {
+            confirmed = false;
+            return;
+        }
+        if (!submitter || submitter.name === 'cancel' || submitter.hasAttribute('formnovalidate')
                 || !/^submitbutton/.test(submitter.name || '')) {
             return;
         }
