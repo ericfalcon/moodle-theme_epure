@@ -40,7 +40,7 @@ Choose a brand colour (or click a colour of your logo): the theme derives the wh
 
 ![An activity page: its place in the course, progress, reading mode, previous and next activities](screenshots/activity-navigation.webp)
 
-<img src="screenshots/phone-dashboard.webp" width="320" alt="The dashboard on a phone, with the navigation bar at the bottom of the screen">
+<img src="screenshots/phone-dashboard.webp" width="320" alt="The dashboard on a phone, with the navigation bar at the bottom of the screen"> <img src="screenshots/phone-course.webp" width="320" alt="A course on a phone: progress, the next activity and the button Continue">
 
 ![The preferences of the user, grouped in cards](screenshots/preferences.webp)
 
@@ -58,6 +58,18 @@ Choose a brand colour (or click a colour of your logo): the theme derives the wh
 ![The settings of a course: its sections listed on the side, the save buttons always in view](screenshots/course-settings.webp)
 
 ![The administration home: the common tasks in cards, then the tabs of the administration](screenshots/administration.webp)
+
+### With IOMAD
+
+Each company has its own colour, logo, font and vocabulary (here « parcours » for courses), on its login page, its dashboard, its courses and the IOMAD dashboard.
+
+![The login page of a company, in its colour and font](screenshots/iomad-login.webp)
+
+![The dashboard of a learner of the company](screenshots/iomad-dashboard.webp)
+
+![A course of the company for a teacher](screenshots/iomad-course-teacher.webp)
+
+![The IOMAD dashboard: the company, its figures and its tasks in cards](screenshots/iomad-company-dashboard.webp)
 
 ### Compatibility
 

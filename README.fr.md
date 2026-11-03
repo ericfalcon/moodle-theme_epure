@@ -40,7 +40,7 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le
 
 ![Une page d'activité : sa place dans le cours, la progression, le mode lecture, les activités précédente et suivante](screenshots/activity-navigation.webp)
 
-<img src="screenshots/phone-dashboard.webp" width="320" alt="Le tableau de bord sur téléphone, avec la barre de navigation en bas de l'écran">
+<img src="screenshots/phone-dashboard.webp" width="320" alt="Le tableau de bord sur téléphone, avec la barre de navigation en bas de l'écran"> <img src="screenshots/phone-course.webp" width="320" alt="Un cours sur téléphone : la progression, la prochaine activité et le bouton Continuer">
 
 ![Les préférences de l'utilisateur, rangées en cartes](screenshots/preferences.webp)
 
@@ -58,6 +58,18 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le
 ![Les paramètres d'un cours : ses sections listées sur le côté, les boutons d'enregistrement toujours visibles](screenshots/course-settings.webp)
 
 ![L'accueil de l'administration : les tâches courantes en cartes, puis les onglets de l'administration](screenshots/administration.webp)
+
+### Avec IOMAD
+
+Chaque entreprise a sa couleur, son logo, sa police et son vocabulaire (ici « parcours » pour les cours), sur sa page de connexion, son tableau de bord, ses cours et le tableau de bord IOMAD.
+
+![La page de connexion d'une entreprise, dans sa couleur et sa police](screenshots/iomad-login.webp)
+
+![Le tableau de bord d'un apprenant de l'entreprise](screenshots/iomad-dashboard.webp)
+
+![Un cours de l'entreprise côté formateur](screenshots/iomad-course-teacher.webp)
+
+![Le tableau de bord IOMAD : l'entreprise, ses chiffres et ses tâches en cartes](screenshots/iomad-company-dashboard.webp)
 
 ### Compatibilité
 
