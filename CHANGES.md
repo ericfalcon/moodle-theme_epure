@@ -1,7 +1,8 @@
 # Changes
 
-## 1.0.1 — quiz navigation readable in dark mode, focused links in the colours of the page, the company logo readable
+## 1.0.1 — quiz navigation and C4L boxes readable in dark mode, focused links in the colours of the page, the company logo readable
 
+- Components for Learning (tiny_c4l) in dark mode: the boxes (key concept, tip, reminder, attention, example, reading context, expected feedback, card, learning outcomes, concept review, further reading, do and don't) keep their light colours whatever the mode, and their text, light in dark mode, could not be read. In dark mode they keep their colours, with the text and the links of the light mode.
 - Review of a quiz in dark mode: Moodle paints the buttons of the navigation light green, yellow and red whatever the mode, and the numbers, light in dark mode, could not be read. The buttons right, partly right and wrong (or not answered) are now in the colours of the states, in light and dark mode. The icon of the state, cut by Moodle in a band at the top of the button, is shown whole in its corner.
 - IOMAD: in the brand-coloured header, the logo of the company in the company switcher, made by IOMAD from its main logo for a white background, was dull or unreadable on the colour of the header. It is shown on a white backing, as on the login page (IOMAD 4.5 to 5.2).
 - A focused link (also after a click) was tinted by Moodle with the colour of the site, lightened at build time: with an IOMAD company in another colour, a line of the colour of the site showed above the link, for example a turquoise line above the section chosen in the list of a long form. Focused links are now tinted in the colours of the page, those of the company when it has its own, in light and dark mode. The rows of the list of a long form keep their look once clicked; the outline of the theme still shows the focus reached with the keyboard.

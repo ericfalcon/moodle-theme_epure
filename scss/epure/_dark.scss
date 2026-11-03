@@ -872,6 +872,37 @@
     body.epure-icons-brand .epure-activity-nav-name .activityicon {
         filter: url("#epure-icons-dark");
     }
+
+    // Components for Learning (tiny_c4l): boxes painted light whatever the mode, their text inherited, light in dark
+    // mode and lost on them. They keep their colours, with the text and the links of the light mode.
+    .c4l-keyconcept,
+    .c4lv-keyconcept,
+    .c4l-tip,
+    .c4lv-tip,
+    .c4l-reminder,
+    .c4lv-reminder,
+    .c4l-attention,
+    .c4lv-attention,
+    .c4l-readingcontext,
+    .c4lv-readingcontext,
+    .c4l-example,
+    .c4lv-example,
+    .c4l-expectedfeedback,
+    .c4lv-expectedfeedback,
+    .c4l-allpurposecard,
+    .c4lv-allpurposecard,
+    .c4l-learningoutcomes,
+    .c4lv-learningoutcomes,
+    .c4l-conceptreview,
+    .c4lv-conceptreview,
+    .c4l-furtherreading,
+    .c4lv-furtherreading,
+    .c4l-dodontcards-do,
+    .c4l-dodontcards-dont {
+        --epure-ink: #{$body-color};
+        --epure-brand-text: var(--epure-light-brand-text);
+        color: $body-color;
+    }
 }
 
 // Screens only: printed pages and their PDF stay light.
