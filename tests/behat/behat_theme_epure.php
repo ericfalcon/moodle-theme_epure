@@ -57,6 +57,11 @@ class behat_theme_epure extends behat_base {
         foreach ($data->getHash() as $row) {
             $company = (object) ($row + ['city' => 'Lyon', 'country' => 'FR', 'theme' => 'epure', 'headingcolor' => '',
                 'linkcolor' => '', 'maincolor' => '', 'customcss' => '']);
+            // Its category of courses, as IOMAD makes one for each company: with several companies, IOMAD lists them
+            // by their category and warns of two companies in the same one.
+            $category = \core_course_category::create(['name' => $company->name]);
+            $columns = $DB->get_columns(iomad::table('company'));
+            $company->{isset($columns['coursecategoryid']) ? 'coursecategoryid' : 'category'} = $category->id;
             $company->id = $DB->insert_record(iomad::table('company'), $company);
             $department = ['name' => $company->name, 'shortname' => $company->shortname];
             $department += iomad::renamed() ? ['companyid' => $company->id, 'parentid' => 0]
