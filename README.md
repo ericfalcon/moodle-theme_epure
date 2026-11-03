@@ -67,9 +67,17 @@ Each company has its own colour, logo, font and vocabulary (here « parcours » 
 
 ![The dashboard of a learner of the company](screenshots/iomad-dashboard.webp)
 
+<img src="screenshots/iomad-phone-dashboard.webp" width="320" alt="The dashboard of the company on a phone">
+
 ![A course of the company for a teacher](screenshots/iomad-course-teacher.webp)
 
 ![The IOMAD dashboard: the company, its figures and its tasks in cards](screenshots/iomad-company-dashboard.webp)
+
+![The appearance of a company, in steps like the settings of the theme: theme, identity, colours](screenshots/iomad-company-appearance.webp)
+
+![The form of a company: its sections listed on the side, the save buttons always in view](screenshots/iomad-company-edit.webp)
+
+![Creating a user of the company, with the same long form layout](screenshots/iomad-create-user.webp)
 
 ### Compatibility
 

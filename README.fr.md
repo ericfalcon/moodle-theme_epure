@@ -67,9 +67,17 @@ Chaque entreprise a sa couleur, son logo, sa police et son vocabulaire (ici « p
 
 ![Le tableau de bord d'un apprenant de l'entreprise](screenshots/iomad-dashboard.webp)
 
+<img src="screenshots/iomad-phone-dashboard.webp" width="320" alt="Le tableau de bord de l'entreprise sur téléphone">
+
 ![Un cours de l'entreprise côté formateur](screenshots/iomad-course-teacher.webp)
 
 ![Le tableau de bord IOMAD : l'entreprise, ses chiffres et ses tâches en cartes](screenshots/iomad-company-dashboard.webp)
+
+![L'apparence d'une entreprise, par étapes comme les réglages du thème : thème, identité, couleurs](screenshots/iomad-company-appearance.webp)
+
+![Le formulaire d'une entreprise : ses sections listées sur le côté, les boutons d'enregistrement toujours visibles](screenshots/iomad-company-edit.webp)
+
+![La création d'un utilisateur de l'entreprise, avec la même mise en page des formulaires longs](screenshots/iomad-create-user.webp)
 
 ### Compatibilité
 
