@@ -263,7 +263,7 @@ table.quizreviewsummary {
 }
 
 // Quiz navigation: square buttons with the number in the middle, the current page in the brand colour,
-// the answered questions tinted, and the state of the review (right, wrong) as a band at the bottom.
+// the answered questions tinted, and the state of the review (right, wrong) in its colour, with its icon.
 .path-mod-quiz #mod_quiz_navblock {
     .qnbutton {
         position: relative;
@@ -293,14 +293,20 @@ table.quizreviewsummary {
         border: 2px solid var(--epure-brand);
     }
 
+    // The mark of the state (right, wrong, invalid answer) as a small icon in the corner, whole: Moodle draws it in a
+    // band at the top (top: 0 of the quiz), where the icon was cut.
     .qnbutton .trafficlight {
         position: absolute;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        height: .3125rem;
+        top: auto;
+        right: 2px;
+        bottom: 2px;
+        left: auto;
+        width: .75rem;
+        height: .75rem;
         margin: 0;
-        border-radius: 0 0 var(--epure-radius) var(--epure-radius);
+        background-position: center;
+        background-size: .75rem;
+        border-radius: 0;
     }
 
     .qnbutton.answersaved,
@@ -313,6 +319,24 @@ table.quizreviewsummary {
     .qnbutton.notyetanswered .trafficlight,
     .qnbutton.invalidanswer .trafficlight {
         background-color: transparent;
+    }
+
+    // The review: right, partly right and wrong (or not answered) in the colours of the states, in light and dark
+    // mode. Moodle paints them light green, yellow and red whatever the mode: in dark mode, the number, light, could
+    // not be read on them.
+    @each $state, $token in (correct: done, partiallycorrect: soon, incorrect: late, notanswered: late) {
+        .qnbutton.#{$state} {
+            color: var(--epure-state-#{$token});
+            background-color: var(--epure-state-#{$token}-soft);
+        }
+
+        .qnbutton.#{$state}:not(.thispage) .thispageholder {
+            border-color: var(--epure-state-#{$token});
+        }
+
+        .qnbutton.#{$state} .trafficlight {
+            background-color: transparent;
+        }
     }
 
     a.qnbutton:hover,

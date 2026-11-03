@@ -103,6 +103,12 @@ body.epure-longform-side {
         color: var(--epure-ink);
     }
 
+    // A row of the list keeps its look once clicked: no line of the focused links (the outline of the theme still
+    // shows the focus reached with the keyboard).
+    &:focus {
+        box-shadow: none;
+    }
+
     &[aria-current="true"] {
         color: var(--epure-brand-text);
         font-weight: 600;

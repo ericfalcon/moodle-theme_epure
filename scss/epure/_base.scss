@@ -214,6 +214,22 @@ summary:focus-visible {
     box-shadow: none;
 }
 
+// Focused links: Boost tints them with the colour of the site lightened at build time, a line above and a dark line
+// below, also after a click; with an IOMAD company in another colour, that line showed the colour of the site (a
+// turquoise line above the section chosen in the list of a long form). The same marks, in the colours of the page.
+.aalink,
+#page-footer a:not([class]),
+.arrow_link,
+a:not([class]),
+.activityinstance > a {
+    &.focus,
+    &:focus {
+        color: var(--epure-ink);
+        background-color: var(--epure-brand-soft);
+        box-shadow: 0 -.2rem var(--epure-brand-soft), 0 .2rem var(--epure-ink);
+    }
+}
+
 // Rings and outlines that Bootstrap and Moodle write at build time in the colour of the site: in the colours of the
 // page, those of the IOMAD company when it has its own.
 .btn-outline-primary:focus,

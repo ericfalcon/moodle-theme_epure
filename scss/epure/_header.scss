@@ -93,6 +93,17 @@ body.epure-header-brand .navbar.fixed-top .companymenu .companybutton {
     color: var(--epure-header-on);
 }
 
+// The logo of the company in the switcher: IOMAD shows its main logo, made for a white background, dull or
+// unreadable on the colour of the header. It is shown on a white backing, as on the login page.
+body.epure-header-brand .navbar.fixed-top .companymenu .companybutton img {
+    max-height: 1.75rem;
+    padding: .125rem .375rem;
+    margin-right: .375rem;
+    vertical-align: middle;
+    background: #fff;
+    border-radius: var(--epure-radius-sm);
+}
+
 // Boost paints hovered and focused header items light grey, which hides light text.
 // The brand colour is darkened instead (or lightened under dark text), which keeps
 // or raises the contrast of the text.
