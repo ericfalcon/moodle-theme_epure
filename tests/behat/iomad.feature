@@ -51,3 +51,28 @@ Feature: The Épure theme on IOMAD
     Then "[data-region='epure-mycourses']" "css_element" should exist
     And I should see "Safety at work"
     And the page should meet accessibility standards
+
+  # Matrix of non-regression: the colours of the companies, light, dark and of mid tones, in the four displays.
+  Scenario Outline: The pages of a learner of a company in a <kind> colour meet accessibility standards
+    Given the following IOMAD companies exist:
+      | name           | shortname | theme | headingcolor |
+      | Company <kind> | c<kind>   | epure | <colour>     |
+    And the following IOMAD company users exist:
+      | user     | company |
+      | learner2 | c<kind> |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | learner2 | C1     | student |
+    When I log in as "learner2"
+    Then the brand colour of the page should come from "<colour>"
+    And the following pages should meet accessibility standards in the four displays:
+      | path                            |
+      | /my/                            |
+      | /course/view.php?id={course C1} |
+
+    Examples:
+      | kind  | colour  |
+      | light | #FFD400 |
+      | dark  | #111111 |
+      | blue  | #2D78E1 |
+      | red   | #E13C2D |

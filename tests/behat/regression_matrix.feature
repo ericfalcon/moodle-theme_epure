@@ -127,3 +127,22 @@ Feature: Matrix of non-regression of the accessibility of the Épure theme
     Then I should see "Time left"
     And I should see "Gloves protect hands."
     And the page should meet accessibility standards
+
+  Scenario: The menus and the windows have a name, open, close with Escape and give the focus back
+    Given I log in as "learner1"
+    And I am on homepage
+    # The user menu.
+    When I click on "#user-menu-toggle" "css_element"
+    Then "#user-action-menu" "css_element" should be visible
+    And the page should meet accessibility standards
+    And I press the escape key
+    And "#user-action-menu" "css_element" should not be visible
+    And the focused element is "#user-menu-toggle" "css_element"
+    # The window of the quick search.
+    And I click on ".epure-qs-button" "css_element"
+    And "#epure-qs" "css_element" should be visible
+    And the focused element is ".epure-qs-input" "css_element"
+    And the page should meet accessibility standards
+    And I press the escape key
+    And "#epure-qs" "css_element" should not be visible
+    And the focused element is ".epure-qs-button" "css_element"
