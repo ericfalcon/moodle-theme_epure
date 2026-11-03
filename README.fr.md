@@ -31,13 +31,24 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le
 - « Ma synthèse » : une page imprimable (ou en PDF) de leurs cours, progression, activités terminées, notes et attestations.
 - Une barre de navigation en bas de l'écran sur téléphone, et une application web installable.
 
+![« Mes cours » : les formations en cours avec leur progression et la prochaine activité à faire](screenshots/my-courses.webp)
+
+![Le catalogue des formations : filtres par catégorie, recherche, cartes des cours](screenshots/catalogue.webp)
+
+![Un cours côté apprenant : progression, activités en retard, la prochaine à faire et le bouton Continuer](screenshots/course-learner.webp)
+
+![Une page d'activité : sa place dans le cours, la progression, le mode lecture, les activités précédente et suivante](screenshots/activity-navigation.webp)
+
 ![La page de connexion aux couleurs de la marque](screenshots/login.webp)
 
 ### Pour les formateurs et les administrateurs
 
 - Une recherche rapide (Ctrl+K / ⌘K) dans les menus, les cours, les activités et les pages d'administration.
 - Des réglages rangés en onglets, un accueil de l'administration plus clair, des formulaires longs avec la liste de leurs sections et les boutons d'enregistrement toujours visibles.
+- Un en-tête de cours pour les formateurs : participants, actifs cette semaine, à corriger, avec des raccourcis.
 - Des e-mails aux couleurs de la marque, un modèle d'attestation aux couleurs de la marque pour le plugin Certificate (tool_certificate), utilisable avec l'activité Attestation de formation.
+
+![Un cours côté formateur : participants, actifs cette semaine, à corriger](screenshots/course-teacher.webp)
 
 ### Compatibilité
 

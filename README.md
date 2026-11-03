@@ -31,13 +31,24 @@ Choose a brand colour (or click a colour of your logo): the theme derives the wh
 - « My summary »: a printable page (or PDF) of their courses, progress, completed activities, grades and certificates.
 - A navigation bar at the bottom of the screen on phones, and an installable web app.
 
+![« My courses »: the courses in progress with their progress and the next activity to do](screenshots/my-courses.webp)
+
+![The course catalogue: filters by category, search, course cards](screenshots/catalogue.webp)
+
+![A course for a learner: progress, overdue activities, the next one to do and the button Continue](screenshots/course-learner.webp)
+
+![An activity page: its place in the course, progress, reading mode, previous and next activities](screenshots/activity-navigation.webp)
+
 ![The login page in the colours of the brand](screenshots/login.webp)
 
 ### For teachers and administrators
 
 - Quick search (Ctrl+K / ⌘K) across menus, courses, activities and administration pages.
 - Settings grouped in tabs, a clearer administration home, long forms with their sections listed and the save buttons always in view.
+- A course header for teachers: participants, active this week, to grade, with shortcuts.
 - Branded e-mails, a certificate template in the brand colours for the plugin Certificate (tool_certificate), usable with the activity Course certificate.
+
+![A course for a teacher: participants, active this week, to grade](screenshots/course-teacher.webp)
 
 ### Compatibility
 
