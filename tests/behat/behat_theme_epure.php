@@ -243,6 +243,23 @@ class behat_theme_epure extends behat_base {
     }
 
     /**
+     * The template of certificate of Épure, as an administrator makes it (« Certificate — Acceptance test site »).
+     * Skips the scenario without the activity Course certificate (mod_coursecertificate) and its plugin Certificate.
+     *
+     * @Given /^the certificate template of Épure exists$/
+     */
+    public function the_certificate_template_of_epure_exists(): void {
+        if (
+            !\theme_epure\certificate_template::available()
+                || \core_component::get_component_directory('mod_coursecertificate') === null
+        ) {
+            throw new SkippedException('The activity Course certificate (mod_coursecertificate) is not installed.');
+        }
+        \core\session\manager::set_user(get_admin());
+        \theme_epure\certificate_template::create();
+    }
+
+    /**
      * The brand colour of the site, its styles built again.
      *
      * @Given /^the brand colour of the site is "(?P<colour>#[0-9A-Fa-f]{6})"$/

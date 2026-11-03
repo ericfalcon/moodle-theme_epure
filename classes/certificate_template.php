@@ -36,6 +36,9 @@ class certificate_template {
     /** @var int Width of the box of the logo, in millimetres. */
     protected const LOGO_WIDTH = 60;
 
+    /** @var int Width of the texts in millimetres: a long name of course goes on two lines inside the frame. */
+    protected const TEXT_WIDTH = 250;
+
     /** @var int Height of the box of the logo, in millimetres: from 24 mm, it stops well above the title at 58 mm. */
     protected const LOGO_HEIGHT = 24;
 
@@ -101,10 +104,10 @@ class certificate_template {
                 ], $image['content']);
             }
         };
-        // A line of text centred on the page.
+        // A text centred on the page, its long lines wrapped inside the frame.
         $text = fn(string $name, string $element, string $data, string $font, int $size, string $colour, int $y) => [
             'name' => $name, 'element' => $element, 'data' => $data, 'font' => $font, 'fontsize' => $size,
-            'colour' => $colour, 'posx' => self::MIDDLE, 'posy' => $y, 'width' => 0, 'refpoint' => 1,
+            'colour' => $colour, 'posx' => self::MIDDLE, 'posy' => $y, 'width' => self::TEXT_WIDTH, 'refpoint' => 1,
         ];
 
         // The frame of the brand, drawn for the whole page.
@@ -131,11 +134,11 @@ class certificate_template {
         $completing = get_string('certtemplate_completing', 'theme_epure');
         $add($text($completing, 'text', $completing, 'freesans', 13, self::INK, 110));
         $course = json_encode(['display' => 'coursefullname']);
-        $add($text(get_string('fullnamecourse'), 'program', $course, 'freesansb', 20, $colours['text'], 119));
+        $add($text(get_string('fullnamecourse'), 'program', $course, 'freesansb', 18, $colours['text'], 119));
         $issued = get_string('certtemplate_issued', 'theme_epure');
-        $add($text($issued, 'text', $issued, 'freesans', 11, self::INK, 140));
+        $add($text($issued, 'text', $issued, 'freesans', 11, self::INK, 145));
         $date = json_encode(['dateitem' => -1, 'dateformat' => 'strftimedate']);
-        $add($text(get_string('date'), 'date', $date, 'freesansb', 12, self::INK, 146));
+        $add($text(get_string('date'), 'date', $date, 'freesansb', 12, self::INK, 151));
 
         // The QR code to check the certificate, at the bottom on the left; the name of the site on the right.
         $add([

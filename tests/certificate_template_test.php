@@ -66,6 +66,16 @@ final class certificate_template_test extends \advanced_testcase {
         $title = reset($titles);
         $this->assertSame(palette::derive('#0f766e')['text'], $title->colour);
 
+        // The name of the course wraps inside the frame (its box from 23 to 273 mm of the 297 of the page, the frame at
+        // about 11 mm from the edges), the date under two of its lines.
+        $course = current(array_filter($elements, fn($element) => $element->element === 'program'));
+        $this->assertEquals(250, $course->width);
+        $this->assertEquals(1, $course->refpoint);
+        $this->assertGreaterThanOrEqual(20, $course->posx - $course->width / 2);
+        $this->assertLessThanOrEqual(277, $course->posx + $course->width / 2);
+        $date = current(array_filter($elements, fn($element) => $element->element === 'date'));
+        $this->assertGreaterThanOrEqual($course->posy + 30, $date->posy);
+
         // No logo: no image besides the frame.
         $this->assertNull(certificate_template::logo());
         $this->assertCount(1, array_filter($types, fn($type) => $type === 'image'));

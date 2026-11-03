@@ -221,3 +221,28 @@ Feature: Accessibility of the Épure theme
     And I should see "Links whose text does not say where they go" in the "Before saving: accessibility" "dialogue"
     And I click on "Save anyway" "button" in the "Before saving: accessibility" "dialogue"
     And I should see "here" in the "region-main" "region"
+
+  Scenario: A certificate of the activity Course certificate, on the template of Épure, meets accessibility standards
+    Given the certificate template of Épure exists
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | teacher1 | Paul      | Durand   | teacher1@example.com |
+    And the following "courses" exist:
+      | fullname                                                                                                   | shortname |
+      | Prevention of the risks linked to physical activity in health and social care establishments, initial session | PRAP      |
+    And the following "course enrolments" exist:
+      | user     | course | role           |
+      | learner1 | PRAP   | student        |
+      | teacher1 | PRAP   | editingteacher |
+    And the following "activities" exist:
+      | activity          | course | name        | idnumber | template                              |
+      | coursecertificate | PRAP   | Certificate | cert1    | Certificate — Acceptance test site |
+    When I log in as "learner1"
+    Then the following pages should meet accessibility standards in the four displays:
+      | path                                            |
+      | /mod/coursecertificate/view.php?id={cm cert1}   |
+    And I log out
+    And I log in as "teacher1"
+    And the following pages should meet accessibility standards in the four displays:
+      | path                                            | except     |
+      | /mod/coursecertificate/view.php?id={cm cert1}   | wide table |
