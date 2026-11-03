@@ -1,7 +1,8 @@
 # Changes
 
-## 1.0.1 — quiz navigation and C4L boxes readable in dark mode, focused links in the colours of the page, the company logo readable
+## 1.0.1 — dark mode for the quiz navigation, C4L and the Tiles format; focused links in the colours of the page; the company logo readable
 
+- Tiles format (format_tiles) in dark mode: the tiles, the sections in edit mode and the buttons of the format were painted white or light grey whatever the mode, under the light text of the dark mode. They take the surfaces of the dark mode. The headers of the sections in edit mode (Moodle's light tint of the primary colour, fixed at build time) take the tint of the brand of the mode. Checked on Moodle 5.0 with Tiles 5.0.0.23.
 - Components for Learning (tiny_c4l) in dark mode: the boxes (key concept, tip, reminder, attention, example, reading context, expected feedback, card, learning outcomes, concept review, further reading, do and don't) keep their light colours whatever the mode, and their text, light in dark mode, could not be read. In dark mode they keep their colours, with the text and the links of the light mode.
 - Review of a quiz in dark mode: Moodle paints the buttons of the navigation light green, yellow and red whatever the mode, and the numbers, light in dark mode, could not be read. The buttons right, partly right and wrong (or not answered) are now in the colours of the states, in light and dark mode. The icon of the state, cut by Moodle in a band at the top of the button, is shown whole in its corner.
 - IOMAD: in the brand-coloured header, the logo of the company in the company switcher, made by IOMAD from its main logo for a white background, was dull or unreadable on the colour of the header. It is shown on a white backing, as on the login page (IOMAD 4.5 to 5.2).

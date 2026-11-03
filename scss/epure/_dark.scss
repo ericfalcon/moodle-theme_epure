@@ -903,6 +903,25 @@
         --epure-brand-text: var(--epure-light-brand-text);
         color: $body-color;
     }
+
+    // Moodle's light tint of the primary colour (headers of the sections in edit mode, among others), fixed at build.
+    .bg-primary-light {
+        background-color: var(--epure-brand-soft);
+    }
+
+    // Tiles format (format_tiles): its tiles, its sections in edit mode and its buttons painted white or light grey
+    // whatever the mode, under the light text of the dark mode.
+    .format-tiles .course-content ul.tiles .tile:not(.phototile),
+    .format-tiles .course-content .section,
+    .format-tiles .course-content ul li.section.main:not(.delegated-section) {
+        color: var(--epure-ink);
+        background-color: var(--epure-surface);
+    }
+
+    .format-tiles .sectionbutton {
+        color: var(--epure-ink);
+        background-color: var(--epure-surface-muted);
+    }
 }
 
 // Screens only: printed pages and their PDF stay light.
