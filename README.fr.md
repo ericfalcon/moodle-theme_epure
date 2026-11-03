@@ -1,6 +1,46 @@
 # Épure (theme_epure)
 
-Thème moderne, sobre et accessible pour **Moodle 4.5 LTS et 5.x**, basé sur Boost.
+Thème moderne, sobre et accessible pour **Moodle 4.5 LTS à 5.3** et **IOMAD 4.5 à 5.2**. Enfant de Boost, il garde les pages de Moodle et ajoute ce qui manque aux apprenants, aux formateurs et aux administrateurs, sans nouvelle table en base.
+
+## Présentation
+
+### Une couleur, une palette accessible
+
+Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le thème en tire toute la palette et l'ajuste pour que le texte se lise à 4,5:1 au moins, en clair et en sombre, quelle que soit la couleur. Le contraste obtenu s'affiche sous le réglage. Avec IOMAD, chaque entreprise garde sa couleur, son logo, sa police et son vocabulaire.
+
+### L'accessibilité intégrée
+
+- Des préférences d'affichage pour chaque utilisateur (bouton « Aa », Alt + A) : taille du texte, Atkinson Hyperlegible ou OpenDyslexic, espacement du texte, lignes plus courtes, contraste renforcé, liens soulignés, animations réduites, mode clair ou sombre. Gardées dans le profil.
+- Des pages qui s'adaptent aux téléphones jusqu'à 320 px, un focus toujours visible et jamais caché sous une barre fixe, des cibles de 24 px.
+- Une déclaration d'accessibilité remplie pas à pas, mentionnée sur chaque page.
+- Un vérificateur de contenu pour les formateurs : avant l'enregistrement, il signale les images sans alternative, les tableaux sans en-têtes, les liens qui ne disent rien et les niveaux de titres sautés. Rien n'est jamais bloqué.
+- Testé à chaque modification : un pré-audit automatisé (axe-core, WCAG 2.2 A et AA) de 40 pages de Moodle et 24 pages d'IOMAD, chacune en clair, en sombre et sur deux largeurs de téléphone, et une matrice qui croise couleurs de marque, préférences d'affichage, usage au clavier et couleurs des entreprises IOMAD.
+
+### Pour les apprenants
+
+- Un tableau de bord qui montre où reprendre, ce qui est à faire cette semaine et ce qui est terminé.
+- « Mes cours » par rôle, un catalogue avec une page de présentation des cours, la progression par section, l'activité précédente et suivante sur chaque activité, un mode lecture.
+- « Ma synthèse » : une page imprimable (ou en PDF) de leurs cours, progression, activités terminées, notes et attestations.
+- Une barre de navigation en bas de l'écran sur téléphone, et une application web installable.
+
+### Pour les formateurs et les administrateurs
+
+- Une recherche rapide (Ctrl+K / ⌘K) dans les menus, les cours, les activités et les pages d'administration.
+- Des réglages rangés en onglets, un accueil de l'administration plus clair, des formulaires longs avec la liste de leurs sections et les boutons d'enregistrement toujours visibles.
+- Des e-mails aux couleurs de la marque, un modèle d'attestation aux couleurs de la marque pour le plugin Certificate (tool_certificate), utilisable avec l'activité Attestation de formation.
+
+### Compatibilité
+
+- Moodle 4.5 à 5.3, IOMAD 4.5 à 5.2, PHP 8.1 à 8.4, PostgreSQL et MariaDB : tous testés en intégration continue (PHPUnit, Behat, contrôles du code).
+- Facultatif : tool_certificate et mod_coursecertificate pour les attestations.
+- Données personnelles : seulement les préférences des utilisateurs, exportées et supprimées par l'API de confidentialité. Aucun service externe n'est appelé ; les polices sont fournies avec le thème (licence SIL Open Font).
+
+### À savoir
+
+Un pré-audit automatisé ne remplace pas un audit d'accessibilité manuel : les résultats de votre audit se reportent dans la déclaration d'accessibilité de votre site. Épure est un projet indépendant, sans lien avec Moodle HQ ni IOMAD.
+
+- Documentation et feuille de route : <https://github.com/ericfalcon/moodle-theme-iomad/wiki>
+- Signaler un problème : <https://github.com/ericfalcon/moodle-theme_epure/issues>
 
 ## Installation
 
