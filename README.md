@@ -1,6 +1,96 @@
 # Épure (theme_epure)
 
-A modern, clean and accessible theme for **Moodle 4.5 LTS and 5.x**, based on Boost. Documentation in French: [README.fr.md](README.fr.md).
+A modern, clean and accessible theme for **Moodle 4.5 LTS to 5.3** and **IOMAD 4.5 to 5.2**. It is a child of Boost: it keeps Moodle's pages and adds what learners, teachers and administrators miss, without new database tables. Documentation in French: [README.fr.md](README.fr.md).
+
+## Overview
+
+![The learner's dashboard: where to resume, this week, completed, badges](screenshots/learner-dashboard.webp)
+
+### One colour, an accessible palette
+
+Choose a brand colour (or click a colour of your logo): the theme derives the whole palette from it and adjusts it so that text reads at 4.5:1 at least, in light and dark mode, whatever the colour. The contrast is shown below the setting. With IOMAD, each company keeps its own colour, logo, font and vocabulary.
+
+![The brand colour setting: the colours of the logo proposed, the contrast shown](screenshots/brand-colour.webp)
+
+### Accessibility built in
+
+- Display preferences for every user (button « Aa », Alt + A): text size, Atkinson Hyperlegible or OpenDyslexic, text spacing, shorter lines, high contrast, underlined links, reduced motion, light or dark mode. Kept in the user's profile.
+
+  ![The panel « Aa » of display preferences, in light mode](screenshots/display-preferences-light.webp)
+  ![The same page in dark mode](screenshots/display-preferences-dark.webp)
+  ![The learner's dashboard in dark mode](screenshots/dashboard-dark.webp)
+
+- Pages that reflow on phones down to 320 px, focus always visible and never hidden under fixed bars, 24 px targets.
+- An accessibility statement filled in step by step, with a mention on every page.
+- A content checker for teachers: before saving, it points out images without a text alternative, tables without headers, links that say nothing and skipped heading levels. Nothing is ever blocked.
+- Tested on every change: an automated pre-audit (axe-core, WCAG 2.2 A and AA) of 40 Moodle pages and 24 IOMAD pages, each in light, dark and on two phone widths, plus a matrix crossing brand colours, display preferences, keyboard use and IOMAD company colours.
+
+### For learners
+
+- A dashboard that shows where to resume, what is due this week and what is completed.
+- « My courses » by role, a course catalogue with course presentation pages, progress per section, previous and next activity on every activity page, a reading mode.
+- « My summary »: a printable page (or PDF) of their courses, progress, completed activities, grades and certificates.
+- A navigation bar at the bottom of the screen on phones, and an installable web app.
+
+![« My courses »: the courses in progress with their progress and the next activity to do](screenshots/my-courses.webp)
+
+![The course catalogue: filters by category, search, course cards](screenshots/catalogue.webp)
+
+![A course for a learner: progress, overdue activities, the next one to do and the button Continue](screenshots/course-learner.webp)
+
+![An activity page: its place in the course, progress, reading mode, previous and next activities](screenshots/activity-navigation.webp)
+
+<img src="screenshots/phone-dashboard.webp" width="320" alt="The dashboard on a phone, with the navigation bar at the bottom of the screen"> <img src="screenshots/phone-course.webp" width="320" alt="A course on a phone: progress, the next activity and the button Continue">
+
+![The preferences of the user, grouped in cards](screenshots/preferences.webp)
+
+![The login page in the colours of the brand](screenshots/login.webp)
+
+### For teachers and administrators
+
+- Quick search (Ctrl+K / ⌘K) across menus, courses, activities and administration pages.
+- Settings grouped in tabs, a clearer administration home, long forms with their sections listed and the save buttons always in view.
+- A course header for teachers: participants, active this week, to grade, with shortcuts.
+- Branded e-mails, a certificate template in the brand colours for the plugin Certificate (tool_certificate), usable with the activity Course certificate.
+
+![A course for a teacher: participants, active this week, to grade](screenshots/course-teacher.webp)
+
+![The settings of a course: its sections listed on the side, the save buttons always in view](screenshots/course-settings.webp)
+
+![The administration home: the common tasks in cards, then the tabs of the administration](screenshots/administration.webp)
+
+### With IOMAD
+
+Each company has its own colour, logo, font and vocabulary (here « parcours » for courses), on its login page, its dashboard, its courses and the IOMAD dashboard.
+
+![The login page of a company, in its colour and font](screenshots/iomad-login.webp)
+
+![The dashboard of a learner of the company](screenshots/iomad-dashboard.webp)
+
+<img src="screenshots/iomad-phone-dashboard.webp" width="320" alt="The dashboard of the company on a phone">
+
+![A course of the company for a teacher](screenshots/iomad-course-teacher.webp)
+
+![The IOMAD dashboard: the company, its figures and its tasks in cards](screenshots/iomad-company-dashboard.webp)
+
+![The appearance of a company, in steps like the settings of the theme: theme, identity, colours](screenshots/iomad-company-appearance.webp)
+
+![The form of a company: its sections listed on the side, the save buttons always in view](screenshots/iomad-company-edit.webp)
+
+![Creating a user of the company, with the same long form layout](screenshots/iomad-create-user.webp)
+
+### Compatibility
+
+- Moodle 4.5 to 5.3, IOMAD 4.5 to 5.2, PHP 8.1 to 8.4, PostgreSQL and MariaDB: all tested in continuous integration (PHPUnit, Behat, code checks).
+- Optional: tool_certificate and mod_coursecertificate for certificates.
+- Privacy: user preferences only, exported and deleted with the privacy API. No external service is called; the fonts are bundled (SIL Open Font License).
+
+### Notes
+
+An automated pre-audit does not replace a manual accessibility audit: the results of your own audit go in the accessibility statement of your site. Épure is an independent project, not affiliated with Moodle HQ or IOMAD.
+
+- Documentation (in French) and roadmap: <https://github.com/ericfalcon/moodle-theme-iomad/wiki>
+- Bug reports: <https://github.com/ericfalcon/moodle-theme_epure/issues>
 
 ## Installation
 

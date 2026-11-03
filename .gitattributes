@@ -1,0 +1,3 @@
+# Screenshots of the README: in the repository, not in the archives of the plugin.
+screenshots/ export-ignore
+.github/ export-ignore
