@@ -221,6 +221,84 @@ class behat_theme_epure extends behat_base {
     }
 
     /**
+     * The brand colour of the site, its styles built again.
+     *
+     * @Given /^the brand colour of the site is "(?P<colour>#[0-9A-Fa-f]{6})"$/
+     * @param string $colour Colour.
+     */
+    public function the_brand_colour_of_the_site_is(string $colour): void {
+        set_config('brandcolor', $colour, 'theme_epure');
+        theme_reset_all_caches();
+    }
+
+    /**
+     * Each element reached with the keyboard (the first 60 of the page), once focused, is not hidden under a bar fixed at
+     * the top or the bottom of the screen (WCAG 2.4.11), on a computer (1300 pixels) and on a phone (390 pixels). The
+     * element is focused as with the key Tab, then given the time of the theme to move it clear of the bars.
+     *
+     * @Then /^the elements focused with the keyboard should not be hidden under a fixed bar on the pages:$/
+     * @param TableNode $data Column path.
+     */
+    public function the_elements_focused_should_not_be_hidden_under_a_fixed_bar(TableNode $data): void {
+        $list = <<<'JS'
+            window.epureFocusables = Array.from(document.querySelectorAll(
+                'a[href], button, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
+            )).filter((element) => !element.disabled && element.getClientRects().length > 0
+                && getComputedStyle(element).visibility !== 'hidden').slice(0, 60);
+            return window.epureFocusables.length;
+        JS;
+        $failures = [];
+        foreach ($data->getHash() as $row) {
+            $path = $this->epure_path($row['path']);
+            foreach ([1300, 390] as $width) {
+                $this->getSession()->resizeWindow($width, 900);
+                $this->getSession()->visit($this->locate_path($path));
+                $this->wait_for_pending_js();
+                $count = (int) $this->getSession()->evaluateScript($list);
+                for ($i = 0; $i < $count; $i++) {
+                    $this->getSession()->executeScript("window.epureFocusables[{$i}].focus();");
+                    $this->getSession()->wait(150);
+                    $hidden = $this->getSession()->evaluateScript(<<<JS
+                        return (() => {
+                            const element = window.epureFocusables[{$i}];
+                            if (document.activeElement !== element) {
+                                return '';
+                            }
+                            const rect = element.getBoundingClientRect();
+                            const x = Math.min(Math.max(rect.left + rect.width / 2, 0), window.innerWidth - 1);
+                            const y = rect.top + rect.height / 2;
+                            if (!rect.width || !rect.height || y < 0 || y >= window.innerHeight) {
+                                return '';
+                            }
+                            const top = document.elementFromPoint(x, y);
+                            if (!top || element.contains(top) || top.contains(element)) {
+                                return '';
+                            }
+                            for (let node = top; node && node !== document.body; node = node.parentElement) {
+                                const position = getComputedStyle(node).position;
+                                if ((position === 'fixed' || position === 'sticky') && !node.contains(element)) {
+                                    const name = (element.textContent || element.getAttribute('aria-label')
+                                        || element.name || element.id || element.tagName).trim().slice(0, 40);
+                                    return name + ' under ' + node.tagName.toLowerCase()
+                                        + (node.className ? '.' + String(node.className).trim().split(/\s+/)[0] : '');
+                                }
+                            }
+                            return '';
+                        })();
+                    JS);
+                    if ($hidden) {
+                        $failures[] = "{$row['path']} ({$width} px): {$hidden}";
+                    }
+                }
+            }
+        }
+        $this->getSession()->resizeWindow(1366, 900);
+        if ($failures) {
+            throw new ExpectationException(count($failures) . " failures:\n" . implode("\n", $failures), $this->getSession());
+        }
+    }
+
+    /**
      * Gives an IOMAD company a logo, as IOMAD stores it (core_admin, logo<id>).
      *
      * @Given /^the IOMAD company "(?P<shortname>[^"]*)" has the logo "(?P<path>[^"]*)"$/
