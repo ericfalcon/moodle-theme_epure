@@ -216,10 +216,17 @@ class behat_theme_epure extends behat_base {
                                     element.getBoundingClientRect().right > edge && !clipped(element)
                                     && !Array.from(element.children).some((child) =>
                                         child.getBoundingClientRect().right > edge)
-                                ).slice(0, 3).map((element) => element.tagName.toLowerCase()
-                                    + (element.id ? '#' + element.id : '')
-                                    + (element.className ? '.' + String(element.className).trim().split(/\s+/)
-                                        .slice(0, 2).join('.') : '')).join(', ');
+                                ).slice(0, 3).map((element) => {
+                                    // The element and the containers around it, to find where it is.
+                                    const names = [];
+                                    for (let node = element; node && node !== document.body && names.length < 5;
+                                            node = node.parentElement) {
+                                        names.push(node.tagName.toLowerCase() + (node.id ? '#' + node.id : '')
+                                            + (node.className ? '.' + String(node.className).trim().split(/\s+/)
+                                                .slice(0, 2).join('.') : ''));
+                                    }
+                                    return names.join(' < ');
+                                }).join(', ');
                             })();
                         JS);
                         $failures[] = "{$row['path']} ({$label}): the page scrolls across, by {$across} px ({$wide})";
