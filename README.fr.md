@@ -4,13 +4,21 @@ Thème moderne, sobre et accessible pour **Moodle 4.5 LTS à 5.3** et **IOMAD 4.
 
 ## Présentation
 
+![Le tableau de bord de l'apprenant : où reprendre, cette semaine, terminé, badges](screenshots/learner-dashboard.webp)
+
 ### Une couleur, une palette accessible
 
 Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le thème en tire toute la palette et l'ajuste pour que le texte se lise à 4,5:1 au moins, en clair et en sombre, quelle que soit la couleur. Le contraste obtenu s'affiche sous le réglage. Avec IOMAD, chaque entreprise garde sa couleur, son logo, sa police et son vocabulaire.
 
+![Le réglage de la couleur de marque : les couleurs du logo proposées, le contraste affiché](screenshots/brand-colour.webp)
+
 ### L'accessibilité intégrée
 
 - Des préférences d'affichage pour chaque utilisateur (bouton « Aa », Alt + A) : taille du texte, Atkinson Hyperlegible ou OpenDyslexic, espacement du texte, lignes plus courtes, contraste renforcé, liens soulignés, animations réduites, mode clair ou sombre. Gardées dans le profil.
+
+  ![Le panneau « Aa » des préférences d'affichage, en mode clair](screenshots/display-preferences-light.webp)
+  ![La même page en mode sombre](screenshots/display-preferences-dark.webp)
+
 - Des pages qui s'adaptent aux téléphones jusqu'à 320 px, un focus toujours visible et jamais caché sous une barre fixe, des cibles de 24 px.
 - Une déclaration d'accessibilité remplie pas à pas, mentionnée sur chaque page.
 - Un vérificateur de contenu pour les formateurs : avant l'enregistrement, il signale les images sans alternative, les tableaux sans en-têtes, les liens qui ne disent rien et les niveaux de titres sautés. Rien n'est jamais bloqué.
@@ -22,6 +30,8 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le
 - « Mes cours » par rôle, un catalogue avec une page de présentation des cours, la progression par section, l'activité précédente et suivante sur chaque activité, un mode lecture.
 - « Ma synthèse » : une page imprimable (ou en PDF) de leurs cours, progression, activités terminées, notes et attestations.
 - Une barre de navigation en bas de l'écran sur téléphone, et une application web installable.
+
+![La page de connexion aux couleurs de la marque](screenshots/login.webp)
 
 ### Pour les formateurs et les administrateurs
 
