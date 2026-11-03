@@ -237,10 +237,14 @@ body.epure-header-brand .navbar.fixed-top .divider {
         transform: translateY(-50%);
     }
 
-    // Pressed, on the fill of the brand: the text on the brand.
+    // Under the pointer, focused or pressed: the fill of the brand and the text on it, in light and dark mode (the
+    // colour of the brand on the fill of the brand left the text unreadable).
+    &:hover,
+    &:focus,
     &:active,
     &.active {
         color: var(--epure-on-brand);
+        background-color: var(--epure-brand);
 
         &::after {
             color: inherit;
