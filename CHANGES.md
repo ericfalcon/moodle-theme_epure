@@ -1,5 +1,9 @@
 # Changes
 
+## 1.0.1 — focused links in the colours of the page
+
+- A focused link (also after a click) was tinted by Moodle with the colour of the site, lightened at build time: with an IOMAD company in another colour, a line of the colour of the site showed above the link, for example a turquoise line above the section chosen in the list of a long form. Focused links are now tinted in the colours of the page, those of the company when it has its own, in light and dark mode. The rows of the list of a long form keep their look once clicked; the outline of the theme still shows the focus reached with the keyboard.
+
 ## 1.0.0 — stable
 
 - First stable version, from its own repository (moodle-theme_epure), the plugin at its root, for the directory of the plugins of Moodle. The same theme as 0.56.5: Moodle 4.5 to 5.3 and IOMAD 4.5 to 5.2, PHP 8.1 to 8.4, PostgreSQL and MariaDB.
