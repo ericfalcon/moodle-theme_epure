@@ -1,0 +1,182 @@
+name: Moodle plugin CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+
+    services:
+      postgres:
+        # Moodle 5.3 requires PostgreSQL 17; the earlier versions run on 16.
+        image: postgres:${{ matrix.include-moodle.pg || '16' }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
+      # MariaDB 11.4 meets the requirements of Moodle 4.5 to 5.3 (5.3 requires 11.4).
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 'yes'
+          MARIADB_CHARACTER_SET_SERVER: utf8mb4
+          MARIADB_COLLATION_SERVER: utf8mb4_unicode_ci
+        ports:
+          - 3306:3306
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval 10s --health-timeout 5s --health-retries 5
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include-moodle:
+          - { branch: MOODLE_405_STABLE, php: '8.1' }
+          - { branch: MOODLE_405_STABLE, php: '8.3', certificate: MOODLE_400_STABLE }
+          - { branch: MOODLE_500_STABLE, php: '8.3', certificate: MOODLE_500_STABLE }
+          - { branch: MOODLE_501_STABLE, php: '8.3', certificate: MOODLE_500_STABLE }
+          - { branch: MOODLE_502_STABLE, php: '8.3', certificate: MOODLE_500_STABLE }
+          - { branch: MOODLE_503_STABLE, php: '8.4', pg: '17', certificate: MOODLE_500_STABLE }
+          - { branch: MOODLE_405_STABLE, php: '8.3', db: mariadb }
+          - { branch: MOODLE_503_STABLE, php: '8.4', db: mariadb }
+          # IOMAD, whose tables and classes were renamed in 5.1 (theme_epure\iomad knows both).
+          - { branch: IOMAD_405_STABLE, php: '8.3', repo: 'https://github.com/iomad/iomad.git', certificate: MOODLE_400_STABLE }
+          - { branch: IOMAD_501_STABLE, php: '8.3', repo: 'https://github.com/iomad/iomad.git', certificate: MOODLE_500_STABLE }
+          - { branch: IOMAD_502_STABLE, php: '8.3', repo: 'https://github.com/iomad/iomad.git', certificate: MOODLE_500_STABLE }
+
+    name: theme_epure — ${{ matrix.include-moodle.branch }} — PHP ${{ matrix.include-moodle.php }} — ${{ matrix.include-moodle.db || 'pgsql' }}
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          path: repo
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.include-moodle.php }}
+          extensions: pgsql, mysqli, zip, gd, xmlrpc, soap
+          ini-values: max_input_vars=5000
+          coverage: none
+
+      - name: Initialise moodle-plugin-ci
+        run: |
+          composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
+          echo $(cd ci/bin; pwd) >> $GITHUB_PATH
+          echo $(cd ci/vendor/bin; pwd) >> $GITHUB_PATH
+          sudo locale-gen en_AU.UTF-8
+          echo "NVM_DIR=$HOME/.nvm" >> $GITHUB_ENV
+
+      # IOMAD: its themes declare third-party files they do not ship (amd/src/bootstrap/, amd/src/index.js), which
+      # stops moodle-plugin-ci (grunt ignorefiles); they are added, empty, to a local clone, installed from there.
+      # The index of auth_iomadoidc (IOMAD 5.2) gets the prefix of the tables, for PHPUnit and Behat to install side by side,
+      # and tool_checklearningrecords (IOMAD 5.1, 5.2) the string it uses without defining it.
+      - name: Prepare IOMAD
+        if: ${{ matrix.include-moodle.repo }}
+        run: |
+          git clone -q --depth 1 --branch "${{ matrix.include-moodle.branch }}" "${{ matrix.include-moodle.repo }}" iomad-src
+          python3 - <<'PY'
+          import glob, os, re
+          for xml in glob.glob('iomad-src/**/thirdpartylibs.xml', recursive=True):
+              base = os.path.dirname(xml)
+              for location in re.findall(r'<location>\s*([^<]+?)\s*</location>', open(xml, encoding='utf-8').read()):
+                  path = os.path.join(base, location)
+                  if '*' in location or os.path.exists(path):
+                      continue
+                  print('Missing in IOMAD, added empty:', path)
+                  if location.endswith('/'):
+                      os.makedirs(path, exist_ok=True)
+                      open(os.path.join(path, '.gitkeep'), 'w').close()
+                  else:
+                      os.makedirs(os.path.dirname(path), exist_ok=True)
+                      open(path, 'w').close()
+          # IOMAD 5.2: auth_iomadoidc names an index without the prefix of the tables, which PHPUnit and Behat share.
+          for php in glob.glob('iomad-src/**/auth/iomadoidc/db/*.php', recursive=True):
+              code = open(php, encoding='utf-8').read()
+              fixed = code.replace("CREATE UNIQUE INDEX idx_iomadoidc_unique ON",
+                                   "CREATE UNIQUE INDEX ' . $DB->get_prefix() . 'iomadoidc_uniq ON")
+              if fixed != code:
+                  print('Index of auth_iomadoidc prefixed:', php)
+                  open(php, 'w', encoding='utf-8').write(fixed)
+          # IOMAD 5.1 and 5.2: tool_checklearningrecords uses a string it does not define, during the install of Behat.
+          for lang in glob.glob('iomad-src/**/tool/checklearningrecords/lang/en/tool_checklearningrecords.php', recursive=True):
+              code = open(lang, encoding='utf-8').read()
+              if "'brokendetails'" not in code:
+                  print('String brokendetails added:', lang)
+                  open(lang, 'a', encoding='utf-8').write("$string['brokendetails'] = 'Records still broken: {$a}';\n")
+          PY
+          # The Behat contexts of the plugins of IOMAD are left out: several stop Behat (auth_iomadsaml2's is not
+          # compatible on IOMAD 4.5, tool_iomadpolicy's defines again a step of tool_policy, local_iomadcustompage's
+          # generator is loaded before the class it extends); the scenarios of Épure use none of their steps.
+          find iomad-src -type d -path '*/tests/behat' | while read -r dir; do
+            case "${dir#iomad-src/}" in
+              *iomad*) echo "Behat of IOMAD left out: $dir"; rm -rf "$dir" ;;
+            esac
+          done
+          git -C iomad-src add -A
+          git -C iomad-src -c user.name=CI -c user.email=ci@example.com commit -q -m "CI: directory of theme_iomad" || true
+          echo "IOMAD_LOCAL=file://$GITHUB_WORKSPACE/iomad-src" >> "$GITHUB_ENV"
+
+      # The plugin Certificate (tool_certificate), for the template of certificate in the colours of the brand.
+      - name: Add the plugin Certificate
+        if: ${{ matrix.include-moodle.certificate }}
+        run: moodle-plugin-ci add-plugin --branch ${{ matrix.include-moodle.certificate }} moodleworkplace/moodle-tool_certificate
+
+      # The activity Course certificate (mod_coursecertificate), from the fork of the maintainer of Épure: the
+      # certificates issued in the courses, with the template of Épure. On the versions it supports (4.5 to 5.2): on
+      # Moodle 5.3, its page for a learner stops on an exception of the plugin, and the scenario is skipped.
+      - name: Add the activity Course certificate
+        if: ${{ matrix.include-moodle.certificate && matrix.include-moodle.branch != 'MOODLE_503_STABLE' }}
+        run: moodle-plugin-ci add-plugin --branch ${{ matrix.include-moodle.certificate }} ericfalcon/moodle-mod_coursecertificate
+
+      - name: Install Moodle and the plugin
+        run: moodle-plugin-ci install --plugin ./repo --db-host=127.0.0.1
+        env:
+          DB: ${{ matrix.include-moodle.db || 'pgsql' }}
+          MOODLE_BRANCH: ${{ matrix.include-moodle.branch }}
+          MOODLE_REPO: ${{ env.IOMAD_LOCAL || matrix.include-moodle.repo || 'https://github.com/moodle/moodle.git' }}
+
+      - name: PHP lint
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phplint
+
+      - name: Moodle code checker
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpcs --max-warnings 0
+
+      - name: Moodle PHPDoc checker
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpdoc --max-warnings 0
+
+      - name: Validating
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci validate
+
+      - name: Check upgrade savepoints
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci savepoints
+
+      - name: Mustache lint
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci mustache
+
+      # Not on IOMAD: its themes copy Boost's Behat features under the same names, which gherkinlint refuses; the
+      # code of Épure is linted on the Moodle jobs.
+      - name: Grunt
+        if: ${{ !cancelled() && !matrix.include-moodle.repo }}
+        run: moodle-plugin-ci grunt --max-lint-warnings 0
+
+      - name: PHPUnit tests
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpunit --fail-on-warning
+
+      # Behat, with the accessibility checks (axe) and the pre-audit (the same pages, each in light, dark and on phones),
+      # on every job: every version of Moodle and IOMAD, every version of PHP, PostgreSQL and MariaDB. All the scenarios
+      # on IOMAD, all but those of IOMAD on Moodle.
+      - name: Behat tests
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci behat --profile chrome --tags '${{ matrix.include-moodle.repo && '@theme_epure' || '@theme_epure&&~@theme_epure_iomad' }}'
