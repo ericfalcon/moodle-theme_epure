@@ -32,13 +32,13 @@ namespace theme_epure;
  */
 class learner_summary_document {
     /** @var string Table of the documents issued. */
-    const TABLE = 'theme_epure_summary';
+    public const TABLE = 'theme_epure_summary';
 
     /** @var string Characters of the codes: no 0, O, 1, I nor L, which read alike. */
-    const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+    public const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 
     /** @var int Characters of a code, written in groups of four (about 59 bits of chance). */
-    const LENGTH = 12;
+    public const LENGTH = 12;
 
     /**
      * Issues a document: the summary of the learner as it is now, kept with a new code.
@@ -82,8 +82,10 @@ class learner_summary_document {
             'completed' => $course['completed'],
             'datecompleted' => $course['datecompleted'],
             'grade' => $course['grade'],
-            'activities' => array_map(fn(array $activity) => ['name' => $activity['name'], 'date' => $activity['date']],
-                $course['activities']),
+            'activities' => array_map(
+                fn(array $activity) => ['name' => $activity['name'], 'date' => $activity['date']],
+                $course['activities']
+            ),
         ], $summary['courses']);
         $certificates = array_map(fn($certificate) => [
             'name' => (string) (((array) $certificate)['name'] ?? ''),
@@ -316,8 +318,10 @@ class learner_summary_document {
      */
     protected static function figures(array $data): array {
         $figures = [];
-        foreach (['mysummary_taken' => 'taken', 'mysummary_completed' => 'completedcount',
-                'mysummary_certificates' => 'certificatecount'] as $label => $key) {
+        foreach (
+            ['mysummary_taken' => 'taken', 'mysummary_completed' => 'completedcount',
+                'mysummary_certificates' => 'certificatecount'] as $label => $key
+        ) {
             $figures[] = s(get_string('mysummary_figure', 'theme_epure', [
                 'label' => get_string($label, 'theme_epure'),
                 'value' => (int) ($data[$key] ?? 0),

@@ -230,7 +230,7 @@ Feature: Accessibility of the Épure theme
     When I click on "My summary" "link" in the ".epure-learner" "css_element"
     Then I should see "Courses taken"
     And I should see "Safety at work" in the ".epure-summary" "css_element"
-    And "Print or save as PDF" "button" should exist
+    And "Print the page" "button" should exist
     And the page should meet accessibility standards
     # The summary is also in the user menu and in the reports of the profile.
     And I follow "Profile" in the user menu
