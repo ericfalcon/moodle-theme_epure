@@ -87,6 +87,19 @@ class hook_callbacks {
     }
 
     /**
+     * The warning of the theme settings when the vocabulary of the companies cannot be applied: with IOMAD, when
+     * config.php sets another custom string manager.
+     *
+     * @return string|null HTML, or null when there is nothing to say.
+     */
+    public static function string_manager_warning(): ?string {
+        if (!company_style::iomad_installed() || self::string_manager_available()) {
+            return null;
+        }
+        return \html_writer::div(get_string('companyvocabunavailable', 'theme_epure'), 'alert alert-warning', ['role' => 'alert']);
+    }
+
+    /**
      * With the setting « All the companies » (« My courses » shows the courses of all the companies of a learner):
      * a course of another company of the learner opens in that company, as if they had logged in there, with its
      * theme, and its events go to that company. The company they open it in is the one they were enrolled in it

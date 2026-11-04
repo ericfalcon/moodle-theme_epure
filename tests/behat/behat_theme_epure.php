@@ -301,7 +301,13 @@ class behat_theme_epure extends behat_base {
         $card = $this->getSession()->getPage()->find('css', '.epure-error-card[data-kind="' . $kind . '"]');
         if (!$card) {
             $found = $this->getSession()->getPage()->find('css', '.epure-error-card');
-            $failures[] = $found ? 'the card is of the kind ' . $found->getAttribute('data-kind') : 'no error card';
+            // Without a card, what the page shows instead, to find why.
+            $shown = $this->getSession()->evaluateScript(
+                "return location.pathname + location.search + ' « ' + document.title + ' » '"
+                . " + (document.querySelector('#region-main, #page-content, body') || document.body).innerText"
+                . ".replace(/\\s+/g, ' ').slice(0, 300);"
+            );
+            $failures[] = $found ? 'the card is of the kind ' . $found->getAttribute('data-kind') : 'no error card: ' . $shown;
         } else {
             foreach (['.epure-error-title' => 'error_' . $kind, '.epure-error-lead' => 'error_' . $kind . '_lead'] as $css => $id) {
                 $element = $card->find('css', $css);

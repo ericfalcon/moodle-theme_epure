@@ -119,12 +119,8 @@ if ($ADMIN->fulltree) {
 
     // With IOMAD, the vocabulary of the companies is turned off when config.php sets another string manager: said here
     // too, where the administrators look, as on the page of the vocabulary.
-    if (\theme_epure\company_style::iomad_installed() && !\theme_epure\hook_callbacks::string_manager_available()) {
-        $page->add(new admin_setting_heading(
-            'theme_epure/vocabularyunavailable',
-            '',
-            html_writer::div(get_string('companyvocabunavailable', 'theme_epure'), 'alert alert-warning', ['role' => 'alert'])
-        ));
+    if (($warning = \theme_epure\hook_callbacks::string_manager_warning()) !== null) {
+        $page->add(new admin_setting_heading('theme_epure/vocabularyunavailable', '', $warning));
     }
 
     $page->add(new admin_setting_heading(

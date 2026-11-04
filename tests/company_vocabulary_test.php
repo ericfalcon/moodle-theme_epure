@@ -166,30 +166,21 @@ final class company_vocabulary_test extends \advanced_testcase {
         $CFG->config_php_settings['customstringmanager'] = '\\local_other\\string_manager';
         try {
             $this->assertFalse(hook_callbacks::string_manager_available());
-            require_once($CFG->libdir . '/adminlib.php');
-            $this->setAdminUser();
-            $warning = null;
-            foreach (admin_get_root(true, true)->locate('themesettingepure')->get_tabs() as $tab) {
-                $warning = $warning ?? ($tab->settings->vocabularyunavailable ?? null);
-            }
+            $warning = hook_callbacks::string_manager_warning();
             if (\theme_epure\iomad::installed()) {
-                $this->assertNotNull($warning);
-                $this->assertStringContainsString(
-                    get_string('companyvocabunavailable', 'theme_epure'),
-                    $warning->description
-                );
+                $this->assertStringContainsString(get_string('companyvocabunavailable', 'theme_epure'), $warning);
             } else {
                 $this->assertNull($warning);
             }
             $CFG->config_php_settings['customstringmanager'] = '\\' . \theme_epure\string_manager::class;
             $this->assertTrue(hook_callbacks::string_manager_available());
+            $this->assertNull(hook_callbacks::string_manager_warning());
         } finally {
             if ($saved === null) {
                 unset($CFG->config_php_settings['customstringmanager']);
             } else {
                 $CFG->config_php_settings['customstringmanager'] = $saved;
             }
-            admin_get_root(true, true);
         }
     }
 
