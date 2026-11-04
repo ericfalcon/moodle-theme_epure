@@ -26,6 +26,11 @@ defined('MOODLE_INTERNAL') || die();
 
 // The vocabulary fields of the IOMAD company form are saved with the company. Without IOMAD, these events never happen.
 $observers = [
+    // The « My summary » documents of a user deleted are deleted with them.
+    [
+        'eventname' => '\core\event\user_deleted',
+        'callback' => '\theme_epure\observer::user_deleted',
+    ],
     [
         'eventname' => '\block_iomad_company_admin\event\company_created',
         'callback' => '\theme_epure\observer::company_saved',

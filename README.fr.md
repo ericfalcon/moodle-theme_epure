@@ -1,6 +1,6 @@
 # Épure (theme_epure)
 
-Thème moderne, sobre et accessible pour **Moodle 4.5 LTS à 5.3** et **IOMAD 4.5 à 5.2**. Enfant de Boost, il garde les pages de Moodle et ajoute ce qui manque aux apprenants, aux formateurs et aux administrateurs, sans nouvelle table en base.
+Thème moderne, sobre et accessible pour **Moodle 4.5 LTS à 5.3** et **IOMAD 4.5 à 5.2**. Enfant de Boost, il garde les pages de Moodle et ajoute ce qui manque aux apprenants, aux formateurs et aux administrateurs, avec deux petites tables à lui (les chaînes écrites par le vocabulaire, les documents « Ma synthèse » émis).
 
 ## Présentation
 
@@ -29,7 +29,7 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le
 
 - Un tableau de bord qui montre où reprendre, ce qui est à faire cette semaine et ce qui est terminé.
 - « Mes cours » par rôle, un catalogue avec une page de présentation des cours, la progression par section, l'activité précédente et suivante sur chaque activité, un mode lecture.
-- « Ma synthèse » : une page imprimable (ou en PDF) de leurs cours, progression, activités terminées, notes et attestations.
+- « Ma synthèse » : une page imprimable de leurs cours, progression, activités terminées, notes et attestations, ou un PDF avec un code de vérification que chacun peut contrôler sur la plateforme.
 - Une barre de navigation en bas de l'écran sur téléphone, et une application web installable.
 
 ![« Mes cours » : les formations en cours avec leur progression et la prochaine activité à faire](screenshots/my-courses.webp)
@@ -83,7 +83,7 @@ Chaque entreprise a sa couleur, son logo, sa police et son vocabulaire (ici « p
 
 - Moodle 4.5 à 5.3, IOMAD 4.5 à 5.2, PHP 8.1 à 8.4, PostgreSQL et MariaDB : tous testés en intégration continue (PHPUnit, Behat, contrôles du code).
 - Facultatif : tool_certificate et mod_coursecertificate pour les attestations.
-- Données personnelles : seulement les préférences des utilisateurs, exportées et supprimées par l'API de confidentialité. Aucun service externe n'est appelé ; les polices sont fournies avec le thème (licence SIL Open Font).
+- Données personnelles : les préférences des utilisateurs et les documents « Ma synthèse » émis, exportés et supprimés par l'API de confidentialité (et à la suppression d'un utilisateur). Aucun service externe n'est appelé ; les polices sont fournies avec le thème (licence SIL Open Font).
 
 ### À savoir
 
@@ -115,7 +115,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
-- **1.0.2** : aucun réglage ne change. La chaîne `quicksearch_searching` est retirée, car elle n'est plus affichée.
+- **1.0.2** : aucun réglage ne change. La mise à jour crée la table `theme_epure_summary` (les documents « Ma synthèse » émis en PDF), et la page de vérification `theme/epure/verify.php` est ouverte sans connexion. La chaîne `quicksearch_searching` est retirée, car elle n'est plus affichée.
 - **1.0.0** : le plugin a rejoint son propre dépôt, [moodle-theme_epure](https://github.com/ericfalcon/moodle-theme_epure), le plugin à sa racine. Le dossier reste `theme/epure` et les réglages sont conservés ; téléchargez les nouvelles versions depuis ses releases.
 - **0.28.5** : les choix du style des coins s'appellent « Peu arrondis (coins presque droits) », « Moyennement arrondis » et « Très arrondis » au lieu de « Net », « Doux » et « Arrondi ». Les valeurs enregistrées ne changent pas.
 - **0.26.0** : les réglages sont rangés en onglets (Identité, Navigation, Cours, Accessibilité, Apparence, Mobile, Page de connexion, Pied de page, Réglages avancés). Leurs noms et leurs valeurs enregistrées ne changent pas.
@@ -377,6 +377,12 @@ Pour un utilisateur qui suit des cours, le tableau de bord commence par un aper�
 - **Terminé** : les cours terminés, avec leur date, et un lien vers ses attestations quand la plateforme en délivre (IOMAD, Certificate, Custom certificate).
 
 L'aperçu se désactive dans l'onglet Cours du thème (« Aperçu de l'apprenant sur le tableau de bord ») ; avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche. Sur téléphone, le tableau de bord peut ne montrer que l'aperçu, sans les blocs (onglet Mobile, « Tableau de bord sur téléphone »).
+
+### Ma synthèse
+
+Avec le réglage « Ma synthèse » (onglet Cours, désactivé par défaut), l'apprenant trouve un lien « Ma synthèse » dans la partie « Terminé » de sa vue d'ensemble, dans le menu utilisateur (après « Notes ») et dans les rapports de son profil. La page liste les cours qu'il suit avec leur progression, la date d'achèvement, sa note (quand le cours montre les notes aux apprenants) et les activités terminées avec leur date, puis ses attestations. Ses propres données seulement. Un bouton imprime la page, aux couleurs de la marque. Une note dit ce qu'elle prouve : ce que la plateforme a enregistré, pas à elle seule l'assiduité ni l'atteinte des objectifs.
+
+**PDF avec un code de vérification.** « Télécharger le PDF » émet un document : la synthèse de ce moment, aux couleurs de la marque (de l'entreprise IOMAD de l'apprenant avec IOMAD), avec un code de vérification (douze lettres et chiffres, par exemple ABCD-EFGH-JKMN) et un QR code. Chaque document est conservé avec ce qu'il montrait, sa date et son code. Qui le reçoit (employeur, financeur, auditeur) scanne le QR code ou saisit le code sur la page de vérification (`/theme/epure/verify.php`, ouverte sans connexion, comme les codes des attestations de Moodle) : la plateforme montre ce qu'elle a émis sous ce code, à quelle date, pour le comparer au document. Un code inconnu indique qu'aucun document ne le porte. Le PDF est produit par la bibliothèque PDF de Moodle (TCPDF) : aucune bibliothèque n'est ajoutée. Il n'est pas balisé pour les lecteurs d'écran : la page reste la version accessible, et le dit. Les documents sont exportés et supprimés par l'API de confidentialité, et supprimés avec l'utilisateur.
 
 ## Page de cours
 

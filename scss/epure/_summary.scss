@@ -14,6 +14,38 @@
     margin-bottom: 1.25rem;
 }
 
+// The PDF with a code of verification first, then the print of the page.
+.epure-summary-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.epure-summary-pdfnote {
+    margin-top: -.5rem;
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+}
+
+// Page of verification: the field of the code and its button on one line, which wraps on phones.
+.epure-summary-verify-form {
+    max-width: 32rem;
+    margin-bottom: 1.5rem;
+}
+
+.epure-summary-verify-field {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+
+    .form-control {
+        flex: 1 1 12rem;
+        font-family: $font-family-monospace;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+    }
+}
+
 .epure-summary-name {
     margin: 0;
     font-size: 1.25rem;

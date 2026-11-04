@@ -264,7 +264,7 @@ Les chantiers du thème prévus ci-dessus (0.29 à 0.57) sont livrés. Avant la 
 
 - [ ] **Aide des raccourcis clavier** : la touche « ? » affiche la liste des raccourcis (Ctrl+K, Alt+A…), dans une fenêtre accessible.
 - [ ] **Recherche rapide pour les visiteurs** : sur les pages publiques (catalogue, présentation des cours, connexion), limitée à ce qu'un visiteur peut voir.
-- [ ] **« Ma synthèse » en PDF côté serveur**, avec la bibliothèque PDF de Moodle (TCPDF), pour un document daté et contrôlé, au lieu de l'impression du navigateur.
+- [x] **« Ma synthèse » en PDF côté serveur** (1.0.2), avec la bibliothèque PDF de Moodle (TCPDF) : un document daté, aux couleurs de la marque, avec un code de vérification et un QR code ; la page de vérification, ouverte sans connexion, montre ce que la plateforme a émis sous ce code. La page reste la version accessible (TCPDF ne produit pas de PDF balisés).
 - [ ] **Référence des variables CSS `--epure-*`** : une page de documentation des propriétés exposées, pour les SCSS personnalisés et les intégrateurs.
 - [ ] **Checklist « rendre mes cours accessibles »** pour les formateurs, liée depuis le vérificateur de contenu (page imprimable ou PDF).
 

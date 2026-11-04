@@ -31,7 +31,8 @@
             {"name": "First aid", "url": "#", "category": "", "hasprogress": true, "progress": 40, "completed": false,
                 "datecompleted": "", "grade": "", "hasactivities": false, "activities": []}
         ],
-        "hascertificates": true, "certificates": [{"name": "Safety at work", "date": "12/10/26", "url": "#"}]
+        "hascertificates": true, "certificates": [{"name": "Safety at work", "date": "12/10/26", "url": "#"}],
+        "pdfurl": "#"
     }
 }}
 <div class="epure-summary">
@@ -40,10 +41,16 @@
             <p class="epure-summary-name">{{fullname}}</p>
             <p class="epure-summary-date">{{#str}}mysummary_date, theme_epure, {{date}}{{/str}}</p>
         </div>
-        <button type="button" class="btn btn-primary d-print-none" data-action="epure-summary-print">
-            <i class="fa fa-print" aria-hidden="true"></i> {{#str}}mysummary_print, theme_epure{{/str}}
-        </button>
+        <div class="epure-summary-actions d-print-none">
+            <a class="btn btn-primary" href="{{pdfurl}}">
+                <i class="fa fa-file-pdf" aria-hidden="true"></i> {{#str}}mysummary_pdf, theme_epure{{/str}}
+            </a>
+            <button type="button" class="btn btn-outline-secondary" data-action="epure-summary-print">
+                <i class="fa fa-print" aria-hidden="true"></i> {{#str}}mysummary_print, theme_epure{{/str}}
+            </button>
+        </div>
     </div>
+    <p class="epure-summary-pdfnote d-print-none">{{#str}}mysummary_pdf_note, theme_epure{{/str}}</p>
 
     <dl class="epure-summary-figures">
         <div><dt>{{#str}}mysummary_taken, theme_epure{{/str}}</dt><dd>{{taken}}</dd></div>

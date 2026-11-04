@@ -111,6 +111,25 @@ function xmldb_theme_epure_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026103150, 'theme', 'epure');
     }
 
+    // The « My summary » as a PDF with a code of verification (1.0.2): the documents issued.
+    if ($oldversion < 2026110403) {
+        $table = new xmldb_table('theme_epure_summary');
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('code', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('data', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
+        $table->add_field('contenthash', XMLDB_TYPE_CHAR, '64', null, XMLDB_NOTNULL, null, null);
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('userid', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
+        $table->add_index('code', XMLDB_INDEX_UNIQUE, ['code']);
+        $dbman = $DB->get_manager();
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+        upgrade_plugin_savepoint(true, 2026110403, 'theme', 'epure');
+    }
+
     // The strings of Épure take the vocabulary too (« Search my courses »), but those describing it, and change with
     // its versions: after each upgrade, it is applied again in the languages it is used in.
     foreach (\theme_epure\vocabulary\manager::languages() as $lang) {

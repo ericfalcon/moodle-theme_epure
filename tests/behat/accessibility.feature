@@ -166,6 +166,31 @@ Feature: Accessibility of the Épure theme
     And "#epure-qs" "css_element" should not be visible
     And the focused element is ".epure-qs-button" "css_element"
 
+  Scenario: My summary as a PDF with a code of verification, which anyone can check
+    Given the following "courses" exist:
+      | fullname       | shortname |
+      | Safety at work | SAFE      |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | learner1 | SAFE   | student |
+    And the following config values are set as admin:
+      | mysummary | 1 | theme_epure |
+    And I log in as "learner1"
+    When I visit "/theme/epure/summary.php"
+    Then "Download the PDF" "link" should exist
+    And the user "learner1" has a summary document with the code "ABCD-EFGH-JKMN"
+    And I log out
+    # Logged out, with the code as typed: the document as issued.
+    And I visit "/theme/epure/verify.php?code=abcd-efgh-jkmn"
+    And I should see "Lea Learner" in the ".epure-summary-verify-document" "css_element"
+    And I should see "Safety at work" in the ".epure-summary-verify-document" "css_element"
+    And the page should meet accessibility standards
+    # A code no document has.
+    And I set the field "Code of verification" to "ABCD-EFGH-JKMP"
+    And I press "Verify"
+    And I should see "No document has the code ABCD-EFGH-JKMP"
+    And the page should meet accessibility standards
+
   Scenario: The long settings forms list their sections and keep the buttons to save in view
     Given the following "courses" exist:
       | fullname       | shortname |

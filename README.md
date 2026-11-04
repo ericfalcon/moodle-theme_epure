@@ -1,6 +1,6 @@
 # Épure (theme_epure)
 
-A modern, clean and accessible theme for **Moodle 4.5 LTS to 5.3** and **IOMAD 4.5 to 5.2**. It is a child of Boost: it keeps Moodle's pages and adds what learners, teachers and administrators miss, without new database tables. Documentation in French: [README.fr.md](README.fr.md).
+A modern, clean and accessible theme for **Moodle 4.5 LTS to 5.3** and **IOMAD 4.5 to 5.2**. It is a child of Boost: it keeps Moodle's pages and adds what learners, teachers and administrators miss, with two small tables of its own (the strings written by the vocabulary, the « My summary » documents issued). Documentation in French: [README.fr.md](README.fr.md).
 
 ## Overview
 
@@ -29,7 +29,7 @@ Choose a brand colour (or click a colour of your logo): the theme derives the wh
 
 - A dashboard that shows where to resume, what is due this week and what is completed.
 - « My courses » by role, a course catalogue with course presentation pages, progress per section, previous and next activity on every activity page, a reading mode.
-- « My summary »: a printable page (or PDF) of their courses, progress, completed activities, grades and certificates.
+- « My summary »: a printable page of their courses, progress, completed activities, grades and certificates, or a PDF with a code of verification that anyone can check on the platform.
 - A navigation bar at the bottom of the screen on phones, and an installable web app.
 
 ![« My courses »: the courses in progress with their progress and the next activity to do](screenshots/my-courses.webp)
@@ -83,7 +83,7 @@ Each company has its own colour, logo, font and vocabulary (here « parcours » 
 
 - Moodle 4.5 to 5.3, IOMAD 4.5 to 5.2, PHP 8.1 to 8.4, PostgreSQL and MariaDB: all tested in continuous integration (PHPUnit, Behat, code checks).
 - Optional: tool_certificate and mod_coursecertificate for certificates.
-- Privacy: user preferences only, exported and deleted with the privacy API. No external service is called; the fonts are bundled (SIL Open Font License).
+- Privacy: user preferences and the « My summary » documents issued, exported and deleted with the privacy API (and when a user is deleted). No external service is called; the fonts are bundled (SIL Open Font License).
 
 ### Notes
 
@@ -115,7 +115,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
-- **1.0.2**: no setting changes. The string `quicksearch_searching` is removed, as it is no longer shown.
+- **1.0.2**: no setting changes. The upgrade creates the table `theme_epure_summary` (the « My summary » documents issued as PDF), and the page of verification `theme/epure/verify.php` is open without logging in. The string `quicksearch_searching` is removed, as it is no longer shown.
 - **1.0.0**: the plugin moved to its own repository, [moodle-theme_epure](https://github.com/ericfalcon/moodle-theme_epure), with the plugin at its root. The folder stays `theme/epure` and the settings are kept; download the new versions from its releases.
 - **0.28.5**: the choices of the corner style are named « Slightly rounded (almost square corners) », « Moderately rounded » and « Very rounded » instead of « Sharp », « Soft » and « Round ». The saved values do not change.
 - **0.26.0**: the settings are grouped in tabs (Identity, Navigation, Courses, Accessibility, Appearance, Mobile, Login page, Footer, Advanced). Their names and saved values do not change.
@@ -383,7 +383,9 @@ The overview can be turned off in the theme's Courses tab ("Learner overview on 
 
 ### My summary
 
-With the setting "My summary" (Courses tab, off by default), the learner finds a link "My summary" in the "Completed" part of their overview, in the user menu (after "Grades") and in the reports of their profile. The page lists the courses they take with their progress, the date of completion, their grade (when the course shows the grades to the learners) and the activities they completed with their date, then their certificates. A button prints it, or saves it as PDF with the browser, in the colours of the brand. Their own data only. A note says what it proves: what the platform recorded, not on its own attendance nor the achievement of the objectives.
+With the setting "My summary" (Courses tab, off by default), the learner finds a link "My summary" in the "Completed" part of their overview, in the user menu (after "Grades") and in the reports of their profile. The page lists the courses they take with their progress, the date of completion, their grade (when the course shows the grades to the learners) and the activities they completed with their date, then their certificates. Their own data only. A button prints the page, in the colours of the brand.
+
+**PDF with a code of verification.** « Download the PDF » issues a document: the summary of that moment, in the colours of the brand (of the learner's IOMAD company with IOMAD), with a code of verification (twelve letters and digits, such as ABCD-EFGH-JKMN) and a QR code. Each document is kept with what it showed, its date and its code. Whoever receives it (an employer, a funder, an auditor) scans the QR code or enters the code on the page of verification (`/theme/epure/verify.php`, open without logging in, as the codes of Moodle's certificates): the platform shows what it issued under this code, on which date, to compare with the document. An unknown code says that no document has it. The PDF is made with Moodle's PDF library (TCPDF): no library is added. It is not tagged for screen readers, so the page stays the accessible version, and says so. The documents are exported and deleted with the privacy API, and deleted with the user. A note says what it proves: what the platform recorded, not on its own attendance nor the achievement of the objectives.
 
 ## Certificate template
 
