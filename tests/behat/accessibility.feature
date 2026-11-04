@@ -130,6 +130,42 @@ Feature: Accessibility of the Épure theme
     Then I should see "Risks of the place" in the "#epure-qs" "css_element"
     And the page should meet accessibility standards
 
+  Scenario: The quick search works with the keyboard alone
+    Given the following "courses" exist:
+      | fullname       | shortname |
+      | Safety at work | SAFE      |
+    And the following "activities" exist:
+      | activity | course | name               |
+      | page     | SAFE   | Risks of the place |
+      | page     | SAFE   | Rules of the place |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | learner1 | SAFE   | student |
+    And I log in as "learner1"
+    When I press the ctrl k key
+    Then "#epure-qs" "css_element" should be visible
+    And the focused element is ".epure-qs-input" "css_element"
+    And I set the field with xpath "//input[contains(@class, 'epure-qs-input')]" to "place"
+    And I wait until "Rules of the place" "text" exists
+    # The first result is chosen for Enter, without moving the screen readers to it while the user types.
+    And the "aria-activedescendant" attribute of ".epure-qs-input" "css_element" should not be set
+    And the "aria-selected" attribute of "#epure-qs-option-0" "css_element" should contain "true"
+    # One result at a time with the arrows, followed by the screen readers.
+    And I press the down key
+    And the "aria-activedescendant" attribute of ".epure-qs-input" "css_element" should contain "epure-qs-option-1"
+    And the "aria-selected" attribute of "#epure-qs-option-1" "css_element" should contain "true"
+    And the "aria-selected" attribute of "#epure-qs-option-0" "css_element" should contain "false"
+    # Tab stays in the dialogue.
+    And I press the tab key
+    And the focused element is ".epure-qs-close" "css_element"
+    And I press the tab key
+    And the focused element is ".epure-qs-input" "css_element"
+    And I press the shift tab key
+    And the focused element is ".epure-qs-close" "css_element"
+    And I press the escape key
+    And "#epure-qs" "css_element" should not be visible
+    And the focused element is ".epure-qs-button" "css_element"
+
   Scenario: The long settings forms list their sections and keep the buttons to save in view
     Given the following "courses" exist:
       | fullname       | shortname |

@@ -89,7 +89,8 @@ Chaque entreprise a sa couleur, son logo, sa police et son vocabulaire (ici « p
 
 Un pré-audit automatisé ne remplace pas un audit d'accessibilité manuel : les résultats de votre audit se reportent dans la déclaration d'accessibilité de votre site. Épure est un projet indépendant, sans lien avec Moodle HQ ni IOMAD.
 
-- Documentation et feuille de route : <https://github.com/ericfalcon/moodle-theme-iomad/wiki>
+- Documentation : [docs](docs/README.md) ; feuille de route : [ROADMAP.md](ROADMAP.md)
+- Changements de chaque version : [CHANGES.md](CHANGES.md) ; quoi faire lors d'une mise à jour : [Mise à jour](#mise-à-jour)
 - Signaler un problème : <https://github.com/ericfalcon/moodle-theme_epure/issues>
 
 ## Installation
@@ -98,11 +99,34 @@ Un pré-audit automatisé ne remplace pas un audit d'accessibilité manuel : les
 2. Connectez-vous en administrateur et lancez la mise à jour de la base de données.
 3. Choisissez Épure dans Administration du site › Apparence › Thèmes.
 
+## Mise à jour
+
+Remplacez le dossier `epure` par celui de la nouvelle version, puis lancez la mise à jour de la base de données (Administration du site › Notifications). Les réglages sont conservés.
+
+Après chaque mise à jour de Moodle, d'un paquet de langue ou d'Épure :
+
+1. lancez la mise à jour de la base de données, si Moodle la demande ;
+2. appliquez à nouveau le vocabulaire (Administration du site › Présentation › Thèmes › Épure : vocabulaire), pour que les nouvelles chaînes de Moodle prennent vos mots ;
+3. avec IOMAD, vérifiez que `config.php` ne définit pas un autre gestionnaire de chaînes (`$CFG->customstringmanager`) : il couperait les mots des entreprises. Les réglages du thème et la page du vocabulaire le signalent.
+
+La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité des réglages du thème.
+
+### Notes de mise à jour
+
+Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
+
+- **1.0.2** : aucun réglage ne change. La chaîne `quicksearch_searching` est retirée, car elle n'est plus affichée.
+- **1.0.0** : le plugin a rejoint son propre dépôt, [moodle-theme_epure](https://github.com/ericfalcon/moodle-theme_epure), le plugin à sa racine. Le dossier reste `theme/epure` et les réglages sont conservés ; téléchargez les nouvelles versions depuis ses releases.
+- **0.28.5** : les choix du style des coins s'appellent « Peu arrondis (coins presque droits) », « Moyennement arrondis » et « Très arrondis » au lieu de « Net », « Doux » et « Arrondi ». Les valeurs enregistrées ne changent pas.
+- **0.26.0** : les réglages sont rangés en onglets (Identité, Navigation, Cours, Accessibilité, Apparence, Mobile, Page de connexion, Pied de page, Réglages avancés). Leurs noms et leurs valeurs enregistrées ne changent pas.
+- **0.22.0** : les réglages sont présentés dans un autre ordre (identité de la marque, typographie et affichage, pages et navigation…), sans être renommés.
+- L'ancien plugin compagnon « Outils Épure » (`local_epure`) : le thème a repris ses réglages. Désinstallez-le dans Administration du site › Plugins › Vue d'ensemble des plugins ; la page du vocabulaire le signale tant qu'il est installé.
+
 ## Réglages
 
 Administration du site › Apparence › Thèmes › Épure.
 
-Les réglages sont rangés par sujet en onglets : Identité, Navigation, Cours, Accessibilité, Apparence, Mobile, Page de connexion, Pied de page et Réglages avancés. La version 0.26.0 les a déplacés dans ces onglets sans les renommer : les valeurs déjà enregistrées sont conservées.
+Les réglages sont rangés par sujet en onglets : Identité, Navigation, Cours, Accessibilité, Apparence, Mobile, Page de connexion, Pied de page et Réglages avancés. Les réglages gardent leur nom d'une version à l'autre ; quand l'un est déplacé ou renommé, les [notes de mise à jour](#notes-de-mise-à-jour) l'indiquent.
 
 ### Identité
 
@@ -279,7 +303,9 @@ Fonctionnement :
 - les mots restent en place quel que soit le thème utilisé par un cours ou un utilisateur ;
 - la première application prend une vingtaine de secondes par langue (Moodle charge le paquet de langue dans l'outil), les suivantes quelques secondes.
 
-Après l'installation d'une nouvelle version de Moodle ou d'un paquet de langue, appliquez à nouveau le vocabulaire pour couvrir les nouvelles chaînes.
+Après chaque mise à jour de Moodle ou d'un paquet de langue, appliquez à nouveau le vocabulaire pour couvrir les nouvelles chaînes (voir [Mise à jour](#mise-à-jour)).
+
+**Langues.** Le vocabulaire s'applique en français et en anglais, dont le thème connaît la grammaire : en français, les articles, l'élision et les accords suivent le mot choisi ; en anglais, le singulier et le pluriel. Les autres langues installées gardent la formulation de Moodle. Le même mécanisme conviendrait à l'espagnol, à l'italien ou au portugais (genre et élision) ; l'allemand demanderait davantage (déclinaisons, mots composés). Chaque nouvelle langue demande un relecteur natif et des phrases de test (voir la feuille de route).
 
 Avec IOMAD, la même page propose les mots « entreprise » et « département » pour toutes les entreprises ; chaque entreprise peut choisir les siens dans sa fiche (voir la section IOMAD).
 
@@ -412,7 +438,7 @@ Le **mode lecture** masque les panneaux latéraux et centre le contenu ; il est 
 
 Le thème vise les WCAG 2.2 niveau AA, le RGAA 4.1.2 et l'EN 301 549 : contrastes calculés (le texte sur la couleur de marque à 4,5:1 au moins, quelle qu'elle soit, au survol compris), focus clavier toujours visible, lien d'évitement, cibles d'au moins 24 × 24 px, liens soulignés dans le texte, respect du réglage « réduire les animations ».
 
-**Préférences d'affichage.** Le bouton **Aa** de l'en-tête (raccourci Alt + A, sauf pendant la saisie dans un champ : sur Mac, Option + A écrit « å ») ouvre un panneau où chaque utilisateur connecté choisit :
+**Préférences d'affichage.** Le bouton **Aa** de l'en-tête (raccourci Alt + A ; il est ignoré pendant la saisie dans un champ ou l'éditeur de texte, où cette combinaison peut écrire un caractère selon le système et la disposition du clavier : « å » avec Option + A sur Mac, « æ » ou « á » avec AltGr + A sur certaines dispositions) ouvre un panneau où chaque utilisateur connecté choisit :
 
 - la taille du texte : petite, normale, grande ou très grande (90, 100, 115 ou 130 %) ;
 - une police de lecture : celle du site, Atkinson Hyperlegible ou OpenDyslexic ;
@@ -435,7 +461,7 @@ Un thème ne rend pas une plateforme conforme à lui seul : les contenus des cou
 - **Ordre du cours** : `theme_epure\course_structure` donne les activités d'un cours dans l'ordre de la page du cours, celles d'une sous-section à la place de la sous-section (Moodle les range à la fin du cours) ; la prochaine activité, la position et les activités précédente et suivante le suivent.
 - **Cache** : la progression, la prochaine activité et la prochaine échéance de chaque cours d'un apprenant, et les événements de sa semaine, sont gardées 5 minutes dans le cache `learnerprogress`, et oubliées aussitôt quand une activité ou un cours est terminé, un devoir ou une tentative de test remis, ou que les activités ou l'achèvement du cours changent.
 - **Compatibilité** : l'intégration continue teste Moodle 4.5 à 5.3 et IOMAD 4.5, 5.1 et 5.2 ; les tests Behat couvrent les formats de cours thématique, hebdomadaire (avec une sous-section), activité unique et informel, avec axe-core, et tournent aussi sur IOMAD (un apprenant d'une entreprise voit sa couleur et son logo, un utilisateur sans entreprise la couleur du site, « Mes cours » d'IOMAD est la page par rôle d'Épure). Les scénarios IOMAD portent l'étiquette `@theme_epure_iomad`.
-- **Performances** (Moodle 4.5, apprenant, face à Boost) : feuille de style +9 %, JavaScript inchangé, HTML d'environ +10 à 15 %, aucun décalage de mise en page ; même temps serveur, sauf sur le tableau de bord, où la vue d'ensemble de l'apprenant calcule la progression de chaque cours (+130 ms avant le cache de 0.26.0 ; une fois en cache, la vue d'ensemble prend environ 5 ms au lieu de 60 à 80 ms). Détails dans le wiki (Développement).
+- **Performances** (Moodle 4.5, apprenant, face à Boost) : feuille de style +9 %, JavaScript inchangé, HTML d'environ +10 à 15 %, aucun décalage de mise en page ; même temps serveur, sauf sur le tableau de bord, où la vue d'ensemble de l'apprenant calcule la progression de chaque cours (+130 ms avant le cache de 0.26.0 ; une fois en cache, la vue d'ensemble prend environ 5 ms au lieu de 60 à 80 ms). Détails dans la documentation ([Développement](docs/D%C3%A9veloppement.md)).
 
 Les variables de la palette sont exposées en propriétés CSS (`--epure-brand`, `--epure-brand-text`, `--epure-on-brand`, etc.) pour les SCSS personnalisés.
 
@@ -446,7 +472,7 @@ vendor/bin/phpunit --testsuite theme_epure_testsuite
 vendor/bin/behat --config <behat_dataroot>/behatrun/behat/behat.yml --tags @theme_epure
 ```
 
-Les tests Behat passent l'audit axe-core de Moodle (« the page should meet accessibility standards ») sur le tableau de bord, les préférences d'affichage, la déclaration d'accessibilité et son formulaire pas à pas, la page de cours, les pages d'activité, le catalogue, la recherche rapide, les formulaires longs, la fenêtre « Ajouter un bloc », Ma synthèse et le réglage des émoticônes. Le pré-audit de la version courante (Moodle 4.5, Moodle 5.3 et IOMAD, par rôle, en clair, en sombre et sur téléphone, contrôles au clavier) est dans le wiki (Pré-audit d'accessibilité).
+Les tests Behat passent l'audit axe-core de Moodle (« the page should meet accessibility standards ») sur le tableau de bord, les préférences d'affichage, la déclaration d'accessibilité et son formulaire pas à pas, la page de cours, les pages d'activité, le catalogue, la recherche rapide, les formulaires longs, la fenêtre « Ajouter un bloc », Ma synthèse et le réglage des émoticônes. Le pré-audit de la version courante (Moodle 4.5, Moodle 5.3 et IOMAD, par rôle, en clair, en sombre et sur téléphone, contrôles au clavier) est dans la documentation ([Pré-audit d'accessibilité](docs/Pr%C3%A9-audit-d%E2%80%99accessibilit%C3%A9.md)).
 
 ## Licence
 

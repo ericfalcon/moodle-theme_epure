@@ -84,6 +84,8 @@ if ($data = $form->get_data()) {
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('vocabulary', 'theme_epure'));
 echo html_writer::tag('p', get_string('vocabintro', 'theme_epure'));
+// What to do after each update, in sight: the new strings of Moodle keep its words until the vocabulary is applied again.
+echo $OUTPUT->notification(get_string('vocabupdate', 'theme_epure'), 'info', false);
 if ($iomad && !\theme_epure\hook_callbacks::string_manager_available()) {
     echo $OUTPUT->notification(get_string('companyvocabunavailable', 'theme_epure'), 'warning', false);
 }

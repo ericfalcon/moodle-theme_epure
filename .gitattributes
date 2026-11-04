@@ -1,3 +1,6 @@
 # Screenshots of the README: in the repository, not in the archives of the plugin.
 screenshots/ export-ignore
 .github/ export-ignore
+# The documentation (in French) and the roadmap: in the repository, not in the archives of the plugin.
+docs/ export-ignore
+ROADMAP.md export-ignore

@@ -170,30 +170,8 @@ class behat_theme_epure extends behat_base {
                     );
                     $this->getSession()->wait(500);
                 }
-                // The script of axe is loaded here, and waited for: on the first page after the caches are purged,
-                // the one web server of the tests may answer it only once the styles are built.
-                $this->getSession()->executeScript(
-                    "if (!document.querySelector('script[data-purpose=\"axe\"]')) {" .
-                    "const tag = document.createElement('script');" .
-                    "tag.src = M.cfg.wwwroot + '/lib/behat/axe/axe.min.js';" .
-                    "tag.dataset.purpose = 'axe';" .
-                    "document.head.append(tag);" .
-                    "}"
-                );
-                $this->getSession()->wait(30000, "typeof window.axe !== 'undefined'");
-                // While the page is still settling, axe may read no results: it runs once more.
-                for ($attempt = 1; $attempt <= 2; $attempt++) {
-                    try {
-                        $this->execute('behat_accessibility::run_axe_validation_for_tags', ['', 'wcag22aa']);
-                        break;
-                    } catch (\Exception $e) {
-                        if ($attempt === 1 && preg_match('/^No data$|axe is not defined/', trim($e->getMessage()))) {
-                            $this->getSession()->wait(1000);
-                            continue;
-                        }
-                        $failures[] = "{$row['path']} ({$label}): " . trim($e->getMessage());
-                        break;
-                    }
+                if (($axe = $this->axe_failure()) !== null) {
+                    $failures[] = "{$row['path']} ({$label}): " . $axe;
                 }
                 if ($width < 1000 && ($row['except'] ?? '') !== 'wide table') {
                     $script = 'return document.scrollingElement.scrollWidth - window.innerWidth;';
@@ -242,6 +220,94 @@ class behat_theme_epure extends behat_base {
         $this->getSession()->resizeWindow(1366, 900);
         if ($failures) {
             throw new ExpectationException(count($failures) . " failures:\n" . implode("\n", $failures), $this->getSession());
+        }
+    }
+
+    /**
+     * The audit of axe-core (WCAG 2.2 A and AA) of the page.
+     *
+     * @return string|null The violations, or null when there are none.
+     */
+    protected function axe_failure(): ?string {
+        // The script of axe is loaded here, and waited for: on the first page after the caches are purged, the one web
+        // server of the tests may answer it only once the styles are built.
+        $this->getSession()->executeScript(
+            "if (!document.querySelector('script[data-purpose=\"axe\"]')) {" .
+            "const tag = document.createElement('script');" .
+            "tag.src = M.cfg.wwwroot + '/lib/behat/axe/axe.min.js';" .
+            "tag.dataset.purpose = 'axe';" .
+            "document.head.append(tag);" .
+            "}"
+        );
+        $this->getSession()->wait(30000, "typeof window.axe !== 'undefined'");
+        // While the page is still settling, axe may read no results: it runs once more.
+        for ($attempt = 1; $attempt <= 2; $attempt++) {
+            try {
+                $this->execute('behat_accessibility::run_axe_validation_for_tags', ['', 'wcag22aa']);
+                return null;
+            } catch (\Exception $e) {
+                if ($attempt === 1 && preg_match('/^No data$|axe is not defined/', trim($e->getMessage()))) {
+                    $this->getSession()->wait(1000);
+                    continue;
+                }
+                return trim($e->getMessage());
+            }
+        }
+        return null;
+    }
+
+    /**
+     * The error page of a path: the card of the kind of error in the colours of the theme, with its title, its lead and
+     * the message of Moodle, accessible (axe-core, WCAG 2.2 A and AA), and its link, which leads where it says.
+     *
+     * Moodle marks its error pages as fatal errors, which fail the step after which they are shown: the step leaves
+     * them for the page of the link (or the home page), once checked.
+     *
+     * @Then /^the error page of "([^"]*)" should be a card "([^"]*)" with the link "([^"]*)" to "([^"]*)"$/
+     * @param string $path Path, with {course SHORTNAME} and {cm IDNUMBER}.
+     * @param string $kind Kind of the error: notfound, denied, unavailable, session or general.
+     * @param string $link Text of the link of the card.
+     * @param string $target Path the link leads to.
+     */
+    public function the_error_page_should_be_a_card(string $path, string $kind, string $link, string $target): void {
+        $this->getSession()->visit($this->locate_path($this->epure_path($path)));
+        $this->wait_for_pending_js();
+        $failures = [];
+        $card = $this->getSession()->getPage()->find('css', '.epure-error-card[data-kind="' . $kind . '"]');
+        if (!$card) {
+            $found = $this->getSession()->getPage()->find('css', '.epure-error-card');
+            $failures[] = $found ? 'the card is of the kind ' . $found->getAttribute('data-kind') : 'no error card';
+        } else {
+            foreach (['.epure-error-title' => 'error_' . $kind, '.epure-error-lead' => 'error_' . $kind . '_lead'] as $css => $id) {
+                $element = $card->find('css', $css);
+                if (!$element || trim($element->getText()) !== get_string($id, 'theme_epure')) {
+                    $failures[] = "{$css} is not « " . get_string($id, 'theme_epure') . ' »';
+                }
+            }
+            $details = $card->find('css', '.epure-error-details');
+            if (!$details || trim($details->getText()) === '') {
+                $failures[] = 'the message of Moodle is missing';
+            }
+            if (($axe = $this->axe_failure()) !== null) {
+                $failures[] = $axe;
+            }
+        }
+        $anchor = $card ? $card->find('named_exact', ['link', $link]) : null;
+        if (!$anchor) {
+            $failures[] = "no link « {$link} » in the card";
+            $this->getSession()->visit($this->locate_path('/'));
+        } else {
+            $anchor->click();
+            $this->wait_for_pending_js();
+            $reached = parse_url($this->getSession()->getCurrentUrl(), PHP_URL_PATH);
+            $expected = parse_url($this->locate_path($target), PHP_URL_PATH);
+            if (rtrim((string) $reached, '/') !== rtrim((string) $expected, '/')) {
+                $failures[] = "the link « {$link} » leads to {$reached}, not {$expected}";
+                $this->getSession()->visit($this->locate_path('/'));
+            }
+        }
+        if ($failures) {
+            throw new ExpectationException("Error page of {$path}: " . implode('; ', $failures), $this->getSession());
         }
     }
 
