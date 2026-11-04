@@ -1,0 +1,97 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/summary_verify
+
+    Verification of a « My summary » document: the form of the code, then what the platform issued under it, or that
+    no document has this code.
+
+    Example context (json):
+    {
+        "action": "#", "code": "ABCD-EFGH-JKMN", "searched": true,
+        "found": "This document was issued by Campus Horizon on Monday, 2 November 2026, 10:12.",
+        "document": {
+            "code": "ABCD-EFGH-JKMN", "issued": "Monday, 2 November 2026, 10:12", "platform": "Campus Horizon",
+            "fullname": "Lea Learner", "date": "02/11/26", "taken": 1, "completedcount": 1, "certificatecount": 0,
+            "hascourses": true, "courses": [{"name": "Safety at work", "category": "Training", "hasprogress": true,
+                "progress": 100, "datecompleted": "12/10/26", "grade": "16.00", "hasactivities": true,
+                "activities": [{"name": "Risks", "date": "02/10/26"}]}],
+            "hascertificates": false, "certificates": []
+        }
+    }
+}}
+<div class="epure-summary epure-summary-verify">
+    <p>{{#str}}mysummary_verify_intro, theme_epure{{/str}}</p>
+    <form method="get" action="{{action}}" class="epure-summary-verify-form d-print-none">
+        <label for="epure-summary-code">{{#str}}mysummary_verify_code, theme_epure{{/str}}</label>
+        <div class="epure-summary-verify-field">
+            <input type="text" id="epure-summary-code" name="code" class="form-control" value="{{code}}" required
+                autocomplete="off" spellcheck="false" aria-describedby="epure-summary-code-help">
+            <button type="submit" class="btn btn-primary">{{#str}}mysummary_verify_submit, theme_epure{{/str}}</button>
+        </div>
+        <p class="form-text text-muted" id="epure-summary-code-help">{{#str}}mysummary_verify_codehelp, theme_epure{{/str}}</p>
+    </form>
+
+    {{#searched}}
+        {{#found}}
+            {{#document}}
+                <div class="alert alert-success" role="status">
+                    {{found}}
+                </div>
+                <section class="epure-summary-verify-document" aria-labelledby="epure-summary-verify-title">
+                    <h2 class="epure-summary-heading" id="epure-summary-verify-title">{{fullname}}</h2>
+                    <p class="epure-summary-date">{{#str}}mysummary_date, theme_epure, {{date}}{{/str}} · {{#str}}mysummary_verify_codeis, theme_epure, {{code}}{{/str}}</p>
+                    <dl class="epure-summary-figures">
+                        <div><dt>{{#str}}mysummary_taken, theme_epure{{/str}}</dt><dd>{{taken}}</dd></div>
+                        <div><dt>{{#str}}mysummary_completed, theme_epure{{/str}}</dt><dd>{{completedcount}}</dd></div>
+                        <div><dt>{{#str}}mysummary_certificates, theme_epure{{/str}}</dt><dd>{{certificatecount}}</dd></div>
+                    </dl>
+                    {{#hascourses}}
+                        <h3 class="epure-summary-heading">{{#str}}mysummary_taken, theme_epure{{/str}}</h3>
+                        {{#courses}}
+                            <section class="epure-summary-course">
+                                {{#category}}<p class="epure-summary-category">{{category}}</p>{{/category}}
+                                <h4 class="epure-summary-course-name">{{name}}</h4>
+                                <ul class="epure-summary-facts">
+                                    {{#hasprogress}}<li>{{#str}}mysummary_progress, theme_epure, {{progress}}{{/str}}</li>{{/hasprogress}}
+                                    {{#datecompleted}}<li>{{#str}}mysummary_completedon, theme_epure, {{datecompleted}}{{/str}}</li>{{/datecompleted}}
+                                    {{#grade}}<li>{{#str}}mysummary_grade, theme_epure, {{grade}}{{/str}}</li>{{/grade}}
+                                </ul>
+                                {{#hasactivities}}
+                                    <h5 class="epure-summary-subheading">{{#str}}mysummary_activities, theme_epure{{/str}}</h5>
+                                    <ul class="epure-summary-activities">
+                                        {{#activities}}<li><span>{{name}}</span><span class="epure-summary-activity-date">{{date}}</span></li>{{/activities}}
+                                    </ul>
+                                {{/hasactivities}}
+                            </section>
+                        {{/courses}}
+                    {{/hascourses}}
+                    {{#hascertificates}}
+                        <h3 class="epure-summary-heading">{{#str}}mysummary_certificates, theme_epure{{/str}}</h3>
+                        <ul class="epure-summary-activities">
+                            {{#certificates}}<li><span>{{name}}</span><span class="epure-summary-activity-date">{{date}}</span></li>{{/certificates}}
+                        </ul>
+                    {{/hascertificates}}
+                    <p class="epure-summary-note">{{#str}}mysummary_note, theme_epure{{/str}}</p>
+                </section>
+            {{/document}}
+        {{/found}}
+        {{^found}}
+            <div class="alert alert-warning" role="status">{{#str}}mysummary_verify_notfound, theme_epure, {{code}}{{/str}}</div>
+        {{/found}}
+    {{/searched}}
+</div>

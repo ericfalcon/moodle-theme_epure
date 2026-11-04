@@ -156,6 +156,35 @@ final class company_vocabulary_test extends \advanced_testcase {
     }
 
     /**
+     * Another string manager in config.php turns off the vocabulary of the companies: the settings of the theme say so,
+     * as the page of the vocabulary does.
+     */
+    public function test_other_string_manager(): void {
+        global $CFG;
+        $this->resetAfterTest();
+        $saved = $CFG->config_php_settings['customstringmanager'] ?? null;
+        $CFG->config_php_settings['customstringmanager'] = '\\local_other\\string_manager';
+        try {
+            $this->assertFalse(hook_callbacks::string_manager_available());
+            $warning = hook_callbacks::string_manager_warning();
+            if (\theme_epure\iomad::installed()) {
+                $this->assertStringContainsString(get_string('companyvocabunavailable', 'theme_epure'), $warning);
+            } else {
+                $this->assertNull($warning);
+            }
+            $CFG->config_php_settings['customstringmanager'] = '\\' . \theme_epure\string_manager::class;
+            $this->assertTrue(hook_callbacks::string_manager_available());
+            $this->assertNull(hook_callbacks::string_manager_warning());
+        } finally {
+            if ($saved === null) {
+                unset($CFG->config_php_settings['customstringmanager']);
+            } else {
+                $CFG->config_php_settings['customstringmanager'] = $saved;
+            }
+        }
+    }
+
+    /**
      * The vocabulary posted with IOMAD's company form is saved for the company; nothing without the fields or the sesskey.
      */
     public function test_company_form(): void {

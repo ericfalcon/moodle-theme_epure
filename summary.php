@@ -16,7 +16,7 @@
 
 /**
  * « My summary »: the courses the user takes, their progress, the activities completed, the grades and the
- * certificates, on a page to print or to save as PDF. Their own data only.
+ * certificates, on a page to print, or as a PDF with a code of verification. Their own data only.
  *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
@@ -32,6 +32,21 @@ if (isguestuser() || !\theme_epure\learner_summary::enabled()) {
 
 // The system context: a plain heading, without the picture of the user and their messages.
 $PAGE->set_context(context_system::instance());
+
+// The PDF with a code of verification: each download issues a document, kept with what it shows.
+if (optional_param('format', '', PARAM_ALPHA) === 'pdf') {
+    require_sesskey();
+    $document = \theme_epure\learner_summary_document::issue($PAGE->get_renderer('core'), (int) $USER->id);
+    send_file(
+        \theme_epure\learner_summary_document::pdf($document),
+        \theme_epure\learner_summary_document::filename($document),
+        0,
+        0,
+        true,
+        true,
+        'application/pdf'
+    );
+}
 $PAGE->set_url(\theme_epure\learner_summary::url());
 $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('mysummary', 'theme_epure'));

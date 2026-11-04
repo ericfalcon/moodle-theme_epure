@@ -79,21 +79,47 @@ export const init = () => {
     const input = dialog.querySelector('.epure-qs-input');
     const list = dialog.querySelector('.epure-qs-list');
     const status = dialog.querySelector('.epure-qs-status');
+    // The list is reached with the arrows, from the field (aria-activedescendant): not a stop of Tab, which Chrome
+    // gives to the boxes that scroll.
+    list.tabIndex = -1;
+    // The message « no result », after the list: a listbox holds only options.
+    const empty = document.createElement('p');
+    empty.className = 'epure-qs-empty';
+    empty.hidden = true;
+    list.after(empty);
     let pages = [];
     let request = 0;
     let timer = null;
     let options = [];
     let active = -1;
 
-    const setActive = (index) => {
-        options.forEach((option) => option.classList.remove('active'));
+    /**
+     * Makes an option the one Enter opens.
+     *
+     * The first result is chosen as the list is written, without moving the focus of the screen readers to it: they
+     * would read it after each letter typed (the pattern of the list with automatic selection of the ARIA practices).
+     * The arrows move it there.
+     *
+     * @param {number} index Option.
+     * @param {boolean} focus Whether the screen readers follow it (aria-activedescendant).
+     */
+    const setActive = (index, focus) => {
+        options.forEach((option) => {
+            option.classList.remove('active');
+            option.setAttribute('aria-selected', 'false');
+        });
         active = options.length ? (index + options.length) % options.length : -1;
-        if (active < 0) {
+        if (active < 0 || !focus) {
             input.removeAttribute('aria-activedescendant');
+        }
+        if (active < 0) {
             return;
         }
         options[active].classList.add('active');
-        input.setAttribute('aria-activedescendant', options[active].id);
+        options[active].setAttribute('aria-selected', 'true');
+        if (focus) {
+            input.setAttribute('aria-activedescendant', options[active].id);
+        }
         options[active].scrollIntoView({block: 'nearest'});
     };
 
@@ -123,6 +149,7 @@ export const init = () => {
                 option.className = 'epure-qs-option';
                 option.id = `epure-qs-option-${options.length}`;
                 option.setAttribute('role', 'option');
+                option.setAttribute('aria-selected', 'false');
                 option.dataset.url = item.url;
                 const icon = item.image ? Object.assign(document.createElement('img'), {src: item.image, alt: ''})
                     : Object.assign(document.createElement('i'), {className: `fa ${item.icon || 'fa-arrow-right'}`});
@@ -142,26 +169,24 @@ export const init = () => {
                 }
                 option.append(icon, text);
                 option.addEventListener('click', (event) => go(item.url, event.ctrlKey || event.metaKey));
-                option.addEventListener('mousemove', () => setActive(options.indexOf(option)));
+                option.addEventListener('mousemove', () => setActive(options.indexOf(option), false));
                 section.append(option);
                 options.push(option);
             });
             list.append(section);
         });
         input.setAttribute('aria-expanded', options.length ? 'true' : 'false');
-        setActive(0);
+        list.removeAttribute('aria-busy');
+        setActive(0, false);
+        empty.hidden = true;
         if (query !== null) {
             if (options.length) {
                 status.textContent = options.length === 1 ? dialog.dataset.countone
                     : dialog.dataset.count.replace('NUMBER', options.length);
             } else {
                 status.textContent = dialog.dataset.none.replace('QUERY', query);
-            }
-            if (!options.length) {
-                const empty = document.createElement('p');
-                empty.className = 'epure-qs-empty';
                 empty.textContent = status.textContent;
-                list.append(empty);
+                empty.hidden = false;
             }
         }
     };
@@ -182,7 +207,10 @@ export const init = () => {
             return;
         }
         render(local, null);
-        status.textContent = dialog.dataset.searching;
+        // While the server answers, the list is busy; the screen readers hear the number of results once, not
+        // « Searching… » after each letter.
+        status.textContent = '';
+        list.setAttribute('aria-busy', 'true');
         const current = ++request;
         timer = setTimeout(() => {
             Ajax.call([{methodname: 'theme_epure_quick_search', args: {query}}])[0].then((result) => {
@@ -223,12 +251,35 @@ export const init = () => {
         opener.focus();
     });
     input.addEventListener('input', search);
+    // Tab stays in the dialogue, from the field to the button Close and back (the pattern of the modal dialogues of the
+    // ARIA practices): without it, the focus could leave for the bar of the browser.
+    dialog.addEventListener('keydown', (event) => {
+        if (event.key !== 'Tab') {
+            return;
+        }
+        const stops = Array.from(dialog.querySelectorAll('input, button, a[href]')).filter((element) =>
+            !element.disabled && element.offsetParent !== null);
+        const first = stops[0];
+        const last = stops[stops.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
+    });
     input.addEventListener('keydown', (event) => {
+        // The keys of the list are handled here only: the script of Boost moves through the options of every combobox
+        // of the page too, which skipped one result out of two and opened the result twice.
+        if (['ArrowDown', 'ArrowUp', 'Home', 'End', 'Enter'].includes(event.key)) {
+            event.stopPropagation();
+        }
         if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
             event.preventDefault();
-            setActive(active + (event.key === 'ArrowDown' ? 1 : -1));
+            setActive(active + (event.key === 'ArrowDown' ? 1 : -1), true);
         } else if (event.key === 'Home' && options.length && event.ctrlKey) {
-            setActive(0);
+            setActive(0, true);
         } else if (event.key === 'Enter' && active >= 0) {
             event.preventDefault();
             go(options[active].dataset.url, event.ctrlKey || event.metaKey);

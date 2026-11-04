@@ -27,6 +27,16 @@ use theme_epure\vocabulary\company_form;
  */
 class observer {
     /**
+     * Deletes the « My summary » documents of a user deleted.
+     *
+     * @param \core\event\user_deleted $event Event.
+     */
+    public static function user_deleted(\core\event\user_deleted $event): void {
+        global $DB;
+        $DB->delete_records(learner_summary_document::TABLE, ['userid' => $event->objectid]);
+    }
+
+    /**
      * Saves the vocabulary posted with IOMAD's company form, once IOMAD saved the company.
      *
      * @param \core\event\base $event block_iomad_company_admin\event\company_created or company_updated.

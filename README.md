@@ -1,6 +1,6 @@
 # Épure (theme_epure)
 
-A modern, clean and accessible theme for **Moodle 4.5 LTS to 5.3** and **IOMAD 4.5 to 5.2**. It is a child of Boost: it keeps Moodle's pages and adds what learners, teachers and administrators miss, without new database tables. Documentation in French: [README.fr.md](README.fr.md).
+A modern, clean and accessible theme for **Moodle 4.5 LTS to 5.3** and **IOMAD 4.5 to 5.2**. It is a child of Boost: it keeps Moodle's pages and adds what learners, teachers and administrators miss, with two small tables of its own (the strings written by the vocabulary, the « My summary » documents issued). Documentation in French: [README.fr.md](README.fr.md).
 
 ## Overview
 
@@ -29,7 +29,7 @@ Choose a brand colour (or click a colour of your logo): the theme derives the wh
 
 - A dashboard that shows where to resume, what is due this week and what is completed.
 - « My courses » by role, a course catalogue with course presentation pages, progress per section, previous and next activity on every activity page, a reading mode.
-- « My summary »: a printable page (or PDF) of their courses, progress, completed activities, grades and certificates.
+- « My summary »: a printable page of their courses, progress, completed activities, grades and certificates, or a PDF with a code of verification that anyone can check on the platform.
 - A navigation bar at the bottom of the screen on phones, and an installable web app.
 
 ![« My courses »: the courses in progress with their progress and the next activity to do](screenshots/my-courses.webp)
@@ -83,13 +83,14 @@ Each company has its own colour, logo, font and vocabulary (here « parcours » 
 
 - Moodle 4.5 to 5.3, IOMAD 4.5 to 5.2, PHP 8.1 to 8.4, PostgreSQL and MariaDB: all tested in continuous integration (PHPUnit, Behat, code checks).
 - Optional: tool_certificate and mod_coursecertificate for certificates.
-- Privacy: user preferences only, exported and deleted with the privacy API. No external service is called; the fonts are bundled (SIL Open Font License).
+- Privacy: user preferences and the « My summary » documents issued, exported and deleted with the privacy API (and when a user is deleted). No external service is called; the fonts are bundled (SIL Open Font License).
 
 ### Notes
 
 An automated pre-audit does not replace a manual accessibility audit: the results of your own audit go in the accessibility statement of your site. Épure is an independent project, not affiliated with Moodle HQ or IOMAD.
 
-- Documentation (in French) and roadmap: <https://github.com/ericfalcon/moodle-theme-iomad/wiki>
+- Documentation (in French): [docs](docs/README.md); roadmap (in French): [ROADMAP.md](ROADMAP.md)
+- Changes of each version: [CHANGES.md](CHANGES.md); what to do when upgrading: [Upgrading](#upgrading)
 - Bug reports: <https://github.com/ericfalcon/moodle-theme_epure/issues>
 
 ## Installation
@@ -98,11 +99,34 @@ An automated pre-audit does not replace a manual accessibility audit: the result
 2. Log in as an administrator and run the database upgrade.
 3. Select Épure in Site administration › Appearance › Themes.
 
+## Upgrading
+
+Replace the `epure` folder with the one of the new version, then run the database upgrade (Site administration › Notifications). The settings are kept.
+
+After each update of Moodle, of a language pack or of Épure:
+
+1. run the database upgrade, if Moodle asks for it;
+2. apply the vocabulary again (Site administration › Appearance › Themes › Épure: vocabulary), so that the new strings of Moodle take your words;
+3. with IOMAD, check that `config.php` sets no other string manager (`$CFG->customstringmanager`): it would turn off the words of the companies. The theme settings and the vocabulary page warn when it does.
+
+The same list is shown on the vocabulary page and in the Identity tab of the theme settings.
+
+### Upgrade notes
+
+What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
+
+- **1.0.2**: no setting changes. The upgrade creates the table `theme_epure_summary` (the « My summary » documents issued as PDF), and the page of verification `theme/epure/verify.php` is open without logging in. The string `quicksearch_searching` is removed, as it is no longer shown.
+- **1.0.0**: the plugin moved to its own repository, [moodle-theme_epure](https://github.com/ericfalcon/moodle-theme_epure), with the plugin at its root. The folder stays `theme/epure` and the settings are kept; download the new versions from its releases.
+- **0.28.5**: the choices of the corner style are named « Slightly rounded (almost square corners) », « Moderately rounded » and « Very rounded » instead of « Sharp », « Soft » and « Round ». The saved values do not change.
+- **0.26.0**: the settings are grouped in tabs (Identity, Navigation, Courses, Accessibility, Appearance, Mobile, Login page, Footer, Advanced). Their names and saved values do not change.
+- **0.22.0**: the settings are ordered differently (brand identity, typography and display, pages and navigation…), without being renamed.
+- The former companion plugin « Épure tools » (`local_epure`): the theme took over its settings. Uninstall it in Site administration › Plugins › Plugins overview; the vocabulary page warns while it is installed.
+
 ## Settings
 
 Site administration › Appearance › Themes › Épure.
 
-The settings are grouped by subject in tabs: Identity, Navigation, Courses, Accessibility, Appearance, Mobile, Login page, Footer and Advanced. Version 0.26.0 moved them into these tabs without renaming them: the values already saved are kept.
+The settings are grouped by subject in tabs: Identity, Navigation, Courses, Accessibility, Appearance, Mobile, Login page, Footer and Advanced. The settings keep their names from one version to the next; when one is moved or renamed, the [upgrade notes](#upgrade-notes) say so.
 
 ### Identity
 
@@ -281,7 +305,9 @@ How it works:
 - the words stay in place whatever theme a course or user uses;
 - the first run takes about twenty seconds per language (Moodle loads the language pack into the tool), later runs a few seconds.
 
-After installing a new Moodle version or language pack, apply the vocabulary again to cover the new strings.
+After each update of Moodle or of a language pack, apply the vocabulary again to cover the new strings (see [Upgrading](#upgrading)).
+
+**Languages.** The vocabulary is applied in French and English, whose grammar the theme knows: in French, the articles, the elision and the agreements follow the word chosen; in English, the singular and the plural. The other installed languages keep Moodle's wording. The same mechanism would suit Spanish, Italian or Portuguese (gender and elision); German would need more (cases, compound words). Each new language needs a native reviewer and test sentences (see the roadmap).
 
 With IOMAD, the same page offers the words "company" and "department" for all companies; each company can choose its own in its profile, as well as its words for "course", "student" and "teacher" (see the IOMAD section).
 
@@ -357,7 +383,9 @@ The overview can be turned off in the theme's Courses tab ("Learner overview on 
 
 ### My summary
 
-With the setting "My summary" (Courses tab, off by default), the learner finds a link "My summary" in the "Completed" part of their overview, in the user menu (after "Grades") and in the reports of their profile. The page lists the courses they take with their progress, the date of completion, their grade (when the course shows the grades to the learners) and the activities they completed with their date, then their certificates. A button prints it, or saves it as PDF with the browser, in the colours of the brand. Their own data only. A note says what it proves: what the platform recorded, not on its own attendance nor the achievement of the objectives.
+With the setting "My summary" (Courses tab, off by default), the learner finds a link "My summary" in the "Completed" part of their overview, in the user menu (after "Grades") and in the reports of their profile. The page lists the courses they take with their progress, the date of completion, their grade (when the course shows the grades to the learners) and the activities they completed with their date, then their certificates. Their own data only. A button prints the page, in the colours of the brand.
+
+**PDF with a code of verification.** « Download the PDF » issues a document: the summary of that moment, in the colours of the brand (of the learner's IOMAD company with IOMAD), with a code of verification (twelve letters and digits, such as ABCD-EFGH-JKMN) and a QR code. Each document is kept with what it showed, its date and its code. Whoever receives it (an employer, a funder, an auditor) scans the QR code or enters the code on the page of verification (`/theme/epure/verify.php`, open without logging in, as the codes of Moodle's certificates): the platform shows what it issued under this code, on which date, to compare with the document. An unknown code says that no document has it. The PDF is made with Moodle's PDF library (TCPDF): no library is added. It is not tagged for screen readers, so the page stays the accessible version, and says so. The documents are exported and deleted with the privacy API, and deleted with the user. A note says what it proves: what the platform recorded, not on its own attendance nor the achievement of the objectives.
 
 ## Certificate template
 
@@ -423,7 +451,7 @@ The theme targets WCAG 2.2 level AA, RGAA 4.1.2 and EN 301 549: calculated contr
 
 **Accessibility of the contents.** When a teacher saves a form, Épure reads the contents of its editors for the common mistakes (images without a text alternative, tables without headers, links such as "click here", levels of titles skipped) and, when it finds some, lists them with "Fix", "Open the accessibility checker" (the one of TinyMCE) and "Save anyway". Nothing is blocked; no account is needed.
 
-**Display preferences.** The **Aa** button in the header (shortcut Alt + A, except while typing in a field: on a Mac, Option + A writes « å ») opens a panel in which each logged-in user chooses:
+**Display preferences.** The **Aa** button in the header (shortcut Alt + A; it is ignored while typing in a field or the text editor, where this combination can write a character depending on the system and the keyboard layout: « å » with Option + A on a Mac, « æ » or « á » with AltGr + A on some layouts) opens a panel in which each logged-in user chooses:
 
 - the text size: small, normal, large or very large (90, 100, 115 or 130%);
 - a reading font: the site's font, Atkinson Hyperlegible or OpenDyslexic;
@@ -450,7 +478,7 @@ A theme alone cannot make a platform compliant: course content matters too, and 
 - **Course order**: `theme_epure\course_structure` gives the activities of a course in the order of the course page, those of a subsection at the place of the subsection (Moodle lists them at the end of the course); the next activity, the position and the previous and next activities follow it.
 - **Cache**: the progress, next activity and next deadline of each course of a learner, and the events of their week, are kept 5 minutes in the cache `learnerprogress`, and forgotten at once when an activity or a course is completed, an assignment or a quiz attempt is submitted, or the activities or the completion of the course change.
 - **Compatibility**: the continuous integration tests Moodle 4.5 to 5.3 and IOMAD 4.5, 5.1 and 5.2; the Behat tests cover the course formats Topics, Weeks (with a subsection), Single activity and Social, with axe-core, and run on IOMAD too (a learner of a company sees its colour and logo, a user without company the site's colour, IOMAD's My courses is Épure's page by role). The IOMAD scenarios are tagged `@theme_epure_iomad`.
-- **Performance** (Moodle 4.5, learner, against Boost): style sheet +9 %, JavaScript unchanged, HTML about +10 to 15 %, no layout shift; same server time except on the dashboard, where the learner overview computes the progress of each course (+130 ms before the cache of 0.26.0; once cached, the overview takes about 5 ms instead of 60 to 80 ms). Details in the wiki (Développement).
+- **Performance** (Moodle 4.5, learner, against Boost): style sheet +9 %, JavaScript unchanged, HTML about +10 to 15 %, no layout shift; same server time except on the dashboard, where the learner overview computes the progress of each course (+130 ms before the cache of 0.26.0; once cached, the overview takes about 5 ms instead of 60 to 80 ms). Details in the documentation ([Développement](docs/D%C3%A9veloppement.md)).
 
 The palette variables are exposed as CSS custom properties (`--epure-brand`, `--epure-brand-text`, `--epure-on-brand`, etc.) for custom SCSS.
 
@@ -461,7 +489,7 @@ vendor/bin/phpunit --testsuite theme_epure_testsuite
 vendor/bin/behat --config <behat_dataroot>/behatrun/behat/behat.yml --tags @theme_epure
 ```
 
-The Behat tests pass Moodle's axe-core audit ("the page should meet accessibility standards") on the dashboard, the display preferences, the accessibility statement and its step-by-step form, the course page, the pages of the activities, the catalogue, the quick search, the long forms, the window « Add a block », My summary and the setting of the emoticons. The pre-audit of the current version (Moodle 4.5, Moodle 5.3 and IOMAD, by role, light, dark and phone, keyboard checks) is in the wiki (Pré-audit d'accessibilité).
+The Behat tests pass Moodle's axe-core audit ("the page should meet accessibility standards") on the dashboard, the display preferences, the accessibility statement and its step-by-step form, the course page, the pages of the activities, the catalogue, the quick search, the long forms, the window « Add a block », My summary and the setting of the emoticons. The pre-audit of the current version (Moodle 4.5, Moodle 5.3 and IOMAD, by role, light, dark and phone, keyboard checks) is in the documentation ([Pré-audit d'accessibilité](docs/Pr%C3%A9-audit-d%E2%80%99accessibilit%C3%A9.md)).
 
 ## Licence
 
