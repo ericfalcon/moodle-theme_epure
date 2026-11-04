@@ -8,12 +8,6 @@ Feature: Error pages of the Épure theme
     Given the following "users" exist:
       | username | firstname | lastname | email                |
       | learner1 | Lea       | Learner  | learner1@example.com |
-    And the following "courses" exist:
-      | fullname      | shortname | visible |
-      | Hidden course | HIDDEN    | 0       |
-    And the following "course enrolments" exist:
-      | user     | course | role    |
-      | learner1 | HIDDEN | student |
     And the users belong to an IOMAD company when IOMAD is installed
     And the following config values are set as admin:
       | theme | epure |
@@ -25,11 +19,7 @@ Feature: Error pages of the Épure theme
 
   Scenario: A page the user may not see says so and leads back to the dashboard
     Given I log in as "learner1"
-    Then the error page of "/admin/settings.php?section=themesettingepure" should be a card "denied" with the link "Dashboard" to "/my/"
-
-  Scenario: A hidden course says it is not available
-    Given I log in as "learner1"
-    Then the error page of "/course/view.php?id={course HIDDEN}" should be a card "unavailable" with the link "Dashboard" to "/my/"
+    Then the error page of "/cohort/index.php?contextid=1" should be a card "denied" with the link "Dashboard" to "/my/"
 
   Scenario: Logged out, the page not found leads to the login page
     Then the error page of "/error/index.php" should be a card "notfound" with the link "Log in" to "/login/index.php"

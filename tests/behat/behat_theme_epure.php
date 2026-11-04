@@ -257,6 +257,31 @@ class behat_theme_epure extends behat_base {
     }
 
     /**
+     * The audit of axe-core (WCAG 2.2 A and AA) of the page, run in the page itself: the step of Moodle that runs it
+     * looks for exceptions afterwards, and fails on the error pages that Moodle marks as fatal errors.
+     *
+     * @return string|null The violations, or null when there are none.
+     */
+    protected function axe_violations(): ?string {
+        $this->getSession()->executeScript(
+            "window.epureAxe = null;" .
+            "const run = () => axe.run(document, {runOnly: {type: 'tag', values: " .
+            "['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']}})" .
+            ".then((r) => { window.epureAxe = r.violations.map((v) => v.id + ' (' + v.nodes.length + ')').join(', '); })" .
+            ".catch((e) => { window.epureAxe = 'axe: ' + e.message; });" .
+            "if (typeof axe !== 'undefined') { run(); } else {" .
+            "const tag = document.createElement('script');" .
+            "tag.src = M.cfg.wwwroot + '/lib/behat/axe/axe.min.js';" .
+            "tag.onload = run;" .
+            "document.head.append(tag);" .
+            "}"
+        );
+        $this->getSession()->wait(30000, 'window.epureAxe !== null');
+        $violations = (string) $this->getSession()->evaluateScript('return window.epureAxe;');
+        return $violations === '' ? null : 'axe-core: ' . $violations;
+    }
+
+    /**
      * The error page of a path: the card of the kind of error in the colours of the theme, with its title, its lead and
      * the message of Moodle, accessible (axe-core, WCAG 2.2 A and AA), and its link, which leads where it says.
      *
@@ -288,7 +313,7 @@ class behat_theme_epure extends behat_base {
             if (!$details || trim($details->getText()) === '') {
                 $failures[] = 'the message of Moodle is missing';
             }
-            if (($axe = $this->axe_failure()) !== null) {
+            if (($axe = $this->axe_violations()) !== null) {
                 $failures[] = $axe;
             }
         }
@@ -309,6 +334,23 @@ class behat_theme_epure extends behat_base {
         if ($failures) {
             throw new ExpectationException("Error page of {$path}: " . implode('; ', $failures), $this->getSession());
         }
+    }
+
+    /**
+     * A « My summary » document of a user, issued under a known code.
+     *
+     * @Given /^the user "([^"]*)" has a summary document with the code "([^"]*)"$/
+     * @param string $username User.
+     * @param string $code Code.
+     */
+    public function the_user_has_a_summary_document(string $username, string $code): void {
+        global $DB, $PAGE;
+        $userid = (int) $DB->get_field('user', 'id', ['username' => $username], MUST_EXIST);
+        \theme_epure\learner_summary_document::issue(
+            $PAGE->get_renderer('core'),
+            $userid,
+            \theme_epure\learner_summary_document::normalise($code)
+        );
     }
 
     /**
