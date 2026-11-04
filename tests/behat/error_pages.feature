@@ -14,7 +14,7 @@ Feature: Error pages of the Épure theme
 
   Scenario: A page that does not exist leads back to the dashboard
     Given I log in as "learner1"
-    Then the error page of "/course/view.php?id=999999" should be a card "notfound" with the link "Dashboard" to "/my/"
+    Then the error page of "/mod/page/view.php?id=999999" should be a card "notfound" with the link "Dashboard" to "/my/"
     And the error page of "/error/index.php" should be a card "notfound" with the link "Dashboard" to "/my/"
 
   Scenario: A page the user may not see says so and leads back to the dashboard
