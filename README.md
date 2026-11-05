@@ -1,6 +1,6 @@
 # Épure (theme_epure)
 
-A modern, clean and accessible theme for **Moodle 4.5 LTS to 5.3** and **IOMAD 4.5 to 5.2**. It is a child of Boost: it keeps Moodle's pages and adds what learners, teachers and administrators miss, with two small tables of its own (the strings written by the vocabulary, the « My summary » documents issued). Documentation in French: [README.fr.md](README.fr.md).
+A modern, clean and accessible theme for **Moodle 4.5 LTS to 5.3** and **IOMAD 4.5 to 5.2**. It is a child of Boost: it keeps Moodle's pages and adds what learners, teachers and administrators miss, with three small tables of its own (the strings written by the vocabulary, the « My summary » documents issued, the points of accessibility confirmed by the teachers). Documentation in French: [README.fr.md](README.fr.md).
 
 ## Overview
 
@@ -84,7 +84,7 @@ Each company has its own colour, logo, font and vocabulary (here « parcours » 
 
 - Moodle 4.5 to 5.3, IOMAD 4.5 to 5.2, PHP 8.1 to 8.4, PostgreSQL and MariaDB: all tested in continuous integration (PHPUnit, Behat, code checks).
 - Optional: tool_certificate and mod_coursecertificate for certificates.
-- Privacy: user preferences and the « My summary » documents issued, exported and deleted with the privacy API (and when a user is deleted). No external service is called; the fonts are bundled (SIL Open Font License).
+- Privacy: user preferences, the « My summary » documents issued and the points of accessibility confirmed by the teachers, exported and deleted with the privacy API (and when a user is deleted). No external service is called; the fonts are bundled (SIL Open Font License).
 
 ### Notes
 

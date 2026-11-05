@@ -55,7 +55,7 @@ Moodle ne sait pas revenir à une version antérieure d'un plugin : remettre l'a
 
 - **Problème d'affichage sans gravité** : choisissez temporairement Boost comme thème du site (Présentation › Thèmes). Les réglages d'Épure sont conservés pour plus tard.
 - **Retour complet à la version précédente** : remettez en place la sauvegarde de la base de données **et** l'ancien dossier `theme/epure`, puis purgez les caches.
-- **Désinstallation** (Administration du site › Plugins › Vue d'ensemble des plugins) : elle retire les réglages et les tables d'Épure (documents « Ma synthèse », confirmations du guide d'accessibilité), rend à Moodle ses chaînes d'origine à la place du vocabulaire, et retire les visites guidées d'Épure ainsi que la feuille de style de l'application Moodle qu'il avait posée.
+- **Désinstallation** (Administration du site › Plugins › Vue d'ensemble des plugins) : elle retire les réglages et les tables d'Épure (chaînes du vocabulaire, documents « Ma synthèse », confirmations du guide d'accessibilité), rend à Moodle ses chaînes d'origine à la place du vocabulaire, et retire les visites guidées d'Épure ainsi que la feuille de style de l'application Moodle qu'il avait posée.
 
 ## Plugins tiers
 
