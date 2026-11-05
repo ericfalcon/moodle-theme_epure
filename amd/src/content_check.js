@@ -329,14 +329,14 @@ const liveLine = (textarea, strings) => {
     // page: its content is followed once it is there.
     textarea.addEventListener('input', later);
     update();
-    let tries = 0;
+    // Looked for as long as the page is open: a slow server or a long form can start it late.
     const attach = () => {
         const editor = textarea.id ? getInstanceForElementId(textarea.id) : null;
         if (editor) {
             editor.on('input change undo redo SetContent', later);
             update();
-        } else if (tries++ < 40) {
-            setTimeout(attach, 250);
+        } else if (document.contains(textarea)) {
+            setTimeout(attach, 500);
         }
     };
     attach();
@@ -355,10 +355,11 @@ const watchEditors = async(form) => {
     }
     // The texts of the line, and the short ones of each mistake, as in the guide « Accessibility of the course ».
     const keys = ['none', 'problems', 'show', 'next', ...KEYS];
+    const params = {problems: 'LIST', next: {index: 'NUMBER', total: 'TOTAL'}};
     const values = await getStrings(keys.map((key) => ({
         key: KEYS.includes(key) ? 'courseaccessibility_short_' + key : 'contentcheck_live_' + key,
         component: 'theme_epure',
-        param: key === 'problems' ? 'LIST' : (key === 'next' ? {index: 'NUMBER', total: 'TOTAL'} : 'NUMBER'),
+        param: params[key] ?? 'NUMBER',
     })));
     const strings = Object.fromEntries(keys.map((key, i) => [key, values[i]]));
     fields.forEach((textarea) => liveLine(textarea, strings));

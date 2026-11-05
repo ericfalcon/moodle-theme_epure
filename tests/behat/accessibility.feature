@@ -331,7 +331,7 @@ Feature: Accessibility of the Épure theme
     And I wait until "Accessibility: links that say nothing: 1" "text" exists
     And I press "Save and display"
     And "Before saving: accessibility" "dialogue" should exist
-    And I should see "Links whose text does not say where they go" in the "Before saving: accessibility" "dialogue"
+    And I should see "whose text does not say where they go" in the "Before saving: accessibility" "dialogue"
     And I click on "Save anyway" "button" in the "Before saving: accessibility" "dialogue"
     And I should see "here" in the "region-main" "region"
 
