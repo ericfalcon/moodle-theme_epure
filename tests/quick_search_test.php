@@ -152,13 +152,18 @@ final class quick_search_test extends \advanced_testcase {
 
         $this->assertTrue(quick_search::enabled());
         $this->assertTrue(quick_search::visitor());
+        $this->assertEquals([get_string('login')], $this->search_public('log in')['public']);
+        if (iomad::installed()) {
+            // With IOMAD, the courses and the categories are those of a company: the public pages only.
+            $this->assertEquals([], $this->search_public('Sécurité'));
+            return;
+        }
         $groups = $this->search_public('Sécurité');
         $this->assertEquals(
             ['Sécurité au travail', get_string('quicksearch_allcourses', 'theme_epure', 'Sécurité')],
             $groups['catalogue']
         );
         $this->assertEquals(['Sécurité'], $groups['categories']);
-        $this->assertEquals([get_string('login')], $this->search_public('log in')['public']);
         // The service of the users with an account is not theirs.
         $this->assertFalse(quick_search::member());
 

@@ -418,7 +418,7 @@ Un bouton **Rechercher** dans l'en-tête, ou **Ctrl+K** (**⌘K** sur Mac) depui
 - les autres cours du **catalogue**, avec un lien vers la recherche complète ;
 - pour les administrateurs, les **pages de l'administration** dont le nom ou un réglage correspond, avec un lien vers la recherche de l'administration.
 
-Les visiteurs non connectés et les invités l'ont aussi, sur un site ouvert sans connexion : elle trouve les cours du **catalogue** (jamais un cours caché), les **catégories** qu'ils peuvent voir et les **pages publiques** (connexion, création de compte quand les inscriptions sont ouvertes, les cours, la déclaration d'accessibilité une fois publiée). Un service web public ne répond que ce qu'un visiteur voit ; rien n'est proposé quand le site impose la connexion (`forcelogin`).
+Les visiteurs non connectés et les invités l'ont aussi, sur un site ouvert sans connexion : elle trouve les cours du **catalogue** (jamais un cours caché), les **catégories** qu'ils peuvent voir et les **pages publiques** (connexion, création de compte quand les inscriptions sont ouvertes, les cours, la déclaration d'accessibilité une fois publiée). Un service web public ne répond que ce qu'un visiteur voit ; rien n'est proposé quand le site impose la connexion (`forcelogin`, activé par défaut à partir de Moodle 5.2 et avec IOMAD). Avec IOMAD, où les cours et les catégories appartiennent aux entreprises, un visiteur ne cherche que dans les pages publiques.
 
 Les flèches ↑ ↓ choisissent un résultat, Entrée l'ouvre (Ctrl+Entrée dans un nouvel onglet), Échap ferme. La fenêtre est une boîte de dialogue accessible (liste de choix annoncée aux lecteurs d'écran, nombre de résultats). La recherche se désactive dans l'onglet Navigation du thème (« Recherche rapide »).
 

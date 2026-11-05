@@ -24,7 +24,8 @@ namespace theme_epure;
  *
  * Visitors who are not logged in, and guests, search what they can see without an account: the courses of the
  * catalogue, the categories and the public pages (log in, create an account, accessibility statement), never on a
- * site where logging in is required.
+ * site where logging in is required. With IOMAD, the courses and the categories belong to companies, and a visitor
+ * belongs to none: they search the public pages only.
  *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
@@ -76,11 +77,16 @@ class quick_search {
         if (\core_text::strlen(implode('', $words)) < 2) {
             return [];
         }
-        $groups = [
-            ['key' => 'catalogue', 'label' => get_string('catalogue', 'theme_epure'), 'items' => self::catalogue($query, [])],
-            ['key' => 'categories', 'label' => get_string('categories'), 'items' => self::categories($words)],
-            ['key' => 'public', 'label' => get_string('quicksearch_pages', 'theme_epure'), 'items' => self::public_pages($words)],
-        ];
+        $groups = [];
+        // With IOMAD, the courses and the categories are those of a company, and a visitor belongs to none (IOMAD's
+        // lists of categories fail without a company).
+        if (!iomad::installed()) {
+            $groups[] = ['key' => 'catalogue', 'label' => get_string('catalogue', 'theme_epure'),
+                'items' => self::catalogue($query, [])];
+            $groups[] = ['key' => 'categories', 'label' => get_string('categories'), 'items' => self::categories($words)];
+        }
+        $groups[] = ['key' => 'public', 'label' => get_string('quicksearch_pages', 'theme_epure'),
+            'items' => self::public_pages($words)];
         return array_values(array_filter($groups, fn($group) => $group['items']));
     }
 
