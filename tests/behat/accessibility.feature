@@ -130,6 +130,38 @@ Feature: Accessibility of the Épure theme
     Then I should see "Risks of the place" in the "#epure-qs" "css_element"
     And the page should meet accessibility standards
 
+  Scenario: A visitor who is not logged in searches the catalogue, the categories and the public pages
+    # A site open without logging in (required by default with IOMAD and from Moodle 5.2), on the list of the courses:
+    # from Moodle 5.2, the home page of the site sends the visitors to the login page. With IOMAD, a visitor searches
+    # the public pages only (the next scenario).
+    Given IOMAD is not installed
+    And the following config values are set as admin:
+      | forcelogin | 0 |
+    And the following "categories" exist:
+      | name     | category | idnumber |
+      | Training | 0        | TRAIN    |
+    And the following "courses" exist:
+      | fullname       | shortname | category |
+      | Safety at work | SAFE      | TRAIN    |
+    When I am on course index
+    And I click on ".epure-qs-button" "css_element"
+    And I set the field with xpath "//input[contains(@class, 'epure-qs-input')]" to "safety"
+    Then I should see "Safety at work" in the "#epure-qs" "css_element"
+    And the page should meet accessibility standards
+    And I set the field with xpath "//input[contains(@class, 'epure-qs-input')]" to "training"
+    And I should see "Training" in the "#epure-qs-list" "css_element"
+    And I set the field with xpath "//input[contains(@class, 'epure-qs-input')]" to "log in"
+    And I should see "Log in" in the "#epure-qs-list" "css_element"
+
+  Scenario: A visitor who is not logged in searches the public pages, with or without IOMAD
+    Given the following config values are set as admin:
+      | forcelogin | 0 |
+    When I am on course index
+    And I click on ".epure-qs-button" "css_element"
+    And I set the field with xpath "//input[contains(@class, 'epure-qs-input')]" to "log in"
+    Then I should see "Log in" in the "#epure-qs-list" "css_element"
+    And the page should meet accessibility standards
+
   Scenario: The quick search works with the keyboard alone
     Given the following "courses" exist:
       | fullname       | shortname |

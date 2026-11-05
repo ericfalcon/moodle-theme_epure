@@ -116,6 +116,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.2.0** : aucun réglage ne change. La recherche rapide est aussi proposée aux visiteurs non connectés et aux invités (sur un site ouvert sans connexion), avec un service web public `theme_epure_quick_search_public` qui répond ce qu'un visiteur voit : les cours du catalogue, les catégories et les pages publiques.
 - **1.1.0** : un nouveau réglage, **Accessibilité du cours** (onglet Accessibilité), désactivé par défaut. La mise à jour crée la table `theme_epure_a11ycheck` (les points confirmés par les enseignants) et deux caches. Le pense-bête `theme/epure/checklist.php` est ouvert sans connexion.
 - **1.0.2** : aucun réglage ne change. La mise à jour crée la table `theme_epure_summary` (les documents « Ma synthèse » émis en PDF), et la page de vérification `theme/epure/verify.php` est ouverte sans connexion. La chaîne `quicksearch_searching` est retirée, car elle n'est plus affichée.
 - **1.0.0** : le plugin a rejoint son propre dépôt, [moodle-theme_epure](https://github.com/ericfalcon/moodle-theme_epure), le plugin à sa racine. Le dossier reste `theme/epure` et les réglages sont conservés ; téléchargez les nouvelles versions depuis ses releases.
@@ -416,6 +417,8 @@ Un bouton **Rechercher** dans l'en-tête, ou **Ctrl+K** (**⌘K** sur Mac) depui
 - **mes cours** et les **activités** de mes cours ;
 - les autres cours du **catalogue**, avec un lien vers la recherche complète ;
 - pour les administrateurs, les **pages de l'administration** dont le nom ou un réglage correspond, avec un lien vers la recherche de l'administration.
+
+Les visiteurs non connectés et les invités l'ont aussi, sur un site ouvert sans connexion : elle trouve les cours du **catalogue** (jamais un cours caché), les **catégories** qu'ils peuvent voir et les **pages publiques** (connexion, création de compte quand les inscriptions sont ouvertes, les cours, la déclaration d'accessibilité une fois publiée). Un service web public ne répond que ce qu'un visiteur voit ; rien n'est proposé quand le site impose la connexion (`forcelogin`, activé par défaut à partir de Moodle 5.2 et avec IOMAD). Avec IOMAD, où les cours et les catégories appartiennent aux entreprises, un visiteur ne cherche que dans les pages publiques.
 
 Les flèches ↑ ↓ choisissent un résultat, Entrée l'ouvre (Ctrl+Entrée dans un nouvel onglet), Échap ferme. La fenêtre est une boîte de dialogue accessible (liste de choix annoncée aux lecteurs d'écran, nombre de résultats). La recherche se désactive dans l'onglet Navigation du thème (« Recherche rapide »).
 

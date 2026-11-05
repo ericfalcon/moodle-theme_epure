@@ -45,6 +45,17 @@ class behat_theme_epure extends behat_base {
     }
 
     /**
+     * Skips the scenario with IOMAD.
+     *
+     * @Given /^IOMAD is not installed$/
+     */
+    public function iomad_is_not_installed(): void {
+        if (iomad::installed()) {
+            throw new SkippedException('IOMAD is installed.');
+        }
+    }
+
+    /**
      * Creates IOMAD companies, each with its top department.
      *
      * The columns are those of IOMAD's company table: name and shortname, and for example theme and headingcolor.
