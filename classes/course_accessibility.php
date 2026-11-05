@@ -639,11 +639,13 @@ class course_accessibility {
      * @param string $mimetype Type.
      * @return bool
      */
-    protected static function is_document(string $mimetype): bool {
+    public static function is_document(string $mimetype): bool {
         return in_array($mimetype, ['application/msword', 'application/vnd.ms-powerpoint', 'application/vnd.ms-excel',
-                'application/rtf'], true)
+                'application/rtf', 'text/rtf'], true)
             || str_starts_with($mimetype, 'application/vnd.openxmlformats-officedocument.')
-            || str_starts_with($mimetype, 'application/vnd.oasis.opendocument.');
+            || str_starts_with($mimetype, 'application/vnd.oasis.opendocument.')
+            // With macros (.docm, .xlsm, .pptm) and their templates.
+            || (bool) preg_match('~^application/vnd\.ms-(word|excel|powerpoint)\.~', $mimetype);
     }
 
     /**

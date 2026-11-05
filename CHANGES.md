@@ -1,5 +1,10 @@
 # Changes
 
+## 1.4.1 — the documents with macros in the guide « Accessibility of the course »
+
+- The documents of Word, Excel and PowerPoint with macros (.docm, .xlsm, .pptm) and their templates, and the RTF files (text/rtf), were not taken for documents of an office suite: the guide said « Nothing left » instead of asking to confirm that they are accessible. Found on a course with an Excel file with macros. PHPUnit test of the types of documents.
+- Course page in edit mode: the link « 62 points of accessibility » of an activity took the whole width of its line (in the column of the name of the activity); it is as wide as its text.
+
 ## 1.4.0 — accessibility as the content is written, the place of each mistake, images used as links and long texts without titles
 
 - Under each editor of the forms (a chapter of a book, a page, the description of an activity…), a line tells as the content is written what makes it harder to use (« Accessibility: images used as links without a text alternative: 2 · long text without titles »), or that there is nothing to report, with a button « Show » that selects each element concerned in the editor TinyMCE, one after the other. The line is read again only when it changes, not at each key. With the plain text editor, the line without the button.

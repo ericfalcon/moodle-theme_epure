@@ -84,6 +84,18 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
     }
 
     /**
+     * The documents of an office suite, with macros or not, are to confirm; the other files are not documents.
+     */
+    public function test_is_document(): void {
+        foreach (['doc', 'docx', 'docm', 'xls', 'xlsx', 'xlsm', 'ppt', 'pptx', 'pptm', 'odt', 'ods', 'odp', 'rtf'] as $extension) {
+            $this->assertTrue(course_accessibility::is_document(mimeinfo('type', 'a.' . $extension)), $extension);
+        }
+        foreach (['pdf', 'png', 'mp4', 'zip', 'txt'] as $extension) {
+            $this->assertFalse(course_accessibility::is_document(mimeinfo('type', 'a.' . $extension)), $extension);
+        }
+    }
+
+    /**
      * A PDF file has a structure when its root of tags is written plainly or in a compressed stream of objects.
      */
     public function test_pdf_content_tagged(): void {

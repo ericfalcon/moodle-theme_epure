@@ -23,9 +23,13 @@
     color: var(--epure-state-done);
 }
 
-// Beside the name of an activity in edit mode.
+// Beside the name of an activity in edit mode: as wide as its text, also in the column of the name of Moodle 5.
 .epure-a11y-pill {
     display: inline-flex;
+    flex: 0 0 auto;
+    align-self: flex-start;
+    width: fit-content;
+    max-width: 100%;
     align-items: center;
     gap: .25rem;
     margin: .25rem 0 0 .5rem;
