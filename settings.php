@@ -311,6 +311,14 @@ if ($ADMIN->fulltree) {
         ));
     }
 
+    // The guide « Accessibility of the course » for the teachers, where the criteria of the RGAA apply.
+    $page->add(new admin_setting_configcheckbox(
+        'theme_epure/courseaccessibility',
+        get_string('courseaccessibility', 'theme_epure'),
+        get_string('courseaccessibility_desc', 'theme_epure'),
+        0
+    ));
+
     $statementurl = theme_epure\accessibility_statement::url()->out();
     $heading($page, 'statement', get_string('a11ysettings_desc', 'theme_epure', html_writer::link($statementurl, $statementurl))
         . ' ' . get_string('a11ywizard_link', 'theme_epure', html_writer::link(

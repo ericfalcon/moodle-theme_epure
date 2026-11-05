@@ -283,6 +283,35 @@ Feature: Accessibility of the Épure theme
     And I click on "Save anyway" "button" in the "Before saving: accessibility" "dialogue"
     And I should see "here" in the "region-main" "region"
 
+  Scenario: The guide « Accessibility of the course » lists what to fix and to confirm, and meets accessibility standards
+    Given the following config values are set as admin:
+      | courseaccessibility | 1 | theme_epure |
+    And the following "courses" exist:
+      | fullname | shortname | summary |
+      | Hygiene  | HYG       |         |
+    And the following "activities" exist:
+      | activity | course | name       | idnumber | content                                         |
+      | page     | HYG    | Document 2 | doc2     | <p><img src="https://example.com/gloves.png"></p> |
+    And the following "activities" exist:
+      | activity | course | name       | idnumber | timelimit |
+      | quiz     | HYG    | Final quiz | quiz1    | 1800      |
+    When I am on the "Hygiene" course page logged in as admin
+    And I turn editing mode on
+    Then I should see "Accessibility: 2 points to fix, 3 to confirm."
+    And I should see "2 points of accessibility" in the "Document 2" "activity"
+    And I click on "2 points of accessibility" "link" in the "Document 2" "activity"
+    And I should see "Images without a text alternative: 1."
+    And I should see "The name does not say what the activity holds."
+    And the page should meet accessibility standards
+    And I set the field "Learners who need more time can get it" to "1"
+    And I press "Save the confirmations"
+    And I should see "The confirmations are saved."
+    And I should see "Confirmed by Admin User"
+    And I should see "2 points to fix, 2 to confirm"
+    And I follow "The reminder to print"
+    And I should see "Making my courses accessible"
+    And the page should meet accessibility standards
+
   Scenario: A certificate of the activity Course certificate, on the template of Épure, meets accessibility standards
     Given the certificate template of Épure exists
     And the following "users" exist:

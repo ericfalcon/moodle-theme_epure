@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="theme/epure/db" VERSION="20261104" COMMENT="XMLDB file for Moodle theme/epure"
+<XMLDB PATH="theme/epure/db" VERSION="20261105" COMMENT="XMLDB file for Moodle theme/epure"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -35,6 +35,24 @@
       </KEYS>
       <INDEXES>
         <INDEX NAME="code" UNIQUE="true" FIELDS="code"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="theme_epure_a11ycheck" COMMENT="Points of accessibility of a course confirmed by a teacher in the guide « Accessibility of the course » (subtitles of a video, accessible document…)">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course"/>
+        <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Activity, 0 for the course and its sections"/>
+        <FIELD NAME="checkkey" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="Point confirmed: its kind and what it is about (a file by its content, a video by its address)"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Teacher who confirmed"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Time of the confirmation"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="courseid" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id"/>
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="coursecmcheck" UNIQUE="true" FIELDS="courseid, cmid, checkkey"/>
       </INDEXES>
     </TABLE>
   </TABLES>

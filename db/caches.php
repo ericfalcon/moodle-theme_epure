@@ -43,4 +43,20 @@ $definitions = [
         'staticacceleration' => true,
         'staticaccelerationsize' => 50,
     ],
+    // What the guide « Accessibility of the course » reads of a course without a person, by course: forgotten when the
+    // course changes; within the hour for what changes without an event of the course (the questions of a quiz).
+    'courseaccessibility' => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => true,
+        'ttl' => 3600,
+        'staticacceleration' => true,
+        'staticaccelerationsize' => 5,
+    ],
+    // Whether a PDF file has a structure (tagged), by its content: a content does not change.
+    'pdftagged' => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => true,
+    ],
 ];

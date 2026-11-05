@@ -1,0 +1,61 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/checklist
+
+    Reminder « Making my courses accessible »: the points to check, by theme, each with a box to tick by hand on paper.
+    A star marks those the guide of a course finds without a person.
+
+    Example context (json):
+    {
+        "themes": [{"title": "Texts", "items": [
+            {"id": "epure-checklist-headings", "text": "The titles follow in order (title 2, then 3).", "auto": true},
+            {"id": "epure-checklist-instructions", "text": "The instructions say what to do, how and by when.", "auto": false}
+        ]}]
+    }
+}}
+<div class="epure-checklist">
+    <p class="epure-checklist-intro">{{#str}}checklist_intro, theme_epure{{/str}}</p>
+    <div class="epure-checklist-actions d-print-none">
+        <button type="button" class="btn btn-primary" data-action="epure-checklist-print">
+            <i class="fa fa-print" aria-hidden="true"></i> {{#str}}checklist_print, theme_epure{{/str}}
+        </button>
+    </div>
+    <div class="epure-checklist-themes">
+        {{#themes}}
+            <section class="epure-checklist-theme">
+                <h2 class="epure-checklist-title">{{title}}</h2>
+                <ul class="epure-checklist-items">
+                    {{#items}}
+                        <li class="epure-checklist-item">
+                            <span class="epure-checklist-box" aria-hidden="true"></span>
+                            <span>{{text}}{{#auto}} <span class="epure-checklist-auto"><span aria-hidden="true">★</span><span class="sr-only visually-hidden">{{#str}}checklist_auto_short, theme_epure{{/str}}</span></span>{{/auto}}</span>
+                        </li>
+                    {{/items}}
+                </ul>
+            </section>
+        {{/themes}}
+    </div>
+    <p class="epure-checklist-legend"><span aria-hidden="true">★ </span>{{#str}}checklist_auto, theme_epure{{/str}}</p>
+</div>
+{{#js}}
+    document.querySelectorAll('[data-action="epure-checklist-print"]').forEach(function(button) {
+        button.addEventListener('click', function() {
+            window.print();
+        });
+    });
+{{/js}}

@@ -22,13 +22,15 @@ use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
+use theme_epure\course_accessibility;
 use theme_epure\learner_summary_document;
 
 /**
  * Privacy provider for theme_epure.
  *
- * The theme stores the display preferences of each user (button « Aa »), as user preferences, and the « My summary »
- * documents issued as PDF, with what each showed, in the context of the learner.
+ * The theme stores the display preferences of each user (button « Aa »), as user preferences; the « My summary »
+ * documents issued as PDF, with what each showed, in the context of the learner; and the points of accessibility a
+ * teacher confirmed in the guide of a course, in the context of the course.
  *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
@@ -56,6 +58,12 @@ class provider implements
             'data' => 'privacy:metadata:summary:data',
             'contenthash' => 'privacy:metadata:summary:contenthash',
         ], 'privacy:metadata:summary');
+        $collection->add_database_table(course_accessibility::TABLE, [
+            'courseid' => 'privacy:metadata:a11ycheck:courseid',
+            'checkkey' => 'privacy:metadata:a11ycheck:checkkey',
+            'userid' => 'privacy:metadata:a11ycheck:userid',
+            'timecreated' => 'privacy:metadata:a11ycheck:timecreated',
+        ], 'privacy:metadata:a11ycheck');
         return $collection;
     }
 
@@ -79,7 +87,7 @@ class provider implements
     }
 
     /**
-     * Contexts of the documents of a user: their own context.
+     * Contexts of the documents of a user, their own context, and of their confirmations, the contexts of the courses.
      *
      * @param int $userid User.
      * @return contextlist
@@ -93,16 +101,31 @@ class provider implements
               WHERE s.userid = :userid',
             ['level' => CONTEXT_USER, 'userid' => $userid]
         );
+        $contextlist->add_from_sql(
+            'SELECT ctx.id
+               FROM {context} ctx
+               JOIN {' . course_accessibility::TABLE . '} c ON c.courseid = ctx.instanceid AND ctx.contextlevel = :level
+              WHERE c.userid = :userid',
+            ['level' => CONTEXT_COURSE, 'userid' => $userid]
+        );
         return $contextlist;
     }
 
     /**
-     * Users with documents in a context: the user of a user context.
+     * Users with documents in a context, the user of a user context; with confirmations, the teachers of a course.
      *
      * @param userlist $userlist Users.
      */
     public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
+        if ($context->contextlevel === CONTEXT_COURSE) {
+            $userlist->add_from_sql(
+                'userid',
+                'SELECT userid FROM {' . course_accessibility::TABLE . '} WHERE courseid = :courseid',
+                ['courseid' => $context->instanceid]
+            );
+            return;
+        }
         if ($context->contextlevel !== CONTEXT_USER) {
             return;
         }
@@ -122,6 +145,10 @@ class provider implements
         global $DB;
         $userid = (int) $contextlist->get_user()->id;
         foreach ($contextlist->get_contexts() as $context) {
+            if ($context->contextlevel === CONTEXT_COURSE) {
+                self::export_confirmations($context, $userid);
+                continue;
+            }
             if ($context->contextlevel !== CONTEXT_USER || (int) $context->instanceid !== $userid) {
                 continue;
             }
@@ -143,6 +170,35 @@ class provider implements
     }
 
     /**
+     * Exports the points of accessibility a teacher confirmed in a course.
+     *
+     * @param \context $context Context of the course.
+     * @param int $userid User.
+     */
+    protected static function export_confirmations(\context $context, int $userid): void {
+        global $DB;
+        $confirmations = [];
+        $records = $DB->get_records(
+            course_accessibility::TABLE,
+            ['courseid' => $context->instanceid, 'userid' => $userid],
+            'timecreated'
+        );
+        foreach ($records as $record) {
+            $confirmations[] = [
+                'cmid' => (int) $record->cmid,
+                'point' => $record->checkkey,
+                'timecreated' => \core_privacy\local\request\transform::datetime($record->timecreated),
+            ];
+        }
+        if ($confirmations) {
+            writer::with_context($context)->export_data(
+                [get_string('courseaccessibility', 'theme_epure')],
+                (object) ['confirmations' => $confirmations]
+            );
+        }
+    }
+
+    /**
      * Deletes the documents of the user of a context.
      *
      * @param \context $context Context.
@@ -151,6 +207,8 @@ class provider implements
         global $DB;
         if ($context->contextlevel === CONTEXT_USER) {
             $DB->delete_records(learner_summary_document::TABLE, ['userid' => $context->instanceid]);
+        } else if ($context->contextlevel === CONTEXT_COURSE) {
+            $DB->delete_records(course_accessibility::TABLE, ['courseid' => $context->instanceid]);
         }
     }
 
@@ -165,6 +223,8 @@ class provider implements
         foreach ($contextlist->get_contexts() as $context) {
             if ($context->contextlevel === CONTEXT_USER && (int) $context->instanceid === $userid) {
                 $DB->delete_records(learner_summary_document::TABLE, ['userid' => $userid]);
+            } else if ($context->contextlevel === CONTEXT_COURSE) {
+                $DB->delete_records(course_accessibility::TABLE, ['courseid' => $context->instanceid, 'userid' => $userid]);
             }
         }
     }
@@ -177,6 +237,15 @@ class provider implements
     public static function delete_data_for_users(approved_userlist $userlist) {
         global $DB;
         $context = $userlist->get_context();
+        if ($context->contextlevel === CONTEXT_COURSE && $userlist->get_userids()) {
+            [$insql, $params] = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
+            $DB->delete_records_select(
+                course_accessibility::TABLE,
+                "courseid = :courseid AND userid $insql",
+                $params + ['courseid' => $context->instanceid]
+            );
+            return;
+        }
         if ($context->contextlevel === CONTEXT_USER && in_array((int) $context->instanceid, $userlist->get_userids())) {
             $DB->delete_records(learner_summary_document::TABLE, ['userid' => $context->instanceid]);
         }

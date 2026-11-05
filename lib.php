@@ -254,3 +254,14 @@ function theme_epure_myprofile_navigation(\core_user\output\myprofile\tree $tree
     \theme_epure\achievements::myprofile($tree, $user, (bool) $iscurrentuser, $course ?: null);
     \theme_epure\learner_summary::myprofile($tree, $user, (bool) $iscurrentuser);
 }
+
+/**
+ * Adds the guide « Accessibility of the course » to the menu of the course, for its teachers, with Épure.
+ *
+ * @param navigation_node $navigation Node of the course.
+ * @param stdClass $course Course.
+ * @param context $context Context of the course.
+ */
+function theme_epure_extend_navigation_course(navigation_node $navigation, stdClass $course, context $context) {
+    \theme_epure\course_accessibility::extend_navigation($navigation, $course, $context);
+}

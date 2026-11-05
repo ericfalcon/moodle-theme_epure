@@ -94,6 +94,8 @@ class course_page {
             'contextid' => $page->context->id,
             'pageurl' => $page->url->out(false),
             'sesskey' => sesskey(),
+            // The figures of the guide « Accessibility of the course », for its teachers.
+            'accessibility' => course_accessibility::edit_mode($page->course),
         ];
     }
 

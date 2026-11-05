@@ -130,6 +130,26 @@ function xmldb_theme_epure_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026110403, 'theme', 'epure');
     }
 
+    // The guide « Accessibility of the course » (1.1.0): the points confirmed by the teachers.
+    if ($oldversion < 2026110500) {
+        $table = new xmldb_table('theme_epure_a11ycheck');
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('cmid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('checkkey', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('courseid', XMLDB_KEY_FOREIGN, ['courseid'], 'course', ['id']);
+        $table->add_key('userid', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
+        $table->add_index('coursecmcheck', XMLDB_INDEX_UNIQUE, ['courseid', 'cmid', 'checkkey']);
+        $dbman = $DB->get_manager();
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+        upgrade_plugin_savepoint(true, 2026110500, 'theme', 'epure');
+    }
+
     // The strings of Épure take the vocabulary too (« Search my courses »), but those describing it, and change with
     // its versions: after each upgrade, it is applied again in the languages it is used in.
     foreach (\theme_epure\vocabulary\manager::languages() as $lang) {

@@ -23,6 +23,7 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le
 - Des pages qui s'adaptent aux téléphones jusqu'à 320 px, un focus toujours visible et jamais caché sous une barre fixe, des cibles de 24 px.
 - Une déclaration d'accessibilité remplie pas à pas, mentionnée sur chaque page.
 - Un vérificateur de contenu pour les formateurs : avant l'enregistrement, il signale les images sans alternative, les tableaux sans en-têtes, les liens qui ne disent rien et les niveaux de titres sautés. Rien n'est jamais bloqué.
+- Un guide « Accessibilité du cours » pour les formateurs (désactivé par défaut, pour les organismes tenus au RGAA) : chaque activité et ressource d'un cours passée en revue, ce qu'il faut corriger, ce qu'il faut confirmer, et un pense-bête à imprimer.
 - Testé à chaque modification : un pré-audit automatisé (axe-core, WCAG 2.2 A et AA) de 40 pages de Moodle et 24 pages d'IOMAD, chacune en clair, en sombre et sur deux largeurs de téléphone, et une matrice qui croise couleurs de marque, préférences d'affichage, usage au clavier et couleurs des entreprises IOMAD.
 
 ### Pour les apprenants
@@ -115,6 +116,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.1.0** : un nouveau réglage, **Accessibilité du cours** (onglet Accessibilité), désactivé par défaut. La mise à jour crée la table `theme_epure_a11ycheck` (les points confirmés par les enseignants) et deux caches. Le pense-bête `theme/epure/checklist.php` est ouvert sans connexion.
 - **1.0.2** : aucun réglage ne change. La mise à jour crée la table `theme_epure_summary` (les documents « Ma synthèse » émis en PDF), et la page de vérification `theme/epure/verify.php` est ouverte sans connexion. La chaîne `quicksearch_searching` est retirée, car elle n'est plus affichée.
 - **1.0.0** : le plugin a rejoint son propre dépôt, [moodle-theme_epure](https://github.com/ericfalcon/moodle-theme_epure), le plugin à sa racine. Le dossier reste `theme/epure` et les réglages sont conservés ; téléchargez les nouvelles versions depuis ses releases.
 - **0.28.5** : les choix du style des coins s'appellent « Peu arrondis (coins presque droits) », « Moyennement arrondis » et « Très arrondis » au lieu de « Net », « Doux » et « Arrondi ». Les valeurs enregistrées ne changent pas.
@@ -170,7 +172,7 @@ L'onglet se termine par les **e-mails** aux couleurs de la marque (voir E-mails 
 
 ### Accessibilité
 
-Les **préférences d'affichage** : le bouton « Aa » de l'en-tête peut être désactivé, et l'affichage par défaut du site se règle pour les visiteurs et pour les utilisateurs qui n'ont pas choisi le leur (voir Accessibilité). Puis la **déclaration d'accessibilité**.
+Les **préférences d'affichage** : le bouton « Aa » de l'en-tête peut être désactivé, et l'affichage par défaut du site se règle pour les visiteurs et pour les utilisateurs qui n'ont pas choisi le leur (voir Accessibilité). Le guide **Accessibilité du cours** pour les enseignants, désactivé par défaut. Puis la **déclaration d'accessibilité**.
 
 ### Apparence
 
@@ -443,6 +445,13 @@ Le **mode lecture** masque les panneaux latéraux et centre le contenu ; il est 
 ## Accessibilité
 
 Le thème vise les WCAG 2.2 niveau AA, le RGAA 4.1.2 et l'EN 301 549 : contrastes calculés (le texte sur la couleur de marque à 4,5:1 au moins, quelle qu'elle soit, au survol compris), focus clavier toujours visible, lien d'évitement, cibles d'au moins 24 × 24 px, liens soulignés dans le texte, respect du réglage « réduire les animations ».
+
+**Accessibilité de tout un cours.** Là où les critères du RGAA s'appliquent (organismes publics, certaines entreprises), l'administrateur active le guide « Accessibilité du cours » (onglet Accessibilité ; une entreprise IOMAD peut faire un autre choix). Les enseignants qui peuvent modifier un cours le trouvent alors dans le menu du cours (« Plus »), sur une ligne sous la barre du mode édition (« Accessibilité : 3 points à corriger, 2 à confirmer — Ouvrir le guide »), à côté de chaque activité concernée en mode édition (« 2 points d'accessibilité »), et depuis la fenêtre du vérificateur de contenu. Le guide passe en revue chaque partie du cours :
+
+- repéré par Épure : dans la présentation du cours, les résumés des sections et les textes des activités (descriptions, pages, chapitres de livres, pages de leçons, questions de tests), les erreurs du vérificateur de contenu, les cadres sans titre et les vidéos sans sous-titres ; les PDF sans structure (non balisés) ; les images des contenus H5P sans texte alternatif ; les noms d'activités qui ne disent rien (« Document 2 ») ou que deux activités partagent ;
+- à confirmer par un enseignant : les sous-titres des vidéos qu'il ne peut pas lire (YouTube, Vimeo, fichiers vidéo), la transcription des audios, les documents bureautiques, le temps supplémentaire des tests chronométrés et des devoirs avec échéance (avec un lien vers leurs dérogations), les consignes et l'usage des couleurs pour tout le cours. Une case cochée est confirmée pour tous les enseignants du cours, avec qui l'a confirmée et quand ; un fichier remplacé est à confirmer de nouveau.
+
+Chaque point dit quoi faire, avec un lien pour modifier l'activité. Le guide s'imprime comme bilan du cours (« Imprimer le bilan »). Le pense-bête « Rendre mes cours accessibles » (`theme/epure/checklist.php`, ouvert sans connexion, à donner en formation) liste les points à vérifier sur une page à imprimer, une étoile marquant ceux que le guide repère lui-même. Ce que le guide lit est gardé en cache jusqu'à ce que le cours change ; les confirmations sont déclarées à l'API de confidentialité. Les apprenants n'en voient rien.
 
 **Préférences d'affichage.** Le bouton **Aa** de l'en-tête (raccourci Alt + A ; il est ignoré pendant la saisie dans un champ ou l'éditeur de texte, où cette combinaison peut écrire un caractère selon le système et la disposition du clavier : « å » avec Option + A sur Mac, « æ » ou « á » avec AltGr + A sur certaines dispositions) ouvre un panneau où chaque utilisateur connecté choisit :
 

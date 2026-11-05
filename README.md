@@ -23,6 +23,7 @@ Choose a brand colour (or click a colour of your logo): the theme derives the wh
 - Pages that reflow on phones down to 320 px, focus always visible and never hidden under fixed bars, 24 px targets.
 - An accessibility statement filled in step by step, with a mention on every page.
 - A content checker for teachers: before saving, it points out images without a text alternative, tables without headers, links that say nothing and skipped heading levels. Nothing is ever blocked.
+- A guide « Accessibility of the course » for teachers (off by default, for the organisations that must meet the RGAA): each activity and resource of a course read, what to fix, what to confirm, and a reminder to print.
 - Tested on every change: an automated pre-audit (axe-core, WCAG 2.2 A and AA) of 40 Moodle pages and 24 IOMAD pages, each in light, dark and on two phone widths, plus a matrix crossing brand colours, display preferences, keyboard use and IOMAD company colours.
 
 ### For learners
@@ -115,6 +116,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.1.0**: a new setting, **Accessibility of the course** (Accessibility tab), off by default. The upgrade creates the table `theme_epure_a11ycheck` (the points confirmed by the teachers) and two caches. The reminder `theme/epure/checklist.php` is open without logging in.
 - **1.0.2**: no setting changes. The upgrade creates the table `theme_epure_summary` (the « My summary » documents issued as PDF), and the page of verification `theme/epure/verify.php` is open without logging in. The string `quicksearch_searching` is removed, as it is no longer shown.
 - **1.0.0**: the plugin moved to its own repository, [moodle-theme_epure](https://github.com/ericfalcon/moodle-theme_epure), with the plugin at its root. The folder stays `theme/epure` and the settings are kept; download the new versions from its releases.
 - **0.28.5**: the choices of the corner style are named « Slightly rounded (almost square corners) », « Moderately rounded » and « Very rounded » instead of « Sharp », « Soft » and « Round ». The saved values do not change.
@@ -172,7 +174,7 @@ The tab ends with the **e-mails** in the colours of the brand (see Branded e-mai
 
 ### Accessibility
 
-The **display preferences**: the button « Aa » of the header can be turned off, and the display by default of the site is set for visitors and for users who have not chosen theirs (see Accessibility). Then the **accessibility statement**.
+The **display preferences**: the button « Aa » of the header can be turned off, and the display by default of the site is set for visitors and for users who have not chosen theirs (see Accessibility). The guide **Accessibility of the course** for the teachers, off by default. Then the **accessibility statement**.
 
 ### Appearance
 
@@ -450,6 +452,13 @@ In Moodle 4 and 5, with the side course index, the links to the previous and nex
 The theme targets WCAG 2.2 level AA, RGAA 4.1.2 and EN 301 549: calculated contrast (the text on the brand colour at 4.5:1 at least, whatever the colour, on hover too), keyboard focus always visible, a skip link, targets of at least 24 × 24 px, underlined links within text, and respect for the "reduce motion" setting.
 
 **Accessibility of the contents.** When a teacher saves a form, Épure reads the contents of its editors for the common mistakes (images without a text alternative, tables without headers, links such as "click here", levels of titles skipped) and, when it finds some, lists them with "Fix", "Open the accessibility checker" (the one of TinyMCE) and "Save anyway". Nothing is blocked; no account is needed.
+
+**Accessibility of a whole course.** Where the criteria of the RGAA apply (public bodies, some companies), the administrator turns on the guide « Accessibility of the course » (Accessibility tab; an IOMAD company can choose otherwise). The teachers who can change a course then find it in the menu of the course (« More »), in a line under the bar of the edit mode (« Accessibility: 3 points to fix, 2 to confirm — Open the guide »), beside each activity concerned in edit mode (« 2 points of accessibility »), and from the window of the content checker. The guide reads each part of the course:
+
+- found by Épure: in the presentation of the course, the summaries of the sections and the texts of the activities (descriptions, pages, chapters of books, pages of lessons, questions of quizzes), the mistakes of the content checker, frames without a title and videos without subtitles; the PDF files without structure (not tagged); the images of the H5P contents without a text alternative; the names of activities that say nothing (« Document 2 ») or that two activities share;
+- to confirm by a teacher: the subtitles of the videos it cannot read (YouTube, Vimeo, video files), the transcript of the audios, the documents of an office suite, the extra time of the timed quizzes and of the assignments with a deadline (with a link to their overrides), the instructions and the use of colours for the whole course. A box checked is confirmed for all the teachers of the course, with who confirmed and when; a file replaced is to confirm again.
+
+Each point says what to do, with a link to change the activity. The guide prints as the report of the course (« Print the report »). The reminder « Making my courses accessible » (`theme/epure/checklist.php`, open without logging in, to give in a training) lists the points to check on one page to print, a star marking those the guide finds itself. What the guide reads is kept in a cache until the course changes; the confirmations are declared to the Privacy API. The learners see none of it.
 
 **Display preferences.** The **Aa** button in the header (shortcut Alt + A; it is ignored while typing in a field or the text editor, where this combination can write a character depending on the system and the keyboard layout: « å » with Option + A on a Mac, « æ » or « á » with AltGr + A on some layouts) opens a panel in which each logged-in user chooses:
 

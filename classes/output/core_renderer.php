@@ -215,6 +215,15 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
         // In edit mode, a bar under the header of the course to leave it.
         $editbar = \theme_epure\course_page::edit_bar($this->page);
+        if (!empty($editbar['accessibility']['cms'])) {
+            // The points of accessibility of each activity, beside its name: their data in the page.
+            $this->page->requires->js_call_amd('theme_epure/course_accessibility', 'init');
+            $header .= \html_writer::tag(
+                'script',
+                json_encode(['cms' => $editbar['accessibility']['cms']], JSON_HEX_TAG | JSON_HEX_AMP),
+                ['type' => 'application/json', 'id' => 'epure-course-accessibility-data']
+            );
+        }
         $editbar = $editbar ? $this->render_from_template('theme_epure/edit_bar', $editbar) : '';
         // The progress of the sections and the state of the activities, with or without the banner.
         if (\theme_epure\course_page::learner_applies($this->page, (int) $USER->id)) {
