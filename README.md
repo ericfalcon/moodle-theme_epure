@@ -116,6 +116,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.4.0**: no setting changes. A line under each editor tells the mistakes of accessibility as the content is written; the guide « Accessibility of the course » gives each mistake with its chapter, page or question. The reading mode of the activities is put aside in edit mode.
 - **1.3.0**: no setting changes. The key « ? » opens the help of the keyboard shortcuts; each user can turn the key off in that window (new user preference `theme_epure_shortcuts`).
 - **1.2.0**: no setting changes. The quick search is also offered to the visitors who are not logged in and the guests (on a site open without logging in), with a public web service `theme_epure_quick_search_public` that answers what a visitor sees: the courses of the catalogue, the categories and the public pages.
 - **1.1.0**: a new setting, **Accessibility of the course** (Accessibility tab), off by default. The upgrade creates the table `theme_epure_a11ycheck` (the points confirmed by the teachers) and two caches. The reminder `theme/epure/checklist.php` is open without logging in.
@@ -455,7 +456,7 @@ In Moodle 4 and 5, with the side course index, the links to the previous and nex
 
 The theme targets WCAG 2.2 level AA, RGAA 4.1.2 and EN 301 549: calculated contrast (the text on the brand colour at 4.5:1 at least, whatever the colour, on hover too), keyboard focus always visible, a skip link, targets of at least 24 × 24 px, underlined links within text, and respect for the "reduce motion" setting.
 
-**Accessibility of the contents.** When a teacher saves a form, Épure reads the contents of its editors for the common mistakes (images without a text alternative, tables without headers, links such as "click here", levels of titles skipped) and, when it finds some, lists them with "Fix", "Open the accessibility checker" (the one of TinyMCE) and "Save anyway". Nothing is blocked; no account is needed.
+**Accessibility of the contents.** As a teacher writes, a line under each editor tells what makes the content harder to use: images without a text alternative, images used as links without one, links without text or such as "click here", tables without headers, levels of titles skipped, a long text without any title. Its button « Show » selects each element concerned in the editor. When the form is saved, Épure lists them again with "Fix", "Open the accessibility checker" (the one of TinyMCE) and "Save anyway". Nothing is blocked; no account is needed.
 
 **Accessibility of a whole course.** Where the criteria of the RGAA apply (public bodies, some companies), the administrator turns on the guide « Accessibility of the course » (Accessibility tab; an IOMAD company can choose otherwise). The teachers who can change a course then find it in the menu of the course (« More »), in a line under the bar of the edit mode (« Accessibility: 3 points to fix, 2 to confirm — Open the guide »), beside each activity concerned in edit mode (« 2 points of accessibility »), and from the window of the content checker. The guide reads each part of the course:
 

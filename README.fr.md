@@ -116,6 +116,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.4.0** : aucun réglage ne change. Une ligne sous chaque éditeur indique les défauts d'accessibilité pendant la saisie ; le guide « Accessibilité du cours » donne chaque défaut avec son chapitre, sa page ou sa question. Le mode lecture des activités est mis de côté en mode édition.
 - **1.3.0** : aucun réglage ne change. La touche « ? » ouvre l'aide des raccourcis clavier ; chaque utilisateur peut désactiver la touche dans cette fenêtre (nouvelle préférence `theme_epure_shortcuts`).
 - **1.2.0** : aucun réglage ne change. La recherche rapide est aussi proposée aux visiteurs non connectés et aux invités (sur un site ouvert sans connexion), avec un service web public `theme_epure_quick_search_public` qui répond ce qu'un visiteur voit : les cours du catalogue, les catégories et les pages publiques.
 - **1.1.0** : un nouveau réglage, **Accessibilité du cours** (onglet Accessibilité), désactivé par défaut. La mise à jour crée la table `theme_epure_a11ycheck` (les points confirmés par les enseignants) et deux caches. Le pense-bête `theme/epure/checklist.php` est ouvert sans connexion.
@@ -449,6 +450,8 @@ Le **mode lecture** masque les panneaux latéraux et centre le contenu ; il est 
 ## Accessibilité
 
 Le thème vise les WCAG 2.2 niveau AA, le RGAA 4.1.2 et l'EN 301 549 : contrastes calculés (le texte sur la couleur de marque à 4,5:1 au moins, quelle qu'elle soit, au survol compris), focus clavier toujours visible, lien d'évitement, cibles d'au moins 24 × 24 px, liens soulignés dans le texte, respect du réglage « réduire les animations ».
+
+**Accessibilité des contenus.** Pendant la saisie, une ligne sous chaque éditeur indique ce qui rend le contenu plus difficile à utiliser : images sans texte alternatif, images servant de lien sans texte alternatif, liens sans texte ou comme « cliquez ici », tableaux sans en-têtes, niveaux de titres sautés, texte long sans aucun titre. Son bouton « Montrer » sélectionne chaque élément concerné dans l'éditeur. À l'enregistrement du formulaire, Épure les liste de nouveau, avec « Corriger », « Ouvrir le vérificateur d'accessibilité » (celui de TinyMCE) et « Enregistrer quand même ». Rien n'est jamais bloqué.
 
 **Accessibilité de tout un cours.** Là où les critères du RGAA s'appliquent (organismes publics, certaines entreprises), l'administrateur active le guide « Accessibilité du cours » (onglet Accessibilité ; une entreprise IOMAD peut faire un autre choix). Les enseignants qui peuvent modifier un cours le trouvent alors dans le menu du cours (« Plus »), sur une ligne sous la barre du mode édition (« Accessibilité : 3 points à corriger, 2 à confirmer — Ouvrir le guide »), à côté de chaque activité concernée en mode édition (« 2 points d'accessibilité »), et depuis la fenêtre du vérificateur de contenu. Le guide passe en revue chaque partie du cours :
 

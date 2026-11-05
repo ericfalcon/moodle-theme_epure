@@ -31,6 +31,8 @@
             "id": "epure-a11y-cm-4", "name": "Risks", "icon": "", "type": "Page",
             "state": {"class": "issues", "icon": "fa-triangle-exclamation", "text": "2 points to fix, 1 to confirm"},
             "hasissues": true, "issues": [{"text": "Images without a text alternative: 2."}],
+            "hasplaces": true, "places": [{"label": "Chapter « Settings »", "sep": ": ", "issues": "2 images used as links",
+                "url": "#", "linktext": "Change chapter « Settings »"}],
             "haschecks": true, "checks": [{"name": "4|captions:abc", "id": "epure-a11y-check-cm-4-0",
                 "label": "The video « youtube.com » has subtitles", "help": "Subtitles let the deaf follow.",
                 "checked": false}],
@@ -73,6 +75,14 @@
                                 {{#issues}}<li>{{text}}</li>{{/issues}}
                             </ul>
                         {{/hasissues}}
+                        {{#hasplaces}}
+                            <p class="epure-a11yguide-places-title">{{#str}}courseaccessibility_places, theme_epure{{/str}}</p>
+                            <ul class="epure-a11yguide-places">
+                                {{#places}}
+                                    <li><span class="epure-a11yguide-place">{{label}}</span>{{sep}}{{issues}} <a class="d-print-none" href="{{url}}" aria-label="{{linktext}}">{{#str}}courseaccessibility_editplace_short, theme_epure{{/str}}</a></li>
+                                {{/places}}
+                            </ul>
+                        {{/hasplaces}}
                         {{#haschecks}}
                             <fieldset class="epure-a11yguide-checks">
                                 <legend class="epure-a11yguide-checks-title">{{#str}}courseaccessibility_checks, theme_epure{{/str}}</legend>
