@@ -1,6 +1,6 @@
 # Changes
 
-## 1.3.0 — the help of the keyboard shortcuts
+## 1.3.0 — the help of the keyboard shortcuts, and the reference of the CSS custom properties `--epure-*`
 
 - Help of the keyboard shortcuts: the key « ? » opens a window that lists the shortcuts of the page, by group: on every page (« ? », Ctrl + K for the quick search, Alt + A for the display preferences, Tab for the link « Skip to main content », Esc), in the quick search (the arrows, Enter, Ctrl + Enter) and in the text editor (Alt + F10 for its toolbar, Alt + 0 for its help). Only the shortcuts of what is on: without the quick search or the panel « Aa », theirs are not listed; a visitor has no editor. On a Mac, the keys show as ⌘ and ⌥. A native modal window (dialog), with its title focused at the opening and the focus given back at the closing; the shortcuts in tables (keys, action), one per group. axe-core.
 - The key « ? » is a shortcut of one character (WCAG 2.1.4): it is ignored while typing in a field, a list or the editor, and when another window or menu is open; the window has a box to turn it off, kept in the preferences of the user (new preference theme_epure_shortcuts, declared to the privacy API) or in the browser for a visitor. The help still opens from the link « Keyboard shortcuts (?) » of the window « ? » of the footer, and from the button of the panel « Aa ».
