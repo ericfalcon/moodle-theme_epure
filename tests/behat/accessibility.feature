@@ -131,7 +131,10 @@ Feature: Accessibility of the Épure theme
     And the page should meet accessibility standards
 
   Scenario: A visitor who is not logged in searches the catalogue, the categories and the public pages
-    Given the following "categories" exist:
+    # A site open without logging in (on Moodle 5.3, logging in is required by default).
+    Given the following config values are set as admin:
+      | forcelogin | 0 |
+    And the following "categories" exist:
       | name     | category | idnumber |
       | Training | 0        | TRAIN    |
     And the following "courses" exist:
