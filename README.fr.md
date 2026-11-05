@@ -102,7 +102,7 @@ Un pré-audit automatisé ne remplace pas un audit d'accessibilité manuel : les
 
 ## Mise à jour
 
-Remplacez le dossier `epure` par celui de la nouvelle version, puis lancez la mise à jour de la base de données (Administration du site › Notifications). Les réglages sont conservés.
+Remplacez le dossier `epure` par celui de la nouvelle version, puis lancez la mise à jour de la base de données (Administration du site › Notifications). Les réglages sont conservés. Pour une plateforme en service (sauvegardes, mode maintenance, ordre des réglages, retour en arrière, plugins tiers, caches et performance), voir [docs/Mise-en-production.md](docs/Mise-en-production.md).
 
 Après chaque mise à jour de Moodle, d'un paquet de langue ou d'Épure :
 

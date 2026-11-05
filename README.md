@@ -102,7 +102,7 @@ An automated pre-audit does not replace a manual accessibility audit: the result
 
 ## Upgrading
 
-Replace the `epure` folder with the one of the new version, then run the database upgrade (Site administration › Notifications). The settings are kept.
+Replace the `epure` folder with the one of the new version, then run the database upgrade (Site administration › Notifications). The settings are kept. For a site in service (backups, maintenance mode, order of the settings, rollback, third-party plugins, caches and performance), see [docs/Mise-en-production.md](docs/Mise-en-production.md) (in French).
 
 After each update of Moodle, of a language pack or of Épure:
 
