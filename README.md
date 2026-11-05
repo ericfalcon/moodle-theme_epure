@@ -488,7 +488,7 @@ A theme alone cannot make a platform compliant: course content matters too, and 
 
 ## Development
 
-- **Styles**: `scss/epure.scss` imports, in the order they are compiled, the files of `scss/epure/`, one per subject (header, course page, activities, dark mode…).
+- **Styles**: `scss/epure.scss` imports, in the order they are compiled, the files of `scss/epure/`, one per subject (header, course page, activities, dark mode…). The palette, the shapes and the states are exposed as CSS custom properties `--epure-*`, to use in a custom SCSS or a plugin: their reference is in [docs/Variables-CSS.md](docs/Variables-CSS.md) (in French).
 - **IOMAD**: everything Épure uses of IOMAD goes through `theme_epure\iomad` (detection, API, company context, table names, addresses of the pages). IOMAD 5.1 renamed its tables and classes; this class knows both.
 - **Course order**: `theme_epure\course_structure` gives the activities of a course in the order of the course page, those of a subsection at the place of the subsection (Moodle lists them at the end of the course); the next activity, the position and the previous and next activities follow it.
 - **Cache**: the progress, next activity and next deadline of each course of a learner, and the events of their week, are kept 5 minutes in the cache `learnerprogress`, and forgotten at once when an activity or a course is completed, an assignment or a quiz attempt is submitted, or the activities or the completion of the course change.

@@ -477,7 +477,7 @@ Un thème ne rend pas une plateforme conforme à lui seul : les contenus des cou
 
 ## Développement
 
-- **Styles** : `scss/epure.scss` importe, dans l'ordre de compilation, les fichiers de `scss/epure/`, un par sujet (en-tête, page de cours, activités, mode sombre…).
+- **Styles** : `scss/epure.scss` importe, dans l'ordre de compilation, les fichiers de `scss/epure/`, un par sujet (en-tête, page de cours, activités, mode sombre…). La palette, les formes et les états sont exposés en propriétés CSS `--epure-*`, à utiliser dans un SCSS personnalisé ou un plugin : leur référence est dans [docs/Variables-CSS.md](docs/Variables-CSS.md).
 - **IOMAD** : tout ce qu'Épure utilise d'IOMAD passe par `theme_epure\iomad` (détection, API, contexte d'entreprise, noms des tables, adresses des pages). IOMAD 5.1 a renommé ses tables et ses classes ; cette classe connaît les deux.
 - **Ordre du cours** : `theme_epure\course_structure` donne les activités d'un cours dans l'ordre de la page du cours, celles d'une sous-section à la place de la sous-section (Moodle les range à la fin du cours) ; la prochaine activité, la position et les activités précédente et suivante le suivent.
 - **Cache** : la progression, la prochaine activité et la prochaine échéance de chaque cours d'un apprenant, et les événements de sa semaine, sont gardées 5 minutes dans le cache `learnerprogress`, et oubliées aussitôt quand une activité ou un cours est terminé, un devoir ou une tentative de test remis, ou que les activités ou l'achèvement du cours changent.
