@@ -329,13 +329,19 @@ const liveLine = (textarea, strings) => {
     // page: its content is followed once it is there.
     textarea.addEventListener('input', later);
     update();
-    // Looked for as long as the page is open: a slow server or a long form can start it late.
+    // Looked for as long as the page is open: a slow server or a long form can start it late. Meanwhile, and with the
+    // plain text editor, the value of the field is followed too when a script changes it, without any event.
+    let value = textarea.value;
     const attach = () => {
         const editor = textarea.id ? getInstanceForElementId(textarea.id) : null;
         if (editor) {
             editor.on('input change undo redo SetContent', later);
             update();
         } else if (document.contains(textarea)) {
+            if (textarea.value !== value) {
+                value = textarea.value;
+                update();
+            }
             setTimeout(attach, 500);
         }
     };
