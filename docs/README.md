@@ -23,7 +23,7 @@
 8. [IOMAD](IOMAD.md)
 9. [Accessibilité](Accessibilit%C3%A9.md) et [rapport de pré-audit](Pr%C3%A9-audit-d%E2%80%99accessibilit%C3%A9.md)
 10. [Questions fréquentes](FAQ.md)
-11. [Développement](D%C3%A9veloppement.md)
+11. [Développement](D%C3%A9veloppement.md) et [variables CSS `--epure-*`](Variables-CSS.md)
 
 La documentation en anglais est dans le [README du thème](../README.md).
 

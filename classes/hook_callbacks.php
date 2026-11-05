@@ -314,6 +314,11 @@ class hook_callbacks {
      */
     public static function before_footer_html_generation(\core\hook\output\before_footer_html_generation $hook): void {
         global $CFG, $PAGE, $OUTPUT;
+        // The help of the keyboard shortcuts, opened with « ? », from the footer and from the panel « Aa ».
+        if (!during_initial_install() && self::epure_page() && $PAGE->pagelayout !== 'maintenance') {
+            $hook->add_html($OUTPUT->render_from_template('theme_epure/shortcuts', shortcuts::export()));
+            $PAGE->requires->js_call_amd('theme_epure/shortcuts', 'init');
+        }
         // The teachers: the contents of the editors checked for the common mistakes of accessibility when a form is saved.
         if (
             !during_initial_install() && isloggedin() && !isguestuser() && self::epure_page()

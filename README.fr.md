@@ -116,6 +116,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.3.0** : aucun réglage ne change. La touche « ? » ouvre l'aide des raccourcis clavier ; chaque utilisateur peut désactiver la touche dans cette fenêtre (nouvelle préférence `theme_epure_shortcuts`).
 - **1.2.0** : aucun réglage ne change. La recherche rapide est aussi proposée aux visiteurs non connectés et aux invités (sur un site ouvert sans connexion), avec un service web public `theme_epure_quick_search_public` qui répond ce qu'un visiteur voit : les cours du catalogue, les catégories et les pages publiques.
 - **1.1.0** : un nouveau réglage, **Accessibilité du cours** (onglet Accessibilité), désactivé par défaut. La mise à jour crée la table `theme_epure_a11ycheck` (les points confirmés par les enseignants) et deux caches. Le pense-bête `theme/epure/checklist.php` est ouvert sans connexion.
 - **1.0.2** : aucun réglage ne change. La mise à jour crée la table `theme_epure_summary` (les documents « Ma synthèse » émis en PDF), et la page de vérification `theme/epure/verify.php` est ouverte sans connexion. La chaîne `quicksearch_searching` est retirée, car elle n'est plus affichée.
@@ -465,6 +466,8 @@ Chaque point dit quoi faire, avec un lien pour modifier l'activité. Le guide s'
 
 Le changement est immédiat, puis enregistré dans les préférences de son profil Moodle, une requête à la fois, pour que le dernier choix soit celui gardé même quand plusieurs sont changés très vite : il vaut sur toutes les pages et tous ses appareils, dès le premier affichage. Les visiteurs non connectés et les invités ont l'affichage par défaut du site, comme les utilisateurs qui n'ont pas choisi le leur : dans l'onglet Accessibilité du thème, l'administrateur règle par défaut la taille du texte, la police de lecture, le texte plus espacé, les lignes courtes, le contraste renforcé, les liens soulignés et les animations réduites. Le bouton « Aa » se désactive dans le même onglet ; les préférences déjà choisies continuent de s'appliquer. Ces préférences sont déclarées à l'API de confidentialité et exportées avec les données de l'utilisateur.
 
+**Raccourcis clavier.** La touche **?** ouvre une fenêtre qui liste les raccourcis de la page : « ? » lui-même, Ctrl + K (recherche rapide), Alt + A (préférences d'affichage), Tab (lien d'évitement), Échap, les touches de la recherche rapide et de l'éditeur de texte (Alt + F10, Alt + 0) ; sur Mac, ⌘ et ⌥. La touche est ignorée pendant la saisie, et chacun peut la désactiver dans la fenêtre (WCAG 2.1.4) ; l'aide s'ouvre aussi depuis « Raccourcis clavier (?) » dans la fenêtre « ? » du pied de page et depuis le panneau « Aa ».
+
 **Déclaration d'accessibilité.** L'onglet **Accessibilité** des réglages du thème la remplit au format français (RGAA) : état de conformité, entité, taux de conformité, auditeur et date de l'audit, non-conformités, dérogations, contenus non soumis, contact (par défaut, le courriel du support). Tant qu'aucun état n'est choisi, rien n'est publié. Une fois l'état choisi :
 
 - la déclaration est publiée à l'adresse `/theme/epure/accessibility.php`, lisible sans compte. Elle liste aussi les mesures d'accessibilité prises par le thème (contrastes, clavier, structure, agrandissement, préférences d'affichage, tests automatiques), et les voies de recours auprès du Défenseur des droits ; une adresse électronique saisie comme contact devient un lien ;
@@ -474,7 +477,7 @@ Un thème ne rend pas une plateforme conforme à lui seul : les contenus des cou
 
 ## Développement
 
-- **Styles** : `scss/epure.scss` importe, dans l'ordre de compilation, les fichiers de `scss/epure/`, un par sujet (en-tête, page de cours, activités, mode sombre…).
+- **Styles** : `scss/epure.scss` importe, dans l'ordre de compilation, les fichiers de `scss/epure/`, un par sujet (en-tête, page de cours, activités, mode sombre…). La palette, les formes et les états sont exposés en propriétés CSS `--epure-*`, à utiliser dans un SCSS personnalisé ou un plugin : leur référence est dans [docs/Variables-CSS.md](docs/Variables-CSS.md).
 - **IOMAD** : tout ce qu'Épure utilise d'IOMAD passe par `theme_epure\iomad` (détection, API, contexte d'entreprise, noms des tables, adresses des pages). IOMAD 5.1 a renommé ses tables et ses classes ; cette classe connaît les deux.
 - **Ordre du cours** : `theme_epure\course_structure` donne les activités d'un cours dans l'ordre de la page du cours, celles d'une sous-section à la place de la sous-section (Moodle les range à la fin du cours) ; la prochaine activité, la position et les activités précédente et suivante le suivent.
 - **Cache** : la progression, la prochaine activité et la prochaine échéance de chaque cours d'un apprenant, et les événements de sa semaine, sont gardées 5 minutes dans le cache `learnerprogress`, et oubliées aussitôt quand une activité ou un cours est terminé, un devoir ou une tentative de test remis, ou que les activités ou l'achèvement du cours changent.

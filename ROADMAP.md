@@ -263,8 +263,8 @@ Les chantiers du thème prévus ci-dessus (0.29 à 0.57) sont livrés. Avant la 
 #### Évolutions, dans l'ordre retenu
 
 - [x] 1. **Checklist « rendre mes cours accessibles »** pour les formateurs (1.1.0) : le guide « Accessibilité du cours », qui passe en revue chaque activité et ressource (repéré par Épure, à confirmer par un enseignant, confirmations partagées), relié depuis le menu du cours, le mode édition et le vérificateur de contenu, imprimable comme bilan ; le pense-bête « Rendre mes cours accessibles » sur une page à imprimer. Réglage désactivé par défaut, pour les organismes tenus au RGAA.
-- [ ] 2. **Aide des raccourcis clavier** : la touche « ? » affiche la liste des raccourcis (Ctrl+K, Alt+A…), dans une fenêtre accessible.
-- [ ] 3. **Référence des variables CSS `--epure-*`** : une page de documentation des propriétés exposées, pour les SCSS personnalisés et les intégrateurs.
+- [x] 2. **Aide des raccourcis clavier** (1.3.0) : la touche « ? » affiche la liste des raccourcis (Ctrl+K, Alt+A…), dans une fenêtre accessible.
+- [x] 3. **Référence des variables CSS `--epure-*`** (1.3.0, [docs/Variables-CSS.md](docs/Variables-CSS.md)) : une page de documentation des propriétés exposées, pour les SCSS personnalisés et les intégrateurs.
 - [x] 4. **« Ma synthèse » en PDF côté serveur** (1.0.2), avec la bibliothèque PDF de Moodle (TCPDF) : un document daté, aux couleurs de la marque, avec un code de vérification et un QR code ; la page de vérification, ouverte sans connexion, montre ce que la plateforme a émis sous ce code. La page reste la version accessible (TCPDF ne produit pas de PDF balisés).
 - [x] 5. **Recherche rapide pour les visiteurs** (1.2.0) : sur les pages publiques (catalogue, présentation des cours, connexion), limitée à ce qu'un visiteur peut voir.
 

@@ -116,6 +116,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.3.0**: no setting changes. The key « ? » opens the help of the keyboard shortcuts; each user can turn the key off in that window (new user preference `theme_epure_shortcuts`).
 - **1.2.0**: no setting changes. The quick search is also offered to the visitors who are not logged in and the guests (on a site open without logging in), with a public web service `theme_epure_quick_search_public` that answers what a visitor sees: the courses of the catalogue, the categories and the public pages.
 - **1.1.0**: a new setting, **Accessibility of the course** (Accessibility tab), off by default. The upgrade creates the table `theme_epure_a11ycheck` (the points confirmed by the teachers) and two caches. The reminder `theme/epure/checklist.php` is open without logging in.
 - **1.0.2**: no setting changes. The upgrade creates the table `theme_epure_summary` (the « My summary » documents issued as PDF), and the page of verification `theme/epure/verify.php` is open without logging in. The string `quicksearch_searching` is removed, as it is no longer shown.
@@ -479,13 +480,15 @@ The change takes effect immediately and is then saved in the preferences of the 
 
 **Step by step.** The same settings can be filled in a guided form (Site administration › Appearance › Themes › « Accessibility statement, step by step », also linked from the Accessibility tab and, for the administrators, from the statement itself): who publishes the statement, the audit, the compliance status, the contents not accessible, the contact. Each step says what the RGAA asks for; the status step recalls the rate entered and the rule of the RGAA (fully compliant at 100 %, partially from 50 %, non compliant below or without an audit), but the theme never computes the status: the audit gives it. The statement has a button to print it, or to save it as PDF.
 
+**Keyboard shortcuts.** The key **?** opens a window that lists the shortcuts of the page: « ? » itself, Ctrl + K (quick search), Alt + A (display preferences), Tab (skip link), Esc, the keys of the quick search and of the text editor (Alt + F10, Alt + 0); on a Mac, ⌘ and ⌥. The key is ignored while typing, and each user can turn it off in the window (WCAG 2.1.4); the help also opens from « Keyboard shortcuts (?) » in the window « ? » of the footer and from the panel « Aa ».
+
 **Nothing fixed over the content.** On phones, tablets and with a zoom of 200 %, the floating buttons of Moodle take a place of their own: below 1200 pixels, the contents of the help button « ? » show at the end of the page; below 992 pixels, the buttons of the drawers (index of the course, blocks) go at the top of the content. An element reached with the keyboard is never hidden, even in part, under the bars fixed at the top and the bottom of the screen: the page scrolls it into the clear.
 
 A theme alone cannot make a platform compliant: course content matters too, and a manual audit is still required before declaring compliance.
 
 ## Development
 
-- **Styles**: `scss/epure.scss` imports, in the order they are compiled, the files of `scss/epure/`, one per subject (header, course page, activities, dark mode…).
+- **Styles**: `scss/epure.scss` imports, in the order they are compiled, the files of `scss/epure/`, one per subject (header, course page, activities, dark mode…). The palette, the shapes and the states are exposed as CSS custom properties `--epure-*`, to use in a custom SCSS or a plugin: their reference is in [docs/Variables-CSS.md](docs/Variables-CSS.md) (in French).
 - **IOMAD**: everything Épure uses of IOMAD goes through `theme_epure\iomad` (detection, API, company context, table names, addresses of the pages). IOMAD 5.1 renamed its tables and classes; this class knows both.
 - **Course order**: `theme_epure\course_structure` gives the activities of a course in the order of the course page, those of a subsection at the place of the subsection (Moodle lists them at the end of the course); the next activity, the position and the previous and next activities follow it.
 - **Cache**: the progress, next activity and next deadline of each course of a learner, and the events of their week, are kept 5 minutes in the cache `learnerprogress`, and forgotten at once when an activity or a course is completed, an assignment or a quiz attempt is submitted, or the activities or the completion of the course change.
