@@ -13,7 +13,7 @@
 
 ## Sommaire
 
-1. [Installation](Installation.md)
+1. [Installation](Installation.md) et [mise en production](Mise-en-production.md)
 2. [Réglages du thème](R%C3%A9glages-du-th%C3%A8me.md)
 3. [Parcours de l'apprenant](Parcours-de-l%E2%80%99apprenant.md)
 4. [Navigation et recherche](Navigation-et-recherche.md)
