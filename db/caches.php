@@ -59,4 +59,11 @@ $definitions = [
         'simplekeys' => true,
         'simpledata' => true,
     ],
+    // What is found in a document of an office suite or a PDF file (images without a text alternative, titles…), by
+    // its content.
+    'documentcheck' => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => true,
+    ],
 ];

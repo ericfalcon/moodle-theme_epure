@@ -362,6 +362,7 @@ Feature: Accessibility of the Épure theme
     And I should see "2 points to fix, 2 to confirm"
     And I follow "The reminder to print"
     And I should see "Making my courses accessible"
+    And I should see "Back to the accessibility of « Hygiene »"
     And the page should meet accessibility standards
 
   Scenario: A certificate of the activity Course certificate, on the template of Épure, meets accessibility standards

@@ -170,13 +170,14 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         $this->assertSame(['images' => 1, 'frames' => 1, 'name' => 1], $parts[$page->cmid]['issues']);
         $this->assertSame(['captions'], array_column($parts[$page->cmid]['checks'], 'kind'));
         $this->assertSame(['deadlines'], array_column($parts[$quiz->cmid]['checks'], 'kind'));
-        $this->assertSame(['pdf' => 1], $parts[$resource->cmid]['issues']);
+        $this->assertSame(['pdf' => 1, 'pdflang' => 1], $parts[$resource->cmid]['issues']);
         $duplicates = array_filter($parts, fn($part) => isset($part['issues']['duplicate']));
         $this->assertCount(2, $duplicates);
 
         $figures = course_accessibility::figures(course_accessibility::analyse($course), []);
-        // Images, frame, name, two duplicates, PDF; the video, the time of the quiz, the instructions and the colours.
-        $this->assertSame(6, $figures['issues']);
+        // Images, frame, name, two duplicates, PDF untagged and without a language;
+        // the video, the time of the quiz, the instructions and the colours.
+        $this->assertSame(7, $figures['issues']);
         $this->assertSame(4, $figures['toconfirm']);
         $this->assertSame(['issues' => 3, 'toconfirm' => 1], $figures['cms'][$page->cmid]);
     }
@@ -207,6 +208,9 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
             get_string('courseaccessibility_place_chapter', 'theme_epure', 'Paramètres du devoir'),
             $exported['places'][0]['label']
         );
+        // Each mistake has the link of its chapter: no link to the settings of the book.
+        $this->assertSame([], $exported['links']);
+        $this->assertTrue($exported['ok']);
     }
 
     /**
@@ -230,7 +234,7 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
 
         $editmode = course_accessibility::edit_mode($course);
         $this->assertSame(
-            get_string('courseaccessibility_issuesn', 'theme_epure', 6) . ', '
+            get_string('courseaccessibility_issuesn', 'theme_epure', 7) . ', '
                 . get_string('courseaccessibility_toconfirmn', 'theme_epure', 3),
             $editmode['text']
         );

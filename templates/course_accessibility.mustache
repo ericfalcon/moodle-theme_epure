@@ -24,13 +24,13 @@
 
     Example context (json):
     {
-        "reporttitle": "Accessibility of « Safety at work » on 05/11/26", "action": "#", "sesskey": "abc", "checklisturl": "#",
+        "reporttitle": "Accessibility of « Safety at work » on 05/11/26", "action": "#", "sesskey": "abc", "checklisturl": "#", "courseurl": "#",
         "summary": "3 points to fix, 1 to confirm", "done": "5 parts out of 8 have nothing left", "percent": 62,
         "hastoconfirm": true,
         "sections": [{"name": "Week 1", "id": "epure-a11y-section-1", "parts": [{
             "id": "epure-a11y-cm-4", "name": "Risks", "icon": "", "type": "Page",
             "state": {"class": "issues", "icon": "fa-triangle-exclamation", "text": "2 points to fix, 1 to confirm"},
-            "hasissues": true, "issues": [{"text": "Images without a text alternative: 2."}],
+            "hasissues": true, "issues": [{"text": "Images without a text alternative: 2. Describe each one.", "cause": "Images without a text alternative: 2.", "advice": "Describe each one."}],
             "hasplaces": true, "places": [{"label": "Chapter « Settings »", "sep": ": ", "issues": "2 images used as links",
                 "url": "#", "linktext": "Change chapter « Settings »"}],
             "haschecks": true, "checks": [{"name": "4|captions:abc", "id": "epure-a11y-check-cm-4-0",
@@ -72,14 +72,14 @@
                         </div>
                         {{#hasissues}}
                             <ul class="epure-a11yguide-issues">
-                                {{#issues}}<li>{{text}}</li>{{/issues}}
+                                {{#issues}}<li><strong class="epure-a11yguide-cause">{{cause}}</strong>{{#advice}} {{advice}}{{/advice}}</li>{{/issues}}
                             </ul>
                         {{/hasissues}}
                         {{#hasplaces}}
                             <p class="epure-a11yguide-places-title">{{#str}}courseaccessibility_places, theme_epure{{/str}}</p>
                             <ul class="epure-a11yguide-places">
                                 {{#places}}
-                                    <li><span class="epure-a11yguide-place">{{label}}</span>{{sep}}{{issues}} <a class="d-print-none" href="{{url}}" aria-label="{{linktext}}">{{#str}}courseaccessibility_editplace_short, theme_epure{{/str}}</a></li>
+                                    <li><span class="epure-a11yguide-place">{{label}}</span>{{{sep}}}<span class="epure-a11yguide-cause">{{issues}}</span> <a class="d-print-none" href="{{url}}" aria-label="{{linktext}}">{{#str}}courseaccessibility_editplace_short, theme_epure{{/str}}</a></li>
                                 {{/places}}
                             </ul>
                         {{/hasplaces}}
@@ -97,9 +97,11 @@
                                 {{/checks}}
                             </fieldset>
                         {{/haschecks}}
-                        <ul class="epure-a11yguide-links d-print-none">
-                            {{#links}}<li><a href="{{url}}">{{text}}</a></li>{{/links}}
-                        </ul>
+                        {{^ok}}
+                            <ul class="epure-a11yguide-links d-print-none">
+                                {{#links}}<li><a href="{{url}}">{{text}}</a></li>{{/links}}
+                            </ul>
+                        {{/ok}}
                     </article>
                 {{/parts}}
             </section>
@@ -107,6 +109,7 @@
         {{#hastoconfirm}}
             <div class="epure-a11yguide-save d-print-none">
                 <button type="submit" class="btn btn-primary">{{#str}}courseaccessibility_save, theme_epure{{/str}}</button>
+                <a class="btn btn-secondary" href="{{courseurl}}">{{#str}}cancel{{/str}}</a>
             </div>
         {{/hastoconfirm}}
     </form>

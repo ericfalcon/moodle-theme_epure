@@ -152,7 +152,26 @@
 
 .epure-a11yguide-state {
     margin: 0;
+    padding: .125rem .625rem;
+    color: var(--epure-state-ink, var(--epure-ink));
     font-weight: 600;
+    background-color: var(--epure-state-bg, transparent);
+    border-radius: var(--epure-radius-pill);
+}
+
+.epure-a11yguide-is-issues .epure-a11yguide-state {
+    --epure-state-ink: var(--epure-state-late);
+    --epure-state-bg: var(--epure-state-late-soft);
+}
+
+.epure-a11yguide-is-toconfirm .epure-a11yguide-state {
+    --epure-state-ink: var(--epure-state-soon);
+    --epure-state-bg: var(--epure-state-soon-soft);
+}
+
+.epure-a11yguide-is-ok .epure-a11yguide-state {
+    --epure-state-ink: var(--epure-state-done);
+    --epure-state-bg: var(--epure-state-done-soft);
 }
 
 .epure-a11yguide-issues {
@@ -162,6 +181,11 @@
     li + li {
         margin-top: .25rem;
     }
+}
+
+.epure-a11yguide-cause {
+    color: var(--epure-state-late);
+    font-weight: 700;
 }
 
 .epure-a11yguide-checks {
@@ -211,6 +235,10 @@
     background-color: var(--epure-surface);
     border-top: 1px solid var(--epure-border);
     box-shadow: 0 -4px 12px rgba(16, 22, 32, .08);
+
+    .btn + .btn {
+        margin-left: .5rem;
+    }
 }
 
 html:has(.epure-a11yguide-save) {
@@ -268,6 +296,10 @@ html:has(.epure-a11yguide-save) {
 // The reminder: two columns on a large screen, one A4 page on paper.
 .epure-checklist {
     max-width: 60rem;
+}
+
+.epure-checklist-back {
+    margin-bottom: 1rem;
 }
 
 .epure-checklist-actions {
