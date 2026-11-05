@@ -116,6 +116,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.3.0**: no setting changes. The key « ? » opens the help of the keyboard shortcuts; each user can turn the key off in that window (new user preference `theme_epure_shortcuts`).
 - **1.2.0**: no setting changes. The quick search is also offered to the visitors who are not logged in and the guests (on a site open without logging in), with a public web service `theme_epure_quick_search_public` that answers what a visitor sees: the courses of the catalogue, the categories and the public pages.
 - **1.1.0**: a new setting, **Accessibility of the course** (Accessibility tab), off by default. The upgrade creates the table `theme_epure_a11ycheck` (the points confirmed by the teachers) and two caches. The reminder `theme/epure/checklist.php` is open without logging in.
 - **1.0.2**: no setting changes. The upgrade creates the table `theme_epure_summary` (the « My summary » documents issued as PDF), and the page of verification `theme/epure/verify.php` is open without logging in. The string `quicksearch_searching` is removed, as it is no longer shown.
@@ -478,6 +479,8 @@ The change takes effect immediately and is then saved in the preferences of the 
 - the notice "Accessibility: partially compliant" (depending on the status) appears at the bottom of every page, along with a link in the footer.
 
 **Step by step.** The same settings can be filled in a guided form (Site administration › Appearance › Themes › « Accessibility statement, step by step », also linked from the Accessibility tab and, for the administrators, from the statement itself): who publishes the statement, the audit, the compliance status, the contents not accessible, the contact. Each step says what the RGAA asks for; the status step recalls the rate entered and the rule of the RGAA (fully compliant at 100 %, partially from 50 %, non compliant below or without an audit), but the theme never computes the status: the audit gives it. The statement has a button to print it, or to save it as PDF.
+
+**Keyboard shortcuts.** The key **?** opens a window that lists the shortcuts of the page: « ? » itself, Ctrl + K (quick search), Alt + A (display preferences), Tab (skip link), Esc, the keys of the quick search and of the text editor (Alt + F10, Alt + 0); on a Mac, ⌘ and ⌥. The key is ignored while typing, and each user can turn it off in the window (WCAG 2.1.4); the help also opens from « Keyboard shortcuts (?) » in the window « ? » of the footer and from the panel « Aa ».
 
 **Nothing fixed over the content.** On phones, tablets and with a zoom of 200 %, the floating buttons of Moodle take a place of their own: below 1200 pixels, the contents of the help button « ? » show at the end of the page; below 992 pixels, the buttons of the drawers (index of the course, blocks) go at the top of the content. An element reached with the keyboard is never hidden, even in part, under the bars fixed at the top and the bottom of the screen: the page scrolls it into the clear.
 

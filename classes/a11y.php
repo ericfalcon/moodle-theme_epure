@@ -62,6 +62,9 @@ class a11y {
         // Reading mode of the pages of the activities, without the drawers.
         $definitions['theme_epure_focus'] = ['type' => PARAM_INT, 'null' => NULL_NOT_ALLOWED,
             'default' => 0, 'choices' => [0, 1], 'permissioncallback' => $own];
+        // The key « ? » opens the help of the keyboard shortcuts, or not (WCAG 2.1.4).
+        $definitions[shortcuts::PREFERENCE] = ['type' => PARAM_INT, 'null' => NULL_NOT_ALLOWED,
+            'default' => 1, 'choices' => [0, 1], 'permissioncallback' => $own];
         return $definitions;
     }
 

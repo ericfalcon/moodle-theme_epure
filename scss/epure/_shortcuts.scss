@@ -1,0 +1,97 @@
+// Help of the keyboard shortcuts (theme_epure/shortcuts): a window opened with « ? », as the one of the quick search,
+// whose content scrolls on small screens and with large text; the keys look like keys.
+
+.epure-shortcuts {
+    width: 36rem;
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100vh - 4rem);
+    margin: 8vh auto auto;
+    padding: 1.25rem 1.5rem;
+    overflow-y: auto;
+    color: var(--epure-ink);
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: 0 24px 64px -12px rgba(16, 22, 32, .35);
+
+    &::backdrop {
+        background-color: rgba(16, 22, 32, .45);
+    }
+
+    kbd {
+        display: inline-block;
+        min-width: 1.75rem;
+        padding: .125rem .375rem;
+        color: var(--epure-ink);
+        font-family: inherit;
+        font-size: .875rem;
+        font-weight: 600;
+        text-align: center;
+        background-color: var(--epure-surface-muted);
+        border: 1px solid var(--epure-border);
+        border-bottom-width: 2px;
+        border-radius: var(--epure-radius-sm);
+        box-shadow: none;
+    }
+}
+
+.epure-shortcuts-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem 1rem;
+    margin-bottom: .5rem;
+}
+
+.epure-shortcuts-title {
+    margin: 0;
+    font-size: 1.375rem;
+
+    &:focus {
+        outline: none;
+    }
+
+    &:focus-visible {
+        outline: 3px solid var(--epure-focus);
+        outline-offset: 2px;
+    }
+}
+
+.epure-shortcuts-table {
+    width: 100%;
+    margin: .75rem 0 0;
+    border-collapse: collapse;
+
+    td {
+        padding: .375rem 0;
+        vertical-align: top;
+        border-top: 1px solid var(--epure-border);
+    }
+}
+
+.epure-shortcuts-group {
+    padding: 0 0 .375rem;
+    color: var(--epure-ink);
+    font-size: 1rem;
+    font-weight: 600;
+    caption-side: top;
+}
+
+.epure-shortcuts-keys {
+    width: 40%;
+    padding-right: 1rem !important; // stylelint-disable-line declaration-no-important
+    white-space: nowrap;
+}
+
+.epure-shortcuts-switch {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--epure-border);
+}
+
+.epure-shortcuts-help {
+    margin: .25rem 0 0;
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+}

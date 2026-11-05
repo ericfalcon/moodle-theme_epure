@@ -354,6 +354,15 @@ class core_renderer extends \theme_boost\output\core_renderer {
      */
     public function standard_footer_html() {
         $output = parent::standard_footer_html();
+        // The help of the keyboard shortcuts (key « ? »): a link, as the window of the footer is a copy that Bootstrap
+        // cleans of its buttons and of their data attributes.
+        if (!during_initial_install()) {
+            $output .= \html_writer::div(\html_writer::link(
+                '#epure-shortcuts',
+                get_string('shortcuts_footer', 'theme_epure'),
+                ['class' => 'epure-shortcuts-link']
+            ), 'epure-shortcuts-footer');
+        }
         // The footer of Épure already has the link; without it, the link goes in Moodle's footer.
         if (\theme_epure\accessibility_statement::enabled() && !\theme_epure\footer::enabled()) {
             $output .= \html_writer::div(\html_writer::link(

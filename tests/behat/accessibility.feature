@@ -162,6 +162,24 @@ Feature: Accessibility of the Épure theme
     Then I should see "Log in" in the "#epure-qs-list" "css_element"
     And the page should meet accessibility standards
 
+  Scenario: The key « ? » opens the help of the keyboard shortcuts, which can be turned off
+    Given I log in as "learner1"
+    When I press the ? key
+    Then "#epure-shortcuts" "css_element" should be visible
+    And I should see "Open the quick search" in the "#epure-shortcuts" "css_element"
+    And the focused element is "#epure-shortcuts-title" "css_element"
+    And the page should meet accessibility standards
+    And I press the escape key
+    And "#epure-shortcuts" "css_element" should not be visible
+    # Turned off (WCAG 2.1.4): « ? » no longer opens it, kept in the preferences of the user.
+    And I press the ? key
+    And I click on "Open this help with the key « ? »" "checkbox"
+    And I press the escape key
+    And I wait "1" seconds
+    And I reload the page
+    And I press the ? key
+    And "#epure-shortcuts" "css_element" should not be visible
+
   Scenario: The quick search works with the keyboard alone
     Given the following "courses" exist:
       | fullname       | shortname |
