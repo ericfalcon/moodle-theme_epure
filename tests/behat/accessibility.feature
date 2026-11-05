@@ -131,7 +131,8 @@ Feature: Accessibility of the Épure theme
     And the page should meet accessibility standards
 
   Scenario: A visitor who is not logged in searches the catalogue, the categories and the public pages
-    # A site open without logging in (from Moodle 5.2, logging in is required by default).
+    # A site open without logging in (required by default with IOMAD and from Moodle 5.2), on the list of the courses:
+    # from Moodle 5.2, the home page of the site sends the visitors to the login page.
     Given the following config values are set as admin:
       | forcelogin | 0 |
     And the following "categories" exist:
@@ -140,7 +141,7 @@ Feature: Accessibility of the Épure theme
     And the following "courses" exist:
       | fullname       | shortname | category |
       | Safety at work | SAFE      | TRAIN    |
-    When I am on site homepage
+    When I am on course index
     And I click on ".epure-qs-button" "css_element"
     And I set the field with xpath "//input[contains(@class, 'epure-qs-input')]" to "safety"
     Then I should see "Safety at work" in the "#epure-qs" "css_element"
