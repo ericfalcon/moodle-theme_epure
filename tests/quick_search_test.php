@@ -142,7 +142,7 @@ final class quick_search_test extends \advanced_testcase {
     public function test_visitor(): void {
         global $CFG;
         $this->resetAfterTest();
-        // A site open without logging in (on Moodle 5.3, logging in is required by default).
+        // A site open without logging in (from Moodle 5.2, logging in is required by default).
         $CFG->forcelogin = 0;
         $generator = $this->getDataGenerator();
         $category = $generator->create_category(['name' => 'Sécurité']);
