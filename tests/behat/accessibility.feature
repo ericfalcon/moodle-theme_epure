@@ -327,6 +327,8 @@ Feature: Accessibility of the Épure theme
     And I should see "Monday"
     And I am on the "Rules" "page activity editing" page
     And I set the field "Page content" to "<p><a href=\"https://example.com\">here</a></p>"
+    # As it is written, the line under the editor says it.
+    And I wait until "Accessibility: links that say nothing: 1" "text" exists
     And I press "Save and display"
     And "Before saving: accessibility" "dialogue" should exist
     And I should see "Links whose text does not say where they go" in the "Before saving: accessibility" "dialogue"

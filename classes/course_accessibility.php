@@ -43,7 +43,11 @@ class course_accessibility {
     public const TABLE = 'theme_epure_a11ycheck';
 
     /** @var string[] Mistakes found without a person, in their order on the page. */
-    public const ISSUES = ['images', 'tables', 'links', 'headings', 'frames', 'videos', 'pdf', 'h5pimages', 'name', 'duplicate'];
+    public const ISSUES = ['images', 'imagelinks', 'links', 'tables', 'headings', 'noheadings', 'frames', 'videos', 'pdf',
+        'h5pimages', 'name', 'duplicate'];
+
+    /** @var int Words from which a text without any title is hard to go through with a screen reader. */
+    protected const LONG_TEXT = 400;
 
     /** @var string[] Texts of links that do not say where they go (as theme_epure/content_check). */
     protected const VAGUE_LINKS = ['ici', 'cliquez ici', 'cliquer ici', 'ce lien', 'lien', 'en savoir plus', 'plus', 'suite',
@@ -212,7 +216,10 @@ class course_accessibility {
             $sectionparts[(int) $section->id] = $key;
             foreach ($modinfo->sections[$section->section] ?? [] as $cmid) {
                 $cm = $modinfo->get_cm($cmid);
-                if ($cm->deletioninprogress) {
+                // Deleted, or never shown on the course page (the question banks of Moodle 5, whose questions are read
+                // with the quizzes that use them).
+                $display = !defined('FEATURE_CAN_DISPLAY') || plugin_supports('mod', $cm->modname, FEATURE_CAN_DISPLAY, true);
+                if ($cm->deletioninprogress || !$display) {
                     continue;
                 }
                 $parts['cm_' . $cm->id] = self::part('cm', (int) $cm->id, (int) $section->section);
@@ -242,7 +249,7 @@ class course_accessibility {
      * @return array
      */
     protected static function part(string $type, int $id, int $section): array {
-        return ['type' => $type, 'id' => $id, 'section' => $section, 'issues' => [], 'checks' => []];
+        return ['type' => $type, 'id' => $id, 'section' => $section, 'issues' => [], 'checks' => [], 'places' => []];
     }
 
     /**
@@ -251,8 +258,10 @@ class course_accessibility {
      * @param array $part Part.
      * @param string $html Text.
      * @param int $format Format of the text: the plain texts and Markdown are not HTML.
+     * @param array|null $place Where the text is, in an activity of several texts: kind (chapter, page, question),
+     *     name and address to change it.
      */
-    protected static function add_html(array &$part, string $html, int $format = FORMAT_HTML): void {
+    protected static function add_html(array &$part, string $html, int $format = FORMAT_HTML, ?array $place = null): void {
         if (trim($html) === '' || in_array($format, [FORMAT_PLAIN, FORMAT_MARKDOWN], true)) {
             return;
         }
@@ -262,6 +271,11 @@ class course_accessibility {
         }
         foreach ($found['checks'] as $check) {
             $part['checks'][] = $check;
+        }
+        // Where the mistakes are, in an activity of several texts (a chapter, a page of a lesson, a question).
+        $issues = array_filter($found['issues']);
+        if ($place !== null && $issues) {
+            $part['places'][] = $place + ['issues' => $issues];
         }
     }
 
@@ -286,7 +300,8 @@ class course_accessibility {
      * @return array issues (count by mistake), checks (key, kind and label of each).
      */
     public static function check_html(string $html): array {
-        $found = ['images' => 0, 'tables' => 0, 'links' => 0, 'headings' => 0, 'frames' => 0, 'videos' => 0];
+        $found = ['images' => 0, 'imagelinks' => 0, 'links' => 0, 'tables' => 0, 'headings' => 0, 'noheadings' => 0,
+            'frames' => 0, 'videos' => 0];
         $checks = [];
         if (trim($html) === '') {
             return ['issues' => $found, 'checks' => []];
@@ -299,8 +314,17 @@ class course_accessibility {
         $xpath = new \DOMXPath($doc);
         $text = fn(\DOMNode $node): string => trim(preg_replace('/\s+/u', ' ', $node->textContent));
 
+        // A link made only of images without a text alternative: a screen reader says « link », without where it
+        // leads (WCAG 2.4.4, RGAA 6.2). Its images are counted with it, not as images.
+        $imagelink = fn(\DOMElement $link): bool => $xpath->query('.//img', $link)->length && $text($link) === ''
+            && trim($link->getAttribute('aria-label')) === '' && !$xpath->query('.//img[@alt and @alt != ""]', $link)->length;
         // An image without alt; alt="" marks a decorative one (WCAG H67).
-        $found['images'] = $xpath->query('//img[not(@alt)]')->length;
+        foreach ($xpath->query('//img[not(@alt)]') as $img) {
+            $link = $xpath->query('ancestor::a[@href][1]', $img)->item(0);
+            if (!$link || !$imagelink($link)) {
+                $found['images']++;
+            }
+        }
         // A table without any header, but a table of layout.
         foreach ($xpath->query('//table') as $table) {
             $role = strtolower(trim($table->getAttribute('role')));
@@ -310,6 +334,10 @@ class course_accessibility {
         }
         // A link without text, or whose short text is alone in its block (WCAG 2.4.4, RGAA 6.1).
         foreach ($xpath->query('//a[@href]') as $link) {
+            if ($imagelink($link)) {
+                $found['imagelinks']++;
+                continue;
+            }
             $label = $link->getAttribute('aria-label') !== '' ? trim($link->getAttribute('aria-label')) : $text($link);
             $label = preg_replace('/[.…:!]+$/u', '', \core_text::strtolower($label));
             if ($label === '' && !$xpath->query('.//img[@alt and @alt != ""]', $link)->length) {
@@ -328,12 +356,18 @@ class course_accessibility {
         }
         // A level of title skipped.
         $previous = 0;
-        foreach ($xpath->query('//h1 | //h2 | //h3 | //h4 | //h5 | //h6') as $heading) {
+        $headings = $xpath->query('//h1 | //h2 | //h3 | //h4 | //h5 | //h6');
+        foreach ($headings as $heading) {
             $level = (int) substr($heading->nodeName, 1);
             if ($previous && $level > $previous + 1) {
                 $found['headings']++;
             }
             $previous = $level;
+        }
+        // A long text without any title (WCAG 1.3.1, RGAA 9.1): its sections cannot be reached one by one.
+        $body = $xpath->query('//body')->item(0);
+        if (!$headings->length && $body && count(preg_split('/\s+/u', $text($body), -1, PREG_SPLIT_NO_EMPTY)) >= self::LONG_TEXT) {
+            $found['noheadings'] = 1;
         }
         // A frame without a title (WCAG 4.1.2, RGAA 2.1); a video hosted elsewhere in it.
         foreach ($xpath->query('//iframe') as $frame) {
@@ -394,11 +428,19 @@ class course_accessibility {
                 $cm = $instances[(int) $record->id];
                 $part = &$parts['cm_' . $cm->id];
                 if (isset($record->intro)) {
-                    self::add_html($part, (string) $record->intro, (int) ($record->introformat ?? FORMAT_HTML));
+                    self::add_html($part, (string) $record->intro, (int) ($record->introformat ?? FORMAT_HTML), [
+                        'kind' => 'intro',
+                        'name' => '',
+                        'url' => (new \moodle_url('/course/modedit.php', ['update' => $cm->id]))->out(false),
+                    ]);
                 }
                 switch ($modname) {
                     case 'page':
-                        self::add_html($part, (string) $record->content, (int) $record->contentformat);
+                        self::add_html($part, (string) $record->content, (int) $record->contentformat, [
+                            'kind' => 'content',
+                            'name' => '',
+                            'url' => (new \moodle_url('/course/modedit.php', ['update' => $cm->id]))->out(false),
+                        ]);
                         break;
                     case 'assign':
                         if (isset($record->activity)) {
@@ -413,7 +455,14 @@ class course_accessibility {
                             $part['checks'][] = ['key' => 'deadlines', 'kind' => 'deadlines', 'label' => ''];
                         }
                         foreach (self::quiz_questions($record, $cm) as $question) {
-                            self::add_html($part, (string) $question->questiontext, (int) $question->questiontextformat);
+                            self::add_html($part, (string) $question->questiontext, (int) $question->questiontextformat, [
+                                'kind' => 'question',
+                                'name' => format_string((string) ($question->name ?? '')),
+                                'url' => (new \moodle_url('/question/bank/editquestion/question.php', [
+                                    'id' => $question->questionid ?? $question->id,
+                                    'cmid' => $cm->id,
+                                ]))->out(false),
+                            ]);
                         }
                         break;
                     case 'book':
@@ -421,16 +470,31 @@ class course_accessibility {
                             'book_chapters',
                             ['bookid' => $record->id],
                             'pagenum',
-                            'id, content, contentformat'
+                            'id, title, content, contentformat'
                         );
                         foreach ($chapters as $chapter) {
-                            self::add_html($part, (string) $chapter->content, (int) $chapter->contentformat);
+                            self::add_html($part, (string) $chapter->content, (int) $chapter->contentformat, [
+                                'kind' => 'chapter',
+                                'name' => format_string($chapter->title),
+                                'url' => (new \moodle_url('/mod/book/edit.php', ['cmid' => $cm->id,
+                                    'id' => $chapter->id]))->out(false),
+                            ]);
                         }
                         break;
                     case 'lesson':
-                        $pages = $DB->get_records('lesson_pages', ['lessonid' => $record->id], '', 'id, contents, contentsformat');
+                        $pages = $DB->get_records(
+                            'lesson_pages',
+                            ['lessonid' => $record->id],
+                            '',
+                            'id, title, contents, contentsformat'
+                        );
                         foreach ($pages as $page) {
-                            self::add_html($part, (string) $page->contents, (int) $page->contentsformat);
+                            self::add_html($part, (string) $page->contents, (int) $page->contentsformat, [
+                                'kind' => 'lessonpage',
+                                'name' => format_string($page->title),
+                                'url' => (new \moodle_url('/mod/lesson/editpage.php', ['id' => $cm->id, 'pageid' => $page->id,
+                                    'edit' => 1]))->out(false),
+                            ]);
                         }
                         break;
                 }
@@ -923,6 +987,25 @@ class course_accessibility {
                 $issues[] = ['text' => get_string('courseaccessibility_issue_' . $issue, 'theme_epure', $part['issues'][$issue])];
             }
         }
+        // Where they are, in an activity of several texts: each chapter, page or question with its mistakes, and a link
+        // to change it.
+        $places = [];
+        foreach ($part['places'] ?? [] as $place) {
+            $found = [];
+            foreach (self::ISSUES as $issue) {
+                if (!empty($place['issues'][$issue])) {
+                    $found[] = get_string('courseaccessibility_short_' . $issue, 'theme_epure', $place['issues'][$issue]);
+                }
+            }
+            $label = get_string('courseaccessibility_place_' . $place['kind'], 'theme_epure', $place['name']);
+            $places[] = [
+                'label' => $label,
+                'sep' => get_string('labelsep', 'langconfig'),
+                'issues' => implode(' · ', $found),
+                'url' => $place['url'],
+                'linktext' => get_string('courseaccessibility_editplace', 'theme_epure', $label),
+            ];
+        }
         $checks = [];
         $toconfirm = 0;
         foreach ($part['checks'] as $index => $check) {
@@ -973,6 +1056,8 @@ class course_accessibility {
             'state' => $state,
             'issues' => $issues,
             'hasissues' => (bool) $issues,
+            'places' => $places,
+            'hasplaces' => (bool) $places,
             'checks' => $checks,
             'haschecks' => (bool) $checks,
             'links' => $editlinks,

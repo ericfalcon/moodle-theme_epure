@@ -14,12 +14,15 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Accessibility of the contents, when a teacher saves a form: the editors are read for the common mistakes (images
- * without a text alternative, tables without headers, links whose text does not say where they go even with the
- * sentence around them, levels of titles skipped), without false alerts on what is right: decorative images (alt=""),
- * tables of layout, headers on several rows, short links clear in their sentence. When some are found, a window lists
- * them, field by field, with « Fix », « Open the accessibility checker » (the one of the editor TinyMCE) and « Save
- * anyway »: nothing is ever blocked.
+ * Accessibility of the contents written by the teachers: the editors are read for the common mistakes (images without a
+ * text alternative, images used as links without one, links without text or whose text does not say where they go
+ * even with the sentence around them, tables without headers, levels of titles skipped, a long text without any
+ * title), without false alerts on what is right: decorative images (alt=""), tables of layout, headers on several
+ * rows, short links clear in their sentence.
+ *
+ * As it is written, a line under each editor tells what it finds, with a button that selects each element concerned
+ * in the editor. When the form is saved, a window lists them, field by field, with « Fix », « Open the accessibility
+ * checker » (the one of the editor TinyMCE) and « Save anyway »: nothing is ever blocked.
  *
  * @module     theme_epure/content_check
  * @copyright  2026 Eric Falcon
@@ -40,51 +43,82 @@ const BLOCKS = 'p, li, td, th, dd, dt, figcaption, blockquote, caption, h1, h2, 
 
 const text = (element) => element.textContent.replace(/\s+/g, ' ').trim();
 
+/** @var {string[]} Mistakes, in their order in the window and in the line under the editor. */
+const KEYS = ['images', 'imagelinks', 'links', 'tables', 'headings', 'noheadings'];
+
+/** @var {number} Words from which a text without any title is hard to go through with a screen reader. */
+const LONG_TEXT = 400;
+
 /**
- * The mistakes in a content.
+ * The mistakes in a content, each with the elements concerned: images without a text alternative, links made of
+ * images without a text alternative, links without text or whose short text says nothing, tables without headers,
+ * levels of titles skipped, a long text without any title.
  *
- * @param {string} html Content.
- * @returns {Object} Counts by mistake: images, tables, links, headings.
+ * @param {Element} root Content.
+ * @returns {Object<string, Element[]>} Elements by mistake.
  */
-export const check = (html) => {
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-    const found = {images: 0, tables: 0, links: 0, headings: 0};
-    doc.querySelectorAll('img').forEach((img) => {
+export const problems = (root) => {
+    const found = Object.fromEntries(KEYS.map((key) => [key, []]));
+    // A link made only of images without a text alternative: a screen reader says « link », without where it leads.
+    const imageLink = (link) => link.querySelector('img') && text(link) === '' && !link.getAttribute('aria-label')
+        && !link.querySelector('img[alt]:not([alt=""])');
+    root.querySelectorAll('img').forEach((img) => {
         // Only an image without alt: alt="" marks a decorative one (WCAG H67), with or without role="presentation".
-        if (!img.hasAttribute('alt')) {
-            found.images++;
+        const link = img.closest('a[href]');
+        if (!img.hasAttribute('alt') && !(link && imageLink(link))) {
+            found.images.push(img);
         }
     });
-    doc.querySelectorAll('table').forEach((table) => {
+    root.querySelectorAll('table').forEach((table) => {
         // A table of layout (role="presentation" or "none") has no header to give. Headers on several rows, or in the
         // first column, are headers.
         if (!table.querySelector('th') && !['presentation', 'none'].includes(table.getAttribute('role'))) {
-            found.tables++;
+            found.tables.push(table);
         }
     });
-    doc.querySelectorAll('a[href]').forEach((link) => {
+    root.querySelectorAll('a[href]').forEach((link) => {
+        if (imageLink(link)) {
+            found.imagelinks.push(link);
+            return;
+        }
         const label = (link.getAttribute('aria-label') || text(link)).toLowerCase().replace(/[.…:!]+$/, '');
         const image = link.querySelector('img[alt]:not([alt=""])');
         if (label === '' && !image) {
-            found.links++;
+            found.links.push(link);
             return;
         }
         // A short text (« here ») is clear with the sentence, the item of the list or the cell around it (WCAG 2.4.4,
         // RGAA 6.1): only one alone in its block says nothing.
         const block = link.parentElement ? link.parentElement.closest(BLOCKS) : null;
         if (VAGUE_LINKS.includes(label) && (!block || text(block) === text(link))) {
-            found.links++;
+            found.links.push(link);
         }
     });
     let previous = 0;
-    doc.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach((heading) => {
+    const headings = root.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    headings.forEach((heading) => {
         const level = Number(heading.tagName.substring(1));
         if (previous && level > previous + 1) {
-            found.headings++;
+            found.headings.push(heading);
         }
         previous = level;
     });
+    // A long text without any title (WCAG 1.3.1, RGAA 9.1): its sections cannot be reached one by one.
+    if (!headings.length && text(root).split(' ').filter(Boolean).length >= LONG_TEXT) {
+        found.noheadings.push(root.querySelector('p') || root);
+    }
     return found;
+};
+
+/**
+ * The mistakes in a content, counted.
+ *
+ * @param {string} html Content.
+ * @returns {Object<string, number>} Counts by mistake.
+ */
+export const check = (html) => {
+    const found = problems(new DOMParser().parseFromString(html, 'text/html').body);
+    return Object.fromEntries(KEYS.map((key) => [key, found[key].length]));
 };
 
 /**
@@ -118,7 +152,7 @@ let guideUrl = null;
  * @returns {Promise<Object>} The modal.
  */
 const showProblems = async(problems) => {
-    const keys = ['images', 'tables', 'links', 'headings'];
+    const keys = KEYS;
     const strings = await getStrings([
         {key: 'contentcheck_title', component: 'theme_epure'},
         {key: 'contentcheck_intro', component: 'theme_epure'},
@@ -220,6 +254,116 @@ const watch = (form) => {
     });
 };
 
+/** @var {number} Wait after the last key before the content is read again, in milliseconds. */
+const LIVE_DELAY = 800;
+
+/**
+ * Under an editor, a line that tells as it is written what makes the content harder to use (« Accessibility: 2 images
+ * used as links »), with a button « Show » that selects each element concerned in the editor, one after the other.
+ * Empty, the editor has no line.
+ *
+ * @param {HTMLTextAreaElement} textarea Field of the editor.
+ * @param {Object} strings Texts of the line.
+ */
+const liveLine = (textarea, strings) => {
+    const place = textarea.closest('.felement') || textarea.parentElement;
+    if (!place || place.querySelector('.epure-contentcheck-live')) {
+        return;
+    }
+    const line = document.createElement('div');
+    line.className = 'epure-contentcheck-live';
+    line.hidden = true;
+    const status = document.createElement('span');
+    status.className = 'epure-contentcheck-live-text';
+    status.setAttribute('role', 'status');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'btn btn-link btn-sm epure-contentcheck-live-show';
+    button.hidden = true;
+    line.append(status, button);
+    place.append(line);
+
+    let nodes = [];
+    let index = 0;
+    let timer = null;
+    const update = () => {
+        const editor = textarea.id ? getInstanceForElementId(textarea.id) : null;
+        const root = editor ? editor.getBody() : new DOMParser().parseFromString(textarea.value, 'text/html').body;
+        if (!root) {
+            return;
+        }
+        const found = problems(root);
+        nodes = KEYS.flatMap((key) => found[key]);
+        index = 0;
+        const parts = KEYS.filter((key) => found[key].length)
+            .map((key) => strings[key].replace('NUMBER', found[key].length));
+        const empty = text(root) === '' && !root.querySelector('img, video, audio, iframe, table');
+        const message = parts.length ? strings.problems.replace('LIST', parts.join(' · ')) : strings.none;
+        // Read again only when it changes: the screen readers are not told the same line at each key.
+        if (status.textContent !== message) {
+            status.textContent = message;
+        }
+        line.hidden = empty;
+        line.classList.toggle('epure-contentcheck-live-ok', !parts.length);
+        button.hidden = !editor || !nodes.length;
+        button.textContent = strings.show;
+    };
+    const later = () => {
+        clearTimeout(timer);
+        timer = setTimeout(update, LIVE_DELAY);
+    };
+    button.addEventListener('click', () => {
+        const editor = getInstanceForElementId(textarea.id);
+        if (!editor || !nodes.length) {
+            return;
+        }
+        const node = nodes[index % nodes.length];
+        index++;
+        editor.focus();
+        editor.selection.select(node);
+        node.scrollIntoView({block: 'center'});
+        button.textContent = strings.next.replace('NUMBER', index > nodes.length ? nodes.length : index)
+            .replace('TOTAL', nodes.length);
+    });
+    // The field is read at once (a plain text area, or the editor not started yet); the editor TinyMCE starts after the
+    // page: its content is followed once it is there.
+    textarea.addEventListener('input', later);
+    update();
+    let tries = 0;
+    const attach = () => {
+        const editor = textarea.id ? getInstanceForElementId(textarea.id) : null;
+        if (editor) {
+            editor.on('input change undo redo SetContent', later);
+            update();
+        } else if (tries++ < 40) {
+            setTimeout(attach, 250);
+        }
+    };
+    attach();
+};
+
+/**
+ * Starts the lines under the editors of a form.
+ *
+ * @param {HTMLFormElement} form Form.
+ */
+const watchEditors = async(form) => {
+    const fields = Array.from(form.querySelectorAll('textarea'))
+        .filter((textarea) => textarea.closest('[data-fieldtype="editor"]'));
+    if (!fields.length) {
+        return;
+    }
+    // The texts of the line, and the short ones of each mistake, as in the guide « Accessibility of the course ».
+    const keys = ['none', 'problems', 'show', 'next', ...KEYS];
+    const values = await getStrings(keys.map((key) => ({
+        key: KEYS.includes(key) ? 'courseaccessibility_short_' + key : 'contentcheck_live_' + key,
+        component: 'theme_epure',
+        param: key === 'problems' ? 'LIST' : (key === 'next' ? {index: 'NUMBER', total: 'TOTAL'} : 'NUMBER'),
+    })));
+    const strings = Object.fromEntries(keys.map((key, i) => [key, values[i]]));
+    fields.forEach((textarea) => liveLine(textarea, strings));
+};
+
 /**
  * Watches the forms of the page that have editors.
  *
@@ -230,6 +374,7 @@ export const init = (guide = null) => {
     document.querySelectorAll('form.mform').forEach((form) => {
         if (form.querySelector('textarea')) {
             watch(form);
+            watchEditors(form);
         }
     });
 };

@@ -195,13 +195,70 @@
     list-style: none;
 }
 
-// The button to save the confirmations stays in reach at the bottom of the screen on a long course.
+// The button to save the confirmations stays in reach at the bottom of the screen on a long course, on a bar of the
+// whole width; the page keeps its height free, so that an element reached with the keyboard is never under it
+// (WCAG 2.4.11).
 .epure-a11yguide-save {
     position: sticky;
     bottom: 0;
     z-index: 2;
-    padding: .75rem 0;
-    background-color: var(--epure-page);
+    margin: 0 -1rem;
+    padding: .75rem 1rem;
+    background-color: var(--epure-surface);
+    border-top: 1px solid var(--epure-border);
+    box-shadow: 0 -4px 12px rgba(16, 22, 32, .08);
+}
+
+html:has(.epure-a11yguide-save) {
+    scroll-padding-bottom: 5rem;
+}
+
+.epure-a11yguide-places-title {
+    margin: .75rem 0 .25rem;
+    font-weight: 600;
+}
+
+.epure-a11yguide-places {
+    margin: 0;
+    padding-left: 1.25rem;
+
+    li + li {
+        margin-top: .25rem;
+    }
+}
+
+.epure-a11yguide-place {
+    font-weight: 600;
+}
+
+// A link within the text of a line: underlined, as the other links in a text (WCAG 1.4.1).
+.epure-a11yguide-places a {
+    text-decoration: underline;
+}
+
+// The line under an editor, as the content is written (theme_epure/content_check).
+.epure-contentcheck-live {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .25rem .75rem;
+    margin-top: .375rem;
+    padding: .375rem .625rem;
+    color: var(--epure-ink);
+    font-size: .875rem;
+    background-color: var(--epure-state-soon-soft);
+    border-left: .25rem solid var(--epure-state-soon);
+    border-radius: var(--epure-radius-sm);
+
+    &.epure-contentcheck-live-ok {
+        background-color: var(--epure-state-done-soft);
+        border-left-color: var(--epure-state-done);
+    }
+
+    .btn-link {
+        padding: 0;
+        font-size: inherit;
+    }
 }
 
 // The reminder: two columns on a large screen, one A4 page on paper.

@@ -189,8 +189,14 @@
     }
 }
 
+// In edit mode, the reading mode is put aside: the side panels hold the tools to change the activity (the table of
+// contents of a book, with its buttons to add a chapter).
+body.editing .epure-focus-toggle {
+    display: none;
+}
+
 // Reading mode: no side panels, the content centred at a comfortable width.
-html.epure-focus body.epure-activity {
+html.epure-focus body.epure-activity:not(.editing) {
     .drawer,
     .drawer-toggles,
     .drawer-left-toggle,

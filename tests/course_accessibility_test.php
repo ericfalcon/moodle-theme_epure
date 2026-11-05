@@ -49,7 +49,8 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
             . '<audio src="https://example.org/a.mp3"></audio><a href="https://vimeo.com/1">La vidéo de sécurité</a>'
         );
         $this->assertSame(
-            ['images' => 1, 'tables' => 1, 'links' => 2, 'headings' => 1, 'frames' => 1, 'videos' => 1],
+            ['images' => 1, 'imagelinks' => 0, 'links' => 2, 'tables' => 1, 'headings' => 1, 'noheadings' => 0, 'frames' => 1,
+                'videos' => 1],
             $found['issues']
         );
         $this->assertEqualsCanonicalizing(['captions', 'captions', 'transcript'], array_column($found['checks'], 'kind'));
@@ -59,6 +60,27 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         $clean = course_accessibility::check_html('<h2>Titre</h2><h3>Sous-titre</h3><p>Texte <a href="#">du règlement</a>.</p>');
         $this->assertSame(0, array_sum($clean['issues']));
         $this->assertSame([], $clean['checks']);
+    }
+
+    /**
+     * An image used as a link without a text alternative is one mistake of its own, not an image and a link; a long
+     * text without any title is one too, as copied from another site.
+     */
+    public function test_check_html_imagelinks_noheadings(): void {
+        $html = '<p><strong><a href="https://docs.moodle.org/4x/fr/Fichier:a.png"><img src="a.png" alt=""></a></strong></p>'
+            . '<p><a href="https://docs.moodle.org/4x/fr/Fichier:b.png"><img src="b.png"></a></p>'
+            . '<p><a href="https://example.org/plan"><img src="c.png" alt="Plan du site"></a></p>'
+            . '<p>' . str_repeat('mot ', 450) . '</p>';
+        $found = course_accessibility::check_html($html)['issues'];
+        $this->assertSame(2, $found['imagelinks']);
+        $this->assertSame(0, $found['images']);
+        $this->assertSame(0, $found['links']);
+        $this->assertSame(1, $found['noheadings']);
+
+        // With titles, or short: no long text without titles.
+        $long = course_accessibility::check_html('<h3>Partie</h3><p>' . str_repeat('mot ', 450) . '</p>')['issues'];
+        $this->assertSame(0, $long['noheadings']);
+        $this->assertSame(0, course_accessibility::check_html('<p>Court.</p>')['issues']['noheadings']);
     }
 
     /**
@@ -145,6 +167,34 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         $this->assertSame(6, $figures['issues']);
         $this->assertSame(4, $figures['toconfirm']);
         $this->assertSame(['issues' => 3, 'toconfirm' => 1], $figures['cms'][$page->cmid]);
+    }
+
+    /**
+     * The mistakes of a book are given chapter by chapter, with a link to change each.
+     */
+    public function test_places(): void {
+        [$course] = $this->course();
+        $book = $this->getDataGenerator()->create_module('book', ['course' => $course->id, 'name' => 'Créer un devoir']);
+        $generator = $this->getDataGenerator()->get_plugin_generator('mod_book');
+        $generator->create_chapter(['bookid' => $book->id, 'title' => 'Présentation', 'content' => '<p>Bien.</p>']);
+        $chapter = $generator->create_chapter(['bookid' => $book->id, 'title' => 'Paramètres du devoir',
+            'content' => '<p><a href="https://docs.moodle.org/x"><img src="a.png" alt=""></a></p>']);
+        course_accessibility::forget((int) $course->id);
+
+        $part = array_column(course_accessibility::analyse($course), null, 'id')[$book->cmid];
+        $this->assertCount(1, $part['places']);
+        $this->assertSame('chapter', $part['places'][0]['kind']);
+        $this->assertSame('Paramètres du devoir', $part['places'][0]['name']);
+        $this->assertSame(['imagelinks' => 1], $part['places'][0]['issues']);
+        $this->assertStringContainsString('id=' . $chapter->id, $part['places'][0]['url']);
+
+        $data = course_accessibility::export($course, $GLOBALS['PAGE']->get_renderer('core'));
+        $parts = array_merge(...array_column($data['sections'], 'parts'));
+        $exported = array_column($parts, null, 'id')['epure-a11y-cm-' . $book->cmid];
+        $this->assertSame(
+            get_string('courseaccessibility_place_chapter', 'theme_epure', 'Paramètres du devoir'),
+            $exported['places'][0]['label']
+        );
     }
 
     /**
