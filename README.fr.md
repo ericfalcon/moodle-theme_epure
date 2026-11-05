@@ -1,6 +1,6 @@
 # Épure (theme_epure)
 
-Thème moderne, sobre et accessible pour **Moodle 4.5 LTS à 5.3** et **IOMAD 4.5 à 5.2**. Enfant de Boost, il garde les pages de Moodle et ajoute ce qui manque aux apprenants, aux formateurs et aux administrateurs, avec deux petites tables à lui (les chaînes écrites par le vocabulaire, les documents « Ma synthèse » émis).
+Thème moderne, sobre et accessible pour **Moodle 4.5 LTS à 5.3** et **IOMAD 4.5 à 5.2**. Enfant de Boost, il garde les pages de Moodle et ajoute ce qui manque aux apprenants, aux formateurs et aux administrateurs, avec trois petites tables à lui (les chaînes écrites par le vocabulaire, les documents « Ma synthèse » émis, les points d'accessibilité confirmés par les enseignants).
 
 ## Présentation
 
@@ -84,7 +84,7 @@ Chaque entreprise a sa couleur, son logo, sa police et son vocabulaire (ici « p
 
 - Moodle 4.5 à 5.3, IOMAD 4.5 à 5.2, PHP 8.1 à 8.4, PostgreSQL et MariaDB : tous testés en intégration continue (PHPUnit, Behat, contrôles du code).
 - Facultatif : tool_certificate et mod_coursecertificate pour les attestations.
-- Données personnelles : les préférences des utilisateurs et les documents « Ma synthèse » émis, exportés et supprimés par l'API de confidentialité (et à la suppression d'un utilisateur). Aucun service externe n'est appelé ; les polices sont fournies avec le thème (licence SIL Open Font).
+- Données personnelles : les préférences des utilisateurs, les documents « Ma synthèse » émis et les points d'accessibilité confirmés par les enseignants, exportés et supprimés par l'API de confidentialité (et à la suppression d'un utilisateur). Aucun service externe n'est appelé ; les polices sont fournies avec le thème (licence SIL Open Font).
 
 ### À savoir
 
