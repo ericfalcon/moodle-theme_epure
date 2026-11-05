@@ -339,7 +339,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
         if (\theme_epure\quick_search::enabled() && !during_initial_install()) {
             $this->page->requires->js_call_amd('theme_epure/quick_search', 'init');
-            $output = $this->render_from_template('theme_epure/quick_search', ['shortcut' => 'Ctrl K']) . $output;
+            $output = $this->render_from_template(
+                'theme_epure/quick_search',
+                ['shortcut' => 'Ctrl K', 'public' => \theme_epure\quick_search::visitor()]
+            ) . $output;
         }
         return $output;
     }

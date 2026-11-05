@@ -23,7 +23,7 @@ use core_external\external_single_structure;
 use core_external\external_value;
 
 /**
- * Web service of the quick search (Ctrl+K).
+ * Web service of the quick search (Ctrl+K), for the users logged in with an account of their own.
  *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
@@ -51,7 +51,7 @@ class quick_search extends external_api {
         ['query' => $query] = self::validate_parameters(self::execute_parameters(), ['query' => $query]);
         $context = \context_system::instance();
         self::validate_context($context);
-        if (!\theme_epure\quick_search::enabled()) {
+        if (!\theme_epure\quick_search::enabled() || !\theme_epure\quick_search::member()) {
             return ['groups' => []];
         }
         return ['groups' => \theme_epure\quick_search::search(\core_text::substr($query, 0, 100))];

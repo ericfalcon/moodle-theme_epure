@@ -266,7 +266,7 @@ Les chantiers du thème prévus ci-dessus (0.29 à 0.57) sont livrés. Avant la 
 - [ ] 2. **Aide des raccourcis clavier** : la touche « ? » affiche la liste des raccourcis (Ctrl+K, Alt+A…), dans une fenêtre accessible.
 - [ ] 3. **Référence des variables CSS `--epure-*`** : une page de documentation des propriétés exposées, pour les SCSS personnalisés et les intégrateurs.
 - [x] 4. **« Ma synthèse » en PDF côté serveur** (1.0.2), avec la bibliothèque PDF de Moodle (TCPDF) : un document daté, aux couleurs de la marque, avec un code de vérification et un QR code ; la page de vérification, ouverte sans connexion, montre ce que la plateforme a émis sous ce code. La page reste la version accessible (TCPDF ne produit pas de PDF balisés).
-- [ ] 5. **Recherche rapide pour les visiteurs** : sur les pages publiques (catalogue, présentation des cours, connexion), limitée à ce qu'un visiteur peut voir.
+- [x] 5. **Recherche rapide pour les visiteurs** (1.2.0) : sur les pages publiques (catalogue, présentation des cours, connexion), limitée à ce qu'un visiteur peut voir.
 
 - [ ] **Vocabulaire dans d'autres langues**, une langue à la fois et à la demande de clients : espagnol, italien ou portugais d'abord (grammaire proche du français : genre et élision suffisent), allemand plus tard (déclinaisons, mots composés). Chaque langue demande un relecteur natif et un jeu de phrases de test. Les limites actuelles sont documentées dans [docs/Vocabulaire.md](docs/Vocabulaire.md).
 

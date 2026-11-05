@@ -130,6 +130,23 @@ Feature: Accessibility of the Épure theme
     Then I should see "Risks of the place" in the "#epure-qs" "css_element"
     And the page should meet accessibility standards
 
+  Scenario: A visitor who is not logged in searches the catalogue, the categories and the public pages
+    Given the following "categories" exist:
+      | name     | category | idnumber |
+      | Training | 0        | TRAIN    |
+    And the following "courses" exist:
+      | fullname       | shortname | category |
+      | Safety at work | SAFE      | TRAIN    |
+    When I am on site homepage
+    And I click on ".epure-qs-button" "css_element"
+    And I set the field with xpath "//input[contains(@class, 'epure-qs-input')]" to "safety"
+    Then I should see "Safety at work" in the "#epure-qs" "css_element"
+    And the page should meet accessibility standards
+    And I set the field with xpath "//input[contains(@class, 'epure-qs-input')]" to "training"
+    And I should see "Training" in the "#epure-qs-list" "css_element"
+    And I set the field with xpath "//input[contains(@class, 'epure-qs-input')]" to "log in"
+    And I should see "Log in" in the "#epure-qs-list" "css_element"
+
   Scenario: The quick search works with the keyboard alone
     Given the following "courses" exist:
       | fullname       | shortname |

@@ -32,4 +32,12 @@ $functions = [
         'ajax' => true,
         'loginrequired' => true,
     ],
+    'theme_epure_quick_search_public' => [
+        'classname' => \theme_epure\external\quick_search_public::class,
+        'description' => 'Courses of the catalogue, categories and public pages matching a text, for the quick search of the '
+            . 'visitors who are not logged in and the guests.',
+        'type' => 'read',
+        'ajax' => true,
+        'loginrequired' => false,
+    ],
 ];

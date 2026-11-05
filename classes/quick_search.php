@@ -22,6 +22,10 @@ namespace theme_epure;
  * The links of the menus of the page (primary navigation, user menu, tabs of the course) are searched
  * in the browser; this class searches what is not on the page.
  *
+ * Visitors who are not logged in, and guests, search what they can see without an account: the courses of the
+ * catalogue, the categories and the public pages (log in, create an account, accessibility statement), never on a
+ * site where logging in is required.
+ *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -39,7 +43,103 @@ class quick_search {
      * @return bool
      */
     public static function enabled(): bool {
-        return company_style::enabled('quicksearch') && isloggedin() && !isguestuser();
+        return company_style::enabled('quicksearch') && (self::member() || self::visitor());
+    }
+
+    /**
+     * Whether the current user is logged in with an account of their own.
+     *
+     * @return bool
+     */
+    public static function member(): bool {
+        return isloggedin() && !isguestuser();
+    }
+
+    /**
+     * Whether the current user is a visitor (not logged in, or a guest) on a site open without logging in.
+     *
+     * @return bool
+     */
+    public static function visitor(): bool {
+        global $CFG;
+        return !self::member() && empty($CFG->forcelogin);
+    }
+
+    /**
+     * Groups of results for a visitor: the courses of the catalogue, the categories, the public pages.
+     *
+     * @param string $query Query, two characters or more.
+     * @return array[] Groups, as {@see search()}.
+     */
+    public static function search_public(string $query): array {
+        $words = array_filter(explode(' ', self::normalise($query)));
+        if (\core_text::strlen(implode('', $words)) < 2) {
+            return [];
+        }
+        $groups = [
+            ['key' => 'catalogue', 'label' => get_string('catalogue', 'theme_epure'), 'items' => self::catalogue($query, [])],
+            ['key' => 'categories', 'label' => get_string('categories'), 'items' => self::categories($words)],
+            ['key' => 'public', 'label' => get_string('quicksearch_pages', 'theme_epure'), 'items' => self::public_pages($words)],
+        ];
+        return array_values(array_filter($groups, fn($group) => $group['items']));
+    }
+
+    /**
+     * The categories the user can see whose name, or the name of a parent, matches the words.
+     *
+     * @param string[] $words Words of the query, normalised.
+     * @return array[]
+     */
+    protected static function categories(array $words): array {
+        $items = [];
+        foreach (\core_course_category::make_categories_list() as $id => $path) {
+            if (!self::matches(self::normalise($path), $words)) {
+                continue;
+            }
+            $parts = explode(' / ', $path);
+            $items[] = [
+                'id' => (int) $id,
+                'name' => (string) array_pop($parts),
+                'url' => (new \moodle_url('/course/index.php', ['categoryid' => $id]))->out(false),
+                'detail' => implode(' › ', $parts),
+                'icon' => 'fa-folder-open',
+            ];
+            if (count($items) >= self::LIMIT) {
+                break;
+            }
+        }
+        return $items;
+    }
+
+    /**
+     * The public pages whose name matches the words: log in, create an account when new accounts are open,
+     * the accessibility statement once published.
+     *
+     * @param string[] $words Words of the query, normalised.
+     * @return array[]
+     */
+    protected static function public_pages(array $words): array {
+        global $CFG;
+        require_once($CFG->libdir . '/authlib.php');
+        $pages = [];
+        if (!isloggedin() || isguestuser()) {
+            $pages[] = [get_string('login'), get_login_url(), 'fa-right-to-bracket'];
+        }
+        if (!isloggedin() && signup_is_enabled()) {
+            $pages[] = [get_string('startsignup'), $CFG->wwwroot . '/login/signup.php', 'fa-user-plus'];
+        }
+        $pages[] = [get_string('courses'), (new \moodle_url('/course/index.php'))->out(false), 'fa-compass'];
+        if (accessibility_statement::enabled()) {
+            $pages[] = [get_string('a11ystatement', 'theme_epure'), accessibility_statement::url()->out(false),
+                'fa-universal-access'];
+        }
+        $items = [];
+        foreach ($pages as [$name, $url, $icon]) {
+            if (self::matches(self::normalise($name), $words)) {
+                $items[] = ['id' => 0, 'name' => $name, 'url' => (string) $url, 'detail' => '', 'icon' => $icon];
+            }
+        }
+        return $items;
     }
 
     /**

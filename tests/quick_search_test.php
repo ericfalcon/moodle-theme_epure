@@ -18,6 +18,7 @@ namespace theme_epure;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(quick_search::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(external\quick_search::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(external\quick_search_public::class)]
 /**
  * Tests for the quick search (Ctrl+K).
  *
@@ -27,6 +28,7 @@ namespace theme_epure;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \theme_epure\quick_search
  * @covers     \theme_epure\external\quick_search
+ * @covers     \theme_epure\external\quick_search_public
  */
 final class quick_search_test extends \advanced_testcase {
     /**
@@ -116,5 +118,61 @@ final class quick_search_test extends \advanced_testcase {
         set_config('enableglobalsearch', 1);
         $groups = $this->search('purge');
         $this->assertEquals([get_string('quicksearch_allsite', 'theme_epure', 'purge')], $groups['site']);
+    }
+
+    /**
+     * Groups of a search of a visitor, by key, with the names of their items.
+     *
+     * @param string $query Query.
+     * @return array<string, string[]>
+     */
+    protected function search_public(string $query): array {
+        $result = external\quick_search_public::execute($query);
+        $result = \core_external\external_api::clean_returnvalue(external\quick_search_public::execute_returns(), $result);
+        return array_column(array_map(
+            fn($group) => [$group['key'], array_column($group['items'], 'name')],
+            $result['groups']
+        ), 1, 0);
+    }
+
+    /**
+     * A visitor, not logged in or a guest, finds the courses of the catalogue, the categories and the public pages;
+     * never the hidden courses, nor anything on a site where logging in is required.
+     */
+    public function test_visitor(): void {
+        global $CFG;
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $category = $generator->create_category(['name' => 'Sécurité']);
+        $generator->create_course(['fullname' => 'Sécurité au travail', 'category' => $category->id]);
+        $generator->create_course(['fullname' => 'Sécurité cachée', 'category' => $category->id, 'visible' => 0]);
+        $this->setUser(0);
+
+        $this->assertTrue(quick_search::enabled());
+        $this->assertTrue(quick_search::visitor());
+        $groups = $this->search_public('Sécurité');
+        $this->assertEquals(
+            ['Sécurité au travail', get_string('quicksearch_allcourses', 'theme_epure', 'Sécurité')],
+            $groups['catalogue']
+        );
+        $this->assertEquals(['Sécurité'], $groups['categories']);
+        $this->assertEquals([get_string('login')], $this->search_public('log in')['public']);
+        // The service of the users with an account is not theirs.
+        $this->assertFalse(quick_search::member());
+
+        // A guest too.
+        $this->setGuestUser();
+        $this->assertEquals(['Sécurité'], $this->search_public('securite')['categories']);
+
+        // A user with an account uses the other service: the public one answers nothing.
+        $this->setUser($generator->create_user());
+        $this->assertFalse(quick_search::visitor());
+        $this->assertEquals([], $this->search_public('Sécurité'));
+
+        // Logging in required: nothing for the visitors.
+        $this->setUser(0);
+        $CFG->forcelogin = 1;
+        $this->assertFalse(quick_search::enabled());
+        $this->assertEquals([], $this->search_public('Sécurité'));
     }
 }

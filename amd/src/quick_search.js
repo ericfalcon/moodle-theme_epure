@@ -213,9 +213,15 @@ export const init = () => {
         list.setAttribute('aria-busy', 'true');
         const current = ++request;
         timer = setTimeout(() => {
-            Ajax.call([{methodname: 'theme_epure_quick_search', args: {query}}])[0].then((result) => {
+            // A visitor searches what they can see without an account, with the public service (without session).
+            const visitor = dialog.dataset.public === '1';
+            const methodname = visitor ? 'theme_epure_quick_search_public' : 'theme_epure_quick_search';
+            Ajax.call([{methodname, args: {query}}], true, !visitor)[0].then((result) => {
                 if (current === request) {
-                    render(result.groups.concat(local), query);
+                    // A link of the menus already found by the server is not listed twice.
+                    const found = new Set(result.groups.flatMap((group) => group.items.map((item) => item.url)));
+                    const others = local.map((group) => ({...group, items: group.items.filter((item) => !found.has(item.url))}));
+                    render(result.groups.concat(others), query);
                 }
                 return result;
             }).catch(() => {

@@ -116,6 +116,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.2.0**: no setting changes. The quick search is also offered to the visitors who are not logged in and the guests (on a site open without logging in), with a public web service `theme_epure_quick_search_public` that answers what a visitor sees: the courses of the catalogue, the categories and the public pages.
 - **1.1.0**: a new setting, **Accessibility of the course** (Accessibility tab), off by default. The upgrade creates the table `theme_epure_a11ycheck` (the points confirmed by the teachers) and two caches. The reminder `theme/epure/checklist.php` is open without logging in.
 - **1.0.2**: no setting changes. The upgrade creates the table `theme_epure_summary` (the « My summary » documents issued as PDF), and the page of verification `theme/epure/verify.php` is open without logging in. The string `quicksearch_searching` is removed, as it is no longer shown.
 - **1.0.0**: the plugin moved to its own repository, [moodle-theme_epure](https://github.com/ericfalcon/moodle-theme_epure), with the plugin at its root. The folder stays `theme/epure` and the settings are kept; download the new versions from its releases.
@@ -423,6 +424,8 @@ A **Search** button in the header, or **Ctrl+K** (**⌘K** on Mac) from any page
 - **my courses** and the **activities** in my courses;
 - other courses in the **catalogue**, with a link to the full search;
 - for administrators, **administration pages** whose name or a setting matches, with a link to the administration search.
+
+Visitors who are not logged in, and guests, get it too on a site open without logging in: it finds the courses of the **catalogue** (never a hidden course), the **categories** they can see and the **public pages** (log in, create an account when new accounts are open, the courses, the accessibility statement once published). A public web service answers only what a visitor sees; nothing is offered when the site requires logging in (`forcelogin`).
 
 The ↑ ↓ arrows select a result, Enter opens it (Ctrl+Enter in a new tab), Esc closes the window. The window is an accessible dialog (list of options announced to screen readers, number of results). Search can be turned off in the theme's Navigation tab ("Quick search"). The quick search replaces Moodle's search button in the header; when Moodle's global search is enabled, the results end with "Search … in the whole site", which opens it.
 

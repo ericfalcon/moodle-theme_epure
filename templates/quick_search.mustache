@@ -18,11 +18,13 @@
     @template theme_epure/quick_search
 
     Button of the quick search in the header, and its dialogue: a combobox whose results are the links
-    of the menus of the page, the courses, the activities and, for administrators, the settings.
+    of the menus of the page, the courses, the activities and, for administrators, the settings; for a visitor
+    (public), the courses of the catalogue, the categories and the public pages.
 
     Example context (json):
     {
-        "shortcut": "Ctrl K"
+        "shortcut": "Ctrl K",
+        "public": false
     }
 }}
 <button type="button" class="btn epure-qs-button" data-action="epure-quicksearch" aria-haspopup="dialog"
@@ -35,13 +37,13 @@
     data-none="{{#str}}quicksearch_none, theme_epure, QUERY{{/str}}"
     data-count="{{#str}}quicksearch_count, theme_epure, NUMBER{{/str}}"
     data-countone="{{#str}}quicksearch_count_one, theme_epure{{/str}}"
-    data-pages="{{#str}}quicksearch_pages, theme_epure{{/str}}">
+    data-pages="{{#str}}quicksearch_pages, theme_epure{{/str}}"{{#public}} data-public="1"{{/public}}>
     <h2 class="sr-only visually-hidden" id="epure-qs-title">{{#str}}quicksearch, theme_epure{{/str}}</h2>
     <div class="epure-qs-field">
         <i class="fa fa-magnifying-glass" aria-hidden="true"></i>
         <input type="text" class="epure-qs-input" role="combobox" aria-expanded="false" aria-controls="epure-qs-list"
             aria-autocomplete="list" aria-label="{{#str}}quicksearch, theme_epure{{/str}}" autocomplete="off" spellcheck="false"
-            placeholder="{{#str}}quicksearch_placeholder, theme_epure{{/str}}">
+            placeholder="{{#public}}{{#str}}quicksearch_placeholder_public, theme_epure{{/str}}{{/public}}{{^public}}{{#str}}quicksearch_placeholder, theme_epure{{/str}}{{/public}}">
         <button type="button" class="btn epure-qs-close" data-action="epure-quicksearch-close">
             <span aria-hidden="true">{{#str}}quicksearch_esc, theme_epure{{/str}}</span>
             <span class="sr-only visually-hidden">{{#str}}closebuttontitle{{/str}}</span>
