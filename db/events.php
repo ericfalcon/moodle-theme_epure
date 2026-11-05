@@ -88,4 +88,58 @@ $observers = [
         'eventname' => '\core\event\course_completion_updated',
         'callback' => '\theme_epure\observer::course_changed',
     ],
+    // The guide « Accessibility of the course »: what it read of a course whose contents change is forgotten (the
+    // changes of the activities, the sections and the course above); the confirmations of what is deleted go with it.
+    [
+        'eventname' => '\core\event\course_module_deleted',
+        'callback' => '\theme_epure\observer::course_module_deleted',
+    ],
+    [
+        'eventname' => '\core\event\course_deleted',
+        'callback' => '\theme_epure\observer::course_deleted',
+    ],
+    [
+        'eventname' => '\mod_book\event\chapter_created',
+        'callback' => '\theme_epure\observer::course_content_changed',
+    ],
+    [
+        'eventname' => '\mod_book\event\chapter_updated',
+        'callback' => '\theme_epure\observer::course_content_changed',
+    ],
+    [
+        'eventname' => '\mod_book\event\chapter_deleted',
+        'callback' => '\theme_epure\observer::course_content_changed',
+    ],
+    [
+        'eventname' => '\mod_lesson\event\page_created',
+        'callback' => '\theme_epure\observer::course_content_changed',
+    ],
+    [
+        'eventname' => '\mod_lesson\event\page_updated',
+        'callback' => '\theme_epure\observer::course_content_changed',
+    ],
+    [
+        'eventname' => '\mod_lesson\event\page_deleted',
+        'callback' => '\theme_epure\observer::course_content_changed',
+    ],
+    [
+        'eventname' => '\core\event\question_created',
+        'callback' => '\theme_epure\observer::course_content_changed',
+    ],
+    [
+        'eventname' => '\core\event\question_updated',
+        'callback' => '\theme_epure\observer::course_content_changed',
+    ],
+    [
+        'eventname' => '\core\event\question_deleted',
+        'callback' => '\theme_epure\observer::course_content_changed',
+    ],
+    [
+        'eventname' => '\core\event\course_section_created',
+        'callback' => '\theme_epure\observer::course_content_changed',
+    ],
+    [
+        'eventname' => '\core\event\course_section_deleted',
+        'callback' => '\theme_epure\observer::course_content_changed',
+    ],
 ];

@@ -108,6 +108,9 @@ const editors = (form) => Array.from(form.querySelectorAll('textarea')).map((tex
     };
 }).filter(Boolean);
 
+/** @var {string|null} Address of the guide « Accessibility of the course », for its teachers. */
+let guideUrl = null;
+
 /**
  * The window listing the mistakes.
  *
@@ -153,6 +156,16 @@ const showProblems = async(problems) => {
             section.append(button);
         }
         body.append(section);
+    }
+    if (guideUrl) {
+        const guide = document.createElement('p');
+        guide.className = 'epure-contentcheck-guide';
+        const link = document.createElement('a');
+        link.href = guideUrl;
+        link.target = '_blank';
+        link.textContent = await getString('courseaccessibility_all', 'theme_epure');
+        guide.append(link);
+        body.append(guide);
     }
     return ModalSaveCancel.create({
         title: strings[0],
@@ -209,8 +222,11 @@ const watch = (form) => {
 
 /**
  * Watches the forms of the page that have editors.
+ *
+ * @param {string|null} guide Address of the guide « Accessibility of the course », for its teachers.
  */
-export const init = () => {
+export const init = (guide = null) => {
+    guideUrl = guide;
     document.querySelectorAll('form.mform').forEach((form) => {
         if (form.querySelector('textarea')) {
             watch(form);

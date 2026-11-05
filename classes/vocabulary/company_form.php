@@ -191,7 +191,8 @@ class company_form {
             'navigation' => [$choices('breadcrumb'), $switch('quicksearch'), $switch('activitynav'),
                 $choices('mobileblocks'), $choices('mobiledashboard'),
                 $choices('simpleview') + ['help' => get_string('simpleview_desc', 'theme_epure')]],
-            'pages' => [$switch('catalogue'), $switch('sectionprogress'), $switch('mycoursesbyrole')],
+            'pages' => [$switch('catalogue'), $switch('sectionprogress'), $switch('mycoursesbyrole'),
+                $switch('courseaccessibility')],
             'emails' => [$switch('emailbranding')],
             'login' => [$choices('loginlayout')],
             'logintexts' => array_map(fn($name) => [

@@ -51,7 +51,7 @@ class company_style {
      *     setting (stored 1 or 0 by the site).
      */
     public const SWITCHES = ['coursebanner', 'learnerdashboard', 'mobilenav', 'catalogue', 'quicksearch', 'activitynav',
-        'sectionprogress', 'mycoursesbyrole', 'emailbranding'];
+        'sectionprogress', 'mycoursesbyrole', 'emailbranding', 'courseaccessibility'];
 
     /** @var array<string, string[]> Settings of the site with several choices that a company can set instead. */
     public const CHOICES = [

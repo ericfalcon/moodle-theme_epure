@@ -234,8 +234,8 @@ final class a11y_test extends \advanced_testcase {
         set_user_preference('theme_epure_a11y_text', 130, $user);
 
         $collection = privacy\provider::get_metadata(new \core_privacy\local\metadata\collection('theme_epure'));
-        // The display preferences, and the table of the « My summary » documents.
-        $this->assertCount(count(a11y::definitions()) + 1, $collection->get_collection());
+        // The display preferences, the table of the « My summary » documents and the one of the confirmations.
+        $this->assertCount(count(a11y::definitions()) + 2, $collection->get_collection());
 
         privacy\provider::export_user_preferences($user->id);
         $writer = \core_privacy\local\request\writer::with_context(\context_system::instance());

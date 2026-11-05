@@ -34,6 +34,7 @@ class observer {
     public static function user_deleted(\core\event\user_deleted $event): void {
         global $DB;
         $DB->delete_records(learner_summary_document::TABLE, ['userid' => $event->objectid]);
+        $DB->delete_records(course_accessibility::TABLE, ['userid' => $event->objectid]);
     }
 
     /**
@@ -89,6 +90,38 @@ class observer {
     public static function course_changed(\core\event\base $event): void {
         if ($event->courseid) {
             \cache::make('theme_epure', 'learnerprogress')->set('course_' . (int) $event->courseid, uniqid('', true));
+            course_accessibility::forget((int) $event->courseid);
         }
+    }
+
+    /**
+     * Forgets what the guide « Accessibility of the course » read of a course whose contents changed: a chapter of a
+     * book, a page of a lesson, a question.
+     *
+     * @param \core\event\base $event Change of a content.
+     */
+    public static function course_content_changed(\core\event\base $event): void {
+        course_accessibility::forget((int) $event->courseid);
+    }
+
+    /**
+     * Deletes the confirmations of an activity deleted, in the guide « Accessibility of the course ».
+     *
+     * @param \core\event\course_module_deleted $event Event.
+     */
+    public static function course_module_deleted(\core\event\course_module_deleted $event): void {
+        global $DB;
+        $DB->delete_records(course_accessibility::TABLE, ['courseid' => $event->courseid, 'cmid' => $event->objectid]);
+    }
+
+    /**
+     * Deletes the confirmations of a course deleted, in the guide « Accessibility of the course ».
+     *
+     * @param \core\event\course_deleted $event Event.
+     */
+    public static function course_deleted(\core\event\course_deleted $event): void {
+        global $DB;
+        $DB->delete_records(course_accessibility::TABLE, ['courseid' => $event->objectid]);
+        course_accessibility::forget((int) $event->objectid);
     }
 }

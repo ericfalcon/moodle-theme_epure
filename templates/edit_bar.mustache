@@ -18,14 +18,16 @@
     @template theme_epure/edit_bar
 
     At the top of a course page in edit mode: that the edit mode is on, and a button to leave it, which does what
-    the switch « Edit mode » of the header does.
+    the switch « Edit mode » of the header does; for the teachers of the course, what the guide « Accessibility of the
+    course » finds, with a link to it.
 
     Example context (json):
     {
         "action": "https://example.com/editmode.php",
         "contextid": 2,
         "pageurl": "https://example.com/course/view.php?id=2",
-        "sesskey": "abc"
+        "sesskey": "abc",
+        "accessibility": {"text": "3 points to fix, 2 to confirm", "clean": false, "url": "#"}
     }
 }}
 <div class="epure-editbar">
@@ -33,6 +35,13 @@
         <span class="epure-editbar-icon" aria-hidden="true"><i class="fa fa-pen"></i></span>
         <span><strong>{{#str}}editbar, theme_epure{{/str}}</strong> <span class="epure-editbar-hint">{{#str}}editbar_text, theme_epure{{/str}}</span></span>
     </p>
+    {{#accessibility}}
+        <p class="epure-editbar-a11y{{#clean}} epure-editbar-a11y-clean{{/clean}}">
+            <i class="fa {{#clean}}fa-check{{/clean}}{{^clean}}fa-universal-access{{/clean}}" aria-hidden="true"></i>
+            <span>{{#str}}courseaccessibility_editbar, theme_epure, {{text}}{{/str}}</span>
+            <a href="{{url}}">{{#str}}courseaccessibility_open, theme_epure{{/str}}</a>
+        </p>
+    {{/accessibility}}
     <form method="post" action="{{action}}">
         <input type="hidden" name="setmode" value="0">
         <input type="hidden" name="context" value="{{contextid}}">

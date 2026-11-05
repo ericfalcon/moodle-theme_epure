@@ -1,0 +1,110 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/course_accessibility
+
+    Guide « Accessibility of the course », for its teachers: the figures of the course, then each section with the
+    parts of the course that hold something to fix or to confirm. The points found without a person are listed with
+    what to do and a link to change the part; the points to confirm are boxes, confirmed for all the teachers of the
+    course with one button. Printed, it is the report of the course, without its buttons.
+
+    Example context (json):
+    {
+        "reporttitle": "Accessibility of « Safety at work » on 05/11/26", "action": "#", "sesskey": "abc", "checklisturl": "#",
+        "summary": "3 points to fix, 1 to confirm", "done": "5 parts out of 8 have nothing left", "percent": 62,
+        "hastoconfirm": true,
+        "sections": [{"name": "Week 1", "id": "epure-a11y-section-1", "parts": [{
+            "id": "epure-a11y-cm-4", "name": "Risks", "icon": "", "type": "Page",
+            "state": {"class": "issues", "icon": "fa-triangle-exclamation", "text": "2 points to fix, 1 to confirm"},
+            "hasissues": true, "issues": [{"text": "Images without a text alternative: 2."}],
+            "haschecks": true, "checks": [{"name": "4|captions:abc", "id": "epure-a11y-check-cm-4-0",
+                "label": "The video « youtube.com » has subtitles", "help": "Subtitles let the deaf follow.",
+                "checked": false}],
+            "links": [{"url": "#", "text": "Change « Risks »"}]
+        }]}]
+    }
+}}
+<div class="epure-a11yguide">
+    <p class="epure-a11yguide-print-title d-none d-print-block">{{reporttitle}}</p>
+    <p class="epure-a11yguide-intro">{{#str}}courseaccessibility_intro, theme_epure{{/str}}</p>
+
+    <div class="epure-a11yguide-summary">
+        <p class="epure-a11yguide-summary-text">{{summary}}</p>
+        <p class="epure-a11yguide-done">{{done}}</p>
+        <div class="epure-a11yguide-bar" aria-hidden="true"><span style="width: {{percent}}%"></span></div>
+        <div class="epure-a11yguide-actions d-print-none">
+            <button type="button" class="btn btn-secondary" data-action="epure-a11yguide-print">
+                <i class="fa fa-print" aria-hidden="true"></i> {{#str}}courseaccessibility_print, theme_epure{{/str}}
+            </button>
+            <a class="btn btn-secondary" href="{{checklisturl}}">
+                <i class="fa fa-list-check" aria-hidden="true"></i> {{#str}}checklist_open, theme_epure{{/str}}
+            </a>
+        </div>
+    </div>
+
+    <form method="post" action="{{action}}" class="epure-a11yguide-form">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        {{#sections}}
+            <section class="epure-a11yguide-section" aria-labelledby="{{id}}">
+                <h3 class="epure-a11yguide-section-name" id="{{id}}">{{name}}</h3>
+                {{#parts}}
+                    <article class="epure-a11yguide-part epure-a11yguide-is-{{state.class}}" id="{{id}}" tabindex="-1" aria-labelledby="{{id}}-name">
+                        <div class="epure-a11yguide-part-head">
+                            {{#icon}}<img class="epure-a11yguide-part-icon" src="{{icon}}" alt="">{{/icon}}
+                            <h4 class="epure-a11yguide-part-name" id="{{id}}-name">{{name}}{{#type}} <span class="epure-a11yguide-part-type">· {{type}}</span>{{/type}}</h4>
+                            <p class="epure-a11yguide-state"><i class="fa {{state.icon}}" aria-hidden="true"></i> {{state.text}}</p>
+                        </div>
+                        {{#hasissues}}
+                            <ul class="epure-a11yguide-issues">
+                                {{#issues}}<li>{{text}}</li>{{/issues}}
+                            </ul>
+                        {{/hasissues}}
+                        {{#haschecks}}
+                            <fieldset class="epure-a11yguide-checks">
+                                <legend class="epure-a11yguide-checks-title">{{#str}}courseaccessibility_checks, theme_epure{{/str}}</legend>
+                                {{#checks}}
+                                    <div class="form-check epure-a11yguide-check">
+                                        <input type="checkbox" class="form-check-input" id="{{id}}" name="check[]" value="{{name}}" aria-describedby="{{id}}-help"{{#checked}} checked{{/checked}}>
+                                        {{#checked}}<input type="hidden" name="shown[]" value="{{name}}">{{/checked}}
+                                        <label class="form-check-label" for="{{id}}">{{label}}</label>
+                                        <p class="epure-a11yguide-check-help" id="{{id}}-help">{{help}}{{#confirmed}} <span class="epure-a11yguide-confirmed">{{confirmed}}</span>{{/confirmed}}</p>
+                                        {{#link}}<p class="epure-a11yguide-check-link d-print-none"><a href="{{link}}">{{linktext}}</a></p>{{/link}}
+                                    </div>
+                                {{/checks}}
+                            </fieldset>
+                        {{/haschecks}}
+                        <ul class="epure-a11yguide-links d-print-none">
+                            {{#links}}<li><a href="{{url}}">{{text}}</a></li>{{/links}}
+                        </ul>
+                    </article>
+                {{/parts}}
+            </section>
+        {{/sections}}
+        {{#hastoconfirm}}
+            <div class="epure-a11yguide-save d-print-none">
+                <button type="submit" class="btn btn-primary">{{#str}}courseaccessibility_save, theme_epure{{/str}}</button>
+            </div>
+        {{/hastoconfirm}}
+    </form>
+</div>
+{{#js}}
+    document.querySelectorAll('[data-action="epure-a11yguide-print"]').forEach(function(button) {
+        button.addEventListener('click', function() {
+            window.print();
+        });
+    });
+{{/js}}

@@ -319,7 +319,14 @@ class hook_callbacks {
             !during_initial_install() && isloggedin() && !isguestuser() && self::epure_page()
                 && has_capability('moodle/course:manageactivities', $PAGE->context)
         ) {
-            $PAGE->requires->js_call_amd('theme_epure/content_check', 'init');
+            // With the guide of the whole course, for its teachers.
+            $guide = null;
+            if (!empty($PAGE->course->id) && (int) $PAGE->course->id !== (int) SITEID) {
+                $context = \context_course::instance($PAGE->course->id);
+                $guide = course_accessibility::can_use($context)
+                    ? course_accessibility::url((int) $PAGE->course->id)->out(false) : null;
+            }
+            $PAGE->requires->js_call_amd('theme_epure/content_check', 'init', [$guide]);
         }
         // Grading of an assignment: a button back to the course, at the top of its header.
         if ($PAGE->pagetype === 'mod-assign-grader' && !during_initial_install() && self::epure_page()) {
