@@ -31,7 +31,7 @@ final class document_check_test extends \advanced_testcase {
      * A file stored in the context of the system, from its parts.
      *
      * @param string $filename Name of the file.
-     * @param array<string, string> $parts Parts of the archive, by name.
+     * @param array $parts Parts of the archive, by name: their content.
      * @return \stored_file
      */
     protected function package(string $filename, array $parts): \stored_file {
