@@ -44,7 +44,8 @@ class course_accessibility {
 
     /** @var string[] Mistakes found without a person, in their order on the page. */
     public const ISSUES = ['images', 'imagelinks', 'links', 'tables', 'headings', 'noheadings', 'frames', 'videos', 'pdf',
-        'h5pimages', 'name', 'duplicate'];
+        'pdfscanned', 'pdflang', 'docimages', 'docnoheadings', 'docheadings', 'doctables', 'slidetitles', 'sheetnames',
+        'doctitle', 'h5pimages', 'name', 'duplicate'];
 
     /** @var int Words from which a text without any title is hard to go through with a screen reader. */
     protected const LONG_TEXT = 400;
@@ -116,20 +117,41 @@ class course_accessibility {
 
     /**
      * Context of the template theme_epure/checklist: the reminder, by theme, each point with whether the guide of a
-     * course finds it without a person.
+     * course finds it without a person, and a link back: to the guide of the course it was opened from, for its
+     * teachers, else to the dashboard, or to the home page for a visitor.
      *
+     * @param int $courseid Course whose guide opened the reminder, 0 for none.
      * @return array
      */
-    public static function checklist(): array {
+    public static function checklist(int $courseid = 0): array {
         $themes = [
             'texts' => ['headings' => true, 'instructions' => false, 'plain' => false],
             'images' => ['alt' => true, 'colour' => false],
             'links' => ['links' => true, 'frames' => true],
             'tables' => ['headers' => true, 'layout' => false],
             'media' => ['captions' => true, 'transcript' => false, 'autoplay' => false],
-            'documents' => ['pdf' => true, 'office' => false, 'names' => true, 'time' => false],
+            'documents' => ['pdf' => true, 'office' => true, 'names' => true, 'time' => false],
         ];
+        global $DB;
         $data = ['themes' => []];
+        $course = $courseid ? $DB->get_record('course', ['id' => $courseid]) : null;
+        if ($course && (int) $course->id !== (int) SITEID && self::can_use(\context_course::instance($course->id))) {
+            $data['back'] = ['url' => self::url((int) $course->id)->out(false), 'text' => get_string(
+                'checklist_backguide',
+                'theme_epure',
+                format_string($course->fullname, true, ['context' => \context_course::instance($course->id)])
+            )];
+        } else if (isloggedin() && !isguestuser()) {
+            $data['back'] = ['url' => (new \moodle_url('/my/'))->out(false), 'text' => get_string(
+                'checklist_backdashboard',
+                'theme_epure'
+            )];
+        } else {
+            $data['back'] = ['url' => (new \moodle_url('/'))->out(false), 'text' => get_string(
+                'checklist_backhome',
+                'theme_epure'
+            )];
+        }
         foreach ($themes as $theme => $points) {
             $items = [];
             foreach ($points as $point => $auto) {
@@ -601,15 +623,28 @@ class course_accessibility {
             }
             $mimetype = (string) $file->mimetype;
             $check = ['key' => '', 'kind' => '', 'label' => $file->filename];
+            // What the documents and the PDF files hold, given file by file, with a link to change where they are.
+            $found = [];
             if ($mimetype === 'application/pdf') {
-                $tagged = self::pdf_tagged($fs->get_file_by_id($file->id));
+                $stored = $fs->get_file_by_id($file->id);
+                $tagged = self::pdf_tagged($stored);
                 if ($tagged === false) {
-                    self::add_issue($parts[$key], 'pdf');
+                    $found['pdf'] = 1;
                 } else if ($tagged === null) {
                     $check['kind'] = 'pdf';
                 }
+                $found += $stored ? (document_check::check($stored) ?? []) : [];
             } else if (self::is_document($mimetype)) {
                 $check['kind'] = 'document';
+                $stored = document_check::kind($mimetype) ? $fs->get_file_by_id($file->id) : false;
+                $found = $stored ? (document_check::check($stored) ?? []) : [];
+            }
+            foreach ($found as $issue => $count) {
+                self::add_issue($parts[$key], $issue, $count);
+            }
+            if ($found) {
+                $parts[$key]['places'][] = ['kind' => 'file', 'name' => $file->filename, 'issues' => $found,
+                    'url' => self::edit_url($parts[$key], $coursecontext)];
             } else if (str_starts_with($mimetype, 'video/') && empty($subtitles[self::place($file)])) {
                 $check['kind'] = 'captions';
             } else if (str_starts_with($mimetype, 'audio/')) {
@@ -621,6 +656,22 @@ class course_accessibility {
                 $parts[$key]['checks'][] = $check;
             }
         }
+    }
+
+    /**
+     * Address to change a part of the course: the settings of the course, of a section or of an activity.
+     *
+     * @param array $part Part.
+     * @param \context_course $coursecontext Context of the course.
+     * @return string
+     */
+    protected static function edit_url(array $part, \context_course $coursecontext): string {
+        $url = match ($part['type']) {
+            'cm' => new \moodle_url('/course/modedit.php', ['update' => $part['id']]),
+            'section' => new \moodle_url('/course/editsection.php', ['id' => $part['id']]),
+            default => new \moodle_url('/course/edit.php', ['id' => $coursecontext->instanceid]),
+        };
+        return $url->out(false);
     }
 
     /**
@@ -947,7 +998,8 @@ class course_accessibility {
             ]),
             'action' => self::url((int) $course->id)->out(false),
             'sesskey' => sesskey(),
-            'checklisturl' => (new \moodle_url('/theme/epure/checklist.php'))->out(false),
+            'courseurl' => course_get_url($course)->out(false),
+            'checklisturl' => (new \moodle_url('/theme/epure/checklist.php', ['course' => $course->id]))->out(false),
             'summary' => self::summary_text($figures),
             'done' => get_string('courseaccessibility_done', 'theme_epure', (object) ['done' => $figures['done'],
                 'total' => $figures['total']]),
@@ -986,7 +1038,10 @@ class course_accessibility {
         $issues = [];
         foreach (self::ISSUES as $issue) {
             if (!empty($part['issues'][$issue])) {
-                $issues[] = ['text' => get_string('courseaccessibility_issue_' . $issue, 'theme_epure', $part['issues'][$issue])];
+                $text = get_string('courseaccessibility_issue_' . $issue, 'theme_epure', $part['issues'][$issue]);
+                // The first sentence says what is wrong, the rest how to fix it: the cause stands out.
+                $sentences = preg_split('/(?<=[^.]\.)\s+/u', $text, 2);
+                $issues[] = ['text' => $text, 'cause' => $sentences[0], 'advice' => $sentences[1] ?? ''];
             }
         }
         // Where they are, in an activity of several texts: each chapter, page or question with its mistakes, and a link
@@ -1045,6 +1100,18 @@ class course_accessibility {
                 'text' => self::state_text($count, $toconfirm),
             ];
         }
+        // The links to change the activity, only for what its places do not already lead to: the mistakes found
+        // in a chapter, a page or a question each have their own link, the settings have nothing to change.
+        $covered = [];
+        foreach ($part['places'] as $place) {
+            foreach ($place['issues'] as $issue => $found) {
+                $covered[$issue] = ($covered[$issue] ?? 0) + $found;
+            }
+        }
+        $elsewhere = array_filter($part['issues'], fn($found, $issue) => $found > ($covered[$issue] ?? 0), ARRAY_FILTER_USE_BOTH);
+        if ($part['places'] && !$elsewhere && !$toconfirm) {
+            $links = [];
+        }
         $editlinks = [];
         foreach ($links as $i => $link) {
             $editlinks[] = ['url' => $link->out(false), 'text' => get_string($i ? 'courseaccessibility_editcontent'
@@ -1063,6 +1130,8 @@ class course_accessibility {
             'checks' => $checks,
             'haschecks' => (bool) $checks,
             'links' => $editlinks,
+            // Nothing left, or each mistake with its own link: no link to change the whole activity.
+            'ok' => $state['class'] === 'ok' || !$editlinks,
         ];
     }
 

@@ -26,12 +26,14 @@
 // phpcs:ignore moodle.Files.RequireLogin.Missing -- The reminder holds nothing of the platform, to give in a training.
 require(__DIR__ . '/../../config.php');
 
+$courseid = optional_param('course', 0, PARAM_INT);
+
 $PAGE->set_context(context_system::instance());
-$PAGE->set_url(new moodle_url('/theme/epure/checklist.php'));
+$PAGE->set_url(new moodle_url('/theme/epure/checklist.php', $courseid ? ['course' => $courseid] : []));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('checklist', 'theme_epure'));
 $PAGE->set_heading(get_string('checklist', 'theme_epure'));
 
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template('theme_epure/checklist', \theme_epure\course_accessibility::checklist());
+echo $OUTPUT->render_from_template('theme_epure/checklist', \theme_epure\course_accessibility::checklist($courseid));
 echo $OUTPUT->footer();

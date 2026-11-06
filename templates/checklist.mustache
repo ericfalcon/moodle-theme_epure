@@ -22,6 +22,7 @@
 
     Example context (json):
     {
+        "back": {"url": "#", "text": "Back to the accessibility of « Safety at work »"},
         "themes": [{"title": "Texts", "items": [
             {"id": "epure-checklist-headings", "text": "The titles follow in order (title 2, then 3).", "auto": true},
             {"id": "epure-checklist-instructions", "text": "The instructions say what to do, how and by when.", "auto": false}
@@ -29,6 +30,9 @@
     }
 }}
 <div class="epure-checklist">
+    {{#back}}
+        <p class="epure-checklist-back d-print-none"><a href="{{url}}"><i class="fa fa-arrow-left" aria-hidden="true"></i> {{text}}</a></p>
+    {{/back}}
     <p class="epure-checklist-intro">{{#str}}checklist_intro, theme_epure{{/str}}</p>
     <div class="epure-checklist-actions d-print-none">
         <button type="button" class="btn btn-primary" data-action="epure-checklist-print">

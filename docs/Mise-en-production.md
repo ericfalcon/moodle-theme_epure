@@ -83,6 +83,7 @@ Les formats de Moodle (Thématique, Hebdomadaire, Activité unique, Social), ave
 | `learnerprogress` | Progression, prochaine activité et échéances de chaque cours d'un apprenant, événements de sa semaine. | 5 minutes, oublié dès qu'une activité est terminée, un devoir remis ou le cours modifié. |
 | `courseaccessibility` | Ce que le guide « Accessibilité du cours » a lu d'un cours. | 1 heure, oublié dès que le cours, une activité, une section, un chapitre de livre, une page de leçon ou une question change. |
 | `pdftagged` | Si un PDF a une structure (balisé), par contenu de fichier. | Sans limite : un contenu ne change pas. |
+| `documentcheck` | Ce que le guide a trouvé dans un document Word, PowerPoint, Excel, LibreOffice ou PDF, par contenu de fichier. | Sans limite : un contenu ne change pas. |
 | `companystrings` | Avec IOMAD, les chaînes réécrites avec le vocabulaire de chaque entreprise. | Jusqu'à la purge des caches, ou au changement du vocabulaire de l'entreprise. |
 
 **Recommandations :**
@@ -91,5 +92,5 @@ Les formats de Moodle (Thématique, Hebdomadaire, Activité unique, Social), ave
 - **Plusieurs serveurs web** : placez le cache d'application sur **Redis** (ou Memcached), partagé par tous les serveurs. Les caches d'Épure suivent sans réglage particulier.
 - **PHP** : activez **OPcache**, avec assez de mémoire pour tout le code de Moodle (`opcache.memory_consumption` de 256 Mo au moins).
 - **Feuille de style** : Moodle compile le SCSS du thème une fois, après chaque purge des caches ou modification de réglage. La première page qui suit est donc plus lente. Purgez les caches en dehors des heures d'affluence.
-- **Guide d'accessibilité** : il lit chaque cours à la première ouverture du guide ou du mode édition, puis garde le résultat. Les PDF volumineux sont lus une seule fois par contenu, et ceux de plus de 30 Mo ne sont pas lus.
+- **Guide d'accessibilité** : il lit chaque cours à la première ouverture du guide ou du mode édition, puis garde le résultat. Les PDF et les documents bureautiques sont lus une seule fois par contenu, et ceux de plus de 30 Mo ne sont pas lus.
 - **Vue d'ensemble de l'apprenant** : elle se désactive dans l'onglet Cours si le tableau de bord doit rester le plus léger possible.
