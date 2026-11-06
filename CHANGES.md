@@ -1,5 +1,9 @@
 # Changes
 
+## 1.5.3 — the buttons of the drawers in the colour of the brand, in dark mode
+
+- Dark mode: the buttons that open the drawers (course index, blocks), at the edges of the screen, take the colour of the brand, which the dark palette keeps at 3:1 at least on the surface, with their icon at 4.5:1 at least. In 1.5.2 they were dark grey, hard to find on the dark page.
+
 ## 1.5.2 — the content checker with the guide « Accessibility of the course »
 
 - The content checker of the teachers (the line under the editors, the window before saving) comes with the guide « Accessibility of the course »: on where the guide is on (setting of the Accessibility tab, or the choice of the IOMAD company), off elsewhere. Not all organisations must meet the criteria of the RGAA. The description of the setting says so.
