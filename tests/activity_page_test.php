@@ -102,6 +102,34 @@ final class activity_page_test extends \advanced_testcase {
     }
 
     /**
+     * The page of one section leads to the previous and next sections the user can see, and after the last one back to
+     * the course.
+     */
+    public function test_section_navigation(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course(['numsections' => 3], ['createsections' => true]);
+        $ids = $DB->get_records_menu('course_sections', ['course' => $course->id], 'section', 'section, id');
+        set_section_visible($course->id, 2, 0);
+        $this->setUser($generator->create_and_enrol($course, 'student'));
+
+        $navigation = activity_page::section_navigation($course, (int) $ids[0]);
+        $this->assertNull($navigation['previous']);
+        $this->assertStringContainsString('id=' . $ids[1], $navigation['next']['url']);
+        $this->assertSame(get_string('sectionnavigation', 'theme_epure'), $navigation['navlabel']);
+        // The hidden section is left out for a learner.
+        $navigation = activity_page::section_navigation($course, (int) $ids[1]);
+        $this->assertStringContainsString('id=' . $ids[0], $navigation['previous']['url']);
+        $this->assertStringContainsString('id=' . $ids[3], $navigation['next']['url']);
+        $navigation = activity_page::section_navigation($course, (int) $ids[3]);
+        $this->assertNull($navigation['next']);
+        $this->assertStringContainsString('/course/view.php', $navigation['courseurl']);
+        // A section of another course: nothing.
+        $this->assertNull(activity_page::section_navigation($course, -1));
+    }
+
+    /**
      * The strip gives the position of the activity and, to a learner, their progress.
      */
     public function test_strip(): void {

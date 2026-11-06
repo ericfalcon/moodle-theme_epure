@@ -266,6 +266,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return string HTML.
      */
     public function activity_navigation() {
+        // The page of one section: its previous and next sections, which Moodle leaves to the course index.
+        if (\theme_epure\activity_page::section_applies($this->page)) {
+            $sectionid = (int) course_get_format($this->page->course)->get_sectionid();
+            $data = $sectionid ? \theme_epure\activity_page::section_navigation($this->page->course, $sectionid) : null;
+            return $data ? $this->render_from_template('theme_epure/activity_navigation', $data) : '';
+        }
         if (!\theme_epure\activity_page::applies($this->page)) {
             return parent::activity_navigation();
         }

@@ -1,5 +1,10 @@
 # Changes
 
+## 1.6.1 — the previous and next sections on the page of a section
+
+- The page of one section (the arrow beside the name of a section on the course page) ends with the previous and next sections, as cards like those of the activities, and after the last one « Back to the course ». Moodle shows none when the course index is there; on a phone, where the index is in a drawer, the section was a dead end. The hidden sections and the subsections are left out, as in the course index.
+- PHPUnit test: the sections before and after, a hidden section left out for a learner, the last one back to the course.
+
 ## 1.6.0 — the accessibility statement on the model of the country of the site
 
 - The accessibility statement follows the default country of the site (Site administration › Location › Location settings), without a new setting:
