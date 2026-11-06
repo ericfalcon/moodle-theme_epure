@@ -21,9 +21,10 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le
   ![Le tableau de bord de l'apprenant en mode sombre](screenshots/dashboard-dark.webp)
 
 - Des pages qui s'adaptent aux téléphones jusqu'à 320 px, un focus toujours visible et jamais caché sous une barre fixe, des cibles de 24 px.
-- Une déclaration d'accessibilité remplie pas à pas, mentionnée sur chaque page.
-- Un vérificateur de contenu pour les formateurs : avant l'enregistrement, il signale les images sans alternative, les tableaux sans en-têtes, les liens qui ne disent rien et les niveaux de titres sautés. Rien n'est jamais bloqué. Il accompagne le guide « Accessibilité du cours », désactivé par défaut.
-- Un guide « Accessibilité du cours » pour les formateurs (désactivé par défaut, pour les organismes tenus aux WCAG 2.1 AA : RGAA en France, EN 301 549 en Europe) : chaque activité et ressource d'un cours passée en revue, ce qu'il faut corriger, ce qu'il faut confirmer, et un pense-bête à imprimer.
+- Des raccourcis clavier listés dans une aide ouverte par « ? », que chacun peut désactiver.
+- Une déclaration d'accessibilité remplie pas à pas, sur le modèle du pays du site (France : RGAA ; Union européenne : EN 301 549 ; ailleurs : WCAG 2.1 AA), mentionnée sur chaque page.
+- Un vérificateur de contenu pour les formateurs : pendant la saisie, une ligne sous chaque éditeur signale les images sans alternative, les images servant de lien, les liens qui ne disent rien, les tableaux sans en-têtes, les niveaux de titres sautés et les textes longs sans titre, avec un bouton pour montrer chacun ; avant l'enregistrement, il les liste de nouveau. Rien n'est jamais bloqué. Il accompagne le guide « Accessibilité du cours », désactivé par défaut.
+- Un guide « Accessibilité du cours » pour les formateurs (désactivé par défaut, pour les organismes tenus aux WCAG 2.1 AA : RGAA en France, EN 301 549 en Europe) : chaque activité et ressource d'un cours passée en revue, avec ses chapitres, pages, questions et contenus H5P, et les documents déposés (Word, PowerPoint, Excel, LibreOffice, PDF : images sans texte alternatif, documents sans titre ou sans langue, PDF numérisés…) ; ce qu'il faut corriger, chaque erreur avec le lien vers son emplacement, en rouge, ce qu'il faut confirmer, en orange, et un pense-bête à imprimer.
 - Testé à chaque modification : un pré-audit automatisé (axe-core, WCAG 2.2 A et AA) de 40 pages de Moodle et 24 pages d'IOMAD, chacune en clair, en sombre et sur deux largeurs de téléphone, et une matrice qui croise couleurs de marque, préférences d'affichage, usage au clavier et couleurs des entreprises IOMAD.
 
 ### Pour les apprenants
@@ -49,9 +50,9 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le
 
 ### Pour les formateurs et les administrateurs
 
-- Une recherche rapide (Ctrl+K / ⌘K) dans les menus, les cours, les activités et les pages d'administration.
+- Une recherche rapide (Ctrl+K / ⌘K) dans les menus, les cours, les activités et les pages d'administration ; pour les visiteurs, dans le catalogue, les catégories et les pages publiques.
 - Des réglages rangés en onglets, un accueil de l'administration plus clair, des formulaires longs avec la liste de leurs sections et les boutons d'enregistrement toujours visibles.
-- Un en-tête de cours pour les formateurs : participants, actifs cette semaine, à corriger, avec des raccourcis.
+- Un en-tête de cours pour les formateurs : participants, actifs cette semaine, à corriger, avec des raccourcis, et le mode édition à portée de main sur téléphone.
 - Des e-mails aux couleurs de la marque, un modèle d'attestation aux couleurs de la marque pour le plugin Certificate (tool_certificate), utilisable avec l'activité Attestation de formation.
 
 ![Un cours côté formateur : participants, actifs cette semaine, à corriger](screenshots/course-teacher.webp)
