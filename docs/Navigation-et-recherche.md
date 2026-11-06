@@ -19,6 +19,8 @@ Le réglage « Fil d'Ariane » (onglet Navigation) affiche le chemin de la page 
 
 Sur téléphone, une barre fixée en bas de l'écran, à portée de pouce, mène au **tableau de bord** (ou à l'accueil du site si le tableau de bord est désactivé), à **mes cours**, au **catalogue**, aux **messages** (avec le nombre de conversations non lues) et au **profil** ; l'entrée de la page en cours est mise en évidence. Les boutons flottants de Moodle (aide, sommaire du cours) remontent au-dessus d'elle ; sur les pages qui ont leur propre barre d'actions en bas (notation, par exemple), elle s'efface. Elle se désactive dans l'onglet Mobile du thème (« Barre de navigation mobile ») et, avec IOMAD, pour chaque entreprise dans sa fiche.
 
+**L'en-tête sur téléphone** garde à l'écran le menu utilisateur et l'interrupteur du mode édition, quoi qu'y ajoutent les plugins : le bouton de Boost dark (`local_boost_dark`) ne garde que son icône, le lien de Moodle Adminer (`local_adminer`) reste dans l'administration, les messages (dans la barre du bas) et la flèche du menu utilisateur le quittent, et le logo pour téléphone rétrécit le premier.
+
 ## Téléphones
 
 Moodle n'affiche pas de logo dans l'en-tête des téléphones. Le réglage « Logo pour téléphone » (onglet Identité) y place une version petite ou carrée du logo, à côté du bouton de menu ; avec IOMAD, le logo de l'entreprise y est affiché.

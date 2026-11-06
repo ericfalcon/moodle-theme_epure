@@ -737,6 +737,7 @@ class course_accessibility {
         if (preg_match('~/Encrypt[\s/<\d]~', $pdf)) {
             return null;
         }
+        $budget = document_check::MAX_STREAM;
         $offset = 0;
         while (($position = strpos($pdf, '/ObjStm', $offset)) !== false) {
             $offset = $position + 7;
@@ -749,9 +750,13 @@ class course_accessibility {
                 break;
             }
             $offset = $end;
-            $objects = @gzuncompress(substr($pdf, $start, $end - $start));
-            if ($objects !== false && str_contains($objects, '/StructTreeRoot')) {
-                return true;
+            // Uncompressed at most to what is left of the budget: a small stream can unfold into gigabytes.
+            $objects = $budget > 0 ? @gzuncompress(substr($pdf, $start, $end - $start), $budget) : false;
+            if ($objects !== false) {
+                if (str_contains($objects, '/StructTreeRoot')) {
+                    return true;
+                }
+                $budget -= strlen($objects);
             }
         }
         return false;

@@ -45,6 +45,61 @@ class accessibility_statement {
         'contact' => ['a11ycontact'],
     ];
 
+    /** @var string[] Countries of the European Union and of the European Economic Area (directive (EU) 2016/2102). */
+    public const EUROPE = ['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'GR', 'HR', 'HU', 'IE', 'IS', 'IT',
+        'LI', 'LT', 'LU', 'LV', 'MT', 'NL', 'NO', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK'];
+
+    /** @var string[] France and its overseas territories, where the RGAA applies. */
+    public const FRANCE = ['FR', 'GF', 'GP', 'MQ', 'RE', 'YT', 'PM', 'BL', 'MF', 'WF', 'PF', 'NC', 'TF'];
+
+    /**
+     * The model of the statement, from the default country of the site (Location settings): the French one (RGAA, law
+     * of 2005, Défenseur des droits) in France or without a country, the European one (EN 301 549, directive (EU)
+     * 2016/2102) in the rest of the European Union and of the EEA, the WCAG 2.1 AA elsewhere.
+     *
+     * @return string fr, eu or world.
+     */
+    public static function model(): string {
+        global $CFG;
+        $country = strtoupper((string) ($CFG->country ?? ''));
+        if ($country === '' || in_array($country, self::FRANCE, true)) {
+            return 'fr';
+        }
+        return in_array($country, self::EUROPE, true) ? 'eu' : 'world';
+    }
+
+    /**
+     * A string of the statement in its model: « name_eu » or « name_world » when it exists, else « name » (France).
+     *
+     * @param string $name Name of the string.
+     * @param mixed $a Value of the string.
+     * @return string
+     */
+    public static function string(string $name, $a = null): string {
+        $model = self::model();
+        $variant = $name . '_' . $model;
+        return get_string($model !== 'fr' && get_string_manager()->string_exists($variant, 'theme_epure')
+            ? $variant : $name, 'theme_epure', $a);
+    }
+
+    /**
+     * Which model the statement follows, and where to change it: for the settings and the guided form.
+     *
+     * @return string
+     */
+    public static function model_note(): string {
+        global $CFG;
+        $country = (string) ($CFG->country ?? '');
+        $countries = get_string_manager()->get_list_of_countries();
+        $note = get_string('a11ymodel_' . self::model(), 'theme_epure', (object) [
+            'country' => $country !== '' && isset($countries[$country]) ? $countries[$country]
+                : get_string('a11ymodel_nocountry', 'theme_epure'),
+            'url' => (new \moodle_url('/admin/settings.php', ['section' => 'locationsettings']))->out(false),
+        ]) . ' ' . get_string('a11ymodel_legal', 'theme_epure');
+        // With IOMAD, one statement for the whole platform: a choice to make knowingly.
+        return iomad::installed() ? $note . ' ' . get_string('a11ymodel_iomad', 'theme_epure') : $note;
+    }
+
     /**
      * The compliance status chosen by the administrator.
      *
@@ -120,9 +175,14 @@ class accessibility_statement {
             'site' => format_string(get_site()->fullname),
             'siteurl' => (new \moodle_url('/'))->out(false),
             'status' => $status ? get_string('a11ystatus_' . $status, 'theme_epure') : '',
-            'statusphrase' => $status ? get_string('a11ystatement_status_' . $status, 'theme_epure') : '',
+            'statusphrase' => $status ? self::string('a11ystatement_status_' . $status) : '',
+            'intro' => self::string('a11ystatement_intro', $entity),
             'hasaudit' => $rate !== '',
             'rate' => s($rate),
+            'ratetext' => self::string('a11ystatement_rate', s($rate)),
+            // The remedies: the Défenseur des droits in France, the body of the country in Europe, none set elsewhere.
+            'france' => self::model() === 'fr',
+            'remedies' => self::model() === 'world' ? '' : self::string('a11ystatement_remedies_text'),
             'auditor' => s(trim((string) ($config->a11yauditor ?? ''))),
             'auditdate' => s(trim((string) ($config->a11yauditdate ?? ''))),
             'statementdate' => s(trim((string) ($config->a11ystatementdate ?? ''))),

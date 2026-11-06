@@ -39,7 +39,7 @@ Les onglets des réglages du thème suivent l'ordre conseillé : chacun s'appuie
 1. **Identité** : couleur de marque (toute la palette en est déduite), logos, e-mails aux couleurs de la marque.
 2. **Navigation** : menus, recherche rapide, menu utilisateur.
 3. **Cours** : cartes, catalogue, bannière et progression des cours, « Ma synthèse », icônes des activités.
-4. **Accessibilité** : préférences d'affichage par défaut, guide « Accessibilité du cours » (désactivé par défaut, pour les organismes tenus au RGAA), déclaration d'accessibilité.
+4. **Accessibilité** : préférences d'affichage par défaut, guide « Accessibilité du cours » (désactivé par défaut, pour les organismes tenus aux WCAG 2.1 AA : RGAA en France, EN 301 549 en Europe), déclaration d'accessibilité.
 5. **Apparence** : typographie, arrondis, mode sombre.
 6. **Mobile** : barre de navigation, application web installable.
 7. **Page de connexion**, puis **Pied de page**.
@@ -69,6 +69,8 @@ Moodle ne sait pas revenir à une version antérieure d'un plugin : remettre l'a
 | Grid (`format_grid`) | — | 4.5 | Vérifié à la main en clair et en sombre : aucune correction nécessaire. |
 | Collapsed Topics (`format_topcoll`) | — | 4.5 | Vérifié à la main en clair et en sombre : aucune correction nécessaire. |
 | OneTopic (`format_onetopic`) | — | 4.5 | Vérifié à la main en clair et en sombre : aucune correction nécessaire. |
+| Boost dark (`local_boost_dark`) | 1.4.8 | 5.0 | Son bouton « Light mode » ne garde que son icône sur téléphone, pour laisser à l'écran l'interrupteur du mode édition (1.5.1). Il fait double emploi avec le mode sombre d'Épure (panneau « Aa » et réglages), qui calcule ses contrastes : préférez celui d'Épure. |
+| Moodle Adminer (`local_adminer`) | — | 5.0 | Son lien de l'en-tête quitte l'en-tête sur téléphone (1.5.1) ; l'outil reste dans Administration du site › Serveur. |
 
 Les formats de Moodle (Thématique, Hebdomadaire, Activité unique, Social), avec les sous-sections, sont testés par l'intégration continue. Un plugin qui impose ses propres couleurs (fonds blancs, textes gris) peut devenir illisible en mode sombre : vérifiez-le en sombre avant de l'ouvrir aux utilisateurs, et signalez-le pour qu'Épure le prenne en charge.
 
@@ -92,5 +94,5 @@ Les formats de Moodle (Thématique, Hebdomadaire, Activité unique, Social), ave
 - **Plusieurs serveurs web** : placez le cache d'application sur **Redis** (ou Memcached), partagé par tous les serveurs. Les caches d'Épure suivent sans réglage particulier.
 - **PHP** : activez **OPcache**, avec assez de mémoire pour tout le code de Moodle (`opcache.memory_consumption` de 256 Mo au moins).
 - **Feuille de style** : Moodle compile le SCSS du thème une fois, après chaque purge des caches ou modification de réglage. La première page qui suit est donc plus lente. Purgez les caches en dehors des heures d'affluence.
-- **Guide d'accessibilité** : il lit chaque cours à la première ouverture du guide ou du mode édition, puis garde le résultat. Les PDF et les documents bureautiques sont lus une seule fois par contenu, et ceux de plus de 30 Mo ne sont pas lus.
+- **Guide d'accessibilité** : il lit chaque cours à la première ouverture du guide ou du mode édition, puis garde le résultat. Les PDF et les documents bureautiques sont lus une seule fois par contenu, et ceux de plus de 30 Mo ne sont pas lus. Leur lecture est plafonnée : une archive de plus de 10 000 éléments n'est pas ouverte, 64 Mo de XML au plus sont lus par document, et les flux compressés d'un PDF ne sont décompressés qu'à 20 Mo au plus.
 - **Vue d'ensemble de l'apprenant** : elle se désactive dans l'onglet Cours si le tableau de bord doit rester le plus léger possible.

@@ -1,6 +1,19 @@
 # Changes
 
-## 1.5.3 — the buttons of the drawers in the colour of the brand, in dark mode
+## 1.6.0 — the accessibility statement on the model of the country of the site
+
+- The accessibility statement follows the default country of the site (Site administration › Location › Location settings), without a new setting:
+  - France, its overseas territories, or no country set: the French model as before (RGAA, law no. 2005-102, Défenseur des droits);
+  - another country of the European Union or of the EEA (Belgium, Luxembourg, Norway…): the European model, compliance with the standard EN 301 549 (WCAG 2.1 level AA), directive (EU) 2016/2102, the remedy to the body in charge of monitoring in the country;
+  - elsewhere (Switzerland, United Kingdom, Canada…): the WCAG 2.1 level AA, without a law nor remedies set by the theme (the contact can give them).
+  The settings and the guided form say which model applies and where to change the country; the guided form explains the audit, the rate and the statuses of that model.
+- The French statement says « compliant with the RGAA and the WCAG 2.1 level AA »; the guide « Accessibility of the course » and its setting refer to the WCAG 2.1 AA, taken up by the RGAA in France and the EN 301 549 in Europe. README, FAQ and documentation likewise.
+- The statement no longer says that no audit was carried out when the platform is non compliant after an audit: the status gives the level of compliance, and « No audit has been carried out yet. » is said apart, only without an audit. The measure of the targets of 24 × 24 pixels names its criterion, 2.5.8 of the WCAG 2.2, beyond the WCAG 2.1 AA of the statement.
+- The settings and the guided form recall that the country of the site does not tell on its own which law applies to the organisation, and, with IOMAD, that the statement covers the whole platform, all companies together.
+- Documents read by the guide « Accessibility of the course », limits of resources: an archive of more than 10,000 entries is not read; the XML read in one document is 64 MB at most, all its parts together, each part read at most to its limit whatever size the archive declares; the compressed streams of a PDF are uncompressed to 20 MB at most, all together (a « zip bomb » of a few kilobytes no longer unfolds); the XML is parsed without the option of huge documents (LIBXML_PARSEHUGE).
+- PHPUnit tests: the model of seven countries, the strings of each model, a string without a variant; a non compliant statement with and without an audit; an archive of too many entries, the budget of XML, a compressed stream of a PDF beyond the limit (for the language and for the structure); a file replaced by another of the same name, read again.
+
+## 1.5.3 — dark mode: the buttons of the drawers in the colour of the brand, the edges of the fields at 3:1
 
 - Dark mode: the buttons that open the drawers (course index, blocks), at the edges of the screen, take the colour of the brand, which the dark palette keeps at 3:1 at least on the surface, with their icon at 4.5:1 at least. In 1.5.2 they were dark grey, hard to find on the dark page.
 - Dark mode: the edges of the fields (text, lists, search) and of the secondary buttons go from 2.26:1 to 3.98:1 on the surface, the 3:1 of the components (WCAG 1.4.11). Checked with a survey of the contrasts of 21 pages in dark mode (dashboard, course, activities, guide, forms, grades, participants, messages, calendar, administration): the texts and the icons reach their minimum everywhere.

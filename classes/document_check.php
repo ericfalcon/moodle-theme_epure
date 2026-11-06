@@ -40,6 +40,15 @@ class document_check {
     /** @var int Size above which a part of a document (its XML) is not read. */
     protected const MAX_PART = 20971520;
 
+    /** @var int XML read at most in one document, all its parts together: a small archive can hold far more. */
+    protected const MAX_READ = 67108864;
+
+    /** @var int Entries above which an archive is not read: no document of an office suite holds that many. */
+    protected const MAX_ENTRIES = 10000;
+
+    /** @var int Size at most of a compressed stream of a PDF once uncompressed, and of all of them together. */
+    public const MAX_STREAM = 20971520;
+
     /** @var int Words from which a text without any title is hard to go through with a screen reader. */
     protected const LONG_TEXT = 400;
 
@@ -110,7 +119,7 @@ class document_check {
             return $known === 'unreadable' ? null : $known;
         }
         try {
-            $found = $kind === 'pdf' ? self::check_pdf($file->get_content()) : self::check_package($file, $kind);
+            $found = $kind === 'pdf' ? static::check_pdf($file->get_content()) : static::check_package($file, $kind);
         } catch (\Throwable $e) {
             // Expected: a damaged or protected file; it stays to confirm by a person.
             $found = null;
@@ -136,11 +145,24 @@ class document_check {
             if ($zip->open($path, \ZipArchive::RDONLY) !== true) {
                 return null;
             }
+            if ($zip->numFiles > static::MAX_ENTRIES) {
+                $zip->close();
+                return null;
+            }
+            // Each part read at most to its limit, whatever size the archive declares, and all of them within a budget.
+            $budget = static::MAX_READ;
             $parts = [];
             for ($i = 0; $i < $zip->numFiles; $i++) {
                 $stat = $zip->statIndex($i);
-                if ($stat && str_ends_with($stat['name'], '.xml') && $stat['size'] <= self::MAX_PART) {
-                    $parts[$stat['name']] = fn() => (string) $zip->getFromIndex($stat['index']);
+                if ($stat && str_ends_with($stat['name'], '.xml') && $stat['size'] <= static::MAX_PART) {
+                    $parts[$stat['name']] = function () use ($zip, $stat, &$budget): string {
+                        if ($budget <= 0) {
+                            return '';
+                        }
+                        $xml = (string) $zip->getFromIndex($stat['index'], min(static::MAX_PART, $budget));
+                        $budget -= strlen($xml);
+                        return $xml;
+                    };
                 }
             }
             $read = fn(string $name): ?\DOMXPath => isset($parts[$name]) ? self::xpath($parts[$name]()) : null;
@@ -170,7 +192,7 @@ class document_check {
         $doc = new \DOMDocument();
         $errors = libxml_use_internal_errors(true);
         // Without the network and the entities: a document is never trusted.
-        $loaded = $doc->loadXML($xml, LIBXML_NONET | LIBXML_COMPACT | LIBXML_PARSEHUGE);
+        $loaded = $doc->loadXML($xml, LIBXML_NONET | LIBXML_COMPACT);
         libxml_clear_errors();
         libxml_use_internal_errors($errors);
         if (!$loaded) {
@@ -413,6 +435,7 @@ class document_check {
             return null;
         }
         $text = $pdf;
+        $budget = self::MAX_STREAM;
         $offset = 0;
         while (($position = strpos($pdf, '/ObjStm', $offset)) !== false) {
             $offset = $position + 7;
@@ -425,9 +448,11 @@ class document_check {
                 break;
             }
             $offset = $end;
-            $objects = @gzuncompress(substr($pdf, $start, $end - $start));
+            // Uncompressed at most to what is left of the budget: a small stream can unfold into gigabytes.
+            $objects = $budget > 0 ? @gzuncompress(substr($pdf, $start, $end - $start), $budget) : false;
             if ($objects !== false) {
                 $text .= $objects;
+                $budget -= strlen($objects);
             }
         }
         $images = preg_match('~/Subtype\s*/Image~', $text);

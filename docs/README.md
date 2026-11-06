@@ -9,7 +9,7 @@
 - **Des outils de navigation** : recherche rapide Ctrl+K, barre de navigation mobile, application web installable.
 - **Le vocabulaire de votre organisation** (formation, stagiaire, formateur…) appliqué à tout Moodle.
 - **IOMAD** : apparence, vocabulaire, pied de page et options par entreprise, tableau de bord IOMAD réorganisé.
-- **L'accessibilité** : préférences d'affichage de chaque utilisateur et affichage par défaut du site, déclaration d'accessibilité RGAA, tests axe-core automatiques.
+- **L'accessibilité** : préférences d'affichage de chaque utilisateur et affichage par défaut du site, déclaration d'accessibilité (RGAA, WCAG 2.1 AA), tests axe-core automatiques.
 
 ## Sommaire
 

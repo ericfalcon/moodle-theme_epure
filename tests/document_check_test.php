@@ -160,6 +160,66 @@ final class document_check_test extends \advanced_testcase {
             document_check::check_pdf("%PDF-1.4\n<< /Type /Catalog >>\n<< /Subtype /Image >>\n%%EOF")
         );
         $this->assertNull(document_check::check_pdf('not a PDF'));
+
+        // A language in a compressed stream of objects is found.
+        $stream = gzcompress('<< /Lang (fr-FR) >> /Font');
+        $this->assertSame([], document_check::check_pdf("%PDF-1.5\n<< /Type /ObjStm >>\nstream\n{$stream}endstream\n%%EOF"));
+        // A stream that unfolds beyond the limit (a « zip bomb » of a few kilobytes) is not uncompressed: the PDF is read
+        // without it, at no cost.
+        $bomb = gzcompress(str_repeat('0', 2 * document_check::MAX_STREAM) . '/Lang (fr-FR)', 9);
+        $this->assertLessThan(100000, strlen($bomb));
+        $this->assertSame(
+            ['pdflang' => 1],
+            document_check::check_pdf("%PDF-1.5\n<< /Type /ObjStm >>\nstream\n{$bomb}endstream\n%%EOF")
+        );
+        $this->assertFalse(course_accessibility::pdf_content_tagged(
+            "%PDF-1.5\n<< /Type /ObjStm >>\nstream\n" . gzcompress(str_repeat('0', 2 * document_check::MAX_STREAM)
+            . '/StructTreeRoot', 9) . "endstream\n%%EOF"
+        ));
+    }
+
+    /**
+     * An archive of too many entries is not read; the XML read in one document stays within a budget, whatever the size
+     * the parts declare.
+     */
+    public function test_limits(): void {
+        $this->resetAfterTest();
+        // The limits made small, by a class that redefines them.
+        $small = new class extends document_check {
+            /** @var int Entries at most. */
+            protected const MAX_ENTRIES = 5;
+            /** @var int XML read at most in one document. */
+            protected const MAX_READ = 2000;
+        };
+        $slide = '<p:sld xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">' . str_repeat('<a/>', 300)
+            . '</p:sld>';
+        $parts = ['docProps/core.xml' => $this->core('Rules')];
+        for ($i = 1; $i <= 6; $i++) {
+            $parts['ppt/slides/slide' . $i . '.xml'] = $slide;
+        }
+        // Too many entries: not read.
+        $this->assertNull($small::check($this->package('many.pptx', $parts)));
+        // Within the entries, the parts beyond the budget are left out, without an error.
+        // Within the entries, the parts beyond the budget are left out, without an error: the properties and one slide
+        // are read (four slides without a title in full).
+        $few = array_slice($parts, 0, 5, true);
+        $this->assertSame(['slidetitles' => 1], $small::check($this->package('heavy.pptx', $few)));
+        \cache::make('theme_epure', 'documentcheck')->purge();
+        $this->assertSame(['slidetitles' => 4], document_check::check($this->package('heavy2.pptx', $few)));
+    }
+
+    /**
+     * A file replaced by another of the same name is read again: what is found is kept by content, not by name.
+     */
+    public function test_replaced(): void {
+        $this->resetAfterTest();
+        $body = ['word/document.xml' => '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+            . '<w:body><w:p><w:r><w:t>Rules</w:t></w:r></w:p></w:body></w:document>'];
+        $first = $this->package('rules.docx', $body + ['docProps/core.xml' => $this->core('')]);
+        $this->assertSame(['doctitle' => 1], document_check::check($first));
+        $first->delete();
+        $second = $this->package('rules.docx', $body + ['docProps/core.xml' => $this->core('Rules')]);
+        $this->assertSame([], document_check::check($second));
     }
 
     /**
