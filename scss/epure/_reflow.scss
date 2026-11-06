@@ -202,10 +202,15 @@ html,
     .navbar.fixed-top .editmode-switch-form {
         margin-left: .25rem;
     }
+}
 
-    // The messages are in the navigation at the bottom of the screen: their button leaves the header. The arrow of
-    // the user menu, which only decorates it, too.
-    body.epure-has-mobilenav .navbar.fixed-top [data-region="popover-region-messages"] {
+// On phones, the header keeps room for the user menu and the switch of the edit mode, whatever the plugins add to
+// it. The messages are in the navigation at the bottom of the screen: their button leaves the header. The arrow of
+// the user menu, which only decorates it, too. The link to the database of Moodle Adminer (local_adminer), a tool of
+// administration for a computer, stays in the administration of the site (Server › Moodle Adminer).
+@media (max-width: 767.98px) {
+    body.epure-has-mobilenav .navbar.fixed-top [data-region="popover-region-messages"],
+    .navbar.fixed-top .local-adminer-nav-action {
         display: none;
     }
 

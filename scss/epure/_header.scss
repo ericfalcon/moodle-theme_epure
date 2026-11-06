@@ -225,6 +225,17 @@ body.epure-header-brand .navbar.fixed-top .divider {
             font-weight: 900;
         }
     }
+
+    // The button of the dark mode of the plugin Boost dark (local_boost_dark): its icon only, the words left to its
+    // name (aria-label), so that it does not push the switch of the edit mode out of the screen.
+    body .navbar.fixed-top .kraus-layout-dark .mode-label {
+        display: none !important; // stylelint-disable-line declaration-no-important
+    }
+
+    body .navbar.fixed-top .kraus-layout-dark .nav-link {
+        padding-right: .25rem;
+        padding-left: .25rem;
+    }
 }
 
 // User menu: each link of its main list, as every link that stands on its own, in the colour of the brand with an

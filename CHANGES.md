@@ -3,6 +3,7 @@
 ## 1.5.1 — the edit mode on phones, from the banner of the course
 
 - On a phone, the switch of the edit mode of the header can be pushed out of the screen by the buttons that plugins add there (Boost dark, Moodle Adminer). The banner of the course gives it too, to a teacher who can change the course, next to « Participants », « Grades » and « Settings »: « Turn editing on », then « Turn editing off ». Only on phones: on a wider screen, the switch of the header stays.
+- On phones, the header keeps room for the user menu and the switch of the edit mode, whatever plugins add to it: the button of Boost dark (local_boost_dark) shows its icon only (its name stays for screen readers); the link of Moodle Adminer (local_adminer), a tool for a computer, stays in the administration of the site; the button of the messages leaves the header when the navigation at the bottom of the screen holds them, and the arrow of the user menu goes, from 768 pixels down (before, under 400 pixels only); the logo for phones narrows first when the header is full.
 - PHPUnit test: the link of the edit mode, on then off.
 
 ## 1.5.0 — the documents read in the guide « Accessibility of the course », and a way back from the reminder

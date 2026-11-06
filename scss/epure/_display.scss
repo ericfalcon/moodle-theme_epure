@@ -16,10 +16,20 @@ body.epure-breadcrumb-hide #page-navbar {
         margin-right: auto !important; // stylelint-disable-line declaration-no-important
         margin-left: .5rem !important; // stylelint-disable-line declaration-no-important
 
+        // The logo gives way first when the header is full (buttons added by plugins): it narrows, so that the
+        // user menu and the switch of the edit mode stay on the screen.
+        flex: 0 1 auto;
+        min-width: 2rem;
+
         .logo {
-            max-width: 7.5rem;
+            max-width: 100%;
             max-height: 2rem;
+            object-fit: contain;
         }
+    }
+
+    body.epure-has-mobilelogo .navbar .navbar-brand .logo {
+        width: 7.5rem;
     }
 
     // Blocks hidden on phones: neither the button of their drawer nor the drawer.
