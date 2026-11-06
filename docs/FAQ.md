@@ -22,9 +22,9 @@ C'est voulu : le choix de l'utilisateur (bouton Aa) l'emporte sur celui de l'ent
 
 L'éditeur de texte (TinyMCE) et certains contenus intégrés (par exemple depuis moodle.org) gardent leur propre apparence.
 
-## Épure rend-il ma plateforme conforme au RGAA ?
+## Épure rend-il ma plateforme conforme au RGAA ou aux WCAG ?
 
-Il y contribue, sans suffire : les contenus des cours comptent aussi, et un audit manuel reste nécessaire avant de déclarer la conformité. Voir le [rapport de pré-audit](Pr%C3%A9-audit-d%E2%80%99accessibilit%C3%A9.md).
+Il y contribue, sans suffire : les contenus des cours comptent aussi, et un audit manuel reste nécessaire avant de déclarer la conformité. Le RGAA (France) reprend les WCAG 2.1 niveau AA, comme la norme européenne EN 301 549 et les lois de la plupart des pays (Suisse, Royaume-Uni, Canada, États-Unis…) : ce qu'Épure fait pour l'un vaut pour les autres. Voir le [rapport de pré-audit](Pr%C3%A9-audit-d%E2%80%99accessibilit%C3%A9.md).
 
 ## Les e-mails ne sont pas aux couleurs de la marque
 

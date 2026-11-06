@@ -46,7 +46,7 @@ class a11y_statement_form extends \moodleform {
         $mform->addElement('hidden', 'step', $step);
         $mform->setType('step', PARAM_INT);
         $mform->addElement('html', \html_writer::div(
-            get_string('a11ywizard_' . $key . '_intro', 'theme_epure'),
+            accessibility_statement::string('a11ywizard_' . $key . '_intro'),
             'epure-a11ywizard-intro'
         ));
 
@@ -54,7 +54,7 @@ class a11y_statement_form extends \moodleform {
             // The rate of the audit, as a reminder: the status comes from it, the theme does not compute it.
             $rate = trim((string) ($config->a11yrate ?? ''));
             $mform->addElement('html', \html_writer::div(
-                $rate === '' ? get_string('a11ywizard_norate', 'theme_epure')
+                $rate === '' ? accessibility_statement::string('a11ywizard_norate')
                     : get_string('a11ywizard_rate', 'theme_epure', s($rate)),
                 'alert alert-info'
             ));
@@ -74,7 +74,7 @@ class a11y_statement_form extends \moodleform {
                 $mform->addElement('text', $name, get_string($name, 'theme_epure'), ['size' => 50]);
                 $mform->setType($name, PARAM_TEXT);
             }
-            $mform->addElement('static', $name . '_help', '', get_string($name . '_desc', 'theme_epure'));
+            $mform->addElement('static', $name . '_help', '', accessibility_statement::string($name . '_desc'));
             $mform->setDefault($name, (string) ($config->$name ?? ''));
         }
 

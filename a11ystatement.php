@@ -66,6 +66,8 @@ foreach ($keys as $i => $key) {
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('a11ywizard', 'theme_epure'));
 echo html_writer::tag('ol', $items, ['class' => 'epure-a11ywizard-steps']);
+// The model of the statement, from the country of the site.
+echo html_writer::tag('p', accessibility_statement::model_note(), ['class' => 'epure-a11ywizard-model']);
 echo $OUTPUT->heading(get_string('a11ywizard_step', 'theme_epure', (object) [
     'step' => $step,
     'total' => $total,

@@ -321,6 +321,7 @@ if ($ADMIN->fulltree) {
 
     $statementurl = theme_epure\accessibility_statement::url()->out();
     $heading($page, 'statement', get_string('a11ysettings_desc', 'theme_epure', html_writer::link($statementurl, $statementurl))
+        . ' ' . theme_epure\accessibility_statement::model_note()
         . ' ' . get_string('a11ywizard_link', 'theme_epure', html_writer::link(
             new moodle_url('/theme/epure/a11ystatement.php'),
             get_string('a11ywizard', 'theme_epure')
@@ -342,7 +343,7 @@ if ($ADMIN->fulltree) {
         $page->add(new admin_setting_configtext(
             'theme_epure/' . $name,
             get_string($name, 'theme_epure'),
-            get_string($name . '_desc', 'theme_epure'),
+            theme_epure\accessibility_statement::string($name . '_desc'),
             '',
             PARAM_TEXT
         ));

@@ -39,7 +39,7 @@ Les onglets des réglages du thème suivent l'ordre conseillé : chacun s'appuie
 1. **Identité** : couleur de marque (toute la palette en est déduite), logos, e-mails aux couleurs de la marque.
 2. **Navigation** : menus, recherche rapide, menu utilisateur.
 3. **Cours** : cartes, catalogue, bannière et progression des cours, « Ma synthèse », icônes des activités.
-4. **Accessibilité** : préférences d'affichage par défaut, guide « Accessibilité du cours » (désactivé par défaut, pour les organismes tenus au RGAA), déclaration d'accessibilité.
+4. **Accessibilité** : préférences d'affichage par défaut, guide « Accessibilité du cours » (désactivé par défaut, pour les organismes tenus aux WCAG 2.1 AA : RGAA en France, EN 301 549 en Europe), déclaration d'accessibilité.
 5. **Apparence** : typographie, arrondis, mode sombre.
 6. **Mobile** : barre de navigation, application web installable.
 7. **Page de connexion**, puis **Pied de page**.

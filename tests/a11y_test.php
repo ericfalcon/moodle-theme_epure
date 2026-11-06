@@ -184,6 +184,56 @@ final class a11y_test extends \advanced_testcase {
     }
 
     /**
+     * The model of the statement follows the default country of the site: France (and without a country), the
+     * European Union and the EEA, elsewhere.
+     */
+    public function test_statement_model(): void {
+        global $CFG;
+        $this->resetAfterTest();
+        set_config('a11ystatus', 'partial', 'theme_epure');
+        set_config('a11yentity', 'Clinique des Tilleuls', 'theme_epure');
+        set_config('a11yrate', '75 %', 'theme_epure');
+
+        $models = ['' => 'fr', 'FR' => 'fr', 'RE' => 'fr', 'BE' => 'eu', 'NO' => 'eu', 'CH' => 'world', 'CA' => 'world'];
+        foreach ($models as $country => $model) {
+            $CFG->country = $country;
+            $this->assertSame($model, accessibility_statement::model(), $country);
+        }
+
+        // France: the RGAA, the Défenseur des droits.
+        $CFG->country = 'FR';
+        $statement = accessibility_statement::export();
+        $this->assertSame(get_string('a11ystatement_status_partial', 'theme_epure'), $statement['statusphrase']);
+        $this->assertSame(get_string('a11ystatement_intro', 'theme_epure', 'Clinique des Tilleuls'), $statement['intro']);
+        $this->assertTrue($statement['france']);
+        $this->assertNotSame('', $statement['remedies']);
+        $this->assertStringContainsString(get_string('a11ymodel_nocountry', 'theme_epure'), (function () {
+            global $CFG;
+            $CFG->country = '';
+            return accessibility_statement::model_note();
+        })());
+
+        // Belgium: the standard EN 301 549, the body of the country.
+        $CFG->country = 'BE';
+        $statement = accessibility_statement::export();
+        $this->assertSame(get_string('a11ystatement_status_partial_eu', 'theme_epure'), $statement['statusphrase']);
+        $this->assertSame(get_string('a11ystatement_rate_eu', 'theme_epure', '75 %'), $statement['ratetext']);
+        $this->assertFalse($statement['france']);
+        $this->assertSame(get_string('a11ystatement_remedies_text_eu', 'theme_epure'), $statement['remedies']);
+
+        // Switzerland: the WCAG 2.1 AA, no remedies set by the theme.
+        $CFG->country = 'CH';
+        $statement = accessibility_statement::export();
+        $this->assertSame(get_string('a11ystatement_status_partial_world', 'theme_epure'), $statement['statusphrase']);
+        $this->assertSame(get_string('a11ystatement_intro_world', 'theme_epure', 'Clinique des Tilleuls'), $statement['intro']);
+        $this->assertSame('', $statement['remedies']);
+        // A string without a variant is the French one.
+        $feedback = get_string('a11ystatement_feedback', 'theme_epure');
+        $this->assertSame($feedback, accessibility_statement::string('a11ystatement_feedback'));
+        $this->assertStringContainsString('locationsettings', accessibility_statement::model_note());
+    }
+
+    /**
      * The statement filled step by step: its steps hold all its settings, and each step saves its own only.
      */
     public function test_statement_steps(): void {

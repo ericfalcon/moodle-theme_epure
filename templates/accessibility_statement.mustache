@@ -17,15 +17,17 @@
 {{!
     @template theme_epure/accessibility_statement
 
-    Accessibility statement in the French format (RGAA): compliance status, test results,
-    content that is not accessible, how the statement was made, feedback and remedies.
+    Accessibility statement, on the model of the country of the site (France: RGAA; European Union: EN 301 549;
+    elsewhere: WCAG 2.1 AA): compliance status, test results, content that is not accessible, how the statement was
+    made, feedback and remedies.
 
     Example context (json):
     {
         "published": true, "entity": "Clinique des Tilleuls", "site": "Campus", "siteurl": "#",
         "status": "partially compliant", "statusphrase": "is partially compliant",
         "hasaudit": true, "rate": "75 %", "auditor": "Example", "auditdate": "October 2026",
-        "statementdate": "4 October 2026", "noncompliant": "<p>Some PDF documents</p>",
+        "statementdate": "4 October 2026", "intro": "Clinique des Tilleuls is committed to making its online services accessible.",
+        "ratetext": "The audit shows that 75 % of the criteria are met.", "france": true, "remedies": "If you reported a defect…", "noncompliant": "<p>Some PDF documents</p>",
         "derogations": "", "disproportionate": "", "contact": "support@example.com",
         "measures": ["Every function can be used with the keyboard."], "editurl": ""
     }
@@ -46,7 +48,7 @@
         <p>{{#str}}a11ystatement_unpublished, theme_epure{{/str}}</p>
     {{/published}}
     {{#published}}
-        <p>{{#str}}a11ystatement_intro, theme_epure, {{entity}}{{/str}}</p>
+        <p>{{intro}}</p>
         <p>{{#str}}a11ystatement_scope, theme_epure{{/str}} <a href="{{siteurl}}">{{site}}</a>.</p>
 
         <h3>{{#str}}a11ystatement_compliance, theme_epure{{/str}}</h3>
@@ -54,7 +56,7 @@
 
         {{#hasaudit}}
             <h3>{{#str}}a11ystatement_results, theme_epure{{/str}}</h3>
-            <p>{{#str}}a11ystatement_rate, theme_epure, {{rate}}{{/str}}</p>
+            <p>{{ratetext}}</p>
             {{#auditor}}<p>{{#str}}a11ystatement_auditor, theme_epure, {{auditor}}{{/str}}{{#auditdate}} ({{auditdate}}){{/auditdate}}</p>{{/auditor}}
         {{/hasaudit}}
 
@@ -86,13 +88,17 @@
         <p>{{#str}}a11ystatement_feedback_text, theme_epure{{/str}}</p>
         <div class="epure-a11y-statement-contact">{{{contact}}}</div>
 
-        <h3>{{#str}}a11ystatement_remedies, theme_epure{{/str}}</h3>
-        <p>{{#str}}a11ystatement_remedies_text, theme_epure{{/str}}</p>
-        <ul>
-            <li><a href="https://formulaire.defenseurdesdroits.fr/">{{#str}}a11ystatement_remedy_form, theme_epure{{/str}}</a></li>
-            <li><a href="https://www.defenseurdesdroits.fr/saisir/delegues">{{#str}}a11ystatement_remedy_delegate, theme_epure{{/str}}</a></li>
-            <li>{{#str}}a11ystatement_remedy_mail, theme_epure{{/str}}</li>
-        </ul>
+        {{#remedies}}
+            <h3>{{#str}}a11ystatement_remedies, theme_epure{{/str}}</h3>
+            <p>{{remedies}}</p>
+            {{#france}}
+                <ul>
+                    <li><a href="https://formulaire.defenseurdesdroits.fr/">{{#str}}a11ystatement_remedy_form, theme_epure{{/str}}</a></li>
+                    <li><a href="https://www.defenseurdesdroits.fr/saisir/delegues">{{#str}}a11ystatement_remedy_delegate, theme_epure{{/str}}</a></li>
+                    <li>{{#str}}a11ystatement_remedy_mail, theme_epure{{/str}}</li>
+                </ul>
+            {{/france}}
+        {{/remedies}}
     {{/published}}
 </article>
 {{#js}}

@@ -1,5 +1,15 @@
 # Changes
 
+## 1.6.0 — the accessibility statement on the model of the country of the site
+
+- The accessibility statement follows the default country of the site (Site administration › Location › Location settings), without a new setting:
+  - France, its overseas territories, or no country set: the French model as before (RGAA, law no. 2005-102, Défenseur des droits);
+  - another country of the European Union or of the EEA (Belgium, Luxembourg, Norway…): the European model, compliance with the standard EN 301 549 (WCAG 2.1 level AA), directive (EU) 2016/2102, the remedy to the body in charge of monitoring in the country;
+  - elsewhere (Switzerland, United Kingdom, Canada…): the WCAG 2.1 level AA, without a law nor remedies set by the theme (the contact can give them).
+  The settings and the guided form say which model applies and where to change the country; the guided form explains the audit, the rate and the statuses of that model.
+- The French statement says « compliant with the RGAA and the WCAG 2.1 level AA »; the guide « Accessibility of the course » and its setting refer to the WCAG 2.1 AA, taken up by the RGAA in France and the EN 301 549 in Europe. README, FAQ and documentation likewise.
+- PHPUnit test: the model of seven countries, the strings of each model, a string without a variant.
+
 ## 1.5.3 — the buttons of the drawers in the colour of the brand, in dark mode
 
 - Dark mode: the buttons that open the drawers (course index, blocks), at the edges of the screen, take the colour of the brand, which the dark palette keeps at 3:1 at least on the surface, with their icon at 4.5:1 at least. In 1.5.2 they were dark grey, hard to find on the dark page.

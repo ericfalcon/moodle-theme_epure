@@ -14,7 +14,7 @@ Le changement est immédiat, puis enregistré dans les préférences de son prof
 
 **Bouton « Aa ».** Il se désactive dans le même onglet : les utilisateurs ne peuvent plus changer leur affichage, et les préférences déjà choisies continuent de s'appliquer.
 
-**Déclaration d'accessibilité.** L'onglet **Accessibilité** des réglages du thème la remplit au format français (RGAA) : état de conformité, entité, taux de conformité, auditeur et date de l'audit, non-conformités, dérogations, contenus non soumis, contact (par défaut, le courriel du support). Tant qu'aucun état n'est choisi, rien n'est publié. Une fois l'état choisi :
+**Déclaration d'accessibilité.** L'onglet **Accessibilité** des réglages du thème la remplit sur le modèle du pays par défaut du site (France : RGAA, loi de 2005, Défenseur des droits ; reste de l'Union européenne et EEE : norme EN 301 549 et directive (UE) 2016/2102 ; ailleurs : WCAG 2.1 niveau AA) : état de conformité, entité, taux de conformité, auditeur et date de l'audit, non-conformités, dérogations, contenus non soumis, contact (par défaut, le courriel du support). Tant qu'aucun état n'est choisi, rien n'est publié. Une fois l'état choisi :
 
 - la déclaration est publiée à l'adresse `/theme/epure/accessibility.php`, lisible sans compte. Elle liste aussi les mesures d'accessibilité prises par le thème (contrastes, clavier, structure, agrandissement, préférences d'affichage, tests automatiques), et les voies de recours auprès du Défenseur des droits ; une adresse électronique saisie comme contact devient un lien ;
 - la mention « Accessibilité : partiellement conforme » (selon l'état) apparaît en bas de chaque page, et un lien dans le pied de page.
