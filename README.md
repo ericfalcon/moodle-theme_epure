@@ -21,9 +21,10 @@ Choose a brand colour (or click a colour of your logo): the theme derives the wh
   ![The learner's dashboard in dark mode](screenshots/dashboard-dark.webp)
 
 - Pages that reflow on phones down to 320 px, focus always visible and never hidden under fixed bars, 24 px targets.
-- An accessibility statement filled in step by step, with a mention on every page.
-- A content checker for teachers: before saving, it points out images without a text alternative, tables without headers, links that say nothing and skipped heading levels. Nothing is ever blocked. It comes with the guide « Accessibility of the course », off by default.
-- A guide « Accessibility of the course » for teachers (off by default, for the organisations that must meet the WCAG 2.1 AA: RGAA in France, EN 301 549 in Europe): each activity and resource of a course read, what to fix, what to confirm, and a reminder to print.
+- Keyboard shortcuts listed in a help opened with « ? », which each user can turn off.
+- An accessibility statement filled in step by step, on the model of the country of the site (France: RGAA; European Union: EN 301 549; elsewhere: WCAG 2.1 AA), with a mention on every page.
+- A content checker for teachers: as they write, a line under each editor points out images without a text alternative, images used as links, links that say nothing, tables without headers, skipped heading levels and long texts without titles, with a button to show each one; before saving, it lists them again. Nothing is ever blocked. It comes with the guide « Accessibility of the course », off by default.
+- A guide « Accessibility of the course » for teachers (off by default, for the organisations that must meet the WCAG 2.1 AA: RGAA in France, EN 301 549 in Europe): each activity and resource of a course read, with its chapters, pages, questions and H5P contents, and the documents given in it (Word, PowerPoint, Excel, LibreOffice, PDF: images without a text alternative, documents without titles or language, scanned PDF…); what to fix, each mistake with the link to its place, in red, what to confirm, in orange, and a reminder to print.
 - Tested on every change: an automated pre-audit (axe-core, WCAG 2.2 A and AA) of 40 Moodle pages and 24 IOMAD pages, each in light, dark and on two phone widths, plus a matrix crossing brand colours, display preferences, keyboard use and IOMAD company colours.
 
 ### For learners
@@ -49,9 +50,9 @@ Choose a brand colour (or click a colour of your logo): the theme derives the wh
 
 ### For teachers and administrators
 
-- Quick search (Ctrl+K / ⌘K) across menus, courses, activities and administration pages.
+- Quick search (Ctrl+K / ⌘K) across menus, courses, activities and administration pages; for visitors, across the catalogue, the categories and the public pages.
 - Settings grouped in tabs, a clearer administration home, long forms with their sections listed and the save buttons always in view.
-- A course header for teachers: participants, active this week, to grade, with shortcuts.
+- A course header for teachers: participants, active this week, to grade, with shortcuts, and the edit mode at hand on phones.
 - Branded e-mails, a certificate template in the brand colours for the plugin Certificate (tool_certificate), usable with the activity Course certificate.
 
 ![A course for a teacher: participants, active this week, to grade](screenshots/course-teacher.webp)
