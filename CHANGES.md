@@ -3,6 +3,7 @@
 ## 1.5.3 — the buttons of the drawers in the colour of the brand, in dark mode
 
 - Dark mode: the buttons that open the drawers (course index, blocks), at the edges of the screen, take the colour of the brand, which the dark palette keeps at 3:1 at least on the surface, with their icon at 4.5:1 at least. In 1.5.2 they were dark grey, hard to find on the dark page.
+- Dark mode: the edges of the fields (text, lists, search) and of the secondary buttons go from 2.26:1 to 3.98:1 on the surface, the 3:1 of the components (WCAG 1.4.11). Checked with a survey of the contrasts of 21 pages in dark mode (dashboard, course, activities, guide, forms, grades, participants, messages, calendar, administration): the texts and the icons reach their minimum everywhere.
 
 ## 1.5.2 — the content checker with the guide « Accessibility of the course »
 

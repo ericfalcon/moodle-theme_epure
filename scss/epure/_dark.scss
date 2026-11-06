@@ -365,7 +365,8 @@
     .custom-file-label {
         color: var(--epure-ink);
         background-color: var(--epure-surface-raised);
-        border-color: #4b5463;
+        // The edge of a field at 3:1 at least on every dark background (WCAG 1.4.11): 3.98:1 on the surface.
+        border-color: #707a8a;
     }
 
     .form-control::placeholder {
@@ -455,7 +456,7 @@
         textarea {
             color: var(--epure-ink);
             background-color: var(--epure-surface-raised);
-            border-color: #4b5463;
+            border-color: #707a8a;
         }
 
         svg:not(.locked):not(.unlocked) {
@@ -476,7 +477,7 @@
     .btn-outline-secondary {
         color: var(--epure-ink);
         background-color: var(--epure-surface-raised);
-        border-color: #4b5463;
+        border-color: #707a8a;
     }
 
     .btn-secondary:hover,
