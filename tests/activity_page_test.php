@@ -102,6 +102,40 @@ final class activity_page_test extends \advanced_testcase {
     }
 
     /**
+     * The page of one section leads to the previous and next sections the user can see, and after the last one back to
+     * the course.
+     */
+    public function test_section_navigation(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course(['numsections' => 3], ['createsections' => true]);
+        $ids = $DB->get_records_menu('course_sections', ['course' => $course->id], 'section', 'section, id');
+        set_section_visible($course->id, 2, 0);
+        $student = $generator->create_and_enrol($course, 'student');
+        $generator->create_module('page', ['course' => $course->id, 'name' => 'Hidden', 'section' => 2]);
+        $page = $generator->create_module('page', ['course' => $course->id, 'name' => 'Rules', 'section' => 3]);
+        $this->setUser($student);
+        $navigation = activity_page::section_navigation($course, (int) $ids[0]);
+        $this->assertNull($navigation['previous']);
+        // The next activity, two sections further (the hidden one left out).
+        $this->assertSame('Rules', $navigation['nextactivity']['name']);
+        $this->assertStringContainsString('id=' . $page->cmid, $navigation['nextactivity']['url']);
+        $this->assertStringContainsString('id=' . $ids[1], $navigation['next']['url']);
+        $this->assertSame(get_string('sectionnavigation', 'theme_epure'), $navigation['navlabel']);
+        // The hidden section is left out for a learner.
+        $navigation = activity_page::section_navigation($course, (int) $ids[1]);
+        $this->assertStringContainsString('id=' . $ids[0], $navigation['previous']['url']);
+        $this->assertStringContainsString('id=' . $ids[3], $navigation['next']['url']);
+        $navigation = activity_page::section_navigation($course, (int) $ids[3]);
+        $this->assertNull($navigation['next']);
+        $this->assertNull($navigation['nextactivity']);
+        $this->assertStringContainsString('/course/view.php', $navigation['courseurl']);
+        // A section of another course: nothing.
+        $this->assertNull(activity_page::section_navigation($course, -1));
+    }
+
+    /**
      * The strip gives the position of the activity and, to a learner, their progress.
      */
     public function test_strip(): void {

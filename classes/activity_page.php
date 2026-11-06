@@ -97,6 +97,75 @@ class activity_page {
     }
 
     /**
+     * Whether the page is the page of one section of a course (course/section.php), where Moodle shows no previous and
+     * next sections when the course index is there: on a phone, the index is in a drawer, and the section a dead end.
+     *
+     * @param \moodle_page $page Page.
+     * @return bool
+     */
+    public static function section_applies(\moodle_page $page): bool {
+        try {
+            return str_starts_with((string) $page->pagetype, 'course-view-section-') && !empty($page->course->id)
+                && (int) $page->course->id !== (int) SITEID && company_style::enabled('activitynav');
+        } catch (\Throwable $e) {
+            // Expected: the page has no course yet.
+            return false;
+        }
+    }
+
+    /**
+     * Context of the template theme_epure/activity_navigation for the page of a section: the previous and next sections
+     * the user can see (the subsections, shown inside their section, left out), and after the last one, back to the course.
+     *
+     * @param \stdClass $course Course.
+     * @param int $sectionid Section shown.
+     * @return array|null Null when the section is not in the course.
+     */
+    public static function section_navigation(\stdClass $course, int $sectionid): ?array {
+        $modinfo = get_fast_modinfo($course);
+        $sections = array_values(array_filter(
+            $modinfo->get_section_info_all(),
+            fn(\section_info $section) => $section->uservisible && !$section->is_delegated()
+        ));
+        $ids = array_map(fn(\section_info $section) => (int) $section->id, $sections);
+        $position = array_search($sectionid, $ids, true);
+        if ($position === false) {
+            return null;
+        }
+        $format = course_get_format($course);
+        $card = fn(?\section_info $section) => $section ? [
+            'name' => $format->get_section_name($section),
+            'url' => (new \moodle_url('/course/section.php', ['id' => $section->id]))->out(false),
+            'icon' => '',
+            'section' => '',
+        ] : null;
+        // The next activity after this section, in whichever section it is: the first one the user can open in a
+        // later section (the activities of a subsection count with the section that holds it).
+        $current = (int) $sections[$position]->section;
+        $nextactivity = null;
+        foreach (course_structure::cms($modinfo) as $cm) {
+            [$top] = course_structure::sections_of($cm);
+            if ($cm->uservisible && !$cm->is_stealth() && !empty($cm->url) && $top && (int) $top->section > $current) {
+                $nextactivity = [
+                    'name' => $cm->get_formatted_name(),
+                    'url' => (new \moodle_url($cm->url, ['forceview' => 1]))->out(false),
+                    'icon' => $cm->get_icon_url()->out(false),
+                    'section' => course_structure::place_name($cm),
+                ];
+                break;
+            }
+        }
+        return [
+            'previous' => $card($sections[$position - 1] ?? null),
+            'next' => $card($sections[$position + 1] ?? null),
+            'nextactivity' => $nextactivity,
+            'courseurl' => course_get_url($course, $sections[$position]->section)->out(false),
+            'navlabel' => get_string('sectionnavigation', 'theme_epure'),
+            'endlabel' => get_string('sectionend', 'theme_epure'),
+        ];
+    }
+
+    /**
      * Context of the template theme_epure/activity_strip.
      *
      * @param \cm_info $current Current activity.

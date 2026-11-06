@@ -30,7 +30,7 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le
 ### Pour les apprenants
 
 - Un tableau de bord qui montre où reprendre, ce qui est à faire cette semaine et ce qui est terminé.
-- « Mes cours » par rôle, un catalogue avec une page de présentation des cours, la progression par section, l'activité précédente et suivante sur chaque activité, un mode lecture.
+- « Mes cours » par rôle, un catalogue avec une page de présentation des cours, la progression par section, l'activité précédente et suivante sur chaque activité, section précédente et suivante sur la page d'une section, un mode lecture.
 - « Ma synthèse » : une page imprimable de leurs cours, progression, activités terminées, notes et attestations, ou un PDF avec un code de vérification que chacun peut contrôler sur la plateforme.
 - Une barre de navigation en bas de l'écran sur téléphone, et une application web installable.
 
@@ -117,6 +117,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.6.1** : aucun réglage ne change. La page d'une section mène aux sections précédente et suivante, et à l'activité suivante.
 - **1.6.0** : aucun nouveau réglage. **La déclaration d'accessibilité suit le pays par défaut du site** (paramètres de localisation) : modèle français en France ou sans pays, modèle européen (EN 301 549) dans le reste de l'UE et de l'EEE, WCAG 2.1 AA ailleurs. Vérifiez ce pays avant de publier.
 - **1.5.3** : aucun réglage ne change. En mode sombre, les boutons des tiroirs prennent la couleur de marque, et les contours des champs et des boutons secondaires atteignent 3:1.
 - **1.5.2** : aucun nouveau réglage. **Le vérificateur de contenu suit désormais le réglage « Accessibilité du cours »** (onglet Accessibilité, désactivé par défaut) : un site qui le veut sans avoir activé le guide active ce réglage.
