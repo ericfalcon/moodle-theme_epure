@@ -91,11 +91,13 @@ class accessibility_statement {
         global $CFG;
         $country = (string) ($CFG->country ?? '');
         $countries = get_string_manager()->get_list_of_countries();
-        return get_string('a11ymodel_' . self::model(), 'theme_epure', (object) [
+        $note = get_string('a11ymodel_' . self::model(), 'theme_epure', (object) [
             'country' => $country !== '' && isset($countries[$country]) ? $countries[$country]
                 : get_string('a11ymodel_nocountry', 'theme_epure'),
             'url' => (new \moodle_url('/admin/settings.php', ['section' => 'locationsettings']))->out(false),
-        ]);
+        ]) . ' ' . get_string('a11ymodel_legal', 'theme_epure');
+        // With IOMAD, one statement for the whole platform: a choice to make knowingly.
+        return iomad::installed() ? $note . ' ' . get_string('a11ymodel_iomad', 'theme_epure') : $note;
     }
 
     /**

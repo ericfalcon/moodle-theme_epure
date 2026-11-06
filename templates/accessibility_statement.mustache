@@ -53,6 +53,7 @@
 
         <h3>{{#str}}a11ystatement_compliance, theme_epure{{/str}}</h3>
         <p>{{site}} {{statusphrase}}.</p>
+        {{^hasaudit}}<p>{{#str}}a11ystatement_noaudit, theme_epure{{/str}}</p>{{/hasaudit}}
 
         {{#hasaudit}}
             <h3>{{#str}}a11ystatement_results, theme_epure{{/str}}</h3>

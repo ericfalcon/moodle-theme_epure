@@ -8,7 +8,10 @@
   - elsewhere (Switzerland, United Kingdom, Canada…): the WCAG 2.1 level AA, without a law nor remedies set by the theme (the contact can give them).
   The settings and the guided form say which model applies and where to change the country; the guided form explains the audit, the rate and the statuses of that model.
 - The French statement says « compliant with the RGAA and the WCAG 2.1 level AA »; the guide « Accessibility of the course » and its setting refer to the WCAG 2.1 AA, taken up by the RGAA in France and the EN 301 549 in Europe. README, FAQ and documentation likewise.
-- PHPUnit test: the model of seven countries, the strings of each model, a string without a variant.
+- The statement no longer says that no audit was carried out when the platform is non compliant after an audit: the status gives the level of compliance, and « No audit has been carried out yet. » is said apart, only without an audit. The measure of the targets of 24 × 24 pixels names its criterion, 2.5.8 of the WCAG 2.2, beyond the WCAG 2.1 AA of the statement.
+- The settings and the guided form recall that the country of the site does not tell on its own which law applies to the organisation, and, with IOMAD, that the statement covers the whole platform, all companies together.
+- Documents read by the guide « Accessibility of the course », limits of resources: an archive of more than 10,000 entries is not read; the XML read in one document is 64 MB at most, all its parts together, each part read at most to its limit whatever size the archive declares; the compressed streams of a PDF are uncompressed to 20 MB at most, all together (a « zip bomb » of a few kilobytes no longer unfolds); the XML is parsed without the option of huge documents (LIBXML_PARSEHUGE).
+- PHPUnit tests: the model of seven countries, the strings of each model, a string without a variant; a non compliant statement with and without an audit; an archive of too many entries, the budget of XML, a compressed stream of a PDF beyond the limit (for the language and for the structure); a file replaced by another of the same name, read again.
 
 ## 1.5.3 — dark mode: the buttons of the drawers in the colour of the brand, the edges of the fields at 3:1
 

@@ -231,6 +231,21 @@ final class a11y_test extends \advanced_testcase {
         $feedback = get_string('a11ystatement_feedback', 'theme_epure');
         $this->assertSame($feedback, accessibility_statement::string('a11ystatement_feedback'));
         $this->assertStringContainsString('locationsettings', accessibility_statement::model_note());
+
+        // Non compliant after an audit: the statement does not say that no audit was carried out; without an audit, it
+        // says so.
+        global $OUTPUT;
+        $noaudit = get_string('a11ystatement_noaudit', 'theme_epure');
+        foreach (['', '_eu', '_world'] as $suffix) {
+            $this->assertStringNotContainsString('audit', get_string('a11ystatement_status_none' . $suffix, 'theme_epure'));
+        }
+        set_config('a11ystatus', 'none', 'theme_epure');
+        set_config('a11yrate', '30 %', 'theme_epure');
+        $html = $OUTPUT->render_from_template('theme_epure/accessibility_statement', accessibility_statement::export());
+        $this->assertStringNotContainsString($noaudit, $html);
+        set_config('a11yrate', '', 'theme_epure');
+        $html = $OUTPUT->render_from_template('theme_epure/accessibility_statement', accessibility_statement::export());
+        $this->assertStringContainsString($noaudit, $html);
     }
 
     /**

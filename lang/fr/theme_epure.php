@@ -46,6 +46,8 @@ $string['a11ylines_help'] = 'Les textes longs à 70 caractères par ligne au plu
 $string['a11ymention'] = 'Accessibilité : {$a}';
 $string['a11ymodel_eu'] = 'Modèle de la déclaration : Union européenne (norme EN 301 549, WCAG 2.1 niveau AA, directive (UE) 2016/2102), d’après le pays par défaut du site : {$a->country} (<a href="{$a->url}">paramètres de localisation</a>).';
 $string['a11ymodel_fr'] = 'Modèle de la déclaration : France (RGAA, loi n° 2005-102, Défenseur des droits), d’après le pays par défaut du site : {$a->country} (<a href="{$a->url}">paramètres de localisation</a>).';
+$string['a11ymodel_iomad'] = 'Avec IOMAD, la déclaration vaut pour toute la plateforme, toutes entreprises confondues : une entreprise responsable de son propre service publie la sienne.';
+$string['a11ymodel_legal'] = 'Le pays du site n’indique pas à lui seul le droit qui s’applique à l’organisme : vérifiez que ce modèle lui convient.';
 $string['a11ymodel_nocountry'] = 'non renseigné';
 $string['a11ymodel_world'] = 'Modèle de la déclaration : WCAG 2.1 niveau AA, d’après le pays par défaut du site : {$a->country} (<a href="{$a->url}">paramètres de localisation</a>). Indiquez dans le contact la loi et les voies de recours de votre pays, s’il y en a.';
 $string['a11ymotion'] = 'Réduire les animations';
@@ -86,13 +88,14 @@ $string['a11ystatement_measure_02'] = 'La navigation et les éléments du thème
 $string['a11ystatement_measure_03'] = 'Un lien « Aller au contenu principal » ouvre chaque page.';
 $string['a11ystatement_measure_04'] = 'Les pages ont une structure de titres et de zones (en-tête, navigation, contenu, pied de page) que les technologies d’assistance peuvent suivre.';
 $string['a11ystatement_measure_05'] = 'Le thème est conçu pour que le texte puisse être agrandi à 200 % et que les pages s’adaptent sans défilement horizontal jusqu’à une largeur de 320 pixels.';
-$string['a11ystatement_measure_06'] = 'Les boutons et les liens mesurent au moins 24 × 24 pixels.';
+$string['a11ystatement_measure_06'] = 'Les boutons et les liens mesurent au moins 24 × 24 pixels (critère 2.5.8 des WCAG 2.2, au-delà des WCAG 2.1 AA).';
 $string['a11ystatement_measure_07'] = 'Les liens dans le texte sont soulignés : ils ne dépendent jamais de la seule couleur.';
 $string['a11ystatement_measure_08'] = 'Le réglage du système d’exploitation « réduire les animations » est respecté.';
 $string['a11ystatement_measure_09'] = 'Chaque utilisateur peut régler son affichage dans son profil (bouton « Aa », Alt + A) : taille du texte, police de lecture (Atkinson Hyperlegible, OpenDyslexic), espacement du texte, lignes courtes (70 caractères), contraste renforcé, liens soulignés, animations réduites.';
 $string['a11ystatement_measure_10'] = 'Chaque modification du thème est vérifiée par des tests automatiques d’accessibilité (axe-core).';
 $string['a11ystatement_measures'] = 'Mesures d’accessibilité de la plateforme';
 $string['a11ystatement_measures_intro'] = 'La plateforme utilise le thème Épure, qui assure les mesures suivantes sur toutes les pages. Elles ne remplacent pas un audit, et les contenus des cours (documents, vidéos, images) doivent aussi être accessibles.';
+$string['a11ystatement_noaudit'] = 'Aucun audit n’a encore été réalisé.';
 $string['a11ystatement_noncompliant'] = 'Non-conformités';
 $string['a11ystatement_print'] = 'Imprimer la déclaration';
 $string['a11ystatement_rate'] = 'L’audit révèle que {$a} des critères du RGAA (WCAG 2.1 niveau AA) sont respectés.';
@@ -109,9 +112,9 @@ $string['a11ystatement_scope'] = 'Cette déclaration d’accessibilité s’appl
 $string['a11ystatement_status_full'] = 'est totalement conforme au RGAA (référentiel général d’amélioration de l’accessibilité) et aux WCAG 2.1 niveau AA';
 $string['a11ystatement_status_full_eu'] = 'est totalement conforme à la norme EN 301 549 (WCAG 2.1 niveau AA)';
 $string['a11ystatement_status_full_world'] = 'est totalement conforme aux WCAG 2.1 niveau AA (règles pour l’accessibilité des contenus web)';
-$string['a11ystatement_status_none'] = 'est non conforme au RGAA (référentiel général d’amélioration de l’accessibilité) et aux WCAG 2.1 niveau AA : aucun audit n’a encore été réalisé';
-$string['a11ystatement_status_none_eu'] = 'est non conforme à la norme EN 301 549 (WCAG 2.1 niveau AA) : aucun audit n’a encore été réalisé';
-$string['a11ystatement_status_none_world'] = 'est non conforme aux WCAG 2.1 niveau AA (règles pour l’accessibilité des contenus web) : aucun audit n’a encore été réalisé';
+$string['a11ystatement_status_none'] = 'est non conforme au RGAA (référentiel général d’amélioration de l’accessibilité) et aux WCAG 2.1 niveau AA';
+$string['a11ystatement_status_none_eu'] = 'est non conforme à la norme EN 301 549 (WCAG 2.1 niveau AA)';
+$string['a11ystatement_status_none_world'] = 'est non conforme aux WCAG 2.1 niveau AA (règles pour l’accessibilité des contenus web)';
 $string['a11ystatement_status_partial'] = 'est partiellement conforme au RGAA (référentiel général d’amélioration de l’accessibilité) et aux WCAG 2.1 niveau AA';
 $string['a11ystatement_status_partial_eu'] = 'est partiellement conforme à la norme EN 301 549 (WCAG 2.1 niveau AA)';
 $string['a11ystatement_status_partial_world'] = 'est partiellement conforme aux WCAG 2.1 niveau AA (règles pour l’accessibilité des contenus web)';
