@@ -313,7 +313,9 @@ Feature: Accessibility of the Épure theme
     Then the page should meet accessibility standards
 
   Scenario: Before saving, the content checker warns of a link alone that says nothing, never of what is right
-    Given the following "courses" exist:
+    Given the following config values are set as admin:
+      | courseaccessibility | 1 | theme_epure |
+    And the following "courses" exist:
       | fullname | shortname |
       | Hygiene  | HYG       |
     And the following "activities" exist:
@@ -333,6 +335,20 @@ Feature: Accessibility of the Épure theme
     And "Before saving: accessibility" "dialogue" should exist
     And I should see "whose text does not say where they go" in the "Before saving: accessibility" "dialogue"
     And I click on "Save anyway" "button" in the "Before saving: accessibility" "dialogue"
+    And I should see "here" in the "region-main" "region"
+
+  Scenario: Without the guide « Accessibility of the course », the content checker says nothing
+    Given the following "courses" exist:
+      | fullname | shortname |
+      | Hygiene  | HYG       |
+    And the following "activities" exist:
+      | activity | course | name  | idnumber |
+      | page     | HYG    | Rules | rules1   |
+    When I am on the "Rules" "page activity editing" page logged in as admin
+    And I set the field "Page content" to "<p><a href=\"https://example.com\">here</a></p>"
+    And I press "Save and display"
+    Then "Before saving: accessibility" "dialogue" should not exist
+    And I should not see "Accessibility: links that say nothing"
     And I should see "here" in the "region-main" "region"
 
   Scenario: The guide « Accessibility of the course » lists what to fix and to confirm, and meets accessibility standards

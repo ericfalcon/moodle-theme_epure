@@ -22,7 +22,7 @@ Choose a brand colour (or click a colour of your logo): the theme derives the wh
 
 - Pages that reflow on phones down to 320 px, focus always visible and never hidden under fixed bars, 24 px targets.
 - An accessibility statement filled in step by step, with a mention on every page.
-- A content checker for teachers: before saving, it points out images without a text alternative, tables without headers, links that say nothing and skipped heading levels. Nothing is ever blocked.
+- A content checker for teachers: before saving, it points out images without a text alternative, tables without headers, links that say nothing and skipped heading levels. Nothing is ever blocked. It comes with the guide « Accessibility of the course », off by default.
 - A guide « Accessibility of the course » for teachers (off by default, for the organisations that must meet the RGAA): each activity and resource of a course read, what to fix, what to confirm, and a reminder to print.
 - Tested on every change: an automated pre-audit (axe-core, WCAG 2.2 A and AA) of 40 Moodle pages and 24 IOMAD pages, each in light, dark and on two phone widths, plus a matrix crossing brand colours, display preferences, keyboard use and IOMAD company colours.
 
@@ -116,6 +116,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.5.2**: no new setting. **The content checker now follows the setting « Accessibility of the course »** (Accessibility tab, off by default): a site that wants it without having turned the guide on turns that setting on.
 - **1.5.1**: no setting changes. On phones, the banner of the course gives the edit mode to its teachers, and the header keeps its switch on the screen whatever plugins add to it (Boost dark, Moodle Adminer).
 - **1.5.0**: no setting changes. The guide « Accessibility of the course » reads the documents of Word, PowerPoint, Excel and LibreOffice and the PDF files given in the courses; a new cache `documentcheck` keeps what it finds by content of file.
 - **1.4.1**: no setting changes. The documents with macros and the RTF files are documents to confirm.
@@ -459,7 +460,7 @@ In Moodle 4 and 5, with the side course index, the links to the previous and nex
 
 The theme targets WCAG 2.2 level AA, RGAA 4.1.2 and EN 301 549: calculated contrast (the text on the brand colour at 4.5:1 at least, whatever the colour, on hover too), keyboard focus always visible, a skip link, targets of at least 24 × 24 px, underlined links within text, and respect for the "reduce motion" setting.
 
-**Accessibility of the contents.** As a teacher writes, a line under each editor tells what makes the content harder to use: images without a text alternative, images used as links without one, links without text or such as "click here", tables without headers, levels of titles skipped, a long text without any title. Its button « Show » selects each element concerned in the editor. When the form is saved, Épure lists them again with "Fix", "Open the accessibility checker" (the one of TinyMCE) and "Save anyway". Nothing is blocked; no account is needed.
+**Accessibility of the contents.** As a teacher writes, a line under each editor tells what makes the content harder to use: images without a text alternative, images used as links without one, links without text or such as "click here", tables without headers, levels of titles skipped, a long text without any title. Its button « Show » selects each element concerned in the editor. When the form is saved, Épure lists them again with "Fix", "Open the accessibility checker" (the one of TinyMCE) and "Save anyway". Nothing is blocked; no account is needed. The checker comes with the guide « Accessibility of the course » below: where the guide is off (by default), it is off too.
 
 **Accessibility of a whole course.** Where the criteria of the RGAA apply (public bodies, some companies), the administrator turns on the guide « Accessibility of the course » (Accessibility tab; an IOMAD company can choose otherwise). The teachers who can change a course then find it in the menu of the course (« More »), in a line under the bar of the edit mode (« Accessibility: 3 points to fix, 2 to confirm — Open the guide »), beside each activity concerned in edit mode (« 2 points of accessibility »), and from the window of the content checker. The guide reads each part of the course:
 
