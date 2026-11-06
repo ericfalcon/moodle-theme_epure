@@ -116,6 +116,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.5.1** : aucun réglage ne change. Sur téléphone, le bandeau du cours donne le mode édition à ses enseignants.
 - **1.5.0** : aucun réglage ne change. Le guide « Accessibilité du cours » lit les documents Word, PowerPoint, Excel et LibreOffice et les PDF déposés dans les cours ; un nouveau cache `documentcheck` garde ce qu'il trouve, par contenu de fichier.
 - **1.4.1** : aucun réglage ne change. Les documents avec macros et les fichiers RTF sont des documents à confirmer.
 - **1.4.0** : aucun réglage ne change. Une ligne sous chaque éditeur indique les défauts d'accessibilité pendant la saisie ; le guide « Accessibilité du cours » donne chaque défaut avec son chapitre, sa page ou sa question. Le mode lecture des activités est mis de côté en mode édition.

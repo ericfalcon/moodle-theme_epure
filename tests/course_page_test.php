@@ -101,6 +101,17 @@ final class course_page_test extends \advanced_testcase {
         $this->assertTrue($data['teaching']);
         $this->assertSame(1, $data['participants']);
         $this->assertNotSame('', $data['outline']);
+        // The edit mode, on phones: to turn it on, then off.
+        $edit = end($data['links']);
+        $this->assertSame(get_string('turneditingon'), $edit['label']);
+        $this->assertStringContainsString('/editmode.php?setmode=1', $edit['url']);
+        $this->assertSame('d-md-none', $edit['class']);
+        $GLOBALS['USER']->editing = 1;
+        $links = course_page::export($output, $course, '')['links'];
+        $edit = end($links);
+        $this->assertSame(get_string('turneditingoff'), $edit['label']);
+        $this->assertStringContainsString('setmode=0', $edit['url']);
+        $GLOBALS['USER']->editing = 0;
 
         // A teacher who switched to the role of a student previews the banner of a learner.
         $this->setUser($teacher);

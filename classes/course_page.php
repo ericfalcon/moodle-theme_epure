@@ -133,6 +133,22 @@ class course_page {
         $data['haslearnerpanel'] = $learning
             && (!empty($data['hasprogress']) || !empty($data['next']) || !empty($data['deadline']));
         $data['teaching'] = $teaching;
+        // On a phone, the switch of the edit mode of the header can be pushed out of the screen by the buttons
+        // that plugins add there: the banner of a teacher who can change the course gives it too.
+        if ($teaching && has_capability('moodle/course:manageactivities', $context, $userid)) {
+            $editing = !empty($USER->editing) && (int) $USER->id === $userid;
+            $data['links'][] = [
+                'label' => get_string($editing ? 'turneditingoff' : 'turneditingon'),
+                'url' => (new \moodle_url('/editmode.php', [
+                    'setmode' => $editing ? 0 : 1,
+                    'context' => $context->id,
+                    'pageurl' => course_get_url($course)->out_as_local_url(false),
+                    'sesskey' => sesskey(),
+                ]))->out(false),
+                'icon' => 'fa-pen',
+                'class' => 'd-md-none',
+            ];
+        }
         // For a teacher, what the course holds: « 5 sections · 26 activities ».
         $data['outline'] = $teaching ? self::outline($course) : '';
         return $data;

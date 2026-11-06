@@ -116,6 +116,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.5.1**: no setting changes. On phones, the banner of the course gives the edit mode to its teachers.
 - **1.5.0**: no setting changes. The guide « Accessibility of the course » reads the documents of Word, PowerPoint, Excel and LibreOffice and the PDF files given in the courses; a new cache `documentcheck` keeps what it finds by content of file.
 - **1.4.1**: no setting changes. The documents with macros and the RTF files are documents to confirm.
 - **1.4.0**: no setting changes. A line under each editor tells the mistakes of accessibility as the content is written; the guide « Accessibility of the course » gives each mistake with its chapter, page or question. The reading mode of the activities is put aside in edit mode.
