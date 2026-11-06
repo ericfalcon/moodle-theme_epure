@@ -319,9 +319,12 @@ class hook_callbacks {
             $hook->add_html($OUTPUT->render_from_template('theme_epure/shortcuts', shortcuts::export()));
             $PAGE->requires->js_call_amd('theme_epure/shortcuts', 'init');
         }
-        // The teachers: the contents of the editors checked for the common mistakes of accessibility when a form is saved.
+        // The teachers: the contents of the editors checked for the common mistakes of accessibility when a form is saved,
+        // with the guide « Accessibility of the course » (its setting, or the choice of the IOMAD company): not all
+        // organisations must meet the criteria of the RGAA.
         if (
             !during_initial_install() && isloggedin() && !isguestuser() && self::epure_page()
+                && course_accessibility::enabled()
                 && has_capability('moodle/course:manageactivities', $PAGE->context)
         ) {
             // With the guide of the whole course, for its teachers.

@@ -1,5 +1,10 @@
 # Changes
 
+## 1.5.2 — the content checker with the guide « Accessibility of the course »
+
+- The content checker of the teachers (the line under the editors, the window before saving) comes with the guide « Accessibility of the course »: on where the guide is on (setting of the Accessibility tab, or the choice of the IOMAD company), off elsewhere. Not all organisations must meet the criteria of the RGAA. The description of the setting says so.
+- Behat: without the guide, the checker says nothing and the form saves at once.
+
 ## 1.5.1 — the edit mode on phones, from the banner of the course
 
 - On a phone, the switch of the edit mode of the header can be pushed out of the screen by the buttons that plugins add there (Boost dark, Moodle Adminer). The banner of the course gives it too, to a teacher who can change the course, next to « Participants », « Grades » and « Settings »: « Turn editing on », then « Turn editing off ». Only on phones: on a wider screen, the switch of the header stays.

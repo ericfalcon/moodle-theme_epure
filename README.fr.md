@@ -22,7 +22,7 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le
 
 - Des pages qui s'adaptent aux téléphones jusqu'à 320 px, un focus toujours visible et jamais caché sous une barre fixe, des cibles de 24 px.
 - Une déclaration d'accessibilité remplie pas à pas, mentionnée sur chaque page.
-- Un vérificateur de contenu pour les formateurs : avant l'enregistrement, il signale les images sans alternative, les tableaux sans en-têtes, les liens qui ne disent rien et les niveaux de titres sautés. Rien n'est jamais bloqué.
+- Un vérificateur de contenu pour les formateurs : avant l'enregistrement, il signale les images sans alternative, les tableaux sans en-têtes, les liens qui ne disent rien et les niveaux de titres sautés. Rien n'est jamais bloqué. Il accompagne le guide « Accessibilité du cours », désactivé par défaut.
 - Un guide « Accessibilité du cours » pour les formateurs (désactivé par défaut, pour les organismes tenus au RGAA) : chaque activité et ressource d'un cours passée en revue, ce qu'il faut corriger, ce qu'il faut confirmer, et un pense-bête à imprimer.
 - Testé à chaque modification : un pré-audit automatisé (axe-core, WCAG 2.2 A et AA) de 40 pages de Moodle et 24 pages d'IOMAD, chacune en clair, en sombre et sur deux largeurs de téléphone, et une matrice qui croise couleurs de marque, préférences d'affichage, usage au clavier et couleurs des entreprises IOMAD.
 
@@ -116,6 +116,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.5.2** : aucun nouveau réglage. **Le vérificateur de contenu suit désormais le réglage « Accessibilité du cours »** (onglet Accessibilité, désactivé par défaut) : un site qui le veut sans avoir activé le guide active ce réglage.
 - **1.5.1** : aucun réglage ne change. Sur téléphone, le bandeau du cours donne le mode édition à ses enseignants, et l'en-tête garde son interrupteur à l'écran quoi qu'y ajoutent les plugins (Boost dark, Moodle Adminer).
 - **1.5.0** : aucun réglage ne change. Le guide « Accessibilité du cours » lit les documents Word, PowerPoint, Excel et LibreOffice et les PDF déposés dans les cours ; un nouveau cache `documentcheck` garde ce qu'il trouve, par contenu de fichier.
 - **1.4.1** : aucun réglage ne change. Les documents avec macros et les fichiers RTF sont des documents à confirmer.
@@ -454,7 +455,7 @@ Le **mode lecture** masque les panneaux latéraux et centre le contenu ; il est 
 
 Le thème vise les WCAG 2.2 niveau AA, le RGAA 4.1.2 et l'EN 301 549 : contrastes calculés (le texte sur la couleur de marque à 4,5:1 au moins, quelle qu'elle soit, au survol compris), focus clavier toujours visible, lien d'évitement, cibles d'au moins 24 × 24 px, liens soulignés dans le texte, respect du réglage « réduire les animations ».
 
-**Accessibilité des contenus.** Pendant la saisie, une ligne sous chaque éditeur indique ce qui rend le contenu plus difficile à utiliser : images sans texte alternatif, images servant de lien sans texte alternatif, liens sans texte ou comme « cliquez ici », tableaux sans en-têtes, niveaux de titres sautés, texte long sans aucun titre. Son bouton « Montrer » sélectionne chaque élément concerné dans l'éditeur. À l'enregistrement du formulaire, Épure les liste de nouveau, avec « Corriger », « Ouvrir le vérificateur d'accessibilité » (celui de TinyMCE) et « Enregistrer quand même ». Rien n'est jamais bloqué.
+**Accessibilité des contenus.** Pendant la saisie, une ligne sous chaque éditeur indique ce qui rend le contenu plus difficile à utiliser : images sans texte alternatif, images servant de lien sans texte alternatif, liens sans texte ou comme « cliquez ici », tableaux sans en-têtes, niveaux de titres sautés, texte long sans aucun titre. Son bouton « Montrer » sélectionne chaque élément concerné dans l'éditeur. À l'enregistrement du formulaire, Épure les liste de nouveau, avec « Corriger », « Ouvrir le vérificateur d'accessibilité » (celui de TinyMCE) et « Enregistrer quand même ». Rien n'est jamais bloqué. Le vérificateur accompagne le guide « Accessibilité du cours » ci-dessous : là où le guide est désactivé (par défaut), il l'est aussi.
 
 **Accessibilité de tout un cours.** Là où les critères du RGAA s'appliquent (organismes publics, certaines entreprises), l'administrateur active le guide « Accessibilité du cours » (onglet Accessibilité ; une entreprise IOMAD peut faire un autre choix). Les enseignants qui peuvent modifier un cours le trouvent alors dans le menu du cours (« Plus »), sur une ligne sous la barre du mode édition (« Accessibilité : 3 points à corriger, 2 à confirmer — Ouvrir le guide »), à côté de chaque activité concernée en mode édition (« 2 points d'accessibilité »), et depuis la fenêtre du vérificateur de contenu. Le guide passe en revue chaque partie du cours :
 
