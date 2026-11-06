@@ -785,6 +785,19 @@
         filter: invert(.85) hue-rotate(180deg);
     }
 
+    // Buttons of the drawers (course index, blocks), at the edges of the screen: light grey in Boost, under an icon
+    // that takes the light colour of the text. A raised dark surface with a border.
+    .drawer-toggles .drawer-toggler .btn {
+        color: var(--epure-ink);
+        background-color: var(--epure-surface-raised);
+        border: 1px solid var(--epure-border);
+
+        &:hover,
+        &:focus {
+            background-color: var(--epure-brand-soft);
+        }
+    }
+
     // Status of the assignments without a colour of their own, black in the module.
     // Tables of Moodle drawn white or light grey: the grader report and the grading of the assignments.
     .path-grade-report-grader .gradeparent tr .cell,

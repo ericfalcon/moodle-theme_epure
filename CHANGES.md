@@ -4,6 +4,7 @@
 
 - The content checker of the teachers (the line under the editors, the window before saving) comes with the guide « Accessibility of the course »: on where the guide is on (setting of the Accessibility tab, or the choice of the IOMAD company), off elsewhere. Not all organisations must meet the criteria of the RGAA. The description of the setting says so.
 - Guide « Accessibility of the course », dark mode: the icons of the activities are lightened, as on the course page (they stayed dark grey on the dark surface).
+- Dark mode: the buttons of the drawers (course index, blocks), at the edges of the screen, were light grey under a light icon (1.06:1). They take a raised dark surface with a border: 12:1.
 - Behat: without the guide, the checker says nothing and the form saves at once.
 
 ## 1.5.1 — the edit mode on phones, from the banner of the course
