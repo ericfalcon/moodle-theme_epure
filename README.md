@@ -117,7 +117,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
 - **1.6.0**: no new setting. **The accessibility statement follows the default country of the site** (Location settings): French model in France or without a country, European model (EN 301 549) in the rest of the EU and the EEA, WCAG 2.1 AA elsewhere. Check that country before publishing.
-- **1.5.3**: no setting changes. In dark mode, the buttons of the drawers take the colour of the brand.
+- **1.5.3**: no setting changes. In dark mode, the buttons of the drawers take the colour of the brand, and the edges of the fields and of the secondary buttons reach 3:1.
 - **1.5.2**: no new setting. **The content checker now follows the setting « Accessibility of the course »** (Accessibility tab, off by default): a site that wants it without having turned the guide on turns that setting on.
 - **1.5.1**: no setting changes. On phones, the banner of the course gives the edit mode to its teachers, and the header keeps its switch on the screen whatever plugins add to it (Boost dark, Moodle Adminer).
 - **1.5.0**: no setting changes. The guide « Accessibility of the course » reads the documents of Word, PowerPoint, Excel and LibreOffice and the PDF files given in the courses; a new cache `documentcheck` keeps what it finds by content of file.
@@ -373,7 +373,7 @@ Once the theme is uninstalled, its files are gone and browsers keep the last ser
 
 The **Dark mode** setting (the theme's Appearance tab) can be *Never*, *Automatic, as the device* or *Always*. With IOMAD, each company can make a different choice in its profile. Each user can also choose their display in their preferences ("Aa" button): as the site, light, dark, or as their device.
 
-Dark colours are calculated from the brand colour, with the same AA contrast; a brand-coloured header keeps its colour. Moodle and IOMAD pages (dashboards, courses, forms, menus, tables) switch to dark; the text editor keeps the appearance of its own theme.
+Dark colours are calculated from the brand colour, with the same AA contrast; a brand-coloured header keeps its colour. Moodle and IOMAD pages (dashboards, courses, forms, menus, tables) switch to dark; the text editor keeps the appearance of its own theme. The buttons that open the drawers (course index, blocks) take the colour of the brand; the edges of the fields and of the secondary buttons reach 3:1 on the dark surfaces (WCAG 1.4.11).
 
 ## Error pages, user tours and printing
 
@@ -407,7 +407,7 @@ With the plugin Certificate (tool_certificate), the page Site administration ›
 At the top of each course, a **banner** shows the course image (or a generated pattern), its category and its title, with the breadcrumb and Moodle's usual actions. Then, depending on the role:
 
 - **learner**: their progress, the next activity to do, the next deadline, and a **Continue** button that leads there;
-- **teacher**: what the course holds under its title ("5 sections · 26 activities"), participants, learners active this week, assignments to grade, and shortcuts (participants, grades, settings);
+- **teacher**: what the course holds under its title ("5 sections · 26 activities"), participants, learners active this week, assignments to grade, and shortcuts (participants, grades, settings), with, on phones, « Turn editing on » (the switch of the header can be pushed out of the screen by the buttons of plugins);
 - **visitor** (guest, non-enrolled user): the image, category and title only.
 
 For learners, the title of each section shows how many of its activities they have completed ("2/5", with a tick once the section is complete). The banner can be turned off in the theme's Courses tab ("Course banner"); with IOMAD, each company can make a different choice in its profile. The progress of the sections stays without the banner, and can be turned off on its own ("Progress of the sections"). The progress bars and the completed sections take the accent colour, when one is set (Identity tab).
@@ -440,6 +440,8 @@ The ↑ ↓ arrows select a result, Enter opens it (Ctrl+Enter in a new tab), Es
 ## Mobile navigation bar
 
 On phones, a bar fixed to the bottom of the screen, within thumb's reach, leads to the **Dashboard** (or to the site home if the Dashboard is disabled), **My courses**, the **catalogue**, **messages** (with the number of unread conversations) and the **profile**; the entry for the current page is highlighted. Moodle's floating buttons (help, course index) move up above it; on pages that have their own action bar at the bottom (grading, for example), it steps aside. It can be turned off in the theme's Mobile tab ("Mobile navigation bar") and, with IOMAD, for each company in its profile.
+
+**The header on phones** keeps the user menu and the switch of the edit mode on the screen, whatever plugins add to it: the button of Boost dark (`local_boost_dark`) keeps its icon only, the link of Moodle Adminer (`local_adminer`) stays in the administration, the messages (in the bar at the bottom) and the arrow of the user menu leave it, and the logo for phones narrows first.
 
 ## Course catalogue
 
@@ -482,10 +484,10 @@ The change takes effect immediately and is then saved in the preferences of the 
 
 **Accessibility statement.** The **Accessibility** tab of the theme settings fills it in on the model of the default country of the site (France: RGAA, law of 2005, Défenseur des droits; rest of the European Union and EEA: standard EN 301 549 and directive (EU) 2016/2102; elsewhere: WCAG 2.1 level AA): compliance status, entity, compliance rate, auditor and audit date, non-compliant content, exemptions, content not subject to the requirements, contact (by default, the support e-mail address). Until a status is chosen, nothing is published. Once the status is chosen:
 
-- the statement is published at `/theme/epure/accessibility.php` and can be read without an account. It also lists the accessibility measures taken by the theme (contrast, keyboard, structure, zoom, display preferences, automated tests) and the ways to seek redress from the Défenseur des droits (the French rights ombudsman); an e-mail address entered as the contact becomes a link;
+- the statement is published at `/theme/epure/accessibility.php` and can be read without an account. It also lists the accessibility measures taken by the theme (contrast, keyboard, structure, zoom, display preferences, automated tests) and the remedies of its model (in France, the Défenseur des droits, the French rights ombudsman; in the rest of the European Union, the body in charge of monitoring in the country; elsewhere, none set by the theme); an e-mail address entered as the contact becomes a link;
 - the notice "Accessibility: partially compliant" (depending on the status) appears at the bottom of every page, along with a link in the footer.
 
-**Step by step.** The same settings can be filled in a guided form (Site administration › Appearance › Themes › « Accessibility statement, step by step », also linked from the Accessibility tab and, for the administrators, from the statement itself): who publishes the statement, the audit, the compliance status, the contents not accessible, the contact. Each step says what the RGAA asks for; the status step recalls the rate entered and the rule of the RGAA (fully compliant at 100 %, partially from 50 %, non compliant below or without an audit), but the theme never computes the status: the audit gives it. The statement has a button to print it, or to save it as PDF.
+**Step by step.** The same settings can be filled in a guided form (Site administration › Appearance › Themes › « Accessibility statement, step by step », also linked from the Accessibility tab and, for the administrators, from the statement itself): who publishes the statement, the audit, the compliance status, the contents not accessible, the contact. Each step says what the model of the country asks for, and the model itself with a link to the location settings; the status step recalls the rate entered and the rule of the model (RGAA: fully compliant at 100 %, partially from 50 %, non compliant below or without an audit; elsewhere: fully when all the criteria are met, partially when most are, non compliant otherwise or without an audit), but the theme never computes the status: the audit gives it. The statement has a button to print it, or to save it as PDF.
 
 **Keyboard shortcuts.** The key **?** opens a window that lists the shortcuts of the page: « ? » itself, Ctrl + K (quick search), Alt + A (display preferences), Tab (skip link), Esc, the keys of the quick search and of the text editor (Alt + F10, Alt + 0); on a Mac, ⌘ and ⌥. The key is ignored while typing, and each user can turn it off in the window (WCAG 2.1.4); the help also opens from « Keyboard shortcuts (?) » in the window « ? » of the footer and from the panel « Aa ».
 

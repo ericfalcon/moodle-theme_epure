@@ -69,6 +69,8 @@ Moodle ne sait pas revenir à une version antérieure d'un plugin : remettre l'a
 | Grid (`format_grid`) | — | 4.5 | Vérifié à la main en clair et en sombre : aucune correction nécessaire. |
 | Collapsed Topics (`format_topcoll`) | — | 4.5 | Vérifié à la main en clair et en sombre : aucune correction nécessaire. |
 | OneTopic (`format_onetopic`) | — | 4.5 | Vérifié à la main en clair et en sombre : aucune correction nécessaire. |
+| Boost dark (`local_boost_dark`) | 1.4.8 | 5.0 | Son bouton « Light mode » ne garde que son icône sur téléphone, pour laisser à l'écran l'interrupteur du mode édition (1.5.1). Il fait double emploi avec le mode sombre d'Épure (panneau « Aa » et réglages), qui calcule ses contrastes : préférez celui d'Épure. |
+| Moodle Adminer (`local_adminer`) | — | 5.0 | Son lien de l'en-tête quitte l'en-tête sur téléphone (1.5.1) ; l'outil reste dans Administration du site › Serveur. |
 
 Les formats de Moodle (Thématique, Hebdomadaire, Activité unique, Social), avec les sous-sections, sont testés par l'intégration continue. Un plugin qui impose ses propres couleurs (fonds blancs, textes gris) peut devenir illisible en mode sombre : vérifiez-le en sombre avant de l'ouvrir aux utilisateurs, et signalez-le pour qu'Épure le prenne en charge.
 

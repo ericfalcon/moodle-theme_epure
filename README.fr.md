@@ -117,7 +117,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
 - **1.6.0** : aucun nouveau réglage. **La déclaration d'accessibilité suit le pays par défaut du site** (paramètres de localisation) : modèle français en France ou sans pays, modèle européen (EN 301 549) dans le reste de l'UE et de l'EEE, WCAG 2.1 AA ailleurs. Vérifiez ce pays avant de publier.
-- **1.5.3** : aucun réglage ne change. En mode sombre, les boutons des tiroirs prennent la couleur de marque.
+- **1.5.3** : aucun réglage ne change. En mode sombre, les boutons des tiroirs prennent la couleur de marque, et les contours des champs et des boutons secondaires atteignent 3:1.
 - **1.5.2** : aucun nouveau réglage. **Le vérificateur de contenu suit désormais le réglage « Accessibilité du cours »** (onglet Accessibilité, désactivé par défaut) : un site qui le veut sans avoir activé le guide active ce réglage.
 - **1.5.1** : aucun réglage ne change. Sur téléphone, le bandeau du cours donne le mode édition à ses enseignants, et l'en-tête garde son interrupteur à l'écran quoi qu'y ajoutent les plugins (Boost dark, Moodle Adminer).
 - **1.5.0** : aucun réglage ne change. Le guide « Accessibilité du cours » lit les documents Word, PowerPoint, Excel et LibreOffice et les PDF déposés dans les cours ; un nouveau cache `documentcheck` garde ce qu'il trouve, par contenu de fichier.
@@ -370,7 +370,7 @@ Une fois le thème désinstallé, ses fichiers n'existent plus et les navigateur
 
 Le réglage **Mode sombre** (onglet Apparence du thème) vaut *Jamais*, *Automatique, selon l'appareil* ou *Toujours*. Avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche. Chaque utilisateur peut aussi choisir son affichage dans ses préférences (bouton « Aa ») : comme le site, clair, sombre, ou selon son appareil.
 
-Les couleurs sombres sont calculées à partir de la couleur de marque, avec les mêmes contrastes AA ; l'en-tête aux couleurs de la marque garde sa couleur. Les pages de Moodle et d'IOMAD (tableaux de bord, cours, formulaires, menus, tableaux) passent en sombre ; l'éditeur de texte garde l'apparence de son propre thème.
+Les couleurs sombres sont calculées à partir de la couleur de marque, avec les mêmes contrastes AA ; l'en-tête aux couleurs de la marque garde sa couleur. Les pages de Moodle et d'IOMAD (tableaux de bord, cours, formulaires, menus, tableaux) passent en sombre ; l'éditeur de texte garde l'apparence de son propre thème. Les boutons qui ouvrent les tiroirs (sommaire du cours, blocs) prennent la couleur de marque ; les contours des champs et des boutons secondaires atteignent 3:1 sur les fonds sombres (WCAG 1.4.11).
 
 ## Pages d'erreur, visites guidées et impression
 
@@ -400,7 +400,7 @@ Avec le réglage « Ma synthèse » (onglet Cours, désactivé par défaut), l'a
 En tête de chaque cours, une **bannière** reprend l'image du cours (ou un motif généré), sa catégorie et son titre, avec le fil d'Ariane et les actions habituelles de Moodle. Ensuite, selon le rôle :
 
 - **apprenant** : sa progression, la prochaine activité à faire, la prochaine échéance, et un bouton **Continuer** qui y mène ;
-- **enseignant** : les participants, les apprenants actifs cette semaine, les devoirs à corriger, et des accès directs (participants, notes, paramètres) ;
+- **enseignant** : les participants, les apprenants actifs cette semaine, les devoirs à corriger, et des accès directs (participants, notes, paramètres), avec, sur téléphone, « Activer le mode édition » (l'interrupteur de l'en-tête peut être poussé hors de l'écran par les boutons de plugins) ;
 - **visiteur** (invité, utilisateur non inscrit) : l'image, la catégorie et le titre seulement.
 
 Pour l'apprenant, le titre de chaque section indique combien de ses activités il a terminées (« 2/5 », coche une fois la section terminée). La bannière se désactive dans l'onglet Cours du thème (« Bannière des cours ») ; avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche. La progression des sections reste affichée sans la bannière, et se désactive à part (« Progression des sections »). Les barres de progression et les sections terminées prennent la couleur d'accent, si elle est réglée (onglet Identité).
@@ -435,6 +435,8 @@ La recherche rapide remplace le bouton de recherche de Moodle dans l'en-tête. Q
 ## Barre de navigation mobile
 
 Sur téléphone, une barre fixée en bas de l'écran, à portée de pouce, mène au **tableau de bord** (ou à l'accueil du site si le tableau de bord est désactivé), à **mes cours**, au **catalogue**, aux **messages** (avec le nombre de conversations non lues) et au **profil** ; l'entrée de la page en cours est mise en évidence. Les boutons flottants de Moodle (aide, sommaire du cours) remontent au-dessus d'elle ; sur les pages qui ont leur propre barre d'actions en bas (notation, par exemple), elle s'efface. Elle se désactive dans l'onglet Mobile du thème (« Barre de navigation mobile ») et, avec IOMAD, pour chaque entreprise dans sa fiche.
+
+**L'en-tête sur téléphone** garde à l'écran le menu utilisateur et l'interrupteur du mode édition, quoi qu'y ajoutent les plugins : le bouton de Boost dark (`local_boost_dark`) ne garde que son icône, le lien de Moodle Adminer (`local_adminer`) reste dans l'administration, les messages (dans la barre du bas) et la flèche du menu utilisateur le quittent, et le logo pour téléphone rétrécit le premier.
 
 ## Catalogue des cours
 
@@ -479,8 +481,10 @@ Le changement est immédiat, puis enregistré dans les préférences de son prof
 
 **Déclaration d'accessibilité.** L'onglet **Accessibilité** des réglages du thème la remplit sur le modèle du pays par défaut du site (France : RGAA, loi de 2005, Défenseur des droits ; reste de l'Union européenne et EEE : norme EN 301 549 et directive (UE) 2016/2102 ; ailleurs : WCAG 2.1 niveau AA) : état de conformité, entité, taux de conformité, auditeur et date de l'audit, non-conformités, dérogations, contenus non soumis, contact (par défaut, le courriel du support). Tant qu'aucun état n'est choisi, rien n'est publié. Une fois l'état choisi :
 
-- la déclaration est publiée à l'adresse `/theme/epure/accessibility.php`, lisible sans compte. Elle liste aussi les mesures d'accessibilité prises par le thème (contrastes, clavier, structure, agrandissement, préférences d'affichage, tests automatiques), et les voies de recours auprès du Défenseur des droits ; une adresse électronique saisie comme contact devient un lien ;
+- la déclaration est publiée à l'adresse `/theme/epure/accessibility.php`, lisible sans compte. Elle liste aussi les mesures d'accessibilité prises par le thème (contrastes, clavier, structure, agrandissement, préférences d'affichage, tests automatiques), et les voies de recours de son modèle (en France, le Défenseur des droits ; dans le reste de l'Union européenne, l'organisme de contrôle du pays ; ailleurs, aucune fixée par le thème) ; une adresse électronique saisie comme contact devient un lien ;
 - la mention « Accessibilité : partiellement conforme » (selon l'état) apparaît en bas de chaque page, et un lien dans le pied de page.
+
+**Pas à pas.** Les mêmes réglages se remplissent dans un formulaire guidé (Administration du site › Présentation › Thèmes › « Déclaration d'accessibilité, pas à pas », aussi lié depuis l'onglet Accessibilité et, pour les administrateurs, depuis la déclaration elle-même) : qui publie la déclaration, l'audit, l'état de conformité, les contenus non accessibles, le contact. Chaque étape dit ce que demande le modèle du pays, et le modèle lui-même avec un lien vers les paramètres de localisation ; l'étape de l'état rappelle le taux saisi et la règle du modèle (RGAA : totalement conforme à 100 %, partiellement à partir de 50 %, non conforme en dessous ou sans audit ; ailleurs : totalement si tous les critères sont respectés, partiellement si la plupart le sont, non conforme sinon ou sans audit), mais le thème ne calcule jamais l'état : l'audit le donne. La déclaration a un bouton pour l'imprimer, ou l'enregistrer en PDF.
 
 Un thème ne rend pas une plateforme conforme à lui seul : les contenus des cours comptent aussi, et un audit manuel reste nécessaire avant de déclarer la conformité.
 
