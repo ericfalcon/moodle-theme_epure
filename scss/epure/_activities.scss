@@ -88,6 +88,11 @@
     margin: 2rem 0 0;
 }
 
+// On the page of a section, the next activity after it, on a row of its own.
+.epure-activity-nav-activity {
+    grid-column: 1 / -1;
+}
+
 .epure-activity-nav-card {
     display: flex;
     align-items: center;

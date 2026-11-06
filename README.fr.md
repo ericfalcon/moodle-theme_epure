@@ -117,7 +117,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
-- **1.6.1** : aucun réglage ne change. La page d'une section mène aux sections précédente et suivante.
+- **1.6.1** : aucun réglage ne change. La page d'une section mène aux sections précédente et suivante, et à l'activité suivante.
 - **1.6.0** : aucun nouveau réglage. **La déclaration d'accessibilité suit le pays par défaut du site** (paramètres de localisation) : modèle français en France ou sans pays, modèle européen (EN 301 549) dans le reste de l'UE et de l'EEE, WCAG 2.1 AA ailleurs. Vérifiez ce pays avant de publier.
 - **1.5.3** : aucun réglage ne change. En mode sombre, les boutons des tiroirs prennent la couleur de marque, et les contours des champs et des boutons secondaires atteignent 3:1.
 - **1.5.2** : aucun nouveau réglage. **Le vérificateur de contenu suit désormais le réglage « Accessibilité du cours »** (onglet Accessibilité, désactivé par défaut) : un site qui le veut sans avoir activé le guide active ce réglage.

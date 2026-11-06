@@ -621,6 +621,7 @@ $string['mysummary_verify_found'] = 'Ce document a été émis par {$a->platform
 $string['mysummary_verify_intro'] = 'Saisissez le code de vérification imprimé au bas d’un document « Ma synthèse », ou scannez son QR code, pour voir ce que la plateforme a émis sous ce code.';
 $string['mysummary_verify_notfound'] = 'Aucun document n’a le code {$a}. Vérifiez le code ; s’il est exact, le document n’a pas été émis par cette plateforme.';
 $string['mysummary_verify_submit'] = 'Vérifier';
+$string['nextactivity'] = 'Activité suivante';
 $string['pluginname'] = 'Épure';
 $string['preffont'] = 'Police par défaut';
 $string['preffont_desc'] = 'Police de lecture pour les visiteurs et les utilisateurs qui n’ont pas choisi la leur : la police du thème, ou une police conçue pour la lisibilité.';

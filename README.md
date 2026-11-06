@@ -117,7 +117,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
-- **1.6.1**: no setting changes. The page of a section leads to the previous and next sections.
+- **1.6.1**: no setting changes. The page of a section leads to the previous and next sections, and to the next activity after it.
 - **1.6.0**: no new setting. **The accessibility statement follows the default country of the site** (Location settings): French model in France or without a country, European model (EN 301 549) in the rest of the EU and the EEA, WCAG 2.1 AA elsewhere. Check that country before publishing.
 - **1.5.3**: no setting changes. In dark mode, the buttons of the drawers take the colour of the brand, and the edges of the fields and of the secondary buttons reach 3:1.
 - **1.5.2**: no new setting. **The content checker now follows the setting « Accessibility of the course »** (Accessibility tab, off by default): a site that wants it without having turned the guide on turns that setting on.

@@ -139,9 +139,26 @@ class activity_page {
             'icon' => '',
             'section' => '',
         ] : null;
+        // The next activity after this section, in whichever section it is: the first one the user can open in a
+        // later section (the activities of a subsection count with the section that holds it).
+        $current = (int) $sections[$position]->section;
+        $nextactivity = null;
+        foreach (course_structure::cms($modinfo) as $cm) {
+            [$top] = course_structure::sections_of($cm);
+            if ($cm->uservisible && !$cm->is_stealth() && !empty($cm->url) && $top && (int) $top->section > $current) {
+                $nextactivity = [
+                    'name' => $cm->get_formatted_name(),
+                    'url' => (new \moodle_url($cm->url, ['forceview' => 1]))->out(false),
+                    'icon' => $cm->get_icon_url()->out(false),
+                    'section' => course_structure::place_name($cm),
+                ];
+                break;
+            }
+        }
         return [
             'previous' => $card($sections[$position - 1] ?? null),
             'next' => $card($sections[$position + 1] ?? null),
+            'nextactivity' => $nextactivity,
             'courseurl' => course_get_url($course, $sections[$position]->section)->out(false),
             'navlabel' => get_string('sectionnavigation', 'theme_epure'),
             'endlabel' => get_string('sectionend', 'theme_epure'),

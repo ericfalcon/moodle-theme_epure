@@ -621,6 +621,7 @@ $string['mysummary_verify_found'] = 'This document was issued by {$a->platform} 
 $string['mysummary_verify_intro'] = 'Enter the code of verification printed at the bottom of a « My summary » document, or scan its QR code, to see what the platform issued under this code.';
 $string['mysummary_verify_notfound'] = 'No document has the code {$a}. Check the code; if it is right, the document was not issued by this platform.';
 $string['mysummary_verify_submit'] = 'Verify';
+$string['nextactivity'] = 'Next activity';
 $string['pluginname'] = 'Épure';
 $string['preffont'] = 'Font by default';
 $string['preffont_desc'] = 'Reading font for the visitors and the users who did not choose theirs: the font of the theme, or a font designed for legibility.';

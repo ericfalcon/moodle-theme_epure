@@ -18,7 +18,8 @@
     @template theme_epure/activity_navigation
 
     Previous and next activities of the course, as cards at the bottom of the page of an activity, or previous and next
-    sections at the bottom of the page of a section (navlabel, endlabel); after the last one, a card back to the course.
+    sections at the bottom of the page of a section (navlabel, endlabel), with the next activity after the section,
+    in whichever section it is (nextactivity); after the last one, a card back to the course.
 
     Example context (json):
     {
@@ -58,4 +59,14 @@
             <i class="fa fa-flag-checkered epure-activity-nav-arrow" aria-hidden="true"></i>
         </a>
     {{/next}}
+    {{#nextactivity}}
+        <a class="epure-activity-nav-card epure-activity-nav-next epure-activity-nav-activity" href="{{url}}">
+            <span class="epure-activity-nav-text">
+                <span class="epure-activity-nav-label">{{#str}}nextactivity, theme_epure{{/str}}</span>
+                <span class="epure-activity-nav-name">{{#icon}}<img src="{{icon}}" alt="" class="activityicon">{{/icon}}{{name}}</span>
+                {{#section}}<span class="epure-activity-nav-section">{{section}}</span>{{/section}}
+            </span>
+            <i class="fa fa-chevron-right epure-activity-nav-arrow" aria-hidden="true"></i>
+        </a>
+    {{/nextactivity}}
 </nav>
