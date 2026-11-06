@@ -780,7 +780,8 @@
     .icon:not(.activityicon):not(.fa):not([class*="fa-"]),
     .epure-activity-nav-name .activityicon,
     .epure-week-icon .activityicon,
-    img.epure-qs-icon {
+    img.epure-qs-icon,
+    img.epure-a11yguide-part-icon {
         filter: invert(.85) hue-rotate(180deg);
     }
 
