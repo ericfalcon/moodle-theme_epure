@@ -116,6 +116,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.5.3**: no setting changes. In dark mode, the buttons of the drawers take the colour of the brand.
 - **1.5.2**: no new setting. **The content checker now follows the setting « Accessibility of the course »** (Accessibility tab, off by default): a site that wants it without having turned the guide on turns that setting on.
 - **1.5.1**: no setting changes. On phones, the banner of the course gives the edit mode to its teachers, and the header keeps its switch on the screen whatever plugins add to it (Boost dark, Moodle Adminer).
 - **1.5.0**: no setting changes. The guide « Accessibility of the course » reads the documents of Word, PowerPoint, Excel and LibreOffice and the PDF files given in the courses; a new cache `documentcheck` keeps what it finds by content of file.

@@ -365,7 +365,8 @@
     .custom-file-label {
         color: var(--epure-ink);
         background-color: var(--epure-surface-raised);
-        border-color: #4b5463;
+        // The edge of a field at 3:1 at least on every dark background (WCAG 1.4.11): 3.98:1 on the surface.
+        border-color: #707a8a;
     }
 
     .form-control::placeholder {
@@ -455,7 +456,7 @@
         textarea {
             color: var(--epure-ink);
             background-color: var(--epure-surface-raised);
-            border-color: #4b5463;
+            border-color: #707a8a;
         }
 
         svg:not(.locked):not(.unlocked) {
@@ -476,7 +477,7 @@
     .btn-outline-secondary {
         color: var(--epure-ink);
         background-color: var(--epure-surface-raised);
-        border-color: #4b5463;
+        border-color: #707a8a;
     }
 
     .btn-secondary:hover,
@@ -786,15 +787,17 @@
     }
 
     // Buttons of the drawers (course index, blocks), at the edges of the screen: light grey in Boost, under an icon
-    // that takes the light colour of the text. A raised dark surface with a border.
+    // that takes the light colour of the text. In the colour of the brand, which the dark palette keeps at 3:1 at
+    // least on the surface, with its icon at 4.5:1 at least.
     .drawer-toggles .drawer-toggler .btn {
-        color: var(--epure-ink);
-        background-color: var(--epure-surface-raised);
-        border: 1px solid var(--epure-border);
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand);
+        border: 1px solid var(--epure-brand);
 
         &:hover,
         &:focus {
-            background-color: var(--epure-brand-soft);
+            color: var(--epure-on-brand);
+            background-color: var(--epure-brand-hover);
         }
     }
 

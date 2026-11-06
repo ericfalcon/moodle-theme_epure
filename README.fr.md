@@ -116,6 +116,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.5.3** : aucun réglage ne change. En mode sombre, les boutons des tiroirs prennent la couleur de marque.
 - **1.5.2** : aucun nouveau réglage. **Le vérificateur de contenu suit désormais le réglage « Accessibilité du cours »** (onglet Accessibilité, désactivé par défaut) : un site qui le veut sans avoir activé le guide active ce réglage.
 - **1.5.1** : aucun réglage ne change. Sur téléphone, le bandeau du cours donne le mode édition à ses enseignants, et l'en-tête garde son interrupteur à l'écran quoi qu'y ajoutent les plugins (Boost dark, Moodle Adminer).
 - **1.5.0** : aucun réglage ne change. Le guide « Accessibilité du cours » lit les documents Word, PowerPoint, Excel et LibreOffice et les PDF déposés dans les cours ; un nouveau cache `documentcheck` garde ce qu'il trouve, par contenu de fichier.
