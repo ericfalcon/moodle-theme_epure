@@ -733,6 +733,20 @@ table.quizreviewsummary {
 }
 
 #page-mod-scorm-player {
+    // The player gets the height of the screen from Moodle (680 pixels at least), and its content 95 % of it: the
+    // buttons of the package under it, made larger by the theme, and on a phone the button of the table of contents
+    // above it, overflowed onto what follows (the previous and next activities). The player grows with its content,
+    // the package keeps a height of its own.
+    #scormpage #scorm_layout,
+    #scormpage #scorm_content {
+        height: auto !important; // stylelint-disable-line declaration-no-important
+    }
+
+    #scormpage #scorm_object,
+    #scormpage #scorm_object.scorm_nav_under_content {
+        height: max(26rem, calc(100vh - 14rem));
+    }
+
     #scorm_toc_title {
         margin-bottom: .5rem;
         font-size: 1rem;
