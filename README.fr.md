@@ -117,6 +117,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.6.2** : aucun réglage ne change. Le lecteur SCORM ne déborde plus sur les activités précédente et suivante ; le tiroir blanc des téléphones montre le logo pour fond clair.
 - **1.6.1** : aucun réglage ne change. La page d'une section mène aux sections précédente et suivante, et à l'activité suivante.
 - **1.6.0** : aucun nouveau réglage. **La déclaration d'accessibilité suit le pays par défaut du site** (paramètres de localisation) : modèle français en France ou sans pays, modèle européen (EN 301 549) dans le reste de l'UE et de l'EEE, WCAG 2.1 AA ailleurs. Vérifiez ce pays avant de publier.
 - **1.5.3** : aucun réglage ne change. En mode sombre, les boutons des tiroirs prennent la couleur de marque, et les contours des champs et des boutons secondaires atteignent 3:1.
