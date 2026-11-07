@@ -744,7 +744,8 @@ table.quizreviewsummary {
 
     #scormpage #scorm_object,
     #scormpage #scorm_object.scorm_nav_under_content {
-        height: max(26rem, calc(100vh - 14rem));
+        height: calc(100vh - 14rem);
+        min-height: 26rem;
     }
 
     #scorm_toc_title {
