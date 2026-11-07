@@ -22,6 +22,8 @@
 }
 ```
 
+**L'en-tête peint par votre SCSS.** Si une règle de votre SCSS donne un fond à l'en-tête (`.navbar`, `.navbar.fixed-top`, avec une couleur ou un dégradé écrits en `#hex` ou `rgb()`), Épure le lit en compilant la feuille de style : il met le texte et les icônes de l'en-tête en blanc ou en sombre, celui qui se lit le mieux sur la couleur la moins favorable, sous le même sélecteur (donc dans les mêmes modes, clair ou sombre). Le champ « SCSS brut » dit ensuite ce qu'il a trouvé et le contraste obtenu, et avertit sous 4,5:1. Pour un dégradé de la couleur de marque vers la couleur d'accent, le style d'en-tête « Dégradé » fait de même sans SCSS, et avec chaque entreprise IOMAD.
+
 **Règles d'usage :**
 
 - Lisez toujours la variable avec `var(--epure-…)` dans la règle. Ne copiez jamais sa valeur : elle change avec le mode sombre, l'entreprise et les préférences de l'utilisateur.
@@ -92,6 +94,7 @@ Les états (en retard, bientôt dû, terminé, réussi…) ont chacun une couleu
 | Variable | Rôle |
 |---|---|
 | `--epure-header-bg` | Fond de l'en-tête de couleur de marque (il garde la couleur claire en mode sombre). |
+| `--epure-header-end` | Autre extrémité de l'en-tête en dégradé (couleur d'accent ajustée) ; la même couleur que `--epure-header-bg` sinon. |
 | `--epure-header-on` | Texte et icônes de cet en-tête. |
 | `--epure-header-hover` | Survol d'un élément de l'en-tête. |
 | `--epure-header-divider` | Séparateurs de l'en-tête. |

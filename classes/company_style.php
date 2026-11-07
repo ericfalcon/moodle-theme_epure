@@ -35,7 +35,7 @@ class company_style {
     protected static $company = null;
 
     /** @var string[] Header styles. */
-    public const HEADER_STYLES = ['light', 'brand'];
+    public const HEADER_STYLES = ['light', 'brand', 'gradient'];
 
     /** @var string[] Dark mode: never, following the device, always. */
     public const DARK_MODES = ['light', 'auto', 'dark'];
@@ -220,14 +220,15 @@ class company_style {
     /**
      * Header style of the current page: the one of the company of the user, else the site setting.
      *
-     * @return string light or brand.
+     * @return string light, brand or gradient (from the brand colour to the accent colour).
      */
     public static function header_style(): string {
         $company = self::current_company();
         if ($company && ($style = self::settings((int) $company->id)['headerstyle'])) {
             return $style;
         }
-        return get_config('theme_epure', 'headerstyle') === 'brand' ? 'brand' : 'light';
+        $style = (string) get_config('theme_epure', 'headerstyle');
+        return in_array($style, self::HEADER_STYLES, true) ? $style : 'light';
     }
 
     /**
@@ -500,6 +501,20 @@ class company_style {
                 "--epure-on-accent:{$a['on']};" .
                 "--epure-dark-accent:{$ad['fill']};" .
                 "--epure-dark-on-accent:{$ad['on']};" .
+                '}';
+        }
+        // The header of the company in a gradient (its own choice, or that of the site) from its brand colour to its accent
+        // colour (those of the site when it has none), with the text that reads on both ends.
+        if (($settings['headerstyle'] ?: get_config('theme_epure', 'headerstyle')) === 'gradient') {
+            $brandcolour = self::brand_colour($company) ?? get_config('theme_epure', 'brandcolor');
+            $g = palette::header_gradient($brandcolour, $settings['accentcolor'] ?: (get_config('theme_epure', 'accentcolor')
+                ?: $brandcolour));
+            $light = $g['on'] === palette::SURFACE_LIGHT;
+            $css .= ':root{' .
+                "--epure-header-bg:{$g['start']};--epure-header-end:{$g['end']};--epure-header-on:{$g['on']};" .
+                '--epure-header-hover:' . ($light ? 'rgba(0, 0, 0, .18)' : 'rgba(255, 255, 255, .3)') . ';' .
+                '--epure-header-toggler-filter:' . ($light ? 'brightness(0) invert(1)' : 'none') . ';' .
+                '--epure-header-divider:' . ($light ? 'rgba(255, 255, 255, .35)' : 'rgba(0, 0, 0, .2)') . ';' .
                 '}';
         }
         // The corners of the company: the custom properties of the theme, and those of Bootstrap 5 (Moodle 5.x); the

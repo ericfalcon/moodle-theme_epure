@@ -27,12 +27,12 @@
 // IOMAD company can choose its own header; colours that depend on the brand colour come from
 // custom properties, set below for the site and by the style of the company.
 :root {
-    @if $epure-on-brand-is-light {
+    @if $epure-header-on-is-light {
         --epure-header-hover: rgba(0, 0, 0, .18);
         --epure-header-toggler-filter: brightness(0) invert(1);
         --epure-header-divider: rgba(255, 255, 255, .35);
     }
-    @if not $epure-on-brand-is-light {
+    @if not $epure-header-on-is-light {
         --epure-header-hover: rgba(255, 255, 255, .3);
         --epure-header-toggler-filter: none;
         --epure-header-divider: rgba(0, 0, 0, .2);
@@ -44,6 +44,64 @@ body.epure-header-brand .navbar.fixed-top.bg-white {
     // Bootstrap's .bg-white utility uses !important.
     background-color: var(--epure-header-bg) !important; // stylelint-disable-line declaration-no-important
     border-bottom-color: transparent;
+}
+
+// A header painted by the custom SCSS (Advanced settings): its text and its icons in the colour that reads on that
+// background, white or the dark ink, chosen by theme_epure\custom_header and applied under the selector of the custom
+// rule, so in the same modes. It wins over the colours of the light, brand and dark headers.
+@mixin epure-header-text($on, $on-is-light) {
+    --epure-header-on: #{$on};
+    @if $on-is-light {
+        --epure-header-hover: rgba(0, 0, 0, .18);
+        --epure-header-divider: rgba(255, 255, 255, .35);
+    }
+    @if not $on-is-light {
+        --epure-header-hover: rgba(255, 255, 255, .3);
+        --epure-header-divider: rgba(0, 0, 0, .2);
+    }
+    border-bottom-color: transparent;
+
+    .navbar-brand,
+    .sitename,
+    .primary-navigation .navigation .nav-link,
+    .popover-region-toggle,
+    .popover-region-toggle .icon,
+    .usermenu > .dropdown > .dropdown-toggle,
+    .editmode-switch-form label,
+    .navbar-toggler,
+    .epure-a11y-toggle,
+    .langmenu .dropdown-toggle,
+    .companymenu .companybutton,
+    .usermenu .login,
+    .usermenu .login a {
+        color: $on !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .primary-navigation .navigation .nav-link.active,
+    .primary-navigation .navigation .nav-link[aria-current="true"] {
+        border-bottom-color: $on !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .navbar-toggler-icon {
+        filter: if($on-is-light, brightness(0) invert(1), none);
+    }
+
+    .divider {
+        border-color: var(--epure-header-divider) !important; // stylelint-disable-line declaration-no-important
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible {
+        outline-color: $on !important; // stylelint-disable-line declaration-no-important
+    }
+}
+
+// Header in a gradient from the brand colour to the accent colour (Header > Header colour): the same text and controls
+// as the brand-coloured header, the text chosen to read on both ends.
+body.epure-header-gradient .navbar.fixed-top {
+    // stylelint-disable-next-line declaration-no-important
+    background-image: linear-gradient(90deg, var(--epure-header-bg), var(--epure-header-end)) !important;
 }
 
 body.epure-header-brand .navbar.fixed-top .navbar-brand,

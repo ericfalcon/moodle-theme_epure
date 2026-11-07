@@ -161,6 +161,44 @@ class palette {
     }
 
     /**
+     * The text of a header painted with several colours (the stops of a gradient): white or the dark ink, whichever
+     * reads best on the least favourable stop, and the contrast it reaches there.
+     *
+     * @param string[] $stops Colours of the header.
+     * @return array{on: string, contrast: float}
+     */
+    public static function on_stops(array $stops): array {
+        $best = ['on' => self::INK, 'contrast' => 0.0];
+        foreach ([self::SURFACE_LIGHT, self::INK] as $on) {
+            $contrast = min(array_map(fn(string $stop) => self::contrast($on, $stop), $stops));
+            if ($contrast > $best['contrast']) {
+                $best = ['on' => $on, 'contrast' => round($contrast, 2)];
+            }
+        }
+        return $best;
+    }
+
+    /**
+     * A header in a gradient from the brand colour to the accent colour: its two stops, moved as little as needed for its
+     * text to reach 4.5:1 on both (darker under white, lighter under the dark ink), and that text.
+     *
+     * @param string|null $brand Brand colour.
+     * @param string|null $accent Accent colour; the brand colour when none.
+     * @return array{start: string, end: string, on: string}
+     */
+    public static function header_gradient(?string $brand, ?string $accent): array {
+        $start = self::normalise($brand) ?? self::DEFAULT_BRAND;
+        $end = self::normalise($accent) ?? $start;
+        $on = self::on_stops([$start, $end])['on'];
+        $away = $on === self::SURFACE_LIGHT ? '#000000' : '#FFFFFF';
+        return [
+            'start' => self::towards($start, $away, $on, self::AA_TEXT)[0],
+            'end' => self::towards($end, $away, $on, self::AA_TEXT)[0],
+            'on' => $on,
+        ];
+    }
+
+    /**
      * Picks white or dark ink, whichever reads best on a fill.
      *
      * @param string $fill Background colour.

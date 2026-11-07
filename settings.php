@@ -103,6 +103,7 @@ if ($ADMIN->fulltree) {
         [
             'light' => get_string('headerstylelight', 'theme_epure'),
             'brand' => get_string('headerstylebrand', 'theme_epure'),
+            'gradient' => get_string('headerstylegradient', 'theme_epure'),
         ]
     );
     $setting->set_updatedcallback('theme_epure\\mobile_app::appearance_updated');
@@ -597,7 +598,9 @@ if ($ADMIN->fulltree) {
     $setting = new admin_setting_scsscode(
         'theme_epure/scss',
         get_string('rawscss', 'theme_epure'),
-        get_string('rawscss_desc', 'theme_epure'),
+        // What the theme found of a header painted by this SCSS, and the contrast of the text it chose for it.
+        trim(get_string('rawscss_desc', 'theme_epure') . ' '
+            . theme_epure\custom_header::report((string) get_config('theme_epure', 'scss'))),
         '',
         PARAM_RAW
     );

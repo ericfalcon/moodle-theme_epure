@@ -32,8 +32,10 @@
     --epure-ink: #{$body-color};
     --epure-ink-muted: #{$gray-700};
     // The header keeps the light palette in dark mode: the brand colour stays the same.
-    --epure-header-bg: #{$epure-brand};
-    --epure-header-on: #{$epure-on-brand};
+    --epure-header-bg: #{$epure-header-start};
+    // The other end of the gradient of the header, when its style is a gradient (else the same colour).
+    --epure-header-end: #{$epure-header-end};
+    --epure-header-on: #{$epure-header-on};
     --epure-shadow: 0 1px 2px rgba(16, 22, 32, .06), 0 2px 8px rgba(16, 22, 32, .05);
     --epure-shadow-hover: 0 4px 10px rgba(16, 22, 32, .08), 0 14px 32px -12px rgba(16, 22, 32, .18);
     --epure-focus: #{$epure-brand-text};

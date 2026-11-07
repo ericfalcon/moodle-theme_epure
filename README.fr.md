@@ -117,6 +117,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.7.0** : aucun nouveau réglage. La couleur de l'en-tête a un troisième choix, un dégradé de la couleur de marque vers la couleur d'accent ; un en-tête peint par le SCSS personnalisé reçoit le texte et les icônes de la couleur qui s'y lit, et le champ du SCSS dit le contraste obtenu.
 - **1.6.2** : aucun réglage ne change. Le lecteur SCORM ne déborde plus sur les activités précédente et suivante ; le tiroir blanc des téléphones montre le logo pour fond clair.
 - **1.6.1** : aucun réglage ne change. La page d'une section mène aux sections précédente et suivante, et à l'activité suivante.
 - **1.6.0** : aucun nouveau réglage. **La déclaration d'accessibilité suit le pays par défaut du site** (paramètres de localisation) : modèle français en France ou sans pays, modèle européen (EN 301 549) dans le reste de l'UE et de l'EEE, WCAG 2.1 AA ailleurs. Vérifiez ce pays avant de publier.
@@ -154,7 +155,7 @@ Les logos viennent en premier : leurs couleurs sont ensuite proposées pour la c
 | Favicon | Facultatif : l'icône du site dans les onglets des navigateurs et les favoris (ICO, PNG ou SVG). Sans elle, celle de Présentation › Logos. |
 | Couleur de marque | Toute la palette en est déduite : survols, fonds teintés, couleur des liens. Les couleurs sont ajustées automatiquement pour respecter les contrastes AA des WCAG 2.2, et le contraste obtenu est affiché sous le réglage. |
 | Couleur d'accent | Facultative : la couleur des barres de progression et des sections terminées, pour les distinguer de la couleur de marque. Vide : la couleur de marque. Avec IOMAD, une entreprise qui a sa propre couleur la garde partout. |
-| Couleur de l'en-tête | Blanc avec soulignement de la couleur de marque, ou rempli de la couleur de marque. Les textes et icônes prennent la couleur la plus lisible. |
+| Couleur de l'en-tête | Blanc avec soulignement de la couleur de marque, rempli de la couleur de marque, ou dégradé de la couleur de marque vers la couleur d'accent. Les textes et icônes prennent la couleur la plus lisible ; sur un dégradé, celle qui se lit sur ses deux extrémités, ajustées au minimum pour atteindre 4,5:1. |
 
 Sous la couleur de marque, le thème propose les **couleurs du logo**, y compris les couleurs d'accent qui occupent peu de place (lettrage fin, petit emblème), et celles d'un logo tout juste déposé plus haut, avant même l'enregistrement : cliquez sur une pastille, ou directement sur un point du logo (pipette), puis enregistrez. Seuls les codes hexadécimaux sont acceptés, car la palette accessible en est calculée.
 
@@ -274,7 +275,7 @@ Les réglages propres à Épure :
 |---|---|
 | Couleur de marque | Code couleur libre, sélecteur de couleur, ou couleurs du logo de l'entreprise (pastilles et pipette, y compris pour un logo tout juste téléversé). Vide : la couleur du titre d'IOMAD, sinon celle du site. La palette accessible est recalculée. Elle remplace aussi la couleur d'accent du site. |
 | Couleur d'accent | Barres de progression et sections terminées. Vide : la couleur de marque de l'entreprise, sinon la couleur d'accent du site. |
-| Couleur de l'en-tête | Comme le site, blanc, ou couleur de marque. |
+| Couleur de l'en-tête | Comme le site, blanc, couleur de marque, ou dégradé de la couleur de marque vers la couleur d'accent. |
 | Arrondis | Comme le site, peu, moyennement ou très arrondis. Sur Moodle 4.5, les coins compilés dans Bootstrap 4 (champs, boutons de Moodle) gardent ceux du site ; ceux d'Épure et, à partir de Moodle 5.0, ceux de Bootstrap suivent l'entreprise. |
 | E-mails aux couleurs de la marque | Comme le site, activé ou désactivé, selon l'entreprise du destinataire. |
 | Bannière des cours | Comme le site, affichée ou masquée, pour les utilisateurs de l'entreprise. |

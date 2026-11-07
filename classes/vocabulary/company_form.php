@@ -109,8 +109,11 @@ class company_form {
 
         $sitebrand = \theme_epure\palette::normalise(get_config('theme_epure', 'brandcolor'))
             ?? \theme_epure\palette::DEFAULT_BRAND;
-        $siteheader = get_config('theme_epure', 'headerstyle') === 'brand'
-            ? get_string('headerstylebrand', 'theme_epure') : get_string('headerstylelight', 'theme_epure');
+        $sitestyle = (string) get_config('theme_epure', 'headerstyle');
+        $siteheader = get_string(
+            'headerstyle' . (in_array($sitestyle, ['brand', 'gradient'], true) ? $sitestyle : 'light'),
+            'theme_epure'
+        );
         $sitecustom = trim((string) get_config('theme_epure', 'customfontname')) ?: get_string('fontcustom', 'theme_epure');
         $sitefont = get_config('theme_epure', 'font') === \theme_epure\fonts::CUSTOM ? $sitecustom
             : \theme_epure\fonts::get(get_config('theme_epure', 'font') ?: null)['family'];
@@ -119,7 +122,8 @@ class company_form {
             'selected' => $value === $current];
         $headers = [$option('', get_string('companysite', 'theme_epure', $siteheader), $header),
             $option('light', get_string('headerstylelight', 'theme_epure'), $header),
-            $option('brand', get_string('headerstylebrand', 'theme_epure'), $header)];
+            $option('brand', get_string('headerstylebrand', 'theme_epure'), $header),
+            $option('gradient', get_string('headerstylegradient', 'theme_epure'), $header)];
         $sitebanner = get_string(
             get_config('theme_epure', 'coursebanner') !== '0' ? 'coursebannershow' : 'coursebannerhide',
             'theme_epure'
