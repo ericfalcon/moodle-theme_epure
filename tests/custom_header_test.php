@@ -18,6 +18,7 @@ namespace theme_epure;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(custom_header::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(palette::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(admin\palette_preview::class)]
 /**
  * Tests for the header painted by the custom SCSS, and the header in a gradient.
  *
@@ -26,6 +27,7 @@ namespace theme_epure;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \theme_epure\custom_header
  * @covers     \theme_epure\palette
+ * @covers     \theme_epure\admin\palette_preview
  */
 final class custom_header_test extends \advanced_testcase {
     /**
@@ -72,6 +74,22 @@ final class custom_header_test extends \advanced_testcase {
             custom_header::report('.navbar { background: linear-gradient(#fff, #767676); }')
         );
         $this->assertSame('', custom_header::report(''));
+    }
+
+    /**
+     * The palette shown under the colours of the settings: the light and dark modes, and the header when it is coloured.
+     */
+    public function test_preview(): void {
+        $groups = palette::preview('#43ABB1', '#B1C800', 'gradient');
+        $this->assertCount(3, $groups);
+        $this->assertSame(get_string('palette_light', 'theme_epure'), $groups[0]['name']);
+        $this->assertSame('#43ABB1', $groups[0]['colours'][0]['hex']);
+        $this->assertSame(['#43ABB1', '#B1C800', '#111418'], array_column($groups[2]['colours'], 'hex'));
+        // A white header has no colours of its own; without an accent, the brand colour.
+        $groups = palette::preview('#2559A8', null, 'light');
+        $this->assertCount(2, $groups);
+        $this->assertSame($groups[0]['colours'][0]['hex'], $groups[0]['colours'][6]['hex']);
+        $this->assertStringContainsString('background-color: #2559A8', admin\palette_preview::html($groups));
     }
 
     /**

@@ -109,6 +109,17 @@ if ($ADMIN->fulltree) {
     $setting->set_updatedcallback('theme_epure\\mobile_app::appearance_updated');
     $page->add($setting);
 
+    // The palette the theme computes from these colours, as saved: swatches and their codes, to read only.
+    $page->add(new admin_setting_heading(
+        'theme_epure/palettepreview',
+        get_string('palette', 'theme_epure'),
+        theme_epure\admin\palette_preview::html(theme_epure\palette::preview(
+            get_config('theme_epure', 'brandcolor') ?: null,
+            get_config('theme_epure', 'accentcolor') ?: null,
+            (string) (get_config('theme_epure', 'headerstyle') ?: 'light')
+        ))
+    ));
+
     $heading($page, 'emails');
     // E-mails in the colours of the brand.
     $page->add(new admin_setting_configcheckbox(

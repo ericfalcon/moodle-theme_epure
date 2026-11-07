@@ -117,7 +117,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
-- **1.7.0** : aucun nouveau réglage. La couleur de l'en-tête a un troisième choix, un dégradé de la couleur de marque vers la couleur d'accent ; un en-tête peint par le SCSS personnalisé reçoit le texte et les icônes de la couleur qui s'y lit, et le champ du SCSS dit le contraste obtenu.
+- **1.7.0** : aucun nouveau réglage. La couleur de l'en-tête a un troisième choix, un dégradé de la couleur de marque vers la couleur d'accent ; un en-tête peint par le SCSS personnalisé reçoit le texte et les icônes de la couleur qui s'y lit, et le champ du SCSS dit le contraste obtenu ; la palette calculée s'affiche sous les couleurs.
 - **1.6.2** : aucun réglage ne change. Le lecteur SCORM ne déborde plus sur les activités précédente et suivante ; le tiroir blanc des téléphones montre le logo pour fond clair.
 - **1.6.1** : aucun réglage ne change. La page d'une section mène aux sections précédente et suivante, et à l'activité suivante.
 - **1.6.0** : aucun nouveau réglage. **La déclaration d'accessibilité suit le pays par défaut du site** (paramètres de localisation) : modèle français en France ou sans pays, modèle européen (EN 301 549) dans le reste de l'UE et de l'EEE, WCAG 2.1 AA ailleurs. Vérifiez ce pays avant de publier.

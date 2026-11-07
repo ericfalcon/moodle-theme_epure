@@ -199,6 +199,48 @@ class palette {
     }
 
     /**
+     * The palette the theme computes from the colours of the settings, for its preview under them: the colours of the
+     * light and the dark modes, and those of the header, each with its role.
+     *
+     * @param string|null $brand Brand colour.
+     * @param string|null $accent Accent colour; the brand colour when none.
+     * @param string $headerstyle Style of the header: light, brand or gradient.
+     * @return array<int, array{name: string, colours: array<int, array{label: string, hex: string}>}>
+     */
+    public static function preview(?string $brand, ?string $accent, string $headerstyle): array {
+        $accent = self::normalise($accent) ?? $brand;
+        $groups = [];
+        foreach (['light' => false, 'dark' => true] as $mode => $dark) {
+            $p = self::derive($brand, $dark);
+            $a = self::derive($accent, $dark);
+            $colours = [];
+            foreach (
+                ['fill' => 'brand', 'hover' => 'hover', 'on' => 'onbrand', 'text' => 'text', 'soft' => 'soft',
+                    'soft2' => 'soft2'] as $key => $role
+            ) {
+                $colours[] = ['label' => get_string('palette_' . $role, 'theme_epure'), 'hex' => strtoupper($p[$key])];
+            }
+            $colours[] = ['label' => get_string('palette_accent', 'theme_epure'), 'hex' => strtoupper($a['fill'])];
+            $colours[] = ['label' => get_string('palette_onaccent', 'theme_epure'), 'hex' => strtoupper($a['on'])];
+            $groups[] = ['name' => get_string('palette_' . $mode, 'theme_epure'), 'colours' => $colours];
+        }
+        if ($headerstyle !== 'light') {
+            $header = $headerstyle === 'gradient' ? self::header_gradient($brand, $accent)
+                : ['start' => self::derive($brand)['fill'], 'on' => self::derive($brand)['on']];
+            $colours = [['label' => get_string(
+                $headerstyle === 'gradient' ? 'palette_headerstart' : 'palette_headerbg',
+                'theme_epure'
+            ), 'hex' => strtoupper($header['start'])]];
+            if (isset($header['end'])) {
+                $colours[] = ['label' => get_string('palette_headerend', 'theme_epure'), 'hex' => strtoupper($header['end'])];
+            }
+            $colours[] = ['label' => get_string('palette_headeron', 'theme_epure'), 'hex' => strtoupper($header['on'])];
+            $groups[] = ['name' => get_string('palette_header', 'theme_epure'), 'colours' => $colours];
+        }
+        return $groups;
+    }
+
+    /**
      * Picks white or dark ink, whichever reads best on a fill.
      *
      * @param string $fill Background colour.
