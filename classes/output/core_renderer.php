@@ -65,6 +65,18 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
 
     /**
+     * The logo for a light background, when the header is brand-coloured and shows another version: that of the user's
+     * IOMAD company, else that of the theme. Null when it is the one of the header anyway.
+     *
+     * @return \moodle_url|null
+     */
+    public function light_logo_url(): ?\moodle_url {
+        $url = $this->company_logo_url(['logocompact', 'logo']) ?: $this->theme_file_url('logo');
+        $header = $this->get_compact_logo_url();
+        return $url && (!$header || $url->out(false) !== $header->out(false)) ? $url : null;
+    }
+
+    /**
      * Logo shown on the login page and the site home.
      *
      * Falls back to the logo set in Appearance > Logos.
@@ -103,6 +115,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
         if (!during_initial_install() && ($js = \theme_epure\web_app::register_js()) !== '') {
             $output .= \html_writer::script($js);
+        }
+        // The drawer of the navigation on phones is white: there, the logo for a light background, not the version for
+        // the brand-coloured header that the header gives it.
+        if (\theme_epure\company_style::header_style() === 'brand' && ($url = $this->light_logo_url())) {
+            $output .= \html_writer::tag('style', '.drawer-primary .drawerheader .logo { content: url("'
+                . $url->out(false) . '"); }', ['id' => 'epure-drawer-logo']);
         }
         // The logo for the phones, in place of the logo of the header (Boost shows no logo on phones).
         if (!$this->company_logo_url(['logocompact', 'logo']) && ($url = \theme_epure\logos::url('logomobile'))) {

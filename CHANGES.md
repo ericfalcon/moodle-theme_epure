@@ -1,8 +1,10 @@
 # Changes
 
-## 1.6.2 — the SCORM player no longer overflows onto the previous and next activities
+## 1.6.2 — the SCORM player no longer overflows onto the previous and next activities, the logo of the white drawer
 
+- The drawer of the navigation on phones is white, but took the logo of the header: with a brand-coloured header, the version for the colour of the brand (often light), hardly visible. It shows the logo for a light background (that of the IOMAD company, else that of the theme).
 - SCORM packages: Moodle gives the player the height of the screen (680 pixels at least) and the package 95 % of it. The buttons of the package under it, made larger by the theme, and on a phone the button of the table of contents above it, overflowed onto the cards « Previous » and « Next ». The player now grows with its content, and the package keeps a height of its own, that of the screen less the header (26rem at least). Checked on a phone and on a computer, with a package of two pages and its buttons under the content.
+- PHPUnit test: the logo of the drawer with a brand-coloured header and with a light one.
 
 ## 1.6.1 — the previous and next sections on the page of a section
 
