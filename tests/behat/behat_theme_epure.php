@@ -79,7 +79,20 @@ class behat_theme_epure extends behat_base {
                 : ['company' => $company->id, 'parent' => 0];
             $DB->insert_record(iomad::table('department'), (object) $department);
         }
+        $this->rebuild_theme();
+    }
+
+    /**
+     * Empties the caches of the theme and builds its stylesheet at once, in this process. Built by the first page, the
+     * stylesheet held the web server of the tests for so long that the JavaScript of that page timed out (« not ready
+     * after 10 seconds »), then the server stopped answering at all: the first brand colour of the matrix of
+     * non-regression failed so, now and then, on every version of Moodle.
+     */
+    protected function rebuild_theme(): void {
+        global $CFG;
+        require_once($CFG->libdir . '/outputlib.php');
         theme_reset_all_caches();
+        theme_build_css_for_themes([\theme_config::load('epure')], ['ltr']);
     }
 
     /**
@@ -410,7 +423,7 @@ class behat_theme_epure extends behat_base {
      */
     public function the_brand_colour_of_the_site_is(string $colour): void {
         set_config('brandcolor', $colour, 'theme_epure');
-        theme_reset_all_caches();
+        $this->rebuild_theme();
     }
 
     /**
@@ -500,7 +513,7 @@ class behat_theme_epure extends behat_base {
             'filename' => $filename,
         ], $CFG->dirroot . '/' . $path);
         set_config('logo' . $companyid, '/' . $filename, 'core_admin');
-        theme_reset_all_caches();
+        $this->rebuild_theme();
     }
 
     /**

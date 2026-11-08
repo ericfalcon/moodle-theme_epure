@@ -151,6 +151,11 @@ function theme_epure_get_pre_scss($theme) {
     $accentcolour = palette::normalise($theme->settings->accentcolor ?? null) ?? ($theme->settings->brandcolor ?? null);
     $accent = palette::derive($accentcolour);
     $darkaccent = palette::derive($accentcolour, true);
+    // The header: the brand colour, or a gradient from the brand colour to the accent colour, with the text that reads on
+    // both of its ends.
+    $header = ($theme->settings->headerstyle ?? '') === 'gradient'
+        ? palette::header_gradient($theme->settings->brandcolor ?? null, $accentcolour)
+        : ['start' => $light['fill'], 'end' => $light['fill'], 'on' => $light['on']];
 
     $variables = [
         'primary' => $light['fill'],
@@ -178,8 +183,12 @@ function theme_epure_get_pre_scss($theme) {
         'epure-brand-text' => $light['text'],
         'epure-brand-soft' => $light['soft'],
         'epure-brand-soft-2' => $light['soft2'],
-        'epure-header-brand' => ($theme->settings->headerstyle ?? '') === 'brand' ? 'true' : 'false',
+        'epure-header-brand' => in_array($theme->settings->headerstyle ?? '', ['brand', 'gradient'], true) ? 'true' : 'false',
         'epure-on-brand-is-light' => $light['on'] === palette::SURFACE_LIGHT ? 'true' : 'false',
+        'epure-header-start' => $header['start'],
+        'epure-header-end' => $header['end'],
+        'epure-header-on' => $header['on'],
+        'epure-header-on-is-light' => $header['on'] === palette::SURFACE_LIGHT ? 'true' : 'false',
         'epure-login-overlay' => 'rgba(' . implode(', ', palette::to_rgb($light['fill'])) . ', ' . $light['overlayalpha'] . ')',
         'epure-dark-brand' => $dark['fill'],
         'epure-dark-brand-hover' => $dark['hover'],
@@ -218,7 +227,11 @@ function theme_epure_get_pre_scss($theme) {
  * @return string
  */
 function theme_epure_get_extra_scss($theme) {
-    return !empty($theme->settings->scss) ? $theme->settings->scss : '';
+    if (empty($theme->settings->scss)) {
+        return '';
+    }
+    // A header painted by the custom SCSS: its text and its icons in the colour that reads on it.
+    return $theme->settings->scss . "\n" . \theme_epure\custom_header::adapt_scss($theme->settings->scss);
 }
 
 /**

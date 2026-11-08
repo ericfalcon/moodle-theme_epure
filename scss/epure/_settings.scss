@@ -83,3 +83,45 @@
         margin: 0;
     }
 }
+
+// The palette computed from the colours of the settings, under them: a swatch, the role and the code of each colour.
+.epure-palette {
+    margin-bottom: 1rem;
+}
+
+.epure-palette-group {
+    margin-bottom: .375rem;
+    font-weight: 600;
+}
+
+.epure-palette-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: .375rem 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+    }
+}
+
+.epure-palette-swatch {
+    flex: 0 0 auto;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 1px solid var(--epure-ink-muted);
+    border-radius: var(--epure-radius-sm);
+}
+
+.epure-palette-label {
+    flex: 0 1 auto;
+}
+
+.epure-palette-hex {
+    color: var(--epure-ink);
+    font-size: .875rem;
+}

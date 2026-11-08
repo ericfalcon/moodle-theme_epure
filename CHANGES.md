@@ -1,5 +1,15 @@
 # Changes
 
+## 1.7.0 — the header in a gradient, and the header painted by the custom SCSS read by the theme
+
+- Header colour (Identity tab, and the appearance of each IOMAD company): a third choice, « Gradient from the brand colour to the accent colour ». The text and the icons take white or the dark ink, the one that reads on both ends of the gradient, and the ends are moved as little as needed for it to reach 4.5:1 (darker under white, lighter under the dark ink). The gradient stays in dark mode, like the brand-coloured header; the Moodle app shows the brand colour. No new setting.
+- Custom SCSS (Advanced settings): a rule that gives the header a background of its own (`.navbar`, `.navbar.fixed-top`, a colour or a gradient written in `#hex` or `rgb()`) is read when the theme compiles its stylesheet. The text, the icons, the underline of the active item, the menu button and the focus of the header take white or the dark ink, the one that reads on the least favourable colour, under the same selector as the rule, so in the same modes. Before, a light gradient over a header in dark mode left its light text at 1.5:1.
+- The field « Raw SCSS » says what it found: the selector, the colours, the text chosen and the contrast it reaches, with a warning below 4.5:1 (« choose lighter or darker colours »).
+- Under the colours of the Identity tab, the computed palette, to read only: for the light and the dark modes, the brand colour, its hover, the text on it, the links, the two tints, the accent and the text on it; for a coloured header, its background (or the two ends of its gradient) and its text. Each with a swatch, its role and its code, updated on saving.
+- New custom property `--epure-header-end`, the other end of the header in a gradient (documentation of the CSS variables).
+- Behat: the steps that change the colours or the logos of the site build the stylesheet at once, in their process. Built by the first page after them, it held the web server of the tests long enough for the JavaScript of the dashboard to time out, then for the server to stop answering: the first brand colour of the matrix of non-regression failed so, now and then, on every version of Moodle.
+- PHPUnit tests: the rules found in a custom SCSS (a comment, an element inside the header, a background without a colour left out), the text chosen, the report and its warning, the gradient between two colours and its ends moved.
+
 ## 1.6.2 — the SCORM player no longer overflows onto the previous and next activities, the logo of the white drawer
 
 - The drawer of the navigation on phones is white, but took the logo of the header: with a brand-coloured header, the version for the colour of the brand (often light), hardly visible. It shows the logo for a light background (that of the IOMAD company, else that of the theme).

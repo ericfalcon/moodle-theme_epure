@@ -117,6 +117,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.7.0**: no new setting. The header colour has a third choice, a gradient from the brand colour to the accent colour; a header painted by the custom SCSS gets its text and icons in the colour that reads on it, and the field of the SCSS says the contrast reached; the computed palette is shown under the colours.
 - **1.6.2**: no setting changes. The SCORM player no longer overflows onto the previous and next activities; the white drawer of the phones shows the logo for a light background.
 - **1.6.1**: no setting changes. The page of a section leads to the previous and next sections, and to the next activity after it.
 - **1.6.0**: no new setting. **The accessibility statement follows the default country of the site** (Location settings): French model in France or without a country, European model (EN 301 549) in the rest of the EU and the EEA, WCAG 2.1 AA elsewhere. Check that country before publishing.
@@ -154,7 +155,7 @@ The logos come first: their colours are then proposed for the brand colour, just
 | Favicon | Optional: the icon of the site in the browser tabs and bookmarks (ICO, PNG or SVG). Without it, the one from Appearance › Logos. |
 | Brand colour | The whole palette is derived from it: hover states, tinted backgrounds, link colour. Colours are adjusted automatically to meet the WCAG 2.2 AA contrast requirements, and the resulting contrast is shown below the setting. |
 | Accent colour | Optional: the colour of the progress bars and of the completed sections, to set them apart from the brand colour. Empty: the brand colour. With IOMAD, a company with its own colour keeps it everywhere. |
-| Header colour | White with an underline in the brand colour, or filled with the brand colour. Text and icons take whichever colour is most legible. |
+| Header colour | White with an underline in the brand colour, filled with the brand colour, or a gradient from the brand colour to the accent colour. Text and icons take whichever colour is most legible; on a gradient, the one that reads on both ends, which are adjusted as little as needed to reach 4.5:1. |
 
 Below the brand colour, the theme suggests the **colours of the logo**, including accent colours that take up little space (thin lettering, a small emblem), and a logo just uploaded above even before it is saved: click a swatch, or click directly on a point of the logo (eyedropper), then save. Only hex codes are accepted, since the accessible palette is calculated from them.
 
@@ -276,7 +277,7 @@ The Épure settings:
 |---|---|
 | Brand colour | Any colour code, a colour picker, or the colours of the company's logo (swatches and eyedropper, including for a logo that has just been uploaded). Empty: IOMAD's heading colour, otherwise the site's colour. The accessible palette is recalculated. It also replaces the accent colour of the site. |
 | Accent colour | Progress bars and completed sections. Empty: the company's brand colour, otherwise the site's accent colour. |
-| Header colour | As the site, white, or brand colour. |
+| Header colour | As the site, white, brand colour, or gradient from the brand colour to the accent colour. |
 | Corner style | As the site, slightly, moderately or very rounded. On Moodle 4.5, the corners compiled into Bootstrap 4 (Moodle's fields and buttons) keep the site's; those of Épure and, from Moodle 5.0, those of Bootstrap follow the company. |
 | E-mails in the colours of the brand | As the site, on or off, by the company of the recipient. |
 | Course banner | As the site, shown or hidden, for the company's users. |

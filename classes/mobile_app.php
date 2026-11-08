@@ -173,7 +173,8 @@ class mobile_app {
             '--core-messages-discussion-badge' => $primary,
             '--core-messages-discussion-badge-text' => $p['on'],
         ];
-        if ($headerstyle === 'brand') {
+        // A gradient is a brand-coloured header in the app, which has no gradient: its brand colour.
+        if ($headerstyle !== 'light') {
             $variables += [
                 '--core-header-toolbar-background' => $primary,
                 '--core-header-toolbar-color' => $p['on'],

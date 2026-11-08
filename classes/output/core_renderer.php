@@ -409,8 +409,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if (!is_array($additionalclasses)) {
             $additionalclasses = explode(' ', (string) $additionalclasses);
         }
-        if (\theme_epure\company_style::header_style() === 'brand') {
+        // A header in the brand colour or in a gradient: the same text and controls on the colour.
+        $headerstyle = \theme_epure\company_style::header_style();
+        if ($headerstyle !== 'light') {
             $additionalclasses[] = 'epure-header-brand';
+        }
+        if ($headerstyle === 'gradient') {
+            $additionalclasses[] = 'epure-header-gradient';
         }
         if (\theme_epure\activity_page::applies($this->page)) {
             $additionalclasses[] = 'epure-activity';
