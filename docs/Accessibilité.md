@@ -30,3 +30,35 @@ Un thème ne rend pas une plateforme conforme à lui seul : les contenus des cou
 Pendant la saisie, une ligne sous chaque éditeur indique ce qui rend le contenu plus difficile à utiliser : images sans texte alternatif, images servant de lien sans texte alternatif, liens sans texte ou du type « cliquez ici », tableaux sans en-têtes, niveaux de titres sautés, texte long sans aucun titre ; son bouton « Montrer » sélectionne chaque élément concerné dans l'éditeur. À l'enregistrement du formulaire, une fenêtre les liste de nouveau champ par champ, avec trois choix : « Corriger », « Ouvrir le vérificateur d'accessibilité » (celui de l'éditeur TinyMCE, intégré à Moodle) et « Enregistrer quand même ». Rien n'est jamais bloqué, et aucun compte ni aucune inscription ne sont nécessaires.
 
 Le vérificateur accompagne le guide « Accessibilité du cours » (onglet Accessibilité, désactivé par défaut ; une entreprise IOMAD peut faire un autre choix) : là où le guide est désactivé, il l'est aussi. Tous les organismes ne sont pas tenus aux WCAG 2.1 AA (RGAA en France, EN 301 549 en Europe).
+
+## Pour les développeurs de plugins d'activité
+
+Le guide « Accessibilité du cours » lit, pour chaque activité, sa description et ses fichiers. Il lit aussi le contenu propre des modules de Moodle (pages, devoirs, tests, livres, leçons, ateliers, glossaires, feedbacks, bases de données). Le contenu d'un module d'un autre plugin n'est lu que si le plugin le donne ; sinon, le guide demande à l'enseignant de le vérifier, et le réglage « Accessibilité du cours » liste ces modules.
+
+Pour que le guide lise votre module, ajoutez à son `lib.php` la fonction suivante. Elle renvoie les textes écrits par les enseignants (jamais les contributions des apprenants), chacun avec son format, le nom de son emplacement et l'adresse où le corriger :
+
+```php
+/**
+ * Textes de l'activité lus par le guide « Accessibilité du cours » du thème Épure.
+ *
+ * @param cm_info $cm Activité.
+ * @return array[] Chaque texte : text, format (FORMAT_HTML, FORMAT_MARKDOWN…), name, url.
+ */
+function mod_monmodule_epure_accessibility_texts(cm_info $cm): array {
+    global $DB;
+    $pages = $DB->get_records('monmodule_pages', ['monmoduleid' => $cm->instance], 'sortorder');
+    $texts = [];
+    foreach ($pages as $page) {
+        $texts[] = [
+            'text' => $page->content,
+            'format' => $page->contentformat,
+            'name' => format_string($page->title),
+            'url' => (new moodle_url('/mod/monmodule/editpage.php', ['id' => $cm->id, 'page' => $page->id]))->out(false),
+        ];
+    }
+    return $texts;
+}
+```
+
+Le texte brut n'est pas lu ; le Markdown l'est, une fois converti en HTML. Le guide garde ce qu'il a lu d'un cours pendant une heure, et l'oublie dès qu'une activité est modifiée (`course_module_updated`) : si votre module change son contenu ailleurs que dans le formulaire de l'activité, appelez `\theme_epure\course_accessibility::forget($courseid)` quand la classe existe.
+

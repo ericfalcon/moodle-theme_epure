@@ -448,33 +448,40 @@ class course_accessibility {
             $bymod[$cm->modname][(int) $cm->instance] = $cm;
         }
         foreach ($bymod as $modname => $instances) {
-            $dbman = $DB->get_manager();
-            if (!$dbman->table_exists($modname)) {
-                continue;
-            }
-            $records = $DB->get_records_list($modname, 'id', array_keys($instances));
-            foreach ($records as $record) {
-                $cm = $instances[(int) $record->id];
+            // The module of another plugin may keep its activities in a table of another name: its record is then
+            // missing, its description too, but its content is still asked of it.
+            $records = $DB->get_manager()->table_exists($modname)
+                ? $DB->get_records_list($modname, 'id', array_keys($instances)) : [];
+            foreach ($instances as $instance => $cm) {
+                $record = $records[$instance] ?? null;
                 $part = &$parts['cm_' . $cm->id];
-                if (isset($record->intro)) {
+                if ($record && isset($record->intro)) {
                     self::add_html($part, (string) $record->intro, (int) ($record->introformat ?? FORMAT_HTML), [
                         'kind' => 'intro',
                         'name' => '',
                         'url' => (new \moodle_url('/course/modedit.php', ['update' => $cm->id]))->out(false),
                     ]);
                 }
+                // The texts the teachers write in the activity, where the module keeps them (content_sources).
+                foreach (content_sources::texts($cm, $record) as $text) {
+                    self::add_html($part, $text['text'], $text['format'], [
+                        'kind' => $text['kind'],
+                        'name' => $text['name'],
+                        'url' => $text['url'],
+                    ]);
+                }
+                // What Épure cannot read: the content of a package or an external tool, the content of a module of
+                // another plugin that does not give it. A point to confirm by a person.
+                $coverage = content_sources::coverage($modname);
+                if (in_array($coverage, ['external', 'unread'], true)) {
+                    $part['checks'][] = ['key' => $coverage, 'kind' => $coverage, 'label' => (string) $cm->name];
+                }
+                if (!$record) {
+                    unset($part);
+                    continue;
+                }
                 switch ($modname) {
-                    case 'page':
-                        self::add_html($part, (string) $record->content, (int) $record->contentformat, [
-                            'kind' => 'content',
-                            'name' => '',
-                            'url' => (new \moodle_url('/course/modedit.php', ['update' => $cm->id]))->out(false),
-                        ]);
-                        break;
                     case 'assign':
-                        if (isset($record->activity)) {
-                            self::add_html($part, (string) $record->activity, (int) $record->activityformat);
-                        }
                         if (!empty($record->duedate) || !empty($record->cutoffdate)) {
                             $part['checks'][] = ['key' => 'deadlines', 'kind' => 'deadlines', 'label' => ''];
                         }
