@@ -77,6 +77,31 @@ final class custom_header_test extends \advanced_testcase {
     }
 
     /**
+     * A background the theme cannot know for sure (transparent, a variable, a nested rule) gives a partial check, never a
+     * contrast; the opaque colours read still adapt the text.
+     */
+    public function test_unsure(): void {
+        $rules = custom_header::rules(".navbar { background: rgba(255, 255, 255, .4); }\n"
+            . ".navbar.fixed-top { background-color: var(--brand); }\n"
+            . "body .navbar { background: #43ABB1; .nav-link { color: red; } }\n"
+            . ".navbar { background: linear-gradient(#43ABB1, rgb(177 200 0 / 100%)); }");
+        $unsure = array_map(fn($rule) => $rule['selector'] . ': ' . implode(' ', $rule['unsure']), $rules);
+        $this->assertContains('body .navbar: nested', $unsure);
+        $this->assertContains('.navbar.fixed-top: variable', $unsure);
+        $this->assertContains('.navbar: transparent', $unsure);
+        // An opaque colour written as rgb() with a slash and 100 %: sure.
+        $this->assertContains('.navbar: ', $unsure);
+
+        $report = custom_header::report(".navbar { background: rgba(0, 0, 0, .5); }");
+        $this->assertStringContainsString(get_string('customheader_transparent', 'theme_epure'), $report);
+        $this->assertStringNotContainsString(':1', $report);
+        // The colour read in a transparent background still adapts the text; a variable alone does not.
+        $adapted = custom_header::adapt_scss('.navbar { background: rgba(0, 0, 0, .5); }');
+        $this->assertStringContainsString('epure-header-text', $adapted);
+        $this->assertSame('', custom_header::adapt_scss('.navbar { background: var(--brand); }'));
+    }
+
+    /**
      * The palette shown under the colours of the settings: the light and dark modes, and the header when it is coloured.
      */
     public function test_preview(): void {

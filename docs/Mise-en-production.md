@@ -9,7 +9,7 @@ Ce guide s'adresse à l'administrateur qui installe Épure sur une plateforme en
 | | Versions |
 |---|---|
 | Moodle | 4.5 LTS, 5.0, 5.1, 5.2, 5.3 |
-| IOMAD | 4.5, 5.1, 5.2 |
+| IOMAD | 4.5, 5.0, 5.1, 5.2 |
 | PHP | 8.1 à 8.4, selon la version de Moodle |
 | Base de données | PostgreSQL, MariaDB |
 

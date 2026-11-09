@@ -84,6 +84,24 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
     }
 
     /**
+     * A text in Markdown is read once made HTML, as Moodle shows it: its image without a description and its link
+     * « here » are found; a plain text is not read.
+     */
+    public function test_markdown(): void {
+        $this->resetAfterTest();
+        $course = $this->getDataGenerator()->create_course();
+        $page = $this->getDataGenerator()->create_module('page', ['course' => $course->id,
+            'content' => "## Rules\n\n![](https://example.com/a.png)\n\nThe [here](https://example.com) link.",
+            'contentformat' => FORMAT_MARKDOWN]);
+        $plain = $this->getDataGenerator()->create_module('page', ['course' => $course->id,
+            'content' => '<img src="https://example.com/b.png">', 'contentformat' => FORMAT_PLAIN]);
+        course_accessibility::forget((int) $course->id);
+        $parts = array_column(course_accessibility::analyse($course), null, 'id');
+        $this->assertSame(1, $parts[$page->cmid]['issues']['images'] ?? 0);
+        $this->assertArrayNotHasKey('images', $parts[$plain->cmid]['issues']);
+    }
+
+    /**
      * The documents of an office suite, with macros or not, are to confirm; the other files are not documents.
      */
     public function test_is_document(): void {

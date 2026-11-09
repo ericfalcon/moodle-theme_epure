@@ -9,9 +9,9 @@
 
 ## Compatibilité testée
 
-L'intégration continue teste Moodle 4.5 à 5.3 (PostgreSQL, et MariaDB pour 4.5 et 5.3) et IOMAD 4.5, 5.1 et 5.2. Les tests Behat couvrent les formats de cours thématique, hebdomadaire (avec une sous-section), activité unique et informel, avec l'audit axe-core.
+L'intégration continue teste Moodle 4.5 à 5.3 (PostgreSQL, et MariaDB pour 4.5 et 5.3) et IOMAD 4.5, 5.0, 5.1 et 5.2. Les tests Behat couvrent les formats de cours thématique, hebdomadaire (avec une sous-section), activité unique et informel, avec l'audit axe-core.
 
-Behat tourne aussi sur IOMAD 4.5, 5.1 et 5.2. Deux contextes Behat d'IOMAD, qui empêchent Behat de démarrer, sont retirés du clone d'IOMAD de l'intégration continue : celui d'`auth_iomadsaml2` (signature incompatible sur IOMAD 4.5) et celui de `tool_iomadpolicy` (il redéfinit une étape de `tool_policy`). Un scénario vérifie qu'un apprenant d'une entreprise voit la couleur et le logo de son entreprise, qu'un utilisateur sans entreprise garde la couleur du site, et que la page « Mes cours » d'IOMAD est la page par rôle d'Épure, avec l'audit axe-core. Les scénarios IOMAD (étiquette `@theme_epure_iomad`) tournent sur les tâches IOMAD, les autres sur les tâches Moodle.
+Behat tourne aussi sur IOMAD 4.5, 5.0, 5.1 et 5.2. Deux contextes Behat d'IOMAD, qui empêchent Behat de démarrer, sont retirés du clone d'IOMAD de l'intégration continue : celui d'`auth_iomadsaml2` (signature incompatible sur IOMAD 4.5) et celui de `tool_iomadpolicy` (il redéfinit une étape de `tool_policy`). Un scénario vérifie qu'un apprenant d'une entreprise voit la couleur et le logo de son entreprise, qu'un utilisateur sans entreprise garde la couleur du site, et que la page « Mes cours » d'IOMAD est la page par rôle d'Épure, avec l'audit axe-core. Les scénarios IOMAD (étiquette `@theme_epure_iomad`) tournent sur les tâches IOMAD, les autres sur les tâches Moodle.
 
 ## Performances
 

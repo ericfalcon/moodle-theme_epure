@@ -44,6 +44,7 @@ jobs:
           - { branch: MOODLE_503_STABLE, php: '8.4', db: mariadb }
           # IOMAD, whose tables and classes were renamed in 5.1 (theme_epure\iomad knows both).
           - { branch: IOMAD_405_STABLE, php: '8.3', repo: 'https://github.com/iomad/iomad.git', certificate: MOODLE_400_STABLE }
+          - { branch: IOMAD_500_STABLE, php: '8.3', repo: 'https://github.com/iomad/iomad.git', certificate: MOODLE_500_STABLE }
           - { branch: IOMAD_501_STABLE, php: '8.3', repo: 'https://github.com/iomad/iomad.git', certificate: MOODLE_500_STABLE }
           - { branch: IOMAD_502_STABLE, php: '8.3', repo: 'https://github.com/iomad/iomad.git', certificate: MOODLE_500_STABLE }
 

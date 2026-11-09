@@ -279,13 +279,20 @@ class course_accessibility {
      *
      * @param array $part Part.
      * @param string $html Text.
-     * @param int $format Format of the text: the plain texts and Markdown are not HTML.
+     * @param int $format Format of the text: the plain texts are not read, Markdown is read once made HTML.
      * @param array|null $place Where the text is, in an activity of several texts: kind (chapter, page, question),
      *     name and address to change it.
      */
     protected static function add_html(array &$part, string $html, int $format = FORMAT_HTML, ?array $place = null): void {
-        if (trim($html) === '' || in_array($format, [FORMAT_PLAIN, FORMAT_MARKDOWN], true)) {
+        // Plain text has no structure to read; Markdown has (titles, links, images, tables): read once made HTML, as
+        // Moodle shows it.
+        if (trim($html) === '' || $format === (int) FORMAT_PLAIN) {
             return;
+        }
+        if ($format === (int) FORMAT_MARKDOWN) {
+            // An image written ![](image.png) has an empty alternative, which Markdown cannot mean as decorative: an
+            // image without a text alternative.
+            $html = (string) preg_replace('~(<img\b[^>]*?)\s+alt=""~i', '$1', markdown_to_html($html));
         }
         $found = self::check_html($html);
         foreach ($found['issues'] as $issue => $count) {
