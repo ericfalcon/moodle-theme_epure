@@ -308,12 +308,59 @@ class hook_callbacks {
     }
 
     /**
+     * Top of the page of Épure: the filters that tint the icons of the activities, and the header of the printed pages.
+     *
+     * @param \core\hook\output\before_standard_top_of_body_html_generation $hook The hook.
+     */
+    public static function before_standard_top_of_body_html_generation(
+        \core\hook\output\before_standard_top_of_body_html_generation $hook
+    ): void {
+        if (during_initial_install() || !self::epure_page() || !$hook->renderer instanceof output\core_renderer) {
+            return;
+        }
+        $hook->add_html(activity_icons::filters() . $hook->renderer->epure_print_header());
+    }
+
+    /**
+     * Links of the footer of Épure: the help of the keyboard shortcuts, and the accessibility statement when it is
+     * published and the footer of Épure, which has the link, is off.
+     *
+     * @param \core\hook\output\before_standard_footer_html_generation $hook The hook.
+     */
+    public static function before_standard_footer_html_generation(
+        \core\hook\output\before_standard_footer_html_generation $hook
+    ): void {
+        if (during_initial_install() || !self::epure_page()) {
+            return;
+        }
+        // A link, as the window of the footer is a copy that Bootstrap cleans of its buttons and of their data attributes.
+        $hook->add_html(\html_writer::div(\html_writer::link(
+            '#epure-shortcuts',
+            get_string('shortcuts_footer', 'theme_epure'),
+            ['class' => 'epure-shortcuts-link']
+        ), 'epure-shortcuts-footer'));
+        if (accessibility_statement::enabled() && !footer::enabled()) {
+            $hook->add_html(\html_writer::div(\html_writer::link(
+                accessibility_statement::url(),
+                get_string('a11ystatement', 'theme_epure')
+            ), 'epure-a11y-footer-link'));
+        }
+    }
+
+    /**
      * Adds the vocabulary fields to the IOMAD company form (Create company and Edit company).
      *
      * @param \core\hook\output\before_footer_html_generation $hook The hook.
      */
     public static function before_footer_html_generation(\core\hook\output\before_footer_html_generation $hook): void {
         global $CFG, $PAGE, $OUTPUT;
+        // The page of the messages reuses the template of the drawer, hidden from assistive technologies
+        // (aria-hidden) although the page shows it: the theme shows it to them too, and names the region.
+        if ($PAGE->pagetype === 'message-index' && !during_initial_install() && self::epure_page()) {
+            $PAGE->requires->js_init_code('document.querySelectorAll(\'[data-region="message-index"]\').forEach(function(e) {'
+                . 'e.removeAttribute("aria-hidden"); e.removeAttribute("aria-expanded"); e.setAttribute("aria-label", '
+                . json_encode(get_string('messages', 'message')) . '); });');
+        }
         // The help of the keyboard shortcuts, opened with « ? », from the footer and from the panel « Aa ».
         if (!during_initial_install() && self::epure_page() && $PAGE->pagelayout !== 'maintenance') {
             $hook->add_html($OUTPUT->render_from_template('theme_epure/shortcuts', shortcuts::export()));

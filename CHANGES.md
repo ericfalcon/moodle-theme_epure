@@ -1,5 +1,12 @@
 # Changes
 
+## 1.13.0 — fewer overrides of the renderer (first step)
+
+- The links of the footer (help of the keyboard shortcuts, accessibility statement without the footer of Épure) come from the hook `before_standard_footer_html_generation`: the override of `standard_footer_html()` is gone.
+- The top of the page (filters of the icons of the activities, header of the printed pages) comes from the hook `before_standard_top_of_body_html_generation`, and the fix of the page of the messages for the screen readers from `before_footer_html_generation`. `standard_top_of_body_html()` and `standard_end_of_body_html()` keep only the message « Moodle is working… » of the pages that install or upgrade Moodle, where the hooks of the plugins are not all read.
+- Each hook acts on the pages of Épure only; a PHPUnit test checks it on a page of Épure and on a page of Boost.
+- Kept, as they must be: `standard_head_html()` (the styles of the IOMAD company and the logos must come after the stylesheet of the theme, and the hook of the head comes before it), `navbar_plugin_output()` (the quick search and the button « Aa » first in the header), and the overrides that change the HTML of Moodle (header of the course, blocks, navigation between the activities, logos, errors, boxes, notifications).
+
 ## 1.12.0 — micro-interactions harmonised
 
 - The micro-interactions of Épure (hover, focus, opening of the cards, the fields, the chips, the quiz, the footer, the « busy » signal) take one duration and one curve everywhere, those of the buttons of Bootstrap: two tokens, `--epure-motion` (.15s) and `--epure-ease` (ease-in-out), where twelve durations and curves were written apart (.15s to .2s, ease, ease-in-out, ease-out). The cards that rise under the pointer rise by the same height everywhere (`--epure-lift`).

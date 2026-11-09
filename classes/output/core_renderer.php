@@ -299,13 +299,14 @@ class core_renderer extends \theme_boost\output\core_renderer {
 
     /**
      * Top of the page; on the pages that install or upgrade Moodle and its plugins, a message while the
-     * server sends the page.
+     * server sends the page. Kept here and not in a hook: the hooks of the plugins are not all read while Moodle
+     * installs or upgrades them. The rest of the top of the page comes from a hook
+     * ({@see \theme_epure\hook_callbacks::before_standard_top_of_body_html_generation()}).
      *
      * @return string HTML.
      */
     public function standard_top_of_body_html() {
-        return parent::standard_top_of_body_html() . \theme_epure\busy::top_of_body($this->page)
-            . \theme_epure\activity_icons::filters() . $this->epure_print_header();
+        return parent::standard_top_of_body_html() . \theme_epure\busy::top_of_body($this->page);
     }
 
     /**
@@ -314,7 +315,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
      *
      * @return string HTML.
      */
-    protected function epure_print_header(): string {
+    public function epure_print_header(): string {
         global $SITE;
         if (in_array($this->page->pagelayout, ['embedded', 'redirect', 'popup'], true)) {
             return '';
@@ -332,20 +333,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
 
     /**
      * End of the page; on the pages that install or upgrade Moodle and its plugins, an indicator that Moodle
-     * is working once a step is started, as the server can take minutes to answer.
+     * is working once a step is started, as the server can take minutes to answer. Kept here, as the top of the page.
      *
      * @return string HTML.
      */
     public function standard_end_of_body_html() {
-        $output = parent::standard_end_of_body_html();
-        // The page of the messages reuses the template of the drawer, hidden from assistive technologies
-        // (aria-hidden) although the page shows it: the theme shows it to them too, and names the region.
-        if ($this->page->pagetype === 'message-index') {
-            $output .= \html_writer::script('document.querySelectorAll(\'[data-region="message-index"]\').forEach(function(e) {'
-                . 'e.removeAttribute("aria-hidden"); e.removeAttribute("aria-expanded"); e.setAttribute("aria-label", '
-                . json_encode(get_string('messages', 'message')) . '); });');
-        }
-        return $output . \theme_epure\busy::end_of_body($this->page);
+        return parent::standard_end_of_body_html() . \theme_epure\busy::end_of_body($this->page);
     }
 
     /**
@@ -367,32 +360,6 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 'theme_epure/quick_search',
                 ['shortcut' => 'Ctrl K', 'public' => \theme_epure\quick_search::visitor()]
             ) . $output;
-        }
-        return $output;
-    }
-
-    /**
-     * Footer links, with the accessibility statement when it is published.
-     *
-     * @return string HTML.
-     */
-    public function standard_footer_html() {
-        $output = parent::standard_footer_html();
-        // The help of the keyboard shortcuts (key « ? »): a link, as the window of the footer is a copy that Bootstrap
-        // cleans of its buttons and of their data attributes.
-        if (!during_initial_install()) {
-            $output .= \html_writer::div(\html_writer::link(
-                '#epure-shortcuts',
-                get_string('shortcuts_footer', 'theme_epure'),
-                ['class' => 'epure-shortcuts-link']
-            ), 'epure-shortcuts-footer');
-        }
-        // The footer of Épure already has the link; without it, the link goes in Moodle's footer.
-        if (\theme_epure\accessibility_statement::enabled() && !\theme_epure\footer::enabled()) {
-            $output .= \html_writer::div(\html_writer::link(
-                \theme_epure\accessibility_statement::url(),
-                get_string('a11ystatement', 'theme_epure')
-            ), 'epure-a11y-footer-link');
         }
         return $output;
     }
