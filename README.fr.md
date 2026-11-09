@@ -117,6 +117,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.12.0** : aucun nouveau réglage. Le SCSS personnalisé peut utiliser les jetons `--epure-motion`, `--epure-ease` et `--epure-lift`, que la réduction des animations annule.
 - **1.11.0** : aucun nouveau réglage ; une nouvelle tâche planifiée (effacer le contenu des documents « Ma synthèse » expirés). Les documents émis avant gardent une validité sans limite, et peuvent désormais être révoqués ou supprimés par leur apprenant.
 - **1.10.0** : aucun nouveau réglage. Le guide « Accessibilité du cours » lit les 44 modules d'autres plugins les plus installés (annuaire de Moodle, par installations), à partir de leurs tables telles qu'elles sont publiées.
 - **1.9.0** : aucun nouveau réglage. Le guide « Accessibilité du cours » couvre tous les modules de Moodle (aussi ateliers, glossaires, feedbacks, bases de données), fait confirmer le contenu des paquets et outils externes, et liste les modules d'autres plugins ; un plugin peut faire lire son contenu (docs/Accessibilité.md).

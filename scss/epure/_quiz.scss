@@ -162,7 +162,7 @@
         min-height: 0;
         margin: 0;
         transform: translateX(-50%);
-        animation: epure-quiz-confirm .18s ease-out;
+        animation: epure-quiz-confirm var(--epure-motion) var(--epure-ease);
     }
 
     .modal-content {
@@ -269,7 +269,7 @@
         background-color: var(--epure-surface);
         border: 1px solid var(--epure-border);
         border-radius: var(--epure-radius);
-        transition: border-color .15s ease, background-color .15s ease;
+        transition: border-color var(--epure-motion) var(--epure-ease), background-color var(--epure-motion) var(--epure-ease);
 
         &:hover {
             border-color: var(--epure-brand);

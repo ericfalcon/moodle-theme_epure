@@ -235,21 +235,6 @@ body.epure-header-brand .navbar.fixed-top .divider {
     color: var(--epure-on-brand);
 }
 
-// Respect the system setting to reduce motion (WCAG 2.3.3).
-// !important is needed to win over the transitions set by Moodle and Bootstrap components.
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        transition: none !important; // stylelint-disable-line declaration-no-important
-        scroll-behavior: auto !important; // stylelint-disable-line declaration-no-important
-    }
-
-    .dashboard-card:hover {
-        transform: none;
-    }
-}
-
 // Edit mode switch on phones: Moodle hides its label for lack of room, which leaves a switch without a word. A pencil,
 // Moodle's icon to edit, stands for it before the switch; the label keeps its text for screen readers and still
 // toggles the switch when tapped. Moodle hides it with !important.

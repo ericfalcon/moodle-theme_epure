@@ -1,5 +1,10 @@
 # Changes
 
+## 1.12.0 — micro-interactions harmonised
+
+- The micro-interactions of Épure (hover, focus, opening of the cards, the fields, the chips, the quiz, the footer, the « busy » signal) take one duration and one curve everywhere, those of the buttons of Bootstrap: two tokens, `--epure-motion` (.15s) and `--epure-ease` (ease-in-out), where twelve durations and curves were written apart (.15s to .2s, ease, ease-in-out, ease-out). The cards that rise under the pointer rise by the same height everywhere (`--epure-lift`).
+- Reduced motion: the same rules whether it is asked in the panel « Aa » or by the system (WCAG 2.3.3). The animations of Moodle and Bootstrap stop too when the system asks it (only their transitions did), and the cards no longer rise.
+
 ## 1.11.0 — « My summary » under the control of the learner, and the quick search for large platforms
 
 - « My summary »: before downloading the PDF, the page lists what its recipient will see on the page of verification (name, courses, progress, activities with their dates, grades, certificates), and the learner chooses how long the document can be verified: 3 months, 1 year (by default) or without limit. The validity is printed on the PDF and shown on the page of verification.

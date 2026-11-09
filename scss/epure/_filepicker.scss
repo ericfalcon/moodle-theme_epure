@@ -163,7 +163,7 @@
     background-color: var(--epure-surface);
     border: 1px solid var(--epure-border);
     border-radius: var(--epure-radius);
-    transition: border-color .15s ease, background-color .15s ease;
+    transition: border-color var(--epure-motion) var(--epure-ease), background-color var(--epure-motion) var(--epure-ease);
 
     &:hover {
         background-color: var(--epure-brand-soft);

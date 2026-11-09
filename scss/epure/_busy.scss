@@ -55,7 +55,7 @@
     padding: 0 4.5rem;
     background-color: transparent;
     pointer-events: none;
-    animation: epure-busy-appear .2s 1s both;
+    animation: epure-busy-appear var(--epure-motion) 1s both;
 
     .epure-busy-box {
         display: grid;

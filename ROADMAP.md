@@ -239,7 +239,7 @@ Les chantiers du thème prévus ci-dessus (0.29 à 0.57) sont livrés. Avant la 
 #### Code
 
 - [ ] **Moins de surcharges** (ne conditionne pas la publication) : déplacer ce qui peut l'être de `core_renderer` vers les hooks de Moodle (haut de page, pied de page, reste de l'en-tête), chacun limité au thème Épure et couvert par un test ; réduire les `!important` du SCSS. Par petites étapes, sur Moodle 4.5 et 5.x ; on garde les surcharges vraiment nécessaires.
-- [ ] **Micro-interactions harmonisées** (ne conditionne pas la publication) : mêmes durées et mêmes transitions partout, coupées par « réduire les animations ».
+- [x] **Micro-interactions harmonisées** (1.12.0) : mêmes durées et mêmes transitions partout (jetons `--epure-motion`, `--epure-ease`, `--epure-lift`), coupées par « réduire les animations », du panneau « Aa » comme du système.
 - [ ] Corrections remontées par les utilisateurs, en priorité celles qui gênent l'apprentissage.
 
 #### Publication (V1.0)

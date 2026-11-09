@@ -1,7 +1,7 @@
 // Footer of every page. It follows the page, so the drawers open beside the page must not cover it.
 @include media-breakpoint-up(lg) {
     #page.drawers ~ .epure-footer {
-        transition: margin .2s;
+        transition: margin var(--epure-motion) var(--epure-ease);
     }
 
     #page.drawers.show-drawer-left ~ .epure-footer {
@@ -172,7 +172,7 @@
 .epure-simpleview .btn-footer-popover {
     opacity: .5;
     transform: scale(.85);
-    transition: opacity .15s, transform .15s;
+    transition: opacity var(--epure-motion) var(--epure-ease), transform var(--epure-motion) var(--epure-ease);
 
     &:hover,
     &:focus,
