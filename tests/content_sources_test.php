@@ -40,13 +40,13 @@ final class content_sources_test extends \advanced_testcase {
         $this->assertSame('unread', content_sources::coverage('notamodule'));
         foreach (content_sources::third_party() as $modname => $coverage) {
             $this->assertNotContains($modname, content_sources::core_modules());
-            $this->assertContains($coverage, ['plugin', 'content', 'description', 'external', 'unread']);
+            $this->assertContains($coverage, ['plugin', 'content', 'description', 'external', 'visual', 'unread']);
         }
         $this->assertNotSame('', content_sources::report());
         // The modules of other plugins Épure knows are not modules of Moodle, and each has a way to be read.
         foreach (content_sources::KNOWN as $modname => $coverage) {
             $this->assertNotContains($modname, content_sources::core_modules(), $modname);
-            $this->assertContains($coverage, ['content', 'description', 'external'], $modname);
+            $this->assertContains($coverage, ['content', 'description', 'external', 'visual'], $modname);
         }
     }
 
@@ -187,5 +187,78 @@ final class content_sources_test extends \advanced_testcase {
         $parts = array_column(course_accessibility::analyse($course), null, 'id');
         $checks = array_column($parts[$scorm->cmid]['checks'], 'label', 'kind');
         $this->assertSame('Package', $checks['external'] ?? null);
+    }
+
+    /**
+     * The images of the modules of other plugins read from their files: the background of a learning map without a
+     * description in its SVG, the images of a lightbox gallery without a caption (keyed by their name, or by the hash
+     * of their path in the older versions).
+     */
+    public function test_known_images(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $course = $this->getDataGenerator()->create_course();
+        // A module of Moodle stands for the activity: its context holds the files.
+        $page = $this->getDataGenerator()->create_module('page', ['course' => $course->id]);
+        $context = \context_module::instance($page->cmid);
+        $file = fn(string $component, string $area, string $name) => get_file_storage()->create_file_from_string(
+            ['contextid' => $context->id, 'component' => $component, 'filearea' => $area, 'itemid' => 0, 'filepath' => '/',
+                'filename' => $name],
+            'image'
+        );
+        $texts = function (string $modname, \stdClass $record) use ($page): array {
+            $texts = [];
+            $add = function ($text, $format, $kind, $name) use (&$texts): void {
+                $texts[] = $name;
+            };
+            (new \ReflectionMethod(content_sources::class, 'known_texts'))->invoke(
+                null,
+                $modname,
+                (int) $page->cmid,
+                $record,
+                $add
+            );
+            return $texts;
+        };
+
+        // A learning map: without a background, nothing; with one, its description is needed.
+        $svg = fn(string $desc) => '<svg><title id="title-1"><![CDATA[Map]]></title><desc id="desc-1">' . $desc . '</desc></svg>';
+        $this->assertSame([], $texts('learningmap', (object) ['svgcode' => $svg('')]));
+        $file('mod_learningmap', 'background', 'map.png');
+        $this->assertSame(
+            [get_string('courseaccessibility_learningmap_background', 'theme_epure')],
+            $texts('learningmap', (object) ['svgcode' => $svg('<![CDATA[ ]]>')])
+        );
+        $this->assertSame([], $texts('learningmap', (object) ['svgcode' => $svg('<![CDATA[A river]]>')]));
+
+        // A lightbox gallery: the captions in a table made for the test.
+        $dbman = $DB->get_manager();
+        $table = new \xmldb_table('lightboxgallery_image_meta');
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+        $table->add_field('gallery', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('image', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL);
+        $table->add_field('metatype', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, 'caption');
+        $table->add_field('description', XMLDB_TYPE_TEXT);
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $dbman->create_table($table);
+        try {
+            $file('mod_lightboxgallery', 'gallery_images', 'bus.jpg');
+            $old = $file('mod_lightboxgallery', 'gallery_images', 'car.jpg');
+            $file('mod_lightboxgallery', 'gallery_images', 'tree.jpg');
+            $DB->insert_record('lightboxgallery_image_meta', ['gallery' => 5, 'image' => 'bus.jpg', 'metatype' => 'caption',
+                'description' => 'The school bus']);
+            $DB->insert_record('lightboxgallery_image_meta', ['gallery' => 5, 'image' => $old->get_pathnamehash(),
+                'metatype' => 'caption', 'description' => 'A red car']);
+            $DB->insert_record('lightboxgallery_image_meta', ['gallery' => 5, 'image' => 'tree.jpg', 'metatype' => 'tag',
+                'description' => 'nature']);
+            $this->assertSame(
+                [get_string('courseaccessibility_lightboxgallery_image', 'theme_epure', 'tree.jpg')],
+                $texts('lightboxgallery', (object) ['id' => 5])
+            );
+        } finally {
+            $dbman->drop_table($table);
+        }
+        // A mind map: drawn, to give as text too.
+        $this->assertSame('visual', content_sources::coverage('mindmap'));
     }
 }

@@ -1,5 +1,14 @@
 # Changes
 
+## 1.14.0 — Learning map, Lightbox Gallery and Mindmap in the guide « Accessibility of the course »
+
+The three modules of other plugins most installed that the guide did not judge yet, read from their code (Learning map 0.9, Lightbox Gallery 5.1, Mindmap 2024): 47 modules of other plugins known now.
+
+- Learning map: the background image of the map without a description (« Title and description » of the map, read by the screen readers) is an image without a text alternative, with the link to the settings of the map. The places are named by their activities, by the plugin itself.
+- Lightbox Gallery: each image without a caption is an image without a text alternative: the plugin names its link by the caption, else by the name of the file. The captions of the older versions (keyed by the hash of the path of the file) count too.
+- Mindmap: the map is drawn in a canvas, which the screen readers cannot read: a point to confirm, that its content is also given as text (in the description, for example). The setting of the guide lists it with the modules whose content Épure cannot judge.
+- PHPUnit test: the background of a learning map with and without its description, the images of a gallery with a caption (by name and by the hash of their path), with a tag only, without anything.
+
 ## 1.13.0 — fewer overrides of the renderer (first step)
 
 - The links of the footer (help of the keyboard shortcuts, accessibility statement without the footer of Épure) come from the hook `before_standard_footer_html_generation`: the override of `standard_footer_html()` is gone.
