@@ -19,7 +19,9 @@
 
     « My summary »: what the platform recorded of a learner, on a page they print or save as PDF. The figures, then
     each course with its progress, its date of completion, its grade and the activities completed with their date,
-    then the certificates, and a note on what the summary proves.
+    then the certificates, and a note on what the summary proves. Then the documents: the form to issue a PDF with a
+    code of verification, saying what its recipient will see and for how long, and the documents issued, to revoke or
+    delete.
 
     Example context (json):
     {
@@ -32,7 +34,15 @@
                 "datecompleted": "", "grade": "", "hasactivities": false, "activities": []}
         ],
         "hascertificates": true, "certificates": [{"name": "Safety at work", "date": "12/10/26", "url": "#"}],
-        "pdfurl": "#"
+        "pdfaction": "#", "sesskey": "abc",
+        "validity": [{"value": 90, "label": "3 months", "checked": false, "id": "v90"},
+            {"value": 365, "label": "1 year", "checked": true, "id": "v365"},
+            {"value": 0, "label": "Without limit", "checked": false, "id": "v0"}],
+        "hasdocuments": true, "documents": [
+            {"id": 1, "code": "ABCD-EFGH-JKMN", "issued": "30/10/26, 10:12", "until": "30 October 2027",
+                "state": "Valid", "statekey": "valid", "canrevoke": true, "verifyurl": "#", "revokeurl": "#",
+                "deleteurl": "#"}
+        ]
     }
 }}
 <div class="epure-summary">
@@ -42,7 +52,7 @@
             <p class="epure-summary-date">{{#str}}mysummary_date, theme_epure, {{date}}{{/str}}</p>
         </div>
         <div class="epure-summary-actions d-print-none">
-            <a class="btn btn-primary" href="{{pdfurl}}">
+            <a class="btn btn-primary" href="#epure-summary-documents">
                 <i class="fa fa-file-pdf" aria-hidden="true"></i> {{#str}}mysummary_pdf, theme_epure{{/str}}
             </a>
             <button type="button" class="btn btn-outline-secondary" data-action="epure-summary-print">
@@ -88,6 +98,69 @@
     {{/hascertificates}}
 
     <p class="epure-summary-note">{{#str}}mysummary_note, theme_epure{{/str}}</p>
+
+    <section class="epure-summary-documents d-print-none" id="epure-summary-documents" aria-labelledby="epure-summary-documents-heading">
+        <h2 class="epure-summary-heading" id="epure-summary-documents-heading">{{#str}}mysummary_documents, theme_epure{{/str}}</h2>
+        <form class="epure-summary-issue" method="get" action="{{pdfaction}}">
+            <input type="hidden" name="format" value="pdf">
+            <input type="hidden" name="sesskey" value="{{sesskey}}">
+            <p>{{#str}}mysummary_issue_intro, theme_epure{{/str}}</p>
+            <ul class="epure-summary-shared">
+                <li>{{#str}}mysummary_shared_identity, theme_epure{{/str}}</li>
+                <li>{{#str}}mysummary_shared_courses, theme_epure{{/str}}</li>
+                <li>{{#str}}mysummary_shared_grades, theme_epure{{/str}}</li>
+                <li>{{#str}}mysummary_shared_certificates, theme_epure{{/str}}</li>
+            </ul>
+            <fieldset class="epure-summary-validity">
+                <legend>{{#str}}mysummary_validity, theme_epure{{/str}}</legend>
+                {{#validity}}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="validity" id="{{id}}" value="{{value}}"{{#checked}} checked{{/checked}}>
+                        <label class="form-check-label" for="{{id}}">{{label}}</label>
+                    </div>
+                {{/validity}}
+            </fieldset>
+            <p class="epure-summary-issue-note">{{#str}}mysummary_issue_control, theme_epure{{/str}}</p>
+            <button type="submit" class="btn btn-primary">
+                <i class="fa fa-file-pdf" aria-hidden="true"></i> {{#str}}mysummary_pdf, theme_epure{{/str}}
+            </button>
+        </form>
+
+        {{#hasdocuments}}
+            <h3 class="epure-summary-subheading">{{#str}}mysummary_issued, theme_epure{{/str}}</h3>
+            <div class="table-responsive">
+                <table class="table epure-summary-issued">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{#str}}mysummary_verify_code, theme_epure{{/str}}</th>
+                            <th scope="col">{{#str}}mysummary_issuedon, theme_epure{{/str}}</th>
+                            <th scope="col">{{#str}}mysummary_until, theme_epure{{/str}}</th>
+                            <th scope="col">{{#str}}mysummary_state, theme_epure{{/str}}</th>
+                            <th scope="col"><span class="visually-hidden sr-only">{{#str}}actions{{/str}}</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#documents}}
+                            <tr>
+                                <th scope="row"><a href="{{verifyurl}}">{{code}}</a></th>
+                                <td>{{issued}}</td>
+                                <td>{{until}}</td>
+                                <td><span class="epure-summary-state epure-summary-state-{{statekey}}">{{state}}</span></td>
+                                <td>
+                                    <div class="epure-summary-docactions">
+                                    {{#canrevoke}}
+                                        <a class="btn btn-sm btn-outline-secondary" href="{{revokeurl}}">{{#str}}mysummary_revoke, theme_epure{{/str}}<span class="visually-hidden sr-only"> {{code}}</span></a>
+                                    {{/canrevoke}}
+                                    <a class="btn btn-sm btn-outline-danger" href="{{deleteurl}}">{{#str}}mysummary_delete, theme_epure{{/str}}<span class="visually-hidden sr-only"> {{code}}</span></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {{/documents}}
+                    </tbody>
+                </table>
+            </div>
+        {{/hasdocuments}}
+    </section>
 </div>
 {{#js}}
     document.querySelectorAll('[data-action="epure-summary-print"]').forEach(function(button) {

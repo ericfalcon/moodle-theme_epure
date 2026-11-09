@@ -136,4 +136,65 @@ final class learner_summary_document_test extends \core_privacy\tests\provider_t
         delete_user($other);
         $this->assertFalse($DB->record_exists(learner_summary_document::TABLE, ['userid' => $other->id]));
     }
+
+    /**
+     * The learner chooses how long a document can be verified: three months, a year (by default) or without limit; an
+     * other value is the default. A document expired is no longer valid, and the task erases its content.
+     */
+    public function test_validity(): void {
+        global $PAGE, $DB;
+        $user = $this->learner();
+        $output = $PAGE->get_renderer('core');
+        $now = time();
+
+        $short = learner_summary_document::issue($output, (int) $user->id, null, 90);
+        $this->assertEqualsWithDelta($now + 90 * DAYSECS, (int) $short->timeexpires, 5);
+        $default = learner_summary_document::issue($output, (int) $user->id, null, 12);
+        $this->assertEqualsWithDelta($now + 365 * DAYSECS, (int) $default->timeexpires, 5);
+        $forever = learner_summary_document::issue($output, (int) $user->id, null, 0);
+        $this->assertSame(0, (int) $forever->timeexpires);
+        $this->assertSame(get_string('mysummary_validity_none', 'theme_epure'), learner_summary_document::until($forever));
+
+        $this->assertSame('valid', learner_summary_document::state($short));
+        $this->assertSame('expired', learner_summary_document::state($short, $now + 91 * DAYSECS));
+        $this->assertSame('valid', learner_summary_document::state($forever, $now + 3650 * DAYSECS));
+
+        // The task, a hundred days later: only the content of the document of three months is erased.
+        $this->assertSame(1, learner_summary_document::purge_expired($now + 100 * DAYSECS));
+        $this->assertSame('{}', $DB->get_field(learner_summary_document::TABLE, 'data', ['id' => $short->id]));
+        $this->assertNotSame('{}', $DB->get_field(learner_summary_document::TABLE, 'data', ['id' => $default->id]));
+        $this->assertSame(0, learner_summary_document::purge_expired($now + 100 * DAYSECS));
+    }
+
+    /**
+     * The learner revokes a document (its content erased, its code kept) or deletes it (its code gone); never the
+     * document of another learner. The page lists their documents, each with its state.
+     */
+    public function test_revoke_delete(): void {
+        global $PAGE, $DB;
+        $user = $this->learner();
+        $other = $this->getDataGenerator()->create_user();
+        $output = $PAGE->get_renderer('core');
+        $first = learner_summary_document::issue($output, (int) $user->id);
+        $second = learner_summary_document::issue($output, (int) $user->id);
+
+        $this->assertFalse(learner_summary_document::revoke((int) $other->id, (int) $first->id));
+        $this->assertTrue(learner_summary_document::revoke((int) $user->id, (int) $first->id));
+        $this->assertFalse(learner_summary_document::revoke((int) $user->id, (int) $first->id));
+        $revoked = learner_summary_document::find($first->code);
+        $this->assertSame('revoked', learner_summary_document::state($revoked));
+        $this->assertSame('{}', $revoked->data);
+
+        $this->setUser($user);
+        $page = learner_summary_document::export_documents((int) $user->id);
+        $this->assertCount(2, $page['documents']);
+        $this->assertSame([true, false], array_column($page['documents'], 'canrevoke'));
+        // A year chosen by default.
+        $this->assertSame([false, true, false], array_column($page['validity'], 'checked'));
+
+        $this->assertFalse(learner_summary_document::delete((int) $other->id, (int) $second->id));
+        $this->assertTrue(learner_summary_document::delete((int) $user->id, (int) $second->id));
+        $this->assertNull(learner_summary_document::find($second->code));
+        $this->assertTrue($DB->record_exists(learner_summary_document::TABLE, ['id' => $first->id]));
+    }
 }

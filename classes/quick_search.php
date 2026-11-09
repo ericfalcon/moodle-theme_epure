@@ -35,8 +35,11 @@ class quick_search {
     /** @var int Results of each group. */
     public const LIMIT = 6;
 
-    /** @var int Courses of the user whose activities are searched. */
+    /** @var int Courses of the user whose activities are searched, those they opened last; all on the page of results. */
     public const ACTIVITY_COURSES = 30;
+
+    /** @var int Results of each group on the page of all the results. */
+    public const RESULTS = 100;
 
     /**
      * Whether the quick search is offered to the current user.
@@ -186,7 +189,17 @@ class quick_search {
             return [];
         }
         $groups = [];
-        [$mycourses, $activities, $enrolled] = self::my_courses($words);
+        [$mycourses, $activities, $enrolled, $more] = self::mine($words, self::LIMIT, self::ACTIVITY_COURSES);
+        // More results in the courses of the user than shown: the page of all of them.
+        if ($more) {
+            $activities[] = [
+                'id' => 0,
+                'name' => get_string('quicksearch_allmine', 'theme_epure', $query),
+                'url' => self::results_url($query)->out(false),
+                'detail' => '',
+                'icon' => 'fa-magnifying-glass',
+            ];
+        }
         $groups[] = ['key' => 'mycourses', 'label' => get_string('mycourses'), 'items' => $mycourses];
         $groups[] = ['key' => 'activities', 'label' => get_string('quicksearch_activities', 'theme_epure'),
             'items' => $activities];
@@ -211,27 +224,79 @@ class quick_search {
     }
 
     /**
-     * The courses of the user, and the activities of their courses, matching the words.
+     * How well a name matches the words, the best first: 0 the name is the query, 1 it starts with it, 2 each word
+     * starts a word of the name, 3 the name contains each word.
+     *
+     * @param string $name Name, normalised.
+     * @param string[] $words Words of the query, normalised.
+     * @return int
+     */
+    public static function rank(string $name, array $words): int {
+        $query = implode(' ', $words);
+        if ($name === $query) {
+            return 0;
+        }
+        if (str_starts_with($name, $query)) {
+            return 1;
+        }
+        $starts = preg_split('/[^a-z0-9]+/', $name, -1, PREG_SPLIT_NO_EMPTY);
+        foreach ($words as $word) {
+            $found = false;
+            foreach ($starts as $start) {
+                if (str_starts_with($start, $word)) {
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                return 3;
+            }
+        }
+        return 2;
+    }
+
+    /**
+     * The courses of the user, the courses they opened last first.
+     *
+     * @return \stdClass[]
+     */
+    protected static function courses_by_access(): array {
+        global $DB, $USER;
+        $courses = enrol_get_my_courses(['fullname', 'shortname', 'visible']);
+        $access = $DB->get_records_menu('user_lastaccess', ['userid' => $USER->id], '', 'courseid, timeaccess');
+        $order = array_flip(array_keys($courses));
+        uasort($courses, fn($a, $b) => ((int) ($access[$b->id] ?? 0) <=> (int) ($access[$a->id] ?? 0))
+            ?: $order[$a->id] <=> $order[$b->id]);
+        return $courses;
+    }
+
+    /**
+     * The courses of the user, and the activities of their courses, matching the words, the best first: by how well
+     * their name matches, then the courses the user opened last.
      *
      * @param string[] $words Words of the query, normalised.
-     * @return array{0: array[], 1: array[], 2: int[]} Courses and activities found, and all the courses of the user.
+     * @param int $limit Results of each kind.
+     * @param int $courselimit Courses whose activities are searched, those opened last; 0 for all.
+     * @return array{0: array[], 1: array[], 2: int[], 3: bool} Courses and activities found, all the courses of the user,
+     *     and whether more results are left than shown.
      */
-    protected static function my_courses(array $words): array {
+    public static function mine(array $words, int $limit, int $courselimit): array {
         global $USER;
-        $courses = enrol_get_my_courses(['fullname', 'shortname', 'visible']);
+        $courses = self::courses_by_access();
         $found = [];
         $activities = [];
+        $more = $courselimit && count($courses) > $courselimit;
         $searched = 0;
         // Without activity icons, a plain icon marks the activities, as the other results.
         $icons = activity_icons::current() !== 'none';
         foreach ($courses as $course) {
             $context = \context_course::instance($course->id);
             $name = format_string($course->fullname, true, ['context' => $context]);
-            if (
-                count($found) < self::LIMIT
-                    && self::matches(self::normalise($name . ' ' . $course->shortname), $words)
-            ) {
+            $normal = self::normalise($name . ' ' . $course->shortname);
+            if (self::matches($normal, $words)) {
                 $found[] = [
+                    'rank' => self::rank(self::normalise($name), $words),
+                    'order' => count($found),
                     'id' => (int) $course->id,
                     'name' => $name,
                     'url' => (new \moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
@@ -239,7 +304,7 @@ class quick_search {
                     'icon' => 'fa-graduation-cap',
                 ];
             }
-            if (count($activities) >= self::LIMIT || $searched++ >= self::ACTIVITY_COURSES) {
+            if ($courselimit && $searched++ >= $courselimit) {
                 continue;
             }
             foreach (get_fast_modinfo($course, $USER->id)->get_cms() as $cm) {
@@ -247,20 +312,38 @@ class quick_search {
                     continue;
                 }
                 $cmname = $cm->get_formatted_name();
-                if (self::matches(self::normalise($cmname), $words)) {
+                $normal = self::normalise($cmname);
+                if (self::matches($normal, $words)) {
                     $activities[] = [
+                        'rank' => self::rank($normal, $words),
+                        'order' => count($activities),
                         'id' => (int) $cm->id,
                         'name' => $cmname,
                         'url' => $cm->url->out(false),
                         'detail' => $name,
                     ] + ($icons ? ['image' => $cm->get_icon_url()->out(false)] : ['icon' => 'fa-file-lines']);
-                    if (count($activities) >= self::LIMIT) {
-                        break;
-                    }
                 }
             }
         }
-        return [$found, $activities, array_map('intval', array_keys($courses))];
+        $best = function (array $items) use ($limit): array {
+            usort($items, fn($a, $b) => [$a['rank'], $a['order']] <=> [$b['rank'], $b['order']]);
+            return array_map(function (array $item) {
+                unset($item['rank'], $item['order']);
+                return $item;
+            }, array_slice($items, 0, $limit));
+        };
+        $more = $more || count($found) > $limit || count($activities) > $limit;
+        return [$best($found), $best($activities), array_map('intval', array_keys($courses)), $more];
+    }
+
+    /**
+     * The page of all the results in the courses of the user.
+     *
+     * @param string $query Query.
+     * @return \moodle_url
+     */
+    public static function results_url(string $query = ''): \moodle_url {
+        return new \moodle_url('/theme/epure/search.php', $query === '' ? [] : ['q' => $query]);
     }
 
     /**

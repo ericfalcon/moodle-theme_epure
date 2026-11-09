@@ -18,7 +18,7 @@
     @template theme_epure/summary_verify
 
     Verification of a « My summary » document: the form of the code, then what the platform issued under it, or that
-    no document has this code.
+    the document was revoked by its holder or expired (its content no longer shown), or that no document has this code.
 
     Example context (json):
     {
@@ -90,8 +90,13 @@
                 </section>
             {{/document}}
         {{/found}}
+        {{#closed}}
+            <div class="alert alert-info" role="status">{{closed}}</div>
+        {{/closed}}
         {{^found}}
-            <div class="alert alert-warning" role="status">{{#str}}mysummary_verify_notfound, theme_epure, {{code}}{{/str}}</div>
+            {{^closed}}
+                <div class="alert alert-warning" role="status">{{#str}}mysummary_verify_notfound, theme_epure, {{code}}{{/str}}</div>
+            {{/closed}}
         {{/found}}
     {{/searched}}
 </div>

@@ -182,4 +182,56 @@ final class quick_search_test extends \advanced_testcase {
         $this->assertFalse(quick_search::enabled());
         $this->assertEquals([], $this->search_public('Sécurité'));
     }
+
+    /**
+     * The names that match best come first: the name itself, then a name that starts with the query, then a name
+     * whose words start with the words of the query, then a name that only contains them.
+     */
+    public function test_rank(): void {
+        $this->assertSame(0, quick_search::rank('risk', ['risk']));
+        $this->assertSame(1, quick_search::rank('risk assessment', ['risk']));
+        $this->assertSame(2, quick_search::rank('fire risk', ['risk']));
+        $this->assertSame(3, quick_search::rank('asterisk', ['risk']));
+
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course(['fullname' => 'Safety']);
+        foreach (['Asterisk', 'Fire risk', 'Risk assessment', 'Risk'] as $name) {
+            $generator->create_module('page', ['course' => $course->id, 'name' => $name]);
+        }
+        $this->setUser($generator->create_and_enrol($course, 'student'));
+        $this->assertSame(['Risk', 'Risk assessment', 'Fire risk', 'Asterisk'], $this->search('risk')['activities']);
+    }
+
+    /**
+     * A learner in more courses than the quick search reads: the activities of the courses they opened last are found,
+     * and a link leads to the page of all the results, which reads all their courses.
+     */
+    public function test_many_courses(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $learner = $generator->create_user();
+        $count = quick_search::ACTIVITY_COURSES + 5;
+        for ($i = 1; $i <= $count; $i++) {
+            $course = $generator->create_course(['fullname' => 'Course ' . $i]);
+            $generator->enrol_user($learner->id, $course->id, 'student');
+            // The first course opened long ago, the others recently.
+            $DB->insert_record('user_lastaccess', ['userid' => $learner->id, 'courseid' => $course->id,
+                'timeaccess' => $i === 1 ? 1000 : 2000 + $i]);
+            if ($i === 1 || $i === $count) {
+                $generator->create_module('page', ['course' => $course->id, 'name' => 'Logbook ' . $i]);
+            }
+        }
+        $this->setUser($learner);
+
+        // The quick search: the course opened recently, and the link to all the results.
+        $this->assertSame(
+            ['Logbook ' . $count, get_string('quicksearch_allmine', 'theme_epure', 'logbook')],
+            $this->search('logbook')['activities']
+        );
+        // The page of all the results: both.
+        [, $activities] = quick_search::mine(['logbook'], quick_search::RESULTS, 0);
+        $this->assertEqualsCanonicalizing(['Logbook 1', 'Logbook ' . $count], array_column($activities, 'name'));
+    }
 }

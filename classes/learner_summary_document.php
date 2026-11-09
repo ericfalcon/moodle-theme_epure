@@ -26,6 +26,10 @@ namespace theme_epure;
  *
  * The PDF is not tagged for the screen readers: the page « My summary » stays the accessible version, and says so.
  *
+ * The learner keeps control of what they issued: they choose how long a document can be verified (three months, a year
+ * or without limit), and they can revoke a document or delete it. A document revoked or expired keeps only its code and
+ * its dates: the page of verification says it was issued, and no longer shows its content.
+ *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -40,17 +44,31 @@ class learner_summary_document {
     /** @var int Characters of a code, written in groups of four (about 59 bits of chance). */
     public const LENGTH = 12;
 
+    /** @var int[] Times of validity the learner chooses from, in days; 0 for without limit. */
+    public const VALIDITY = [90, 365, 0];
+
+    /** @var int Time of validity chosen by default, in days. */
+    public const DEFAULT_VALIDITY = 365;
+
     /**
      * Issues a document: the summary of the learner as it is now, kept with a new code.
      *
      * @param \renderer_base $output Renderer.
      * @param int $userid Learner.
      * @param string|null $code Code, for the tests; a new one by default.
-     * @return \stdClass Record of the document: id, userid, code, timecreated, data (JSON), contenthash.
+     * @param int $days Days the document can be verified, one of {@see self::VALIDITY}; 0 for without limit.
+     * @return \stdClass Record of the document: id, userid, code, timecreated, data (JSON), contenthash, timeexpires,
+     *     timerevoked.
      */
-    public static function issue(\renderer_base $output, int $userid, ?string $code = null): \stdClass {
+    public static function issue(
+        \renderer_base $output,
+        int $userid,
+        ?string $code = null,
+        int $days = self::DEFAULT_VALIDITY
+    ): \stdClass {
         global $DB;
         $now = time();
+        $days = in_array($days, self::VALIDITY, true) ? $days : self::DEFAULT_VALIDITY;
         $data = self::snapshot(learner_summary::export($output, $userid, $now), $userid);
         $json = json_encode($data, JSON_UNESCAPED_UNICODE);
         $record = (object) [
@@ -59,6 +77,8 @@ class learner_summary_document {
             'timecreated' => $now,
             'data' => $json,
             'contenthash' => hash('sha256', $json),
+            'timeexpires' => $days ? $now + $days * DAYSECS : 0,
+            'timerevoked' => 0,
         ];
         $record->id = $DB->insert_record(self::TABLE, $record);
         return $record;
@@ -102,6 +122,145 @@ class learner_summary_document {
             'certificatecount' => $summary['certificatecount'],
             'courses' => $courses,
             'certificates' => $certificates,
+        ];
+    }
+
+    /**
+     * The state of a document: valid (its content shown to whoever has its code), revoked by the learner, or expired.
+     *
+     * @param \stdClass $record Document.
+     * @param int|null $now Time, now by default.
+     * @return string valid, revoked or expired.
+     */
+    public static function state(\stdClass $record, ?int $now = null): string {
+        if (!empty($record->timerevoked)) {
+            return 'revoked';
+        }
+        if (!empty($record->timeexpires) && $record->timeexpires <= ($now ?? time())) {
+            return 'expired';
+        }
+        return 'valid';
+    }
+
+    /**
+     * The documents a learner issued, the latest first.
+     *
+     * @param int $userid Learner.
+     * @return \stdClass[]
+     */
+    public static function documents(int $userid): array {
+        global $DB;
+        return array_values($DB->get_records(
+            self::TABLE,
+            ['userid' => $userid],
+            'timecreated DESC, id DESC',
+            'id, userid, code, timecreated, timeexpires, timerevoked'
+        ));
+    }
+
+    /**
+     * Revokes a document of a learner: its content is erased, its code and its dates kept, for the page of verification
+     * to say it was issued and revoked.
+     *
+     * @param int $userid Learner.
+     * @param int $id Document.
+     * @return bool Whether a document of the learner was revoked.
+     */
+    public static function revoke(int $userid, int $id): bool {
+        global $DB;
+        $record = $DB->get_record(self::TABLE, ['id' => $id, 'userid' => $userid]);
+        if (!$record || !empty($record->timerevoked)) {
+            return false;
+        }
+        $DB->update_record(self::TABLE, (object) ['id' => $record->id, 'timerevoked' => time(), 'data' => '{}']);
+        return true;
+    }
+
+    /**
+     * Deletes a document of a learner: its code no longer exists on the platform.
+     *
+     * @param int $userid Learner.
+     * @param int $id Document.
+     * @return bool Whether a document of the learner was deleted.
+     */
+    public static function delete(int $userid, int $id): bool {
+        global $DB;
+        if (!$DB->record_exists(self::TABLE, ['id' => $id, 'userid' => $userid])) {
+            return false;
+        }
+        $DB->delete_records(self::TABLE, ['id' => $id, 'userid' => $userid]);
+        return true;
+    }
+
+    /**
+     * Erases the content of the documents expired, as of those revoked (scheduled task).
+     *
+     * @param int|null $now Time, now by default.
+     * @return int Documents erased.
+     */
+    public static function purge_expired(?int $now = null): int {
+        global $DB;
+        $select = 'timeexpires > 0 AND timeexpires <= :now AND ' . $DB->sql_compare_text('data', 2) . ' <> :empty';
+        $params = ['now' => $now ?? time(), 'empty' => '{}'];
+        $ids = $DB->get_fieldset_select(self::TABLE, 'id', $select, $params);
+        if ($ids) {
+            [$in, $inparams] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED);
+            $DB->set_field_select(self::TABLE, 'data', '{}', 'id ' . $in, $inparams);
+        }
+        return count($ids);
+    }
+
+    /**
+     * Until when a document can be verified: « until 9 November 2027 », or « without limit ».
+     *
+     * @param \stdClass $record Document.
+     * @return string
+     */
+    public static function until(\stdClass $record): string {
+        if (empty($record->timeexpires)) {
+            return get_string('mysummary_validity_none', 'theme_epure');
+        }
+        $date = userdate($record->timeexpires, get_string('strftimedate', 'langconfig'));
+        return get_string('mysummary_until_date', 'theme_epure', $date);
+    }
+
+    /**
+     * Context of the part « Documents issued » of the page « My summary »: the form to issue a document, with what its
+     * recipient will see and its time of validity, and the documents issued, each with its state and its actions.
+     *
+     * @param int $userid Learner.
+     * @return array
+     */
+    public static function export_documents(int $userid): array {
+        $action = learner_summary::url()->out(false);
+        $validity = array_map(fn(int $days) => [
+            'value' => $days,
+            'label' => get_string('mysummary_validity_' . $days, 'theme_epure'),
+            'checked' => $days === self::DEFAULT_VALIDITY,
+            'id' => 'epure-summary-validity-' . $days,
+        ], self::VALIDITY);
+        $documents = array_map(function (\stdClass $record) use ($action) {
+            $state = self::state($record);
+            return [
+                'id' => (int) $record->id,
+                'code' => self::format_code($record->code),
+                'issued' => userdate($record->timecreated, get_string('strftimedatetimeshort', 'langconfig')),
+                'until' => self::until($record),
+                'state' => get_string('mysummary_state_' . $state, 'theme_epure', $state === 'revoked'
+                    ? userdate($record->timerevoked, get_string('strftimedate', 'langconfig')) : null),
+                'statekey' => $state,
+                'canrevoke' => $state === 'valid',
+                'verifyurl' => self::verify_url($record->code)->out(false),
+                'revokeurl' => (new \moodle_url($action, ['action' => 'revoke', 'id' => $record->id]))->out(false),
+                'deleteurl' => (new \moodle_url($action, ['action' => 'delete', 'id' => $record->id]))->out(false),
+            ];
+        }, self::documents($userid));
+        return [
+            'pdfaction' => $action,
+            'sesskey' => sesskey(),
+            'validity' => $validity,
+            'documents' => $documents,
+            'hasdocuments' => !empty($documents),
         ];
     }
 
@@ -180,6 +339,7 @@ class learner_summary_document {
         return $data + [
             'code' => self::format_code($record->code),
             'issued' => userdate($record->timecreated, get_string('strftimedatetime', 'langconfig')),
+            'until' => self::until($record),
             'hascourses' => !empty($data['courses']),
             'hascertificates' => !empty($data['certificates']),
         ];
@@ -306,7 +466,8 @@ class learner_summary_document {
             . '<p style="font-size:9pt;">' . s(get_string('mysummary_pdf_verify', 'theme_epure', [
                 'code' => $data['code'],
                 'date' => $data['issued'],
-            ])) . '<br><a href="' . s($url) . '">' . s($url) . '</a></p>';
+            ])) . '<br><a href="' . s($url) . '">' . s($url) . '</a><br>'
+            . s(get_string('mysummary_pdf_until', 'theme_epure', $data['until'])) . '</p>';
         return $html;
     }
 
