@@ -327,7 +327,7 @@ if ($ADMIN->fulltree) {
     $page->add(new admin_setting_configcheckbox(
         'theme_epure/courseaccessibility',
         get_string('courseaccessibility', 'theme_epure'),
-        get_string('courseaccessibility_desc', 'theme_epure'),
+        get_string('courseaccessibility_desc', 'theme_epure') . ' ' . theme_epure\content_sources::report(),
         0
     ));
 

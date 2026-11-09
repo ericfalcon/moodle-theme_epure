@@ -99,6 +99,22 @@ $observers = [
         'callback' => '\theme_epure\observer::course_deleted',
     ],
     [
+        'eventname' => '\mod_glossary\event\entry_created',
+        'callback' => '\theme_epure\observer::course_content_changed',
+    ],
+    [
+        'eventname' => '\mod_glossary\event\entry_updated',
+        'callback' => '\theme_epure\observer::course_content_changed',
+    ],
+    [
+        'eventname' => '\mod_glossary\event\entry_deleted',
+        'callback' => '\theme_epure\observer::course_content_changed',
+    ],
+    [
+        'eventname' => '\mod_data\event\template_updated',
+        'callback' => '\theme_epure\observer::course_content_changed',
+    ],
+    [
         'eventname' => '\mod_book\event\chapter_created',
         'callback' => '\theme_epure\observer::course_content_changed',
     ],

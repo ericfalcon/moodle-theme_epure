@@ -1,5 +1,14 @@
 # Changes
 
+## 1.9.0 — the guide « Accessibility of the course » covers every module of Moodle and finds the modules of other plugins
+
+- Every module of activity and resource of Moodle is covered, in each version (the list of Moodle itself, `core_plugin_manager::standard_plugins_list('mod')`). Each activity has its description and its files read, as before. Beyond them, the content the teachers write is now read in the workshops (instructions for the submission and for the assessment, conclusion), the glossaries (the entries of the teachers, not those of the learners), the feedbacks (their texts and media) and the databases (their templates), each mistake with its place and the link to change it. The contributions of the learners (posts, entries, records, submissions) are never read: they are not the course.
+- The SCORM and IMS packages and the external tools (LTI) get a point to confirm: their content comes from elsewhere, Épure reads only their description and their files.
+- The modules of other plugins: a module can give its content to the guide with a function of its lib.php, `mod_{name}_epure_accessibility_texts(cm_info $cm): array` (documentation for developers in docs/Accessibilité.md). A module that does not gets a point to confirm on each of its activities, and the setting « Accessibility of the course » lists the modules of other plugins installed, those whose content is read and those whose only description and files are.
+- The contents read move to a class of their own, `theme_epure\content_sources`: where each module keeps the texts of its teachers, how the guide reads it.
+- The guide forgets what it read of a course when an entry of a glossary or a template of a database changes.
+- PHPUnit tests: the coverage of every module of Moodle, the modules of other plugins found, the texts of a workshop, a glossary (an entry of a teacher, not that of a learner), a feedback and a database, the point to confirm of a SCORM package.
+
 ## 1.8.0 — consolidation: IOMAD 5.0 tested, the header of the custom SCSS checked partly when it must, the Markdown read
 
 - IOMAD 5.0 joins the continuous integration (PHPUnit, Behat with axe-core), between 4.5 and 5.1; the documentation of the versions says 4.5, 5.0, 5.1 and 5.2.
