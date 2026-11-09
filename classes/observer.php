@@ -105,6 +105,24 @@ class observer {
     }
 
     /**
+     * Any event: when an activity of a course creates, changes or deletes something (its content, its texts, its
+     * files, the entries of its users), the guide « Accessibility of the course » forgets what it read of the course,
+     * for its next view to read it again. For every module, of Moodle or of another plugin, without knowing its
+     * events. Called for each event of the site: two comparisons, and a deletion in the cache only when needed.
+     *
+     * @param \core\event\base $event Event.
+     */
+    public static function activity_changed(\core\event\base $event): void {
+        if (
+            $event->crud === 'r' || empty($event->courseid) || (int) $event->courseid === SITEID
+                || !str_starts_with((string) $event->component, 'mod_')
+        ) {
+            return;
+        }
+        course_accessibility::forget((int) $event->courseid);
+    }
+
+    /**
      * Deletes the confirmations of an activity deleted, in the guide « Accessibility of the course ».
      *
      * @param \core\event\course_module_deleted $event Event.

@@ -1,5 +1,11 @@
 # Changes
 
+## 1.15.0 — the guide « Accessibility of the course » sees at once what changes in every activity
+
+- The guide kept what it read of a course for an hour, unless an activity was changed in its settings or a few modules of Moodle changed their content (books, lessons, glossaries, databases): a change in the content of another module, or of a module of another plugin, was seen up to an hour later. It now forgets the course as soon as any activity creates, changes or deletes something: one observer of all the events (`*`) of Moodle, which keeps those of a module (`mod_*`) that write (create, update, delete) in a course, for every module of Moodle or of another plugin, without knowing its events. The observers of the events of the books, lessons, glossaries and databases are replaced by it.
+- The cost: two comparisons for each event of the site, and a deletion in the cache when an activity writes; the next view of the guide reads the course again.
+- PHPUnit test: a view of a page keeps what the guide read, a change of a template of a database forgets it.
+
 ## 1.14.0 — Learning map, Lightbox Gallery and Mindmap in the guide « Accessibility of the course »
 
 The three modules of other plugins most installed that the guide did not judge yet, read from their code (Learning map 0.9, Lightbox Gallery 5.1, Mindmap 2024): 47 modules of other plugins known now.
