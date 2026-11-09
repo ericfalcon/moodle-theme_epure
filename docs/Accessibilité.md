@@ -60,5 +60,5 @@ function mod_monmodule_epure_accessibility_texts(cm_info $cm): array {
 }
 ```
 
-Le texte brut n'est pas lu ; le Markdown l'est, une fois converti en HTML. Le guide garde ce qu'il a lu d'un cours pendant une heure, et l'oublie dès qu'une activité est modifiée (`course_module_updated`) : si votre module change son contenu ailleurs que dans le formulaire de l'activité, appelez `\theme_epure\course_accessibility::forget($courseid)` quand la classe existe.
+Le texte brut n'est pas lu ; le Markdown l'est, une fois converti en HTML. Le guide garde ce qu'il a lu d'un cours pendant une heure, et l'oublie dès qu'une activité crée, modifie ou supprime quelque chose : tout événement d'un module (`mod_*`) qui écrit (`crud` c, u ou d) avec le cours. Votre module n'a rien à faire s'il déclenche ses événements ; sinon, appelez `\theme_epure\course_accessibility::forget($courseid)` quand la classe existe.
 

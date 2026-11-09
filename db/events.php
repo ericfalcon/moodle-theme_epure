@@ -98,45 +98,11 @@ $observers = [
         'eventname' => '\core\event\course_deleted',
         'callback' => '\theme_epure\observer::course_deleted',
     ],
+    // Any change made in an activity, by any module of Moodle or of another plugin, without knowing its events: the
+    // guide « Accessibility of the course » reads it again (theme_epure\observer::activity_changed).
     [
-        'eventname' => '\mod_glossary\event\entry_created',
-        'callback' => '\theme_epure\observer::course_content_changed',
-    ],
-    [
-        'eventname' => '\mod_glossary\event\entry_updated',
-        'callback' => '\theme_epure\observer::course_content_changed',
-    ],
-    [
-        'eventname' => '\mod_glossary\event\entry_deleted',
-        'callback' => '\theme_epure\observer::course_content_changed',
-    ],
-    [
-        'eventname' => '\mod_data\event\template_updated',
-        'callback' => '\theme_epure\observer::course_content_changed',
-    ],
-    [
-        'eventname' => '\mod_book\event\chapter_created',
-        'callback' => '\theme_epure\observer::course_content_changed',
-    ],
-    [
-        'eventname' => '\mod_book\event\chapter_updated',
-        'callback' => '\theme_epure\observer::course_content_changed',
-    ],
-    [
-        'eventname' => '\mod_book\event\chapter_deleted',
-        'callback' => '\theme_epure\observer::course_content_changed',
-    ],
-    [
-        'eventname' => '\mod_lesson\event\page_created',
-        'callback' => '\theme_epure\observer::course_content_changed',
-    ],
-    [
-        'eventname' => '\mod_lesson\event\page_updated',
-        'callback' => '\theme_epure\observer::course_content_changed',
-    ],
-    [
-        'eventname' => '\mod_lesson\event\page_deleted',
-        'callback' => '\theme_epure\observer::course_content_changed',
+        'eventname' => '*',
+        'callback' => '\theme_epure\observer::activity_changed',
     ],
     [
         'eventname' => '\core\event\question_created',

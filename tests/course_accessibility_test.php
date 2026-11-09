@@ -317,4 +317,35 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         course_delete_module($quiz->cmid);
         $this->assertFalse($DB->record_exists(course_accessibility::TABLE, ['courseid' => $course->id]));
     }
+
+    /**
+     * The guide reads a course again as soon as an activity changes something, whatever its module: an event that
+     * writes, from any module, forgets what the guide read; an event that only reads, or that is not of a module, does
+     * not.
+     */
+    public function test_forget_on_change(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $course = $this->getDataGenerator()->create_course();
+        $data = $this->getDataGenerator()->create_module('data', ['course' => $course->id]);
+        $page = $this->getDataGenerator()->create_module('page', ['course' => $course->id]);
+        $cache = \cache::make('theme_epure', 'courseaccessibility');
+        course_accessibility::analyse($course);
+        $this->assertNotFalse($cache->get((int) $course->id));
+
+        // A view of a page: kept.
+        \mod_page\event\course_module_viewed::create([
+            'objectid' => $page->id,
+            'context' => \context_module::instance($page->cmid),
+        ])->trigger();
+        $this->assertNotFalse($cache->get((int) $course->id));
+
+        // A template of a database changed: forgotten.
+        \mod_data\event\template_updated::create([
+            'context' => \context_module::instance($data->cmid),
+            'courseid' => $course->id,
+            'other' => ['dataid' => $data->id],
+        ])->trigger();
+        $this->assertFalse($cache->get((int) $course->id));
+    }
 }
