@@ -47,7 +47,8 @@ class content_sources {
      * installs), read from their tables as they are published (db/install.xml), without their code: content (their
      * content read here), description (their description and files hold all the teacher writes, the rest being the
      * contributions of the learners, a certificate or a register), external (their content comes from elsewhere: a
-     * video, a meeting, a package). A module that gives its content through {@see self::CALLBACK} is read that way.
+     * video, a meeting, a package), visual (their content is drawn, which the screen readers cannot read). A module that
+     * gives its content through {@see self::CALLBACK} is read that way.
      */
     public const KNOWN = [
         'attendance' => 'description',
@@ -71,7 +72,10 @@ class content_sources {
         'interactivevideo' => 'external',
         'jitsi' => 'external',
         'journal' => 'description',
+        'learningmap' => 'content',
+        'lightboxgallery' => 'content',
         'mediagallery' => 'description',
+        'mindmap' => 'visual',
         'msteams' => 'external',
         'offlinequiz' => 'description',
         'organizer' => 'description',
@@ -143,7 +147,8 @@ class content_sources {
     /**
      * The modules of other plugins installed on the site, each with how the guide reads it.
      *
-     * @return array<string, string> Name of the module => its coverage: plugin, content, description, external or unread.
+     * @return array<string, string> Name of the module => its coverage: plugin, content, description, external, visual
+     *     or unread.
      */
     public static function third_party(): array {
         $modules = [];
@@ -170,7 +175,7 @@ class content_sources {
         // Read: those that give their content, and those Épure knows how to read.
         $names = ['plugin' => [], 'external' => [], 'unread' => []];
         foreach ($modules as $modname => $coverage) {
-            $group = in_array($coverage, ['content', 'description'], true) ? 'plugin' : $coverage;
+            $group = ['content' => 'plugin', 'description' => 'plugin', 'visual' => 'external'][$coverage] ?? $coverage;
             $names[$group][] = get_string('modulename', $modname) . ' (mod_' . $modname . ')';
         }
         $lines = [];
@@ -379,6 +384,40 @@ class content_sources {
                 foreach ($rows('interactivevideo_items', ['cmid' => $cmid], 'timestamp, id') as $item) {
                     if ($html($item->content ?? '')) {
                         $add($item->content, FORMAT_HTML, 'item', format_string((string) ($item->title ?? '')), $view);
+                    }
+                }
+                break;
+            case 'learningmap':
+                // The background of the map: an image, described in the description of the SVG for the screen readers.
+                $context = \context_module::instance($cmid);
+                $background = get_file_storage()->get_area_files($context->id, 'mod_learningmap', 'background', false, 'id', false);
+                preg_match('~<desc[^>]*>(.*?)</desc>~s', (string) ($record->svgcode ?? ''), $desc);
+                $described = trim(str_replace(['<![CDATA[', ']]>'], '', $desc[1] ?? '')) !== '';
+                if ($background && !$described) {
+                    $add('<img src="#">', FORMAT_HTML, 'item', $str('learningmap_background'), $edit);
+                }
+                break;
+            case 'lightboxgallery':
+                // The images, each a link named by its caption, else by the name of its file.
+                $context = \context_module::instance($cmid);
+                $captions = [];
+                foreach ($rows('lightboxgallery_image_meta', ['gallery' => $record->id, 'metatype' => 'caption']) as $meta) {
+                    if (trim(strip_tags((string) $meta->description)) !== '') {
+                        $captions[(string) $meta->image] = true;
+                    }
+                }
+                $files = get_file_storage()->get_area_files(
+                    $context->id,
+                    'mod_lightboxgallery',
+                    'gallery_images',
+                    false,
+                    'filename',
+                    false
+                );
+                foreach ($files as $file) {
+                    // The image of the caption: its name, or the hash of its path in the older versions.
+                    if (empty($captions[$file->get_filename()]) && empty($captions[$file->get_pathnamehash()])) {
+                        $add('<img src="#">', FORMAT_HTML, 'item', $str('lightboxgallery_image', $file->get_filename()), $view);
                     }
                 }
                 break;

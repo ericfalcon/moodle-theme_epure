@@ -473,7 +473,7 @@ class course_accessibility {
                 // What Épure cannot read: the content of a package or an external tool, the content of a module of
                 // another plugin that does not give it. A point to confirm by a person.
                 $coverage = content_sources::coverage($modname);
-                if (in_array($coverage, ['external', 'unread'], true)) {
+                if (in_array($coverage, ['external', 'unread', 'visual'], true)) {
                     $part['checks'][] = ['key' => $coverage, 'kind' => $coverage, 'label' => (string) $cm->name];
                 }
                 if (!$record) {

@@ -117,6 +117,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.14.0**: no new setting. The guide also judges Learning map, Lightbox Gallery and Mindmap.
 - **1.13.0**: no new setting; upgrade the site so that Moodle reads the new hooks of Épure (or purge the caches).
 - **1.12.0**: no new setting. Custom SCSS can use the tokens `--epure-motion`, `--epure-ease` and `--epure-lift`, which reduced motion sets to nothing.
 - **1.11.0**: no new setting; a new scheduled task (erasing the content of the « My summary » documents expired). The documents issued before keep a validity without limit, and can now be revoked or deleted by their learner.
