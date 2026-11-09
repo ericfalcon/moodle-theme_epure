@@ -33,7 +33,7 @@ Le vérificateur accompagne le guide « Accessibilité du cours » (onglet Acces
 
 ## Pour les développeurs de plugins d'activité
 
-Le guide « Accessibilité du cours » lit, pour chaque activité, sa description et ses fichiers. Il lit aussi le contenu propre des modules de Moodle (pages, devoirs, tests, livres, leçons, ateliers, glossaires, feedbacks, bases de données). Le contenu d'un module d'un autre plugin n'est lu que si le plugin le donne ; sinon, le guide demande à l'enseignant de le vérifier, et le réglage « Accessibilité du cours » liste ces modules.
+Le guide « Accessibilité du cours » lit, pour chaque activité, sa description et ses fichiers. Il lit aussi le contenu propre des modules de Moodle (pages, devoirs, tests, livres, leçons, ateliers, glossaires, feedbacks, bases de données). Il connaît aussi les modules d'autres plugins les plus installés (Questionnaire, Unilabel, Content Pages, Interactive Video, Booking, Scheduler, Diary, Face-to-face, Game, HotPot, Realtime Quiz, Video Time…) : il lit leurs tables telles qu'elles sont publiées, sans exécuter leur code, et la liste complète est dans `theme_epure\content_sources::KNOWN`. Le contenu d'un autre module n'est lu que si le plugin le donne ; sinon, le guide demande à l'enseignant de le vérifier, et le réglage « Accessibilité du cours » liste ces modules. Un plugin qui donne son contenu est lu ainsi, même s'il est connu.
 
 Pour que le guide lise votre module, ajoutez à son `lib.php` la fonction suivante. Elle renvoie les textes écrits par les enseignants (jamais les contributions des apprenants), chacun avec son format, le nom de son emplacement et l'adresse où le corriger :
 
