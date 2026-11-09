@@ -46,6 +46,14 @@ $callbacks = [
         'callback' => [\theme_epure\hook_callbacks::class, 'before_footer_html_generation'],
     ],
     [
+        'hook' => \core\hook\output\before_standard_top_of_body_html_generation::class,
+        'callback' => [\theme_epure\hook_callbacks::class, 'before_standard_top_of_body_html_generation'],
+    ],
+    [
+        'hook' => \core\hook\output\before_standard_footer_html_generation::class,
+        'callback' => [\theme_epure\hook_callbacks::class, 'before_standard_footer_html_generation'],
+    ],
+    [
         'hook' => \core\hook\output\before_http_headers::class,
         'callback' => [\theme_epure\hook_callbacks::class, 'before_http_headers'],
     ],

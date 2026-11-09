@@ -238,7 +238,7 @@ Les chantiers du thème prévus ci-dessus (0.29 à 0.57) sont livrés. Avant la 
 
 #### Code
 
-- [ ] **Moins de surcharges** (ne conditionne pas la publication) : déplacer ce qui peut l'être de `core_renderer` vers les hooks de Moodle (haut de page, pied de page, reste de l'en-tête), chacun limité au thème Épure et couvert par un test ; réduire les `!important` du SCSS. Par petites étapes, sur Moodle 4.5 et 5.x ; on garde les surcharges vraiment nécessaires.
+- [ ] **Moins de surcharges** (ne conditionne pas la publication ; 1.13.0 : pied de page, haut et fin de page passés aux hooks, `standard_head_html()` gardée car le hook du haut de page passe avant la feuille de style) : déplacer ce qui peut l'être de `core_renderer` vers les hooks de Moodle (haut de page, pied de page, reste de l'en-tête), chacun limité au thème Épure et couvert par un test ; réduire les `!important` du SCSS. Par petites étapes, sur Moodle 4.5 et 5.x ; on garde les surcharges vraiment nécessaires.
 - [x] **Micro-interactions harmonisées** (1.12.0) : mêmes durées et mêmes transitions partout (jetons `--epure-motion`, `--epure-ease`, `--epure-lift`), coupées par « réduire les animations », du panneau « Aa » comme du système.
 - [ ] Corrections remontées par les utilisateurs, en priorité celles qui gênent l'apprentissage.
 
