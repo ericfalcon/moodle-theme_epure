@@ -40,9 +40,88 @@ final class content_sources_test extends \advanced_testcase {
         $this->assertSame('unread', content_sources::coverage('notamodule'));
         foreach (content_sources::third_party() as $modname => $coverage) {
             $this->assertNotContains($modname, content_sources::core_modules());
-            $this->assertContains($coverage, ['plugin', 'unread']);
+            $this->assertContains($coverage, ['plugin', 'content', 'description', 'external', 'unread']);
         }
         $this->assertNotSame('', content_sources::report());
+        // The modules of other plugins Épure knows are not modules of Moodle, and each has a way to be read.
+        foreach (content_sources::KNOWN as $modname => $coverage) {
+            $this->assertNotContains($modname, content_sources::core_modules(), $modname);
+            $this->assertContains($coverage, ['content', 'description', 'external'], $modname);
+        }
+    }
+
+    /**
+     * The modules of other plugins Épure knows are read from their tables as published: here those of Unilabel and
+     * Questionnaire, made for the test; a table missing gives no text.
+     */
+    public function test_known(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $dbman = $DB->get_manager();
+        $tables = [
+            'unilabeltype_imageboard' => ['unilabelid'],
+            'unilabeltype_imageboard_img' => ['imageboardid', 'title', 'alt'],
+            'unilabeltype_accordion' => ['unilabelid'],
+            'unilabeltype_accordion_seg' => ['accordionid', 'sortorder', 'heading', 'content'],
+            'questionnaire_survey' => ['info', 'thank_body'],
+            'questionnaire_question' => ['surveyid', 'position', 'name', 'content', 'deleted'],
+        ];
+        foreach ($tables as $name => $fields) {
+            $table = new \xmldb_table($name);
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+            foreach ($fields as $field) {
+                // The links and orders are numbers, the texts texts: a text cannot be in a condition.
+                $number = in_array($field, ['unilabelid', 'imageboardid', 'accordionid', 'sortorder', 'surveyid', 'position',
+                    'deleted'], true);
+                $table->add_field($field, $number ? XMLDB_TYPE_INTEGER : XMLDB_TYPE_TEXT, $number ? '10' : null);
+            }
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+            if (!$dbman->table_exists($table)) {
+                $dbman->create_table($table);
+            }
+        }
+        try {
+            $board = $DB->insert_record('unilabeltype_imageboard', ['unilabelid' => 7]);
+            $DB->insert_record('unilabeltype_imageboard_img', ['imageboardid' => $board, 'title' => '', 'alt' => '']);
+            $DB->insert_record('unilabeltype_imageboard_img', ['imageboardid' => $board, 'title' => '', 'alt' => 'Map']);
+            $accordion = $DB->insert_record('unilabeltype_accordion', ['unilabelid' => 8]);
+            $DB->insert_record('unilabeltype_accordion_seg', ['accordionid' => $accordion, 'sortorder' => 1,
+                'heading' => '<p>Rules</p>', 'content' => '<p>Read them</p>']);
+            $survey = $DB->insert_record('questionnaire_survey', ['info' => '<p>About</p>', 'thank_body' => '']);
+            $DB->insert_record('questionnaire_question', ['surveyid' => $survey, 'position' => 1, 'name' => 'Age',
+                'content' => '<p>Your age?</p>', 'deleted' => 0]);
+            $DB->insert_record('questionnaire_question', ['surveyid' => $survey, 'position' => 2, 'name' => 'Old',
+                'content' => '<p>Gone</p>', 'deleted' => 1]);
+
+            $texts = function (string $modname, \stdClass $record): array {
+                $texts = [];
+                $add = function ($text, $format, $kind, $name) use (&$texts): void {
+                    if (trim((string) $text) !== '') {
+                        $texts[] = ['text' => $text, 'kind' => $kind, 'name' => $name];
+                    }
+                };
+                $method = new \ReflectionMethod(content_sources::class, 'known_texts');
+                $method->invoke(null, $modname, 1, $record, $add);
+                return $texts;
+            };
+            // The image without a text alternative nor a title, not the one with one.
+            $this->assertSame(
+                ['<img src="#">'],
+                array_column($texts('unilabel', (object) ['id' => 7, 'unilabeltype' => 'imageboard']), 'text')
+            );
+            $accordion = $texts('unilabel', (object) ['id' => 8, 'unilabeltype' => 'accordion']);
+            $this->assertSame(['Rules'], array_column($accordion, 'name'));
+            // The questions not deleted, with the introduction of the survey.
+            $read = $texts('questionnaire', (object) ['id' => 1, 'sid' => $survey]);
+            $this->assertSame(['content', 'question'], array_column($read, 'kind'));
+            $this->assertSame('Age', $read[1]['name']);
+            // A type of Unilabel whose table is missing: nothing.
+            $this->assertSame([], $texts('unilabel', (object) ['id' => 9, 'unilabeltype' => 'grid']));
+        } finally {
+            foreach (array_keys($tables) as $name) {
+                $dbman->drop_table(new \xmldb_table($name));
+            }
+        }
     }
 
     /**
