@@ -117,6 +117,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.12.0**: no new setting. Custom SCSS can use the tokens `--epure-motion`, `--epure-ease` and `--epure-lift`, which reduced motion sets to nothing.
 - **1.11.0**: no new setting; a new scheduled task (erasing the content of the « My summary » documents expired). The documents issued before keep a validity without limit, and can now be revoked or deleted by their learner.
 - **1.10.0**: no new setting. The guide « Accessibility of the course » reads the 44 modules of other plugins most installed (the directory of Moodle, by installs), from their tables as published.
 - **1.9.0**: no new setting. The guide « Accessibility of the course » covers every module of Moodle (also workshops, glossaries, feedbacks, databases), asks to confirm the content of the packages and external tools, and lists the modules of other plugins; a plugin can have its content read (docs/Accessibilité.md).

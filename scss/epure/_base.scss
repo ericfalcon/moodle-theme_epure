@@ -351,11 +351,11 @@ a.badge-primary.focus {
 
 .dashboard-card {
     overflow: hidden;
-    transition: box-shadow .2s ease, transform .2s ease;
+    transition: box-shadow var(--epure-motion) var(--epure-ease), transform var(--epure-motion) var(--epure-ease);
 
     &:hover {
         box-shadow: var(--epure-shadow-hover);
-        transform: translateY(-2px);
+        transform: translateY(var(--epure-lift));
     }
 }
 

@@ -87,13 +87,32 @@ html.epure-a11y-underline a:not(.btn):not(.nav-link):not(.dropdown-item) {
     text-underline-offset: .15em;
 }
 
-html.epure-a11y-motion *,
-html.epure-a11y-motion *::before,
-html.epure-a11y-motion *::after {
-    animation-duration: 0s !important; // stylelint-disable-line declaration-no-important
-    animation-iteration-count: 1 !important; // stylelint-disable-line declaration-no-important
-    transition-duration: 0s !important; // stylelint-disable-line declaration-no-important
-    scroll-behavior: auto !important; // stylelint-disable-line declaration-no-important
+// Reduced motion, asked in the panel « Aa » or by the system (WCAG 2.3.3): the same rules for both. The micro-interactions
+// of Épure lose their duration (--epure-motion) and the cards no longer rise (--epure-lift); those of Moodle and
+// Bootstrap lose their duration too, !important winning over them.
+@mixin epure-no-motion {
+    --epure-motion: 0s;
+    --epure-lift: 0;
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0s !important; // stylelint-disable-line declaration-no-important
+        animation-iteration-count: 1 !important; // stylelint-disable-line declaration-no-important
+        transition-duration: 0s !important; // stylelint-disable-line declaration-no-important
+        scroll-behavior: auto !important; // stylelint-disable-line declaration-no-important
+    }
+}
+
+html.epure-a11y-motion {
+    @include epure-no-motion;
+}
+
+// :root, as the tokens (_tokens.scss), for the same weight: this rule comes after them.
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        @include epure-no-motion;
+    }
 }
 
 // Button « Aa » and its panel.
