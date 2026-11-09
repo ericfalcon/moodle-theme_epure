@@ -200,3 +200,88 @@
         }
     }
 }
+
+// The documents issued: the form to issue a PDF, with what its recipient will see and its time of validity, then the
+// documents, each with its state (coloured as the states of the theme) and its actions.
+.epure-summary-documents {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--epure-border);
+}
+
+.epure-summary-issue {
+    margin-bottom: 1.5rem;
+}
+
+.epure-summary-shared {
+    padding-left: 1.25rem;
+}
+
+.epure-summary-validity {
+    margin-bottom: 1rem;
+
+    legend {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    // Each choice a target of 24 px at least (WCAG 2.2, 2.5.8), its label beside it.
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        min-height: 1.5rem;
+        margin-bottom: .375rem;
+        padding-left: 0;
+    }
+
+    .form-check-input {
+        position: static;
+        flex: 0 0 auto;
+        width: 1.5rem;
+        height: 1.5rem;
+        margin: 0;
+    }
+}
+
+.epure-summary-issue-note {
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+}
+
+.epure-summary-issued th,
+.epure-summary-issued td {
+    vertical-align: middle;
+}
+
+.epure-summary-issued th[scope="row"] {
+    font-family: $font-family-monospace;
+    font-weight: 400;
+}
+
+.epure-summary-state {
+    display: inline-block;
+    padding: .125rem .5rem;
+    border-radius: var(--epure-radius-pill);
+    background: var(--epure-state-bg);
+    color: var(--epure-state-ink);
+    font-weight: 600;
+}
+
+.epure-summary-state-valid {
+    --epure-state-ink: var(--epure-state-done);
+    --epure-state-bg: var(--epure-state-done-soft);
+}
+
+.epure-summary-state-expired,
+.epure-summary-state-revoked {
+    --epure-state-ink: var(--epure-ink-muted);
+    --epure-state-bg: var(--epure-surface-muted);
+}
+
+.epure-summary-docactions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem;
+    justify-content: flex-end;
+}

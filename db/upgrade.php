@@ -150,6 +150,19 @@ function xmldb_theme_epure_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026110500, 'theme', 'epure');
     }
 
+    // The documents « My summary » (1.11.0): they have a time of validity, and the learner can revoke them.
+    if ($oldversion < 2026110903) {
+        $table = new xmldb_table('theme_epure_summary');
+        $dbman = $DB->get_manager();
+        foreach (['timeexpires', 'timerevoked'] as $name) {
+            $field = new xmldb_field($name, XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+            if ($dbman->table_exists($table) && !$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+        upgrade_plugin_savepoint(true, 2026110903, 'theme', 'epure');
+    }
+
     // The strings of Épure take the vocabulary too (« Search my courses »), but those describing it, and change with
     // its versions: after each upgrade, it is applied again in the languages it is used in.
     foreach (\theme_epure\vocabulary\manager::languages() as $lang) {

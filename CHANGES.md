@@ -1,5 +1,13 @@
 # Changes
 
+## 1.11.0 — « My summary » under the control of the learner, and the quick search for large platforms
+
+- « My summary »: before downloading the PDF, the page lists what its recipient will see on the page of verification (name, courses, progress, activities with their dates, grades, certificates), and the learner chooses how long the document can be verified: 3 months, 1 year (by default) or without limit. The validity is printed on the PDF and shown on the page of verification.
+- « My summary »: the documents issued are listed with their code, date, validity and state. The learner revokes a document (its content is erased, the page of verification says only that it was issued and revoked) or deletes it (its code no longer exists), after a confirmation. A scheduled task erases each night the content of the documents expired, which the page of verification no longer shows. The privacy API exports their validity and revocation.
+- « My summary »: the download of the PDF failed with an error (the library of files of Moodle was not loaded); fixed.
+- Quick search: the courses and activities that match best come first (the name itself, then a name starting with the query, then a name whose words start with it), and the activities are searched in the 30 courses the user opened last, not the first 30. When more results are left, a link opens a new page of all the results in the courses of the user (`/theme/epure/search.php`), which reads all their courses, up to the 100 best of each kind.
+- PHPUnit tests: the validity, the expiry and the task, the revocation and deletion (never of another learner's document), the ranking of the quick search, a learner in 35 courses.
+
 ## 1.10.0 — the guide « Accessibility of the course » reads the modules of other plugins most installed
 
 - Épure knows the 44 activity modules of other plugins most installed (the directory of Moodle, by installs: the first 48, without BigBlueButton, in Moodle since 4.0, Learning map, Lightbox Gallery and Mindmap, whose maps and images Épure cannot judge from their tables). It reads them from their tables as they are published (db/install.xml), without their code; a table or a field missing in the version installed gives no text.

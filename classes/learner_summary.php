@@ -186,8 +186,6 @@ class learner_summary {
             'certificates' => $certificates,
             'hascertificates' => !empty($certificates),
             'certificatecount' => count($certificates),
-            // The PDF with a code of verification: a request with the sesskey, as it issues a document.
-            'pdfurl' => (new \moodle_url('/theme/epure/summary.php', ['format' => 'pdf', 'sesskey' => sesskey()]))->out(false),
         ];
     }
 

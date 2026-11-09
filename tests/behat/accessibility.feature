@@ -240,6 +240,19 @@ Feature: Accessibility of the Épure theme
     And I press "Verify"
     And I should see "No document has the code ABCD-EFGH-JKMP"
     And the page should meet accessibility standards
+    # The learner revokes it: the page of verification says only that it was issued and revoked.
+    And I log in as "learner1"
+    And I visit "/theme/epure/summary.php"
+    And I should see "Valid" in the "ABCD-EFGH-JKMN" "table_row"
+    And the page should meet accessibility standards
+    And I click on "Revoke" "link" in the "ABCD-EFGH-JKMN" "table_row"
+    And I press "Revoke"
+    And I should see "The document ABCD-EFGH-JKMN was revoked."
+    And I should see "Revoked on" in the "ABCD-EFGH-JKMN" "table_row"
+    And I log out
+    And I visit "/theme/epure/verify.php?code=ABCD-EFGH-JKMN"
+    And I should see "revoked by its holder"
+    And I should not see "Safety at work"
 
   Scenario: The long settings forms list their sections and keep the buttons to save in view
     Given the following "courses" exist:

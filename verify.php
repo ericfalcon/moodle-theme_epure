@@ -42,11 +42,24 @@ $context = [
     'code' => $code === '' ? '' : learner_summary_document::format_code($code),
     'searched' => $code !== '',
 ];
-if ($code !== '' && ($document = learner_summary_document::find($code))) {
+$document = $code === '' ? null : learner_summary_document::find($code);
+$state = $document ? learner_summary_document::state($document) : '';
+if ($document && $state !== 'valid') {
+    // Revoked by the learner, or expired: that it was issued, and when, but not its content.
+    $context['closed'] = get_string('mysummary_verify_' . $state, 'theme_epure', [
+        'platform' => format_string(get_site()->fullname),
+        'date' => userdate($document->timecreated, get_string('strftimedatetime', 'langconfig')),
+        'end' => userdate(
+            $state === 'revoked' ? $document->timerevoked : $document->timeexpires,
+            get_string('strftimedate', 'langconfig')
+        ),
+    ]);
+} else if ($document) {
     $context['document'] = learner_summary_document::export($document);
     $context['found'] = get_string('mysummary_verify_found', 'theme_epure', [
         'platform' => $context['document']['platform'] ?? '',
         'date' => $context['document']['issued'],
+        'until' => $context['document']['until'],
     ]);
 }
 

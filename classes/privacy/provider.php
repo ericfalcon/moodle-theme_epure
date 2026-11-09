@@ -57,6 +57,8 @@ class provider implements
             'timecreated' => 'privacy:metadata:summary:timecreated',
             'data' => 'privacy:metadata:summary:data',
             'contenthash' => 'privacy:metadata:summary:contenthash',
+            'timeexpires' => 'privacy:metadata:summary:timeexpires',
+            'timerevoked' => 'privacy:metadata:summary:timerevoked',
         ], 'privacy:metadata:summary');
         $collection->add_database_table(course_accessibility::TABLE, [
             'courseid' => 'privacy:metadata:a11ycheck:courseid',
@@ -157,6 +159,10 @@ class provider implements
                 $documents[] = [
                     'code' => learner_summary_document::format_code($record->code),
                     'timecreated' => \core_privacy\local\request\transform::datetime($record->timecreated),
+                    'timeexpires' => empty($record->timeexpires) ? null
+                        : \core_privacy\local\request\transform::datetime($record->timeexpires),
+                    'timerevoked' => empty($record->timerevoked) ? null
+                        : \core_privacy\local\request\transform::datetime($record->timerevoked),
                     'content' => json_decode($record->data),
                 ];
             }
