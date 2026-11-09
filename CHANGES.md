@@ -1,5 +1,13 @@
 # Changes
 
+## 1.8.0 — consolidation: IOMAD 5.0 tested, the header of the custom SCSS checked partly when it must, the Markdown read
+
+- IOMAD 5.0 joins the continuous integration (PHPUnit, Behat with axe-core), between 4.5 and 5.1; the documentation of the versions says 4.5, 5.0, 5.1 and 5.2.
+- Custom SCSS of the header: a background the theme cannot know for sure is no longer given a contrast. A transparent colour (`rgba()` or `#rrggbbaa` below 1, `transparent`), a variable or a function of colour (`var()`, `$variable`, `hsl()`, `color-mix()`…) or a rule nested in that of the header give a « partial check »: the field of the SCSS says why and asks to check the header by eye, in light and dark mode. The opaque colours read still adapt its text.
+- Guide « Accessibility of the course »: the texts in Markdown are read once made HTML, as Moodle shows them (titles, links, images, tables); an image written `![](image.png)`, whose empty description Markdown cannot mean as decorative, is an image without a text alternative. The plain texts are not read. Before, a comparison of the format with the constants of Moodle, which are strings, never matched: the plain texts and the Markdown were read as they are, as if HTML.
+- A long text or document without any title (from 400 words) is said to be advice, not a requirement of the WCAG.
+- PHPUnit tests: a transparent colour, a variable, a nested rule, an opaque `rgb()` with a slash; a page in Markdown and a page in plain text.
+
 ## 1.7.0 — the header in a gradient, and the header painted by the custom SCSS read by the theme
 
 - Header colour (Identity tab, and the appearance of each IOMAD company): a third choice, « Gradient from the brand colour to the accent colour ». The text and the icons take white or the dark ink, the one that reads on both ends of the gradient, and the ends are moved as little as needed for it to reach 4.5:1 (darker under white, lighter under the dark ink). The gradient stays in dark mode, like the brand-coloured header; the Moodle app shows the brand colour. No new setting.

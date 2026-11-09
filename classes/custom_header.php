@@ -30,40 +30,92 @@ namespace theme_epure;
  */
 class custom_header {
     /**
-     * The rules of the custom SCSS that paint the header: their selector and their colours.
+     * The rules of the custom SCSS that paint the header: their selector, the colours read in them, and what keeps the
+     * theme from knowing the background for sure (a transparent colour, a variable or a function of colour, a nested
+     * rule), for which it only gives a partial check.
      *
      * @param string $scss Custom SCSS.
-     * @return array<int, array{selector: string, colours: string[]}>
+     * @return array<int, array{selector: string, colours: string[], unsure: string[]}>
      */
     public static function rules(string $scss): array {
         // Without the comments, which may hold braces.
-        $scss = preg_replace(['~/\*.*?\*/~s', '~(^|[^:])//[^\n]*~'], ['', '$1'], $scss);
+        $scss = (string) preg_replace(['~/\*.*?\*/~s', '~(^|[^:])//[^\n]*~'], ['', '$1'], $scss);
         $rules = [];
-        if (!preg_match_all('~([^{}]+)\{([^{}]*)\}~', (string) $scss, $matches, PREG_SET_ORDER)) {
-            return [];
+        // A rule of the header that holds other rules (SCSS nesting): its background is not read.
+        if (preg_match_all('~([^{};]*\.navbar[^{};]*)\{[^{}]*\{~', $scss, $nested)) {
+            foreach ($nested[1] as $selector) {
+                if (($parts = self::header_selector($selector)) !== null) {
+                    $rules[] = ['selector' => $parts, 'colours' => [], 'unsure' => ['nested']];
+                }
+            }
+        }
+        if (!preg_match_all('~([^{}]+)\{([^{}]*)\}~', $scss, $matches, PREG_SET_ORDER)) {
+            return $rules;
         }
         foreach ($matches as [, $selector, $declarations]) {
-            $selector = trim(preg_replace('~\s+~', ' ', $selector));
-            // The header itself, not an element inside it: each selector of the list ends with the navbar.
-            $parts = array_filter(array_map('trim', explode(',', $selector)), fn($part) => $part !== '');
-            if (!$parts || array_filter($parts, fn($part) => !preg_match('~\.navbar(\.[\w-]+|\[[^\]]*\])*$~', $part))) {
+            if (($parts = self::header_selector($selector)) === null) {
                 continue;
             }
             $colours = [];
+            $unsure = [];
             if (preg_match_all('~(?:^|;)\s*background(?:-color|-image)?\s*:([^;]*)~i', $declarations, $values)) {
                 foreach ($values[1] as $value) {
                     $colours = array_merge($colours, self::colours($value));
+                    if (self::transparent($value)) {
+                        $unsure[] = 'transparent';
+                    }
+                    if (preg_match('~var\(|\$[\w-]|\b(?:hsla?|hwb|lab|lch|oklab|oklch|color-mix|color)\(|url\(~i', $value)) {
+                        $unsure[] = 'variable';
+                    }
                 }
             }
-            if ($colours) {
-                $rules[] = ['selector' => implode(', ', $parts), 'colours' => array_values(array_unique($colours))];
+            if ($colours || $unsure) {
+                $rules[] = ['selector' => $parts, 'colours' => array_values(array_unique($colours)),
+                    'unsure' => array_values(array_unique($unsure))];
             }
         }
         return $rules;
     }
 
     /**
-     * The colours written in a value: #rgb, #rrggbb and rgb() or rgba() (their transparency ignored).
+     * The selector of a rule when it is the header itself, not an element inside it: each selector of the list ends with
+     * the navbar.
+     *
+     * @param string $selector Selector.
+     * @return string|null The selector, tidied; null when it is not the header.
+     */
+    protected static function header_selector(string $selector): ?string {
+        $selector = trim((string) preg_replace('~\s+~', ' ', $selector));
+        $parts = array_filter(array_map('trim', explode(',', $selector)), fn($part) => $part !== '');
+        if (!$parts || array_filter($parts, fn($part) => !preg_match('~\.navbar(\.[\w-]+|\[[^\]]*\])*$~', $part))) {
+            return null;
+        }
+        return implode(', ', $parts);
+    }
+
+    /**
+     * Whether a value holds a colour that lets the background under it show: transparent, rgba() or a hexadecimal code
+     * with an opacity below 1.
+     *
+     * @param string $value Value of a declaration.
+     * @return bool
+     */
+    protected static function transparent(string $value): bool {
+        if (preg_match('~\btransparent\b|#(?:[0-9a-f]{4}|[0-9a-f]{8})\b~i', $value)) {
+            return true;
+        }
+        preg_match_all('~rgba?\([^)]*?[,/]\s*([\d.]+%?)\s*\)~i', $value, $alphas);
+        foreach ($alphas[1] as $alpha) {
+            $opacity = str_ends_with($alpha, '%') ? (float) $alpha / 100 : (float) $alpha;
+            if ($opacity < 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * The colours written in a value: #rgb, #rrggbb and rgb() or rgba() (their transparency read apart, by transparent()).
      *
      * @param string $value Value of a declaration.
      * @return string[] Colours as #RRGGBB.
@@ -99,6 +151,9 @@ class custom_header {
     public static function adapt_scss(string $scss): string {
         $out = '';
         foreach (self::rules($scss) as $rule) {
+            if (!$rule['colours']) {
+                continue;
+            }
             $on = palette::on_stops($rule['colours'])['on'];
             $out .= $rule['selector'] . ' { @include epure-header-text(' . $on . ', '
                 . ($on === palette::SURFACE_LIGHT ? 'true' : 'false') . "); }\n";
@@ -116,6 +171,17 @@ class custom_header {
     public static function report(string $scss): string {
         $lines = [];
         foreach (self::rules($scss) as $rule) {
+            if ($rule['unsure']) {
+                // A background the theme cannot know for sure: a partial check, never a promise of contrast.
+                $lines[] = get_string('customheaderpartial', 'theme_epure', (object) [
+                    'selector' => $rule['selector'],
+                    'reasons' => implode(', ', array_map(fn($reason) => get_string(
+                        'customheader_' . $reason,
+                        'theme_epure'
+                    ), $rule['unsure'])),
+                ]);
+                continue;
+            }
             $best = palette::on_stops($rule['colours']);
             $a = (object) [
                 'selector' => $rule['selector'],
