@@ -79,8 +79,10 @@ final class content_sources_test extends \advanced_testcase {
             $DB->get_record($table, ['id' => $module->id])
         );
 
-        $this->assertContains(get_string('courseaccessibility_workshop_instructauthors', 'theme_epure'),
-            array_column($texts($workshop, 'workshop'), 'name'));
+        $this->assertContains(
+            get_string('courseaccessibility_workshop_instructauthors', 'theme_epure'),
+            array_column($texts($workshop, 'workshop'), 'name')
+        );
         $this->assertSame(['Risk'], array_column($texts($glossary, 'glossary'), 'name'));
         $this->assertSame(['item'], array_column($texts($feedback, 'feedback'), 'kind'));
         $this->assertSame(
