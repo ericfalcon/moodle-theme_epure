@@ -8,7 +8,7 @@ A modern, clean and accessible theme for **Moodle 4.5 LTS to 5.3** and **IOMAD 4
 
 ### One colour, an accessible palette
 
-Choose a brand colour (or click a colour of your logo): the theme derives the whole palette from it and adjusts it so that text reads at 4.5:1 at least, in light and dark mode, whatever the colour. The contrast is shown below the setting. With IOMAD, each company keeps its own colour, logo, font and vocabulary.
+Choose a brand colour (or click a colour of your logo), and optionally an accent colour: the theme derives the whole palette from them and adjusts it so that text reads at 4.5:1 at least, in light and dark mode, whatever the colours. The computed palette is shown under the settings, with each colour and its code. The header can be white, in the brand colour or in a gradient from the brand to the accent colour; a header painted by custom SCSS is detected and its text adapted to stay readable. With IOMAD, each company keeps its own colours, logo, font and vocabulary.
 
 ![The brand colour setting: the colours of the logo proposed, the contrast shown](screenshots/brand-colour.webp)
 
@@ -20,18 +20,22 @@ Choose a brand colour (or click a colour of your logo): the theme derives the wh
   ![The same page in dark mode](screenshots/display-preferences-dark.webp)
   ![The learner's dashboard in dark mode](screenshots/dashboard-dark.webp)
 
-- Pages that reflow on phones down to 320 px, focus always visible and never hidden under fixed bars, 24 px targets.
+- Pages that reflow on phones down to 320 px, focus always visible and never hidden under fixed bars, 24 px targets, one duration for every micro-interaction and none when motion is reduced.
 - Keyboard shortcuts listed in a help opened with « ? », which each user can turn off.
 - An accessibility statement filled in step by step, on the model of the country of the site (France: RGAA; European Union: EN 301 549; elsewhere: WCAG 2.1 AA), with a mention on every page.
 - A content checker for teachers: as they write, a line under each editor points out images without a text alternative, images used as links, links that say nothing, tables without headers, skipped heading levels and long texts without titles, with a button to show each one; before saving, it lists them again. Nothing is ever blocked. It comes with the guide « Accessibility of the course », off by default.
-- A guide « Accessibility of the course » for teachers (off by default, for the organisations that must meet the WCAG 2.1 AA: RGAA in France, EN 301 549 in Europe): each activity and resource of a course read, with its chapters, pages, questions and H5P contents, and the documents given in it (Word, PowerPoint, Excel, LibreOffice, PDF: images without a text alternative, documents without titles or language, scanned PDF…); what to fix, each mistake with the link to its place, in red, what to confirm, in orange, and a reminder to print.
+- A guide « Accessibility of the course » for teachers (off by default, for the organisations that must meet the WCAG 2.1 AA: RGAA in France, EN 301 549 in Europe):
+  - every activity and resource of Moodle is read, in HTML or Markdown: pages, assignments, quizzes, books, lessons, workshops, glossaries, feedbacks, databases, H5P contents…;
+  - the 47 activity modules of other plugins most installed are known (Questionnaire, Unilabel, Content Pages, Interactive Video, Booking, Lightbox Gallery, Learning map…), and any plugin can give its content to the guide through one function;
+  - the documents given in the course are checked (Word, PowerPoint, Excel, LibreOffice, PDF: images without a text alternative, documents without titles or language, scanned PDF…);
+  - what to fix, each mistake with the link to its place, in red, what to confirm (videos, packages, external tools), in orange, and a reminder to print; updated as soon as an activity changes.
 - Tested on every change: an automated pre-audit (axe-core, WCAG 2.2 A and AA) of 40 Moodle pages and 24 IOMAD pages, each in light, dark and on two phone widths, plus a matrix crossing brand colours, display preferences, keyboard use and IOMAD company colours.
 
 ### For learners
 
 - A dashboard that shows where to resume, what is due this week and what is completed.
 - « My courses » by role, a course catalogue with course presentation pages, progress per section, previous and next activity on every activity page, previous and next section on the page of a section, a reading mode.
-- « My summary »: a printable page of their courses, progress, completed activities, grades and certificates, or a PDF with a code of verification that anyone can check on the platform.
+- « My summary »: a printable page of their courses, progress, completed activities, grades and certificates, or a PDF with a code of verification that the recipient checks on the platform. The learner sees what the recipient will see, chooses how long the document can be verified, and can revoke or delete it.
 - A navigation bar at the bottom of the screen on phones, and an installable web app.
 
 ![« My courses »: the courses in progress with their progress and the next activity to do](screenshots/my-courses.webp)
@@ -50,7 +54,7 @@ Choose a brand colour (or click a colour of your logo): the theme derives the wh
 
 ### For teachers and administrators
 
-- Quick search (Ctrl+K / ⌘K) across menus, courses, activities and administration pages; for visitors, across the catalogue, the categories and the public pages.
+- Quick search (Ctrl+K / ⌘K) across menus, courses, activities and administration pages, the best matches first, with a page of all the results; for visitors, across the catalogue, the categories and the public pages.
 - Settings grouped in tabs, a clearer administration home, long forms with their sections listed and the save buttons always in view.
 - A course header for teachers: participants, active this week, to grade, with shortcuts, and the edit mode at hand on phones.
 - Branded e-mails, a certificate template in the brand colours for the plugin Certificate (tool_certificate), usable with the activity Course certificate.
@@ -63,7 +67,7 @@ Choose a brand colour (or click a colour of your logo): the theme derives the wh
 
 ### With IOMAD
 
-Each company has its own colour, logo, font and vocabulary (here « parcours » for courses), on its login page, its dashboard, its courses and the IOMAD dashboard.
+Each company has its own colours, logo, font and vocabulary (here « parcours » for courses), on its login page, its dashboard, its courses and the IOMAD dashboard.
 
 ![The login page of a company, in its colour and font](screenshots/iomad-login.webp)
 
