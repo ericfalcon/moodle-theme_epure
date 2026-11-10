@@ -337,7 +337,8 @@ class course_accessibility {
         }
         $doc = new \DOMDocument();
         $errors = libxml_use_internal_errors(true);
-        $doc->loadHTML('<html><head><meta charset="utf-8"></head><body>' . $html . '</body></html>');
+        // LIBXML_NONET: nothing fetched from the network, as for the documents (document_check).
+        $doc->loadHTML('<html><head><meta charset="utf-8"></head><body>' . $html . '</body></html>', LIBXML_NONET);
         libxml_clear_errors();
         libxml_use_internal_errors($errors);
         $xpath = new \DOMXPath($doc);

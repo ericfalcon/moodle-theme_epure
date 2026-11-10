@@ -30,6 +30,8 @@ define('NO_DEBUG_DISPLAY', true);
 
 require(__DIR__ . '/../../config.php');
 
+// The only parameter: a colour #RRGGBB, or none (palette::normalise() returns nothing else), so that a response cached
+// for a year by the browsers and the proxies (immutable) depends on nothing else.
 $brand = theme_epure\palette::normalise(optional_param('brand', '', PARAM_ALPHANUM));
 $css = theme_epure\h5p::css($brand);
 

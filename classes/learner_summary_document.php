@@ -47,6 +47,9 @@ class learner_summary_document {
     /** @var int[] Times of validity the learner chooses from, in days; 0 for without limit. */
     public const VALIDITY = [90, 365, 0];
 
+    /** @var int Codes not found that an address may try on the page of verification in ten minutes. */
+    public const VERIFY_LIMIT = 20;
+
     /** @var int Time of validity chosen by default, in days. */
     public const DEFAULT_VALIDITY = 365;
 
@@ -313,6 +316,35 @@ class learner_summary_document {
             return null;
         }
         return $DB->get_record(self::TABLE, ['code' => $code]) ?: null;
+    }
+
+    /**
+     * Whether the address of the request tried too many codes not found on the page of verification lately: the page
+     * then stops looking them up for a while. The codes are about 59 bits of chance, too many to guess anyway; this
+     * keeps a robot from trying them in a loop.
+     *
+     * @return bool
+     */
+    public static function verify_blocked(): bool {
+        return (int) \cache::make('theme_epure', 'verifyattempts')->get(self::address_key()) >= self::VERIFY_LIMIT;
+    }
+
+    /**
+     * Counts a code not found, for the address of the request.
+     */
+    public static function verify_failed(): void {
+        $cache = \cache::make('theme_epure', 'verifyattempts');
+        $key = self::address_key();
+        $cache->set($key, (int) $cache->get($key) + 1);
+    }
+
+    /**
+     * Key of the address of the request, for the cache of the attempts.
+     *
+     * @return string
+     */
+    protected static function address_key(): string {
+        return sha1((string) getremoteaddr());
     }
 
     /**

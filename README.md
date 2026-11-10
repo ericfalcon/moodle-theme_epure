@@ -117,6 +117,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.15.1**: no new setting; upgrade the site (a new cache).
 - **1.15.0**: no new setting; upgrade the site so that Moodle reads the new observer of Épure (or purge the caches).
 - **1.14.0**: no new setting. The guide also judges Learning map, Lightbox Gallery and Mindmap.
 - **1.13.0**: no new setting; upgrade the site so that Moodle reads the new hooks of Épure (or purge the caches).

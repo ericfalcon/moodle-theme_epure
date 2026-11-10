@@ -46,6 +46,9 @@
         <p class="form-text text-muted" id="epure-summary-code-help">{{#str}}mysummary_verify_codehelp, theme_epure{{/str}}</p>
     </form>
 
+    {{#blocked}}
+        <div class="alert alert-warning" role="status">{{#str}}mysummary_verify_blocked, theme_epure{{/str}}</div>
+    {{/blocked}}
     {{#searched}}
         {{#found}}
             {{#document}}
