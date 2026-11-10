@@ -8,7 +8,7 @@ Thème moderne, sobre et accessible pour **Moodle 4.5 LTS à 5.3** et **IOMAD 4.
 
 ### Une couleur, une palette accessible
 
-Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le thème en tire toute la palette et l'ajuste pour que le texte se lise à 4,5:1 au moins, en clair et en sombre, quelle que soit la couleur. Le contraste obtenu s'affiche sous le réglage. Avec IOMAD, chaque entreprise garde sa couleur, son logo, sa police et son vocabulaire.
+Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo), et si vous le voulez une couleur d'accent : le thème en tire toute la palette et l'ajuste pour que le texte se lise à 4,5:1 au moins, en clair et en sombre, quelles que soient les couleurs. La palette calculée s'affiche sous les réglages, chaque couleur avec son code. L'en-tête peut être blanc, de la couleur de marque ou en dégradé de la couleur de marque à la couleur d'accent ; un en-tête peint par un SCSS personnalisé est repéré et son texte adapté pour rester lisible. Avec IOMAD, chaque entreprise garde ses couleurs, son logo, sa police et son vocabulaire.
 
 ![Le réglage de la couleur de marque : les couleurs du logo proposées, le contraste affiché](screenshots/brand-colour.webp)
 
@@ -20,18 +20,22 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le
   ![La même page en mode sombre](screenshots/display-preferences-dark.webp)
   ![Le tableau de bord de l'apprenant en mode sombre](screenshots/dashboard-dark.webp)
 
-- Des pages qui s'adaptent aux téléphones jusqu'à 320 px, un focus toujours visible et jamais caché sous une barre fixe, des cibles de 24 px.
+- Des pages qui s'adaptent aux téléphones jusqu'à 320 px, un focus toujours visible et jamais caché sous une barre fixe, des cibles de 24 px, une même durée pour toutes les micro-interactions, et aucune quand les animations sont réduites.
 - Des raccourcis clavier listés dans une aide ouverte par « ? », que chacun peut désactiver.
 - Une déclaration d'accessibilité remplie pas à pas, sur le modèle du pays du site (France : RGAA ; Union européenne : EN 301 549 ; ailleurs : WCAG 2.1 AA), mentionnée sur chaque page.
 - Un vérificateur de contenu pour les formateurs : pendant la saisie, une ligne sous chaque éditeur signale les images sans alternative, les images servant de lien, les liens qui ne disent rien, les tableaux sans en-têtes, les niveaux de titres sautés et les textes longs sans titre, avec un bouton pour montrer chacun ; avant l'enregistrement, il les liste de nouveau. Rien n'est jamais bloqué. Il accompagne le guide « Accessibilité du cours », désactivé par défaut.
-- Un guide « Accessibilité du cours » pour les formateurs (désactivé par défaut, pour les organismes tenus aux WCAG 2.1 AA : RGAA en France, EN 301 549 en Europe) : chaque activité et ressource d'un cours passée en revue, avec ses chapitres, pages, questions et contenus H5P, et les documents déposés (Word, PowerPoint, Excel, LibreOffice, PDF : images sans texte alternatif, documents sans titre ou sans langue, PDF numérisés…) ; ce qu'il faut corriger, chaque erreur avec le lien vers son emplacement, en rouge, ce qu'il faut confirmer, en orange, et un pense-bête à imprimer.
+- Un guide « Accessibilité du cours » pour les formateurs (désactivé par défaut, pour les organismes tenus aux WCAG 2.1 AA : RGAA en France, EN 301 549 en Europe) :
+  - toutes les activités et ressources de Moodle sont lues, en HTML ou en Markdown : pages, devoirs, tests, livres, leçons, ateliers, glossaires, feedbacks, bases de données, contenus H5P… ;
+  - les 47 modules d'activité d'autres plugins les plus installés sont connus (Questionnaire, Unilabel, Content Pages, Interactive Video, Booking, Lightbox Gallery, Learning map…), et tout plugin peut donner son contenu au guide par une seule fonction ;
+  - les documents déposés dans le cours sont vérifiés (Word, PowerPoint, Excel, LibreOffice, PDF : images sans texte alternatif, documents sans titre ou sans langue, PDF numérisés…) ;
+  - ce qu'il faut corriger, chaque erreur avec le lien vers son emplacement, en rouge, ce qu'il faut confirmer (vidéos, paquets, outils externes), en orange, et un pense-bête à imprimer ; mis à jour dès qu'une activité change.
 - Testé à chaque modification : un pré-audit automatisé (axe-core, WCAG 2.2 A et AA) de 40 pages de Moodle et 24 pages d'IOMAD, chacune en clair, en sombre et sur deux largeurs de téléphone, et une matrice qui croise couleurs de marque, préférences d'affichage, usage au clavier et couleurs des entreprises IOMAD.
 
 ### Pour les apprenants
 
 - Un tableau de bord qui montre où reprendre, ce qui est à faire cette semaine et ce qui est terminé.
 - « Mes cours » par rôle, un catalogue avec une page de présentation des cours, la progression par section, l'activité précédente et suivante sur chaque activité, section précédente et suivante sur la page d'une section, un mode lecture.
-- « Ma synthèse » : une page imprimable de leurs cours, progression, activités terminées, notes et attestations, ou un PDF avec un code de vérification que chacun peut contrôler sur la plateforme.
+- « Ma synthèse » : une page imprimable de leurs cours, progression, activités terminées, notes et attestations, ou un PDF avec un code de vérification que le destinataire contrôle sur la plateforme. L'apprenant voit ce que verra le destinataire, choisit combien de temps le document est vérifiable, et peut le révoquer ou le supprimer.
 - Une barre de navigation en bas de l'écran sur téléphone, et une application web installable.
 
 ![« Mes cours » : les formations en cours avec leur progression et la prochaine activité à faire](screenshots/my-courses.webp)
@@ -50,7 +54,7 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le
 
 ### Pour les formateurs et les administrateurs
 
-- Une recherche rapide (Ctrl+K / ⌘K) dans les menus, les cours, les activités et les pages d'administration ; pour les visiteurs, dans le catalogue, les catégories et les pages publiques.
+- Une recherche rapide (Ctrl+K / ⌘K) dans les menus, les cours, les activités et les pages d'administration, les résultats les plus pertinents d'abord, avec une page de tous les résultats ; pour les visiteurs, dans le catalogue, les catégories et les pages publiques.
 - Des réglages rangés en onglets, un accueil de l'administration plus clair, des formulaires longs avec la liste de leurs sections et les boutons d'enregistrement toujours visibles.
 - Un en-tête de cours pour les formateurs : participants, actifs cette semaine, à corriger, avec des raccourcis, et le mode édition à portée de main sur téléphone.
 - Des e-mails aux couleurs de la marque, un modèle d'attestation aux couleurs de la marque pour le plugin Certificate (tool_certificate), utilisable avec l'activité Attestation de formation.
@@ -63,7 +67,7 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo) : le
 
 ### Avec IOMAD
 
-Chaque entreprise a sa couleur, son logo, sa police et son vocabulaire (ici « parcours » pour les cours), sur sa page de connexion, son tableau de bord, ses cours et le tableau de bord IOMAD.
+Chaque entreprise a ses couleurs, son logo, sa police et son vocabulaire (ici « parcours » pour les cours), sur sa page de connexion, son tableau de bord, ses cours et le tableau de bord IOMAD.
 
 ![La page de connexion d'une entreprise, dans sa couleur et sa police](screenshots/iomad-login.webp)
 
