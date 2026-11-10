@@ -197,4 +197,18 @@ final class learner_summary_document_test extends \core_privacy\tests\provider_t
         $this->assertNull(learner_summary_document::find($second->code));
         $this->assertTrue($DB->record_exists(learner_summary_document::TABLE, ['id' => $first->id]));
     }
+
+    /**
+     * An address that tried too many codes not found on the page of verification is stopped for a while.
+     */
+    public function test_verify_limit(): void {
+        $this->resetAfterTest();
+        for ($i = 0; $i < learner_summary_document::VERIFY_LIMIT; $i++) {
+            $this->assertFalse(learner_summary_document::verify_blocked());
+            learner_summary_document::verify_failed();
+        }
+        $this->assertTrue(learner_summary_document::verify_blocked());
+        \cache::make('theme_epure', 'verifyattempts')->purge();
+        $this->assertFalse(learner_summary_document::verify_blocked());
+    }
 }

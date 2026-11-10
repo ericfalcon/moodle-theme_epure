@@ -42,9 +42,18 @@ $context = [
     'code' => $code === '' ? '' : learner_summary_document::format_code($code),
     'searched' => $code !== '',
 ];
-$document = $code === '' ? null : learner_summary_document::find($code);
+// An address that tried too many codes not found lately waits before trying again (HTTP 429).
+$blocked = $code !== '' && learner_summary_document::verify_blocked();
+$document = $code === '' || $blocked ? null : learner_summary_document::find($code);
+if ($code !== '' && !$blocked && !$document) {
+    learner_summary_document::verify_failed();
+}
 $state = $document ? learner_summary_document::state($document) : '';
-if ($document && $state !== 'valid') {
+if ($blocked) {
+    http_response_code(429);
+    $context['blocked'] = true;
+    $context['searched'] = false;
+} else if ($document && $state !== 'valid') {
     // Revoked by the learner, or expired: that it was issued, and when, but not its content.
     $context['closed'] = get_string('mysummary_verify_' . $state, 'theme_epure', [
         'platform' => format_string(get_site()->fullname),

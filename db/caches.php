@@ -59,6 +59,13 @@ $definitions = [
         'simplekeys' => true,
         'simpledata' => true,
     ],
+    // The codes of « My summary » not found on the page of verification, by address: ten minutes to forget them.
+    'verifyattempts' => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => true,
+        'ttl' => 600,
+    ],
     // What is found in a document of an office suite or a PDF file (images without a text alternative, titles…), by
     // its content.
     'documentcheck' => [

@@ -1,5 +1,16 @@
 # Changes
 
+## 1.15.1 — security review
+
+An external security review found no critical nor major flaw; its minor points:
+
+- Page of verification of « My summary » (open without logging in): an address that tries 20 codes not found within ten minutes is stopped (HTTP 429) until they are forgotten. The codes (about 59 bits of chance) were already out of reach of a guess; this keeps a robot from trying them in a loop.
+- The HTML of the courses read by the accessibility guide is parsed without network access (`LIBXML_NONET`), as the documents already were.
+- The footer text written by an administrator or an IOMAD company manager (Markdown) was already cleaned by Moodle (`format_text()` passes it through HTML Purifier): a PHPUnit test now proves it (script, `onerror`, `javascript:` removed).
+- Documented in the code: the service worker covers the whole site on purpose and only answers the navigations whose network fails; the stylesheet of the H5P contents, cached for a year, depends only on a colour #RRGGBB.
+- The caches of Épure have their names in the administration of the caches.
+- `SECURITY.md`: how to report a vulnerability privately.
+
 ## 1.15.0 — the guide « Accessibility of the course » sees at once what changes in every activity
 
 - The guide kept what it read of a course for an hour, unless an activity was changed in its settings or a few modules of Moodle changed their content (books, lessons, glossaries, databases): a change in the content of another module, or of a module of another plugin, was seen up to an hour later. It now forgets the course as soon as any activity creates, changes or deletes something: one observer of all the events (`*`) of Moodle, which keeps those of a module (`mod_*`) that write (create, update, delete) in a course, for every module of Moodle or of another plugin, without knowing its events. The observers of the events of the books, lessons, glossaries and databases are replaced by it.

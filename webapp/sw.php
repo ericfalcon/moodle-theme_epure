@@ -27,7 +27,8 @@
 require_once(__DIR__ . '/../../../config.php');
 
 header('Content-Type: text/javascript; charset=utf-8');
-// Served from the theme, the service worker covers the whole site.
+// Served from the theme, the service worker covers the whole site, on purpose: it only answers the navigations whose
+// network fails, with the page « offline » (web_app::service_worker()); it caches nothing else and reads no other request.
 header('Service-Worker-Allowed: ' . \theme_epure\web_app::scope());
 header('Cache-Control: no-cache, no-store, must-revalidate');
 echo \theme_epure\web_app::service_worker();

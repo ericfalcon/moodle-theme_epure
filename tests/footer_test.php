@@ -77,4 +77,19 @@ final class footer_test extends \advanced_testcase {
         set_config('footertext', 'Site', 'theme_epure');
         $this->assertSame('Site', company_style::footer_setting('footertext'));
     }
+
+    /**
+     * The text of the footer is written as Markdown by an administrator, or by the manager of an IOMAD company: its
+     * HTML is cleaned by Moodle (format_text cleans the Markdown with HTML Purifier), so no script reaches the page.
+     */
+    public function test_text_cleaned(): void {
+        $this->resetAfterTest();
+        set_config('footertext', "**Campus**\n\n<script>alert(1)</script><img src=\"x\" onerror=\"alert(2)\">"
+            . '<a href="javascript:alert(3)">link</a>', 'theme_epure');
+        $text = footer::export()['text'];
+        $this->assertStringContainsString('<strong>Campus</strong>', $text);
+        $this->assertStringNotContainsString('<script', $text);
+        $this->assertStringNotContainsString('onerror', $text);
+        $this->assertStringNotContainsString('javascript:', $text);
+    }
 }
