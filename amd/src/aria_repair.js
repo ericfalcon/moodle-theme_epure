@@ -27,6 +27,10 @@
  * « No selection », which is not an option (WCAG 1.3.1, 4.1.2). The text stays on the screen; the empty list tells
  * the screen readers that nothing is chosen.
  *
+ * The handle that resizes the editor TinyMCE, moved with the arrow keys, has a name but no role in the version of
+ * Moodle 5.0 (TinyMCE 7.7): it gets the role separator and its value, the height of the editor, as the later
+ * versions of TinyMCE give it (WCAG 4.1.2).
+ *
  * @module     theme_epure/aria_repair
  * @copyright  2026 Eric Falcon
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -99,16 +103,40 @@ const clearChoices = () => {
 };
 
 /**
- * Hides the text « No selection » of the empty lists of the autocomplete fields from the screen readers, now and
- * each time Moodle draws a list again.
+ * Hides the text « No selection » of the empty lists of the autocomplete fields from the screen readers.
  */
-const emptySelections = () => {
-    const hide = () => document.querySelectorAll('.form-autocomplete-selection[role="listbox"] > :not([role]):not([aria-hidden])')
-        .forEach((element) => element.setAttribute('aria-hidden', 'true'));
-    hide();
+const emptySelections = () => document.querySelectorAll(
+    '.form-autocomplete-selection[role="listbox"] > :not([role]):not([aria-hidden])'
+).forEach((element) => element.setAttribute('aria-hidden', 'true'));
+
+/**
+ * Gives the handles that resize the editors their role and their value, the height of the editor.
+ */
+const resizeHandles = () => document.querySelectorAll('.tox-statusbar__resize-handle:not([role])').forEach((handle) => {
+    const value = () => {
+        const editor = handle.closest('.tox-tinymce');
+        if (editor) {
+            handle.setAttribute('aria-valuenow', String(Math.round(editor.offsetHeight)));
+        }
+    };
+    handle.setAttribute('role', 'separator');
+    value();
+    handle.addEventListener('keyup', value);
+    handle.addEventListener('pointerup', value);
+});
+
+/**
+ * The repairs of what Moodle draws after the page: now, and each time something is added to the page.
+ */
+const later = () => {
+    const run = () => {
+        emptySelections();
+        resizeHandles();
+    };
+    run();
     new MutationObserver((mutations) => {
         if (mutations.some((mutation) => mutation.addedNodes.length)) {
-            hide();
+            run();
         }
     }).observe(document.body, {childList: true, subtree: true});
 };
@@ -123,7 +151,7 @@ export const init = (names = {}, menus = {site: '', page: ''}) => {
     repair(document, names);
     nameMenus(menus);
     clearChoices();
-    emptySelections();
+    later();
     window.addEventListener('load', () => {
         repair(document, names);
         nameMenus(menus);

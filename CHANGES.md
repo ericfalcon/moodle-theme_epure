@@ -6,6 +6,7 @@ Pre-audit of the widgets (axe-core with the rules of Moodle's Behat, and the key
 
 - Quiz, multiple choice with one answer: before an answer was chosen, the key Tab stayed on the first answer, never reaching the rest of the page (WCAG 2.1.1, 2.4.3). Moodle checks a hidden choice « Clear my choice », which the browser makes the stop of the group: Épure makes it inert while it is hidden. Boost does the same: it comes from Moodle.
 - Autocomplete fields (tags, groups…): their empty list of the chosen items was a listbox without option (WCAG 4.1.2, axe critical), on every form with such a field, a new post of a forum for a learner among them. The text « No selection » stays on the screen, hidden from the screen readers, for which the empty list says it.
+- Editor TinyMCE of Moodle 5.0 (TinyMCE 7.7): the handle that resizes it, moved with the arrow keys, had a name but no role (WCAG 4.1.2, axe serious, on every page with an editor). It gets the role separator and its value, the height of the editor, as the later versions of TinyMCE give it.
 - Messages page: Moodle hides its whole header, its title with it; the page had no heading of level 1 (RGAA 9.1). The header stays hidden on the screen only.
 - The menu of the site and the menu of the page (two navigations of Moodle without a name) are named « Site menu » and « Page menu » (RGAA 12.6).
 - The strip at the top of the activities, the banner of the course and the bar of the edit mode of Épure are now in landmarks of their own, named (a navigation, regions).
