@@ -196,3 +196,15 @@ jobs:
           path: visual/
           if-no-files-found: ignore
           retention-days: 30
+
+      # The same images in the log, as a base64 tar between two markers, for whoever can read the logs but not
+      # download the artifacts.
+      - name: Images of the visual regression, in the log
+        if: ${{ !cancelled() && matrix.include-moodle.visual }}
+        run: |
+          if [ -d visual ]; then
+            echo "EPURE-VISUAL-BEGIN"
+            tar -czf - -C visual . | base64 -w 0
+            echo
+            echo "EPURE-VISUAL-END"
+          fi
