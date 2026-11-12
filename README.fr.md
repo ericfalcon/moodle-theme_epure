@@ -28,7 +28,8 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo), et 
   - toutes les activités et ressources de Moodle sont lues, en HTML ou en Markdown : pages, devoirs, tests, livres, leçons, ateliers, glossaires, feedbacks, bases de données, contenus H5P… ;
   - les 47 modules d'activité d'autres plugins les plus installés sont connus (Questionnaire, Unilabel, Content Pages, Interactive Video, Booking, Lightbox Gallery, Learning map…), et tout plugin peut donner son contenu au guide par une seule fonction ;
   - les documents déposés dans le cours sont vérifiés (Word, PowerPoint, Excel, LibreOffice, PDF : images sans texte alternatif, documents sans titre ou sans langue, PDF numérisés…) ;
-  - ce qu'il faut corriger, chaque erreur avec le lien vers son emplacement, en rouge, ce qu'il faut confirmer (vidéos, paquets, outils externes), en orange, et un pense-bête à imprimer ; mis à jour dès qu'une activité change.
+  - les textes dont la couleur ne ressort pas assez sur leur fond, et les passages dans une autre langue sans leur langue indiquée, dans les textes comme dans les documents Word, PowerPoint et LibreOffice Writer ;
+  - ce qu'il faut corriger, chaque erreur avec le lien vers son emplacement, en rouge, ce qu'il faut confirmer (vidéos, paquets, outils externes), en orange ; les images décrites sur place, depuis le guide ; le bilan imprimé ou téléchargé (CSV, Excel, PDF…) ; mis à jour dès qu'une activité change.
 - Testé à chaque modification : un pré-audit automatisé (axe-core, WCAG 2.2 A et AA) de 40 pages de Moodle et 24 pages d'IOMAD, chacune en clair, en sombre et sur deux largeurs de téléphone, et une matrice qui croise couleurs de marque, préférences d'affichage, usage au clavier et couleurs des entreprises IOMAD.
 
 ### Pour les apprenants
@@ -121,6 +122,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.16.0** : aucun nouveau réglage ; mettez le site à jour. Le guide vérifie les couleurs et les langues des textes, exporte son bilan et décrit les images sur place.
 - **1.15.2** : aucun nouveau réglage.
 - **1.15.1** : aucun nouveau réglage ; mettez le site à jour (un nouveau cache).
 - **1.15.0** : aucun nouveau réglage ; mettez le site à jour pour que Moodle lise le nouvel observateur d'Épure (ou purgez les caches).

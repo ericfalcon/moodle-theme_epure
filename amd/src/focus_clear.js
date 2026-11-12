@@ -25,7 +25,7 @@
  */
 
 /** @var {string} Bars fixed at the bottom of the screen. */
-const BOTTOM = '.epure-mobilenav, .epure-course-continue-sticky, .epure-longform-actions';
+const BOTTOM = '.epure-mobilenav, .epure-course-continue-sticky, .epure-longform-actions, .epure-a11yguide-save';
 
 /** @var {string} Bar fixed at the top of the screen. */
 const TOP = '.navbar.fixed-top';

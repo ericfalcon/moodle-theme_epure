@@ -70,7 +70,19 @@ class document_check {
         'draw' => 'urn:oasis:names:tc:opendocument:xmlns:drawing:1.0',
         'svg' => 'urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0',
         'presentation' => 'urn:oasis:names:tc:opendocument:xmlns:presentation:1.0',
+        'style' => 'urn:oasis:names:tc:opendocument:xmlns:style:1.0',
+        'fo' => 'urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0',
     ];
+
+    /**
+     * The address of a namespace of the XML of the documents.
+     *
+     * @param string $prefix Prefix (w, a, p, style, text…).
+     * @return string
+     */
+    public static function namespace(string $prefix): string {
+        return self::NS[$prefix];
+    }
 
     /**
      * The kind of a type of file that can be read: word, slides, sheets (Office Open XML), odt, odp, ods (OpenDocument),
@@ -317,7 +329,7 @@ class document_check {
             'docheadings' => self::skipped($headings),
             'doctables' => $tables,
             'doctitle' => self::no_title($read),
-        ];
+        ] + document_style::word($doc, $styles);
     }
 
     /**
@@ -332,11 +344,14 @@ class document_check {
         if (!$slides) {
             return null;
         }
-        $found = ['docimages' => 0, 'slidetitles' => 0, 'doctitle' => self::no_title($read)];
+        $found = ['docimages' => 0, 'slidetitles' => 0, 'doctitle' => self::no_title($read), 'doccontrast' => 0, 'doclang' => 0];
         foreach ($slides as $name) {
             $slide = $read($name);
             if (!$slide) {
                 continue;
+            }
+            foreach (document_style::slide($slide) as $key => $count) {
+                $found[$key] += $count;
             }
             $found['docimages'] += self::images_without_alt($slide, '//p:pic/p:nvPicPr/p:cNvPr');
             // A title: the placeholder of the title of the slide, with a text.
@@ -404,6 +419,7 @@ class document_check {
             $words = self::words($content->evaluate('string(//office:text)'));
             $found['docnoheadings'] = !$levels && $words >= self::LONG_TEXT ? 1 : 0;
             $found['docheadings'] = self::skipped($levels);
+            $found += document_style::odt($content, $read('styles.xml'));
         } else if ($kind === 'odp') {
             $found['slidetitles'] = 0;
             foreach ($content->query('//draw:page') as $page) {

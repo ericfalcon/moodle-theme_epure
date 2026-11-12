@@ -384,6 +384,7 @@ Feature: Accessibility of the Épure theme
     And I should see "Images without a text alternative: 1."
     And I should see "The name does not say what the activity holds."
     And the page should meet accessibility standards
+    And I bring "Learners who need more time can get it" "field" to the middle of the screen
     And I set the field "Learners who need more time can get it" to "1"
     And I press "Save the confirmations"
     And I should see "The confirmations are saved."

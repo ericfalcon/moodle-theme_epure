@@ -37,6 +37,14 @@ if ((int) $course->id === (int) SITEID || !course_accessibility::enabled()) {
     redirect(new moodle_url('/course/view.php', ['id' => $course->id]));
 }
 
+// The report as a file (CSV, Excel, ODS, PDF, HTML).
+$dataformat = optional_param('download', '', PARAM_ALPHA);
+if ($dataformat !== '') {
+    $PAGE->set_url(course_accessibility::url((int) $course->id));
+    course_accessibility::download($course, $dataformat, $PAGE->get_renderer('core'));
+    die();
+}
+
 // The confirmations of the form: each box checked, and those shown checked, that a teacher may uncheck.
 if (data_submitted() && confirm_sesskey()) {
     course_accessibility::save(
@@ -45,9 +53,17 @@ if (data_submitted() && confirm_sesskey()) {
         optional_param_array('check', [], PARAM_RAW_TRIMMED),
         optional_param_array('shown', [], PARAM_RAW_TRIMMED)
     );
+    // The text alternatives written in the guide, into their images.
+    $described = \theme_epure\content_alt::apply(
+        $course,
+        course_accessibility::analyse($course),
+        optional_param_array('alt', [], PARAM_TEXT),
+        optional_param_array('decorative', [], PARAM_BOOL)
+    );
     redirect(
         course_accessibility::url((int) $course->id),
-        get_string('courseaccessibility_saved', 'theme_epure'),
+        get_string('courseaccessibility_saved', 'theme_epure')
+            . ($described ? ' ' . get_string('courseaccessibility_alt_saved', 'theme_epure', $described) : ''),
         null,
         \core\output\notification::NOTIFY_SUCCESS
     );

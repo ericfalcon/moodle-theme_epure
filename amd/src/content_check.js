@@ -44,7 +44,113 @@ const BLOCKS = 'p, li, td, th, dd, dt, figcaption, blockquote, caption, h1, h2, 
 const text = (element) => element.textContent.replace(/\s+/g, ' ').trim();
 
 /** @var {string[]} Mistakes, in their order in the window and in the line under the editor. */
-const KEYS = ['images', 'imagelinks', 'links', 'tables', 'headings', 'noheadings'];
+const KEYS = ['images', 'imagelinks', 'links', 'tables', 'contrast', 'headings', 'noheadings'];
+
+/** @var {Object<string, number[]>} The named colours most written, as red, green and blue (as theme_epure\content_colours). */
+const NAMED = {
+    black: [0, 0, 0], white: [255, 255, 255], red: [255, 0, 0], green: [0, 128, 0], blue: [0, 0, 255],
+    yellow: [255, 255, 0], orange: [255, 165, 0], gray: [128, 128, 128], grey: [128, 128, 128], silver: [192, 192, 192],
+    lightgray: [211, 211, 211], lightgrey: [211, 211, 211], darkgray: [169, 169, 169], darkgrey: [169, 169, 169],
+    purple: [128, 0, 128], navy: [0, 0, 128], maroon: [128, 0, 0], lime: [0, 255, 0], aqua: [0, 255, 255],
+    cyan: [0, 255, 255], fuchsia: [255, 0, 255], magenta: [255, 0, 255], teal: [0, 128, 128], olive: [128, 128, 0],
+    pink: [255, 192, 203], gold: [255, 215, 0], brown: [165, 42, 42], beige: [245, 245, 220], ivory: [255, 255, 240],
+    lightyellow: [255, 255, 224], lightblue: [173, 216, 230], lightgreen: [144, 238, 144], skyblue: [135, 206, 235],
+    darkblue: [0, 0, 139], darkred: [139, 0, 0], darkgreen: [0, 100, 0], violet: [238, 130, 238],
+};
+
+/**
+ * A colour written in a style, as red, green and blue: none for a transparent colour or what is not a colour.
+ *
+ * @param {string} value Value (« rgb(224, 62, 45) », « #e03e2d », « yellow »).
+ * @returns {number[]|null}
+ */
+const colour = (value) => {
+    value = (value || '').trim().toLowerCase();
+    let match = value.match(/^rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)(?:[\s,/]+([\d.]+%?))?/);
+    if (match) {
+        const alpha = match[4] === undefined ? 1 : parseFloat(match[4]) / (match[4].endsWith('%') ? 100 : 1);
+        return alpha < 1 ? null : [Number(match[1]), Number(match[2]), Number(match[3])];
+    }
+    match = value.match(/^#([0-9a-f]{6}|[0-9a-f]{3})$/);
+    if (match) {
+        const hex = match[1].length === 3 ? match[1].replace(/./g, '$&$&') : match[1];
+        return [0, 2, 4].map((i) => parseInt(hex.substring(i, i + 2), 16));
+    }
+    return NAMED[value] || null;
+};
+
+/**
+ * Contrast of two colours (WCAG).
+ *
+ * @param {number[]} a Colour.
+ * @param {number[]} b Colour.
+ * @returns {number}
+ */
+const contrast = (a, b) => {
+    const luminance = (rgb) => rgb.map((v) => {
+        v /= 255;
+        return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+    }).reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
+    const [l1, l2] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+    return (l1 + 0.05) / (l2 + 0.05);
+};
+
+/**
+ * Whether an element writes its text large (WCAG 1.4.3): titles 1 to 3, 24 px, or 18.66 px in bold.
+ *
+ * @param {Element} element Element.
+ * @returns {boolean}
+ */
+const large = (element) => {
+    const size = element.style.fontSize.match(/^([\d.]+)(px|pt)$/);
+    const px = size ? parseFloat(size[1]) * (size[2] === 'pt' ? 4 / 3 : 1) : 0;
+    const bold = ['STRONG', 'B'].includes(element.tagName) || /^(bold|[6-9]00)$/.test(element.style.fontWeight);
+    return ['H1', 'H2', 'H3'].includes(element.tagName) || px >= 24 || (bold && px >= 18.66);
+};
+
+/**
+ * The colours around a text: of the text and of its background, the element that sets the nearest, and whether the
+ * text is large.
+ *
+ * @param {Node} node Text.
+ * @param {Element} root Content.
+ * @returns {Object} fg, bg, owner, large.
+ */
+const around = (node, root) => {
+    const found = {fg: null, bg: null, owner: null, large: false};
+    for (let element = node.parentElement; element && element !== root.parentElement; element = element.parentElement) {
+        found.fg = found.fg || colour(element.style.color || (element.tagName === 'FONT' ? element.getAttribute('color') : ''));
+        found.bg = found.bg || colour(element.style.backgroundColor || element.getAttribute('bgcolor'));
+        found.owner = found.owner || (found.fg || found.bg ? element : null);
+        found.large = found.large || large(element);
+        if (element === root) {
+            break;
+        }
+    }
+    return found;
+};
+
+/**
+ * The elements whose colour of text or of background makes a text not stand out enough from its background
+ * (WCAG 1.4.3): 4.5:1, 3:1 for a large text. Around them, the dark text of the theme on white.
+ *
+ * @param {Element} root Content.
+ * @returns {Element[]}
+ */
+const lowContrast = (root) => {
+    const found = new Set();
+    const walker = root.ownerDocument.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        if (!node.nodeValue.trim()) {
+            continue;
+        }
+        const {fg, bg, owner, large: big} = around(node, root);
+        if (owner && contrast(fg || [17, 20, 24], bg || [255, 255, 255]) < (big ? 3 : 4.5)) {
+            found.add(owner);
+        }
+    }
+    return [...found];
+};
 
 /** @var {number} Words from which a text without any title is hard to go through with a screen reader. */
 const LONG_TEXT = 400;
@@ -94,6 +200,8 @@ export const problems = (root) => {
             found.links.push(link);
         }
     });
+    // A text whose colour does not stand out enough from its background (WCAG 1.4.3, RGAA 3.2).
+    found.contrast = lowContrast(root);
     let previous = 0;
     const headings = root.querySelectorAll('h1, h2, h3, h4, h5, h6');
     headings.forEach((heading) => {

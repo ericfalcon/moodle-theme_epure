@@ -43,9 +43,12 @@ class course_accessibility {
     public const TABLE = 'theme_epure_a11ycheck';
 
     /** @var string[] Mistakes found without a person, in their order on the page. */
-    public const ISSUES = ['images', 'imagelinks', 'links', 'tables', 'headings', 'noheadings', 'frames', 'videos', 'pdf',
-        'pdfscanned', 'pdflang', 'docimages', 'docnoheadings', 'docheadings', 'doctables', 'slidetitles', 'sheetnames',
-        'doctitle', 'h5pimages', 'name', 'duplicate'];
+    public const ISSUES = ['images', 'imagelinks', 'links', 'tables', 'contrast', 'headings', 'noheadings', 'frames', 'videos',
+        'pdf', 'pdfscanned', 'pdflang', 'docimages', 'docnoheadings', 'docheadings', 'doctables', 'doccontrast', 'slidetitles',
+        'sheetnames', 'doctitle', 'h5pimages', 'name', 'duplicate'];
+
+    /** @var string|null Language of the course being read, for the passages in another language. */
+    protected static ?string $language = null;
 
     /** @var int Words from which a text without any title is hard to go through with a screen reader. */
     protected const LONG_TEXT = 400;
@@ -194,7 +197,14 @@ class course_accessibility {
         $cache = \cache::make('theme_epure', 'courseaccessibility');
         $parts = $cache->get((int) $course->id);
         if ($parts === false) {
-            $parts = self::read($course);
+            global $CFG;
+            // The language of the course (forced in its settings), else of the site: the passages in another one.
+            self::$language = !empty($course->lang) ? (string) $course->lang : (string) $CFG->lang;
+            try {
+                $parts = self::read($course);
+            } finally {
+                self::$language = null;
+            }
             $cache->set((int) $course->id, $parts);
         }
         return $parts;
@@ -326,11 +336,14 @@ class course_accessibility {
      * videos without subtitles; and the videos and audios whose subtitles or transcript a person has to confirm.
      *
      * @param string $html Text.
+     * @param string|null $language Language of the course, for the passages in another language; that of the course
+     *     being read, else of the site.
      * @return array issues (count by mistake), checks (key, kind and label of each).
      */
-    public static function check_html(string $html): array {
-        $found = ['images' => 0, 'imagelinks' => 0, 'links' => 0, 'tables' => 0, 'headings' => 0, 'noheadings' => 0,
-            'frames' => 0, 'videos' => 0];
+    public static function check_html(string $html, ?string $language = null): array {
+        global $CFG;
+        $found = ['images' => 0, 'imagelinks' => 0, 'links' => 0, 'tables' => 0, 'contrast' => 0, 'headings' => 0,
+            'noheadings' => 0, 'frames' => 0, 'videos' => 0];
         $checks = [];
         if (trim($html) === '') {
             return ['issues' => $found, 'checks' => []];
@@ -384,6 +397,11 @@ class course_accessibility {
                 $checks[] = self::media_check('captions', $href);
             }
         }
+        // A text whose colour does not stand out enough from its background (WCAG 1.4.3, RGAA 3.2).
+        $found['contrast'] = content_colours::low_contrast($xpath);
+        // A passage in another language than the course, without its language marked (WCAG 3.1.2, RGAA 8.7): guessed,
+        // so to confirm.
+        $checks = array_merge($checks, content_language::passages($xpath, $language ?? self::$language ?? $CFG->lang));
         // A level of title skipped.
         $previous = 0;
         $headings = $xpath->query('//h1 | //h2 | //h3 | //h4 | //h5 | //h6');
@@ -654,6 +672,14 @@ class course_accessibility {
                 $stored = document_check::kind($mimetype) ? $fs->get_file_by_id($file->id) : false;
                 $found = $stored ? (document_check::check($stored) ?? []) : [];
             }
+            // The passages of a document in another language than the one marked on them: guessed, so to confirm, by its
+            // content (the file replaced by another is to confirm again).
+            if (!empty($found['doclang'])) {
+                $parts[$key]['checks'][] = ['key' => 'doclang:' . substr($file->contenthash, 0, 16), 'kind' => 'doclang',
+                    'label' => $file->filename];
+            }
+            unset($found['doclang']);
+            $found = array_filter($found);
             foreach ($found as $issue => $count) {
                 self::add_issue($parts[$key], $issue, $count);
             }
@@ -979,7 +1005,7 @@ class course_accessibility {
                     $name = format_string($course->fullname, true, ['context' => $context]);
                     $edit = new \moodle_url('/course/edit.php', ['id' => $course->id]);
                 }
-                $sections[$current]['parts'][] = self::export_part(
+                $sections[$current]['parts'][] = self::with_images(self::export_part(
                     $part,
                     $name,
                     '',
@@ -988,7 +1014,7 @@ class course_accessibility {
                     $confirmations,
                     $users,
                     $output
-                );
+                ), $part, $course);
                 continue;
             }
             $cm = $modinfo->get_cm($part['id']);
@@ -997,7 +1023,7 @@ class course_accessibility {
             if (isset($content[$cm->modname])) {
                 $links[] = new \moodle_url($content[$cm->modname], [$cm->modname === 'quiz' ? 'cmid' : 'id' => $cm->id]);
             }
-            $sections[$current]['parts'][] = self::export_part(
+            $sections[$current]['parts'][] = self::with_images(self::export_part(
                 $part,
                 $cm->get_formatted_name(),
                 $cm->get_icon_url()->out(false),
@@ -1007,9 +1033,15 @@ class course_accessibility {
                 $users,
                 $output,
                 $cm
-            );
+            ), $part, $course);
         }
         $sections = array_values(array_filter($sections, fn($section) => $section['parts']));
+        $hasimages = false;
+        foreach ($sections as $section) {
+            foreach ($section['parts'] as $exported) {
+                $hasimages = $hasimages || $exported['hasaltimages'];
+            }
+        }
 
         return [
             'reporttitle' => get_string('courseaccessibility_report', 'theme_epure', (object) [
@@ -1017,6 +1049,13 @@ class course_accessibility {
                 'date' => userdate(time(), get_string('strftimedatefullshort', 'core_langconfig')),
             ]),
             'action' => self::url((int) $course->id)->out(false),
+            // The report as a file, in the formats of Moodle.
+            'download' => $output->download_dataformat_selector(
+                get_string('courseaccessibility_download', 'theme_epure'),
+                self::url((int) $course->id)->out_omit_querystring(),
+                'download',
+                ['id' => $course->id]
+            ),
             'sesskey' => sesskey(),
             'courseurl' => course_get_url($course)->out(false),
             'checklisturl' => (new \moodle_url('/theme/epure/checklist.php', ['course' => $course->id]))->out(false),
@@ -1026,7 +1065,77 @@ class course_accessibility {
             'percent' => $figures['total'] ? (int) round(100 * $figures['done'] / $figures['total']) : 100,
             'hastoconfirm' => $figures['toconfirm'] > 0 || array_filter($confirmations),
             'sections' => $sections,
+            // The button to save: points to confirm, or images to describe here.
+            'hasform' => $figures['toconfirm'] > 0 || array_filter($confirmations) || $hasimages,
         ];
+    }
+
+    /**
+     * The report of the course as a file (CSV, Excel, ODS, PDF, HTML: the formats of Moodle), one row by part of the
+     * course: its section, its name, its type, its state, what to fix, where, what to confirm and what is confirmed.
+     * For a file of an audit, or the dossier of a quality approach.
+     *
+     * @param \stdClass $course Course.
+     * @param string $dataformat Format, a plugin dataformat_*.
+     * @param \renderer_base $output Renderer.
+     */
+    public static function download(\stdClass $course, string $dataformat, \renderer_base $output): void {
+        $report = self::export($course, $output);
+        $columns = [];
+        foreach (['section', 'part', 'type', 'state', 'tofix', 'places', 'toconfirm', 'confirmed'] as $column) {
+            $columns[$column] = get_string('courseaccessibility_col_' . $column, 'theme_epure');
+        }
+        $rows = [];
+        foreach ($report['sections'] as $section) {
+            foreach ($section['parts'] as $part) {
+                $places = array_map(fn($place) => $place['label'] . html_entity_decode(strip_tags($place['sep']), ENT_QUOTES)
+                    . $place['issues'], $part['places']);
+                $toconfirm = array_column(array_filter($part['checks'], fn($check) => !$check['checked']), 'label');
+                $confirmed = array_map(
+                    fn($check) => $check['label'] . ' (' . ($check['confirmed'] ?? '') . ')',
+                    array_filter($part['checks'], fn($check) => $check['checked'])
+                );
+                $plain = fn(string $text) => html_entity_decode(strip_tags($text), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                $rows[] = array_map($plain, [
+                    'section' => $section['name'],
+                    'part' => $part['name'],
+                    'type' => $part['type'],
+                    'state' => $part['state']['text'],
+                    'tofix' => implode("\n", array_column($part['issues'], 'text')),
+                    'places' => implode("\n", $places),
+                    'toconfirm' => implode("\n", $toconfirm),
+                    'confirmed' => implode("\n", $confirmed),
+                ]);
+            }
+        }
+        $filename = clean_filename(get_string('courseaccessibility', 'theme_epure') . ' ' . $course->shortname . ' '
+            . userdate(time(), '%Y-%m-%d', 99, false));
+        \core\dataformat::download_data($filename, $dataformat, $columns, new \ArrayIterator($rows));
+    }
+
+    /**
+     * A part with its images without a text alternative that the teacher can describe here (content_alt), each with a
+     * field for its text alternative and a box « decorative ».
+     *
+     * @param array $data Context of the part.
+     * @param array $part Part.
+     * @param \stdClass $course Course.
+     * @return array
+     */
+    protected static function with_images(array $data, array $part, \stdClass $course): array {
+        if (empty($part['issues']['images'])) {
+            return $data + ['hasaltimages' => false];
+        }
+        $images = [];
+        foreach (content_alt::images($part, $course) as $i => $image) {
+            $id = $data['id'] . '-alt-' . $i;
+            $images[] = $image + [
+                'id' => $id,
+                'label' => get_string('courseaccessibility_alt_label', 'theme_epure', $image['filename'])
+                    . ($image['place'] !== '' ? ' (' . $image['place'] . ')' : ''),
+            ];
+        }
+        return $data + ['altimages' => $images, 'hasaltimages' => (bool) $images, 'altmax' => content_alt::MAX_LENGTH];
     }
 
     /**
