@@ -384,6 +384,20 @@ class behat_theme_epure extends behat_base {
     }
 
     /**
+     * Brings an element to the middle of the screen, out from under the bars that stick to the bottom of a form (the
+     * button to save of the guide « Accessibility of the course »), so that a click reaches it as a person scrolling
+     * to it would.
+     *
+     * @When /^I bring "(?P<element_string>(?:[^"]|\\")*)" "(?P<selector_string>[^"]*)" to the middle of the screen$/
+     * @param string $element Element.
+     * @param string $selector Type of selector.
+     */
+    public function i_bring_to_the_middle_of_the_screen(string $element, string $selector): void {
+        $node = $this->get_selected_node($selector, $element);
+        $this->execute_js_on_node($node, '{{ELEMENT}}.scrollIntoView({block: "center"});');
+    }
+
+    /**
      * A path of the pre-audit, its courses and activities replaced by their ids.
      *
      * @param string $path Path with {course SHORTNAME} and {cm IDNUMBER}.

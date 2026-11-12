@@ -202,8 +202,8 @@ class content_alt {
      *
      * @param \stdClass $course Course.
      * @param array $parts Parts of the guide.
-     * @param array<string, string> $alts Text alternative by key.
-     * @param array<string, bool> $decorative Decorative images, by key.
+     * @param array $alts Text alternative by key.
+     * @param array $decorative Decorative images, by key.
      * @return int Images described.
      */
     public static function apply(\stdClass $course, array $parts, array $alts, array $decorative): int {

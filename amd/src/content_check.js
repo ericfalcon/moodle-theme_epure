@@ -96,6 +96,41 @@ const contrast = (a, b) => {
 };
 
 /**
+ * Whether an element writes its text large (WCAG 1.4.3): titles 1 to 3, 24 px, or 18.66 px in bold.
+ *
+ * @param {Element} element Element.
+ * @returns {boolean}
+ */
+const large = (element) => {
+    const size = element.style.fontSize.match(/^([\d.]+)(px|pt)$/);
+    const px = size ? parseFloat(size[1]) * (size[2] === 'pt' ? 4 / 3 : 1) : 0;
+    const bold = ['STRONG', 'B'].includes(element.tagName) || /^(bold|[6-9]00)$/.test(element.style.fontWeight);
+    return ['H1', 'H2', 'H3'].includes(element.tagName) || px >= 24 || (bold && px >= 18.66);
+};
+
+/**
+ * The colours around a text: of the text and of its background, the element that sets the nearest, and whether the
+ * text is large.
+ *
+ * @param {Node} node Text.
+ * @param {Element} root Content.
+ * @returns {Object} fg, bg, owner, large.
+ */
+const around = (node, root) => {
+    const found = {fg: null, bg: null, owner: null, large: false};
+    for (let element = node.parentElement; element && element !== root.parentElement; element = element.parentElement) {
+        found.fg = found.fg || colour(element.style.color || (element.tagName === 'FONT' ? element.getAttribute('color') : ''));
+        found.bg = found.bg || colour(element.style.backgroundColor || element.getAttribute('bgcolor'));
+        found.owner = found.owner || (found.fg || found.bg ? element : null);
+        found.large = found.large || large(element);
+        if (element === root) {
+            break;
+        }
+    }
+    return found;
+};
+
+/**
  * The elements whose colour of text or of background makes a text not stand out enough from its background
  * (WCAG 1.4.3): 4.5:1, 3:1 for a large text. Around them, the dark text of the theme on white.
  *
@@ -109,28 +144,8 @@ const lowContrast = (root) => {
         if (!node.nodeValue.trim()) {
             continue;
         }
-        let fg = null;
-        let bg = null;
-        let owner = null;
-        let large = false;
-        for (let element = node.parentElement; element && element !== root.parentElement; element = element.parentElement) {
-            if (!fg) {
-                fg = colour(element.style.color || (element.tagName === 'FONT' ? element.getAttribute('color') : ''));
-                owner = owner || (fg ? element : null);
-            }
-            if (!bg) {
-                bg = colour(element.style.backgroundColor || element.getAttribute('bgcolor'));
-                owner = owner || (bg ? element : null);
-            }
-            const size = element.style.fontSize.match(/^([\d.]+)(px|pt)$/);
-            const px = size ? parseFloat(size[1]) * (size[2] === 'pt' ? 4 / 3 : 1) : 0;
-            const bold = ['STRONG', 'B'].includes(element.tagName) || /^(bold|[6-9]00)$/.test(element.style.fontWeight);
-            large = large || ['H1', 'H2', 'H3'].includes(element.tagName) || px >= 24 || (bold && px >= 18.66);
-            if (element === root) {
-                break;
-            }
-        }
-        if (owner && contrast(fg || [17, 20, 24], bg || [255, 255, 255]) < (large ? 3 : 4.5)) {
+        const {fg, bg, owner, large: big} = around(node, root);
+        if (owner && contrast(fg || [17, 20, 24], bg || [255, 255, 255]) < (big ? 3 : 4.5)) {
             found.add(owner);
         }
     }
