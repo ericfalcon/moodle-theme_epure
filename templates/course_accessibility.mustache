@@ -24,9 +24,9 @@
 
     Example context (json):
     {
-        "reporttitle": "Accessibility of « Safety at work » on 05/11/26", "action": "#", "sesskey": "abc", "checklisturl": "#", "courseurl": "#",
+        "reporttitle": "Accessibility of « Safety at work » on 05/11/26", "action": "#", "download": "", "sesskey": "abc", "checklisturl": "#", "courseurl": "#",
         "summary": "3 points to fix, 1 to confirm", "done": "5 parts out of 8 have nothing left", "percent": 62,
-        "hastoconfirm": true,
+        "hastoconfirm": true, "hasform": true,
         "sections": [{"name": "Week 1", "id": "epure-a11y-section-1", "parts": [{
             "id": "epure-a11y-cm-4", "name": "Risks", "icon": "", "type": "Page",
             "state": {"class": "issues", "icon": "fa-triangle-exclamation", "text": "2 points to fix, 1 to confirm"},
@@ -56,6 +56,7 @@
                 <i class="fa fa-list-check" aria-hidden="true"></i> {{#str}}checklist_open, theme_epure{{/str}}
             </a>
         </div>
+        {{#download}}<div class="epure-a11yguide-download d-print-none">{{{download}}}</div>{{/download}}
     </div>
 
     <form method="post" action="{{action}}" class="epure-a11yguide-form">
@@ -83,6 +84,25 @@
                                 {{/places}}
                             </ul>
                         {{/hasplaces}}
+                        {{#hasaltimages}}
+                            <fieldset class="epure-a11yguide-alts d-print-none">
+                                <legend class="epure-a11yguide-checks-title">{{#str}}courseaccessibility_alt_title, theme_epure{{/str}}</legend>
+                                {{#altimages}}
+                                    <div class="epure-a11yguide-alt">
+                                        {{#url}}<img class="epure-a11yguide-alt-preview" src="{{url}}" alt="">{{/url}}
+                                        <div class="epure-a11yguide-alt-fields">
+                                            <label for="{{id}}">{{label}}</label>
+                                            <input type="text" class="form-control" id="{{id}}" name="alt[{{key}}]" maxlength="{{altmax}}" aria-describedby="{{id}}-help">
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="{{id}}-decorative" name="decorative[{{key}}]" value="1">
+                                                <label class="form-check-label" for="{{id}}-decorative">{{#str}}courseaccessibility_alt_decorative, theme_epure{{/str}}</label>
+                                            </div>
+                                            <p class="epure-a11yguide-check-help" id="{{id}}-help">{{#str}}courseaccessibility_alt_help, theme_epure{{/str}}</p>
+                                        </div>
+                                    </div>
+                                {{/altimages}}
+                            </fieldset>
+                        {{/hasaltimages}}
                         {{#haschecks}}
                             <fieldset class="epure-a11yguide-checks">
                                 <legend class="epure-a11yguide-checks-title">{{#str}}courseaccessibility_checks, theme_epure{{/str}}</legend>
@@ -106,12 +126,12 @@
                 {{/parts}}
             </section>
         {{/sections}}
-        {{#hastoconfirm}}
+        {{#hasform}}
             <div class="epure-a11yguide-save d-print-none">
                 <button type="submit" class="btn btn-primary">{{#str}}courseaccessibility_save, theme_epure{{/str}}</button>
                 <a class="btn btn-secondary" href="{{courseurl}}">{{#str}}cancel{{/str}}</a>
             </div>
-        {{/hastoconfirm}}
+        {{/hasform}}
     </form>
 </div>
 {{#js}}

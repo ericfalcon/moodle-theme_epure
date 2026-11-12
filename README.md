@@ -28,7 +28,8 @@ Choose a brand colour (or click a colour of your logo), and optionally an accent
   - every activity and resource of Moodle is read, in HTML or Markdown: pages, assignments, quizzes, books, lessons, workshops, glossaries, feedbacks, databases, H5P contents…;
   - the 47 activity modules of other plugins most installed are known (Questionnaire, Unilabel, Content Pages, Interactive Video, Booking, Lightbox Gallery, Learning map…), and any plugin can give its content to the guide through one function;
   - the documents given in the course are checked (Word, PowerPoint, Excel, LibreOffice, PDF: images without a text alternative, documents without titles or language, scanned PDF…);
-  - what to fix, each mistake with the link to its place, in red, what to confirm (videos, packages, external tools), in orange, and a reminder to print; updated as soon as an activity changes.
+  - texts whose colour does not stand out enough from their background, and passages in another language without their language marked, in the texts and in the documents of Word, PowerPoint and LibreOffice Writer;
+  - what to fix, each mistake with the link to its place, in red, what to confirm (videos, packages, external tools), in orange; the images described in place, from the guide; the report printed or downloaded (CSV, Excel, PDF…); updated as soon as an activity changes.
 - Tested on every change: an automated pre-audit (axe-core, WCAG 2.2 A and AA) of 40 Moodle pages and 24 IOMAD pages, each in light, dark and on two phone widths, plus a matrix crossing brand colours, display preferences, keyboard use and IOMAD company colours.
 
 ### For learners
@@ -121,6 +122,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.16.0**: no new setting; upgrade the site. The guide checks the colours and the languages of the texts, exports its report and describes the images in place.
 - **1.15.2**: no new setting.
 - **1.15.1**: no new setting; upgrade the site (a new cache).
 - **1.15.0**: no new setting; upgrade the site so that Moodle reads the new observer of Épure (or purge the caches).

@@ -49,8 +49,8 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
             . '<audio src="https://example.org/a.mp3"></audio><a href="https://vimeo.com/1">La vidéo de sécurité</a>'
         );
         $this->assertSame(
-            ['images' => 1, 'imagelinks' => 0, 'links' => 2, 'tables' => 1, 'headings' => 1, 'noheadings' => 0, 'frames' => 1,
-                'videos' => 1],
+            ['images' => 1, 'imagelinks' => 0, 'links' => 2, 'tables' => 1, 'contrast' => 0, 'headings' => 1, 'noheadings' => 0,
+                'frames' => 1, 'videos' => 1],
             $found['issues']
         );
         $this->assertEqualsCanonicalizing(['captions', 'captions', 'transcript'], array_column($found['checks'], 'kind'));
@@ -60,6 +60,48 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         $clean = course_accessibility::check_html('<h2>Titre</h2><h3>Sous-titre</h3><p>Texte <a href="#">du règlement</a>.</p>');
         $this->assertSame(0, array_sum($clean['issues']));
         $this->assertSame([], $clean['checks']);
+    }
+
+    /**
+     * A passage in another language than the course, without its language marked, is to confirm; the same passage
+     * with its language, a short one, or one in the language of the course, are not.
+     */
+    public function test_check_html_language(): void {
+        $english = 'The safety rules of the site are what you have to read first, and they are the same for all of us.';
+        $french = 'Les règles de sécurité du chantier sont à lire en premier, et elles sont les mêmes pour tous les salariés.';
+        $checks = course_accessibility::check_html('<p>' . $english . '</p><p>' . $french . '</p>', 'fr')['checks'];
+        $this->assertSame(['lang'], array_column($checks, 'kind'));
+        $this->assertStringStartsWith('The safety rules of the site', $checks[0]['label']);
+        $this->assertSame([], course_accessibility::check_html('<p lang="en">' . $english . '</p>', 'fr')['checks']);
+        $this->assertSame([], course_accessibility::check_html('<div lang="en"><p>' . $english . '</p></div>', 'fr')['checks']);
+        $this->assertSame([], course_accessibility::check_html('<p>The rules of the site.</p>', 'fr')['checks']);
+        $this->assertSame([], course_accessibility::check_html('<p>' . $english . '</p>', 'en_us')['checks']);
+        // A language Épure does not know: nothing guessed.
+        $this->assertSame([], course_accessibility::check_html('<p>' . $english . '</p>', 'nl')['checks']);
+        $this->assertSame('fr', content_language::guess($french));
+        $this->assertSame('en', content_language::guess($english));
+    }
+
+    /**
+     * The colours written in a text: a text that does not stand out from its background, once by element that colours
+     * it; a dark text on a light highlight, a white text on a dark background, a large title at 3:1 are right.
+     */
+    public function test_check_html_contrast(): void {
+        $count = fn(string $html) => course_accessibility::check_html($html)['issues']['contrast'];
+        // Yellow and light grey on white, a light text on a light highlight: three.
+        $this->assertSame(3, $count('<p><span style="color: #ffff00;">Attention</span> et <span style="color: rgb(200, 200, 200)">'
+            . 'détail</span>.</p><p><span style="background-color: #fbeeb8; color: #ffffff">Note</span></p>'));
+        // The text inside the coloured element is counted once, by the element.
+        $this->assertSame(1, $count('<p style="color: yellow">Un <strong>mot</strong> et <em>un autre</em></p>'));
+        // A white text on a dark background set on its paragraph, a dark highlight, a font of colour: right.
+        $this->assertSame(0, $count('<p style="background-color: #1e3a8a"><span style="color: #ffffff">Blanc sur bleu</span></p>'
+            . '<p><span style="background-color: #fbeeb8">Surligné</span></p><p><font color="#2559a8">Bleu</font></p>'));
+        // A dark background without a colour of text: the dark text of the theme on it.
+        $this->assertSame(1, $count('<p style="background: #1e3a8a">Texte sombre sur bleu</p>'));
+        // A large title at 3:1 (#949494 on white: 3.03), and the same colour in a paragraph.
+        $this->assertSame(1, $count('<h2 style="color: #949494">Titre</h2><p style="color: #949494">Texte</p>'));
+        // Transparent, a variable: not judged.
+        $this->assertSame(0, $count('<p style="color: rgba(255,255,0,.5)">A</p><p style="color: var(--x)">B</p>'));
     }
 
     /**
@@ -198,6 +240,44 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         $this->assertSame(7, $figures['issues']);
         $this->assertSame(4, $figures['toconfirm']);
         $this->assertSame(['issues' => 3, 'toconfirm' => 1], $figures['cms'][$page->cmid]);
+    }
+
+    /**
+     * A document given in the course: its texts too little contrasted are a mistake, its passages in another language a
+     * point to confirm, by its content.
+     */
+    public function test_document_colours_languages(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $course = $this->getDataGenerator()->create_course();
+        $resource = $this->getDataGenerator()->create_module('resource', ['course' => $course->id, 'name' => 'Consignes']);
+        $w = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"';
+        $english = 'The safety rules of the site are what you have to read first, and they are the same for all of us.';
+        $path = make_request_directory() . '/consignes.docx';
+        $zip = new \ZipArchive();
+        $zip->open($path, \ZipArchive::CREATE);
+        $zip->addFromString('[Content_Types].xml', '<Types/>');
+        $zip->addFromString('word/document.xml', '<w:document ' . $w . '><w:body><w:p><w:r><w:rPr><w:color w:val="FFFF00"/>'
+            . '</w:rPr><w:t>Attention</w:t></w:r></w:p><w:p><w:r><w:t>' . $english . '</w:t></w:r></w:p></w:body></w:document>');
+        $zip->addFromString('word/styles.xml', '<w:styles ' . $w . '><w:docDefaults><w:rPrDefault><w:rPr><w:lang w:val="fr-FR"/>'
+            . '</w:rPr></w:rPrDefault></w:docDefaults></w:styles>');
+        $zip->addFromString('docProps/core.xml', '<cp:coreProperties '
+            . 'xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" '
+            . 'xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>Consignes</dc:title></cp:coreProperties>');
+        $zip->close();
+        $context = \context_module::instance($resource->cmid);
+        $fs = get_file_storage();
+        $fs->delete_area_files($context->id, 'mod_resource', 'content');
+        $file = $fs->create_file_from_pathname(['contextid' => $context->id, 'component' => 'mod_resource',
+            'filearea' => 'content', 'itemid' => 0, 'filepath' => '/', 'filename' => 'consignes.docx'], $path);
+        course_accessibility::forget((int) $course->id);
+
+        $part = array_column(course_accessibility::analyse($course), null, 'id')[$resource->cmid];
+        $this->assertSame(['doccontrast' => 1], $part['issues']);
+        $this->assertSame(
+            [['key' => 'doclang:' . substr($file->get_contenthash(), 0, 16), 'kind' => 'doclang', 'label' => 'consignes.docx']],
+            array_values(array_filter($part['checks'], fn($check) => $check['kind'] === 'doclang'))
+        );
     }
 
     /**

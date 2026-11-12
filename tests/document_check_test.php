@@ -102,6 +102,71 @@ final class document_check_test extends \advanced_testcase {
     }
 
     /**
+     * The colours and the languages written on the texts of a document of Word, a presentation and a text of
+     * LibreOffice: a text too little contrasted is a mistake, a passage in another language than the one marked on it
+     * is to confirm; the colour « auto » on a dark shading, a white text on a dark shape, a passage marked in its
+     * language, are right.
+     */
+    public function test_colours_languages(): void {
+        $this->resetAfterTest();
+        $english = 'The safety rules of the site are what you have to read first, and they are the same for all of us.';
+        $french = 'Les règles de sécurité du chantier sont à lire en premier, et elles sont les mêmes pour tous.';
+        // Word: a yellow text on white, an English paragraph in a French document; « auto » on a dark shading, an
+        // English paragraph marked English.
+        $w = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"';
+        $run = fn(string $text, string $props = '') => '<w:r><w:rPr>' . $props . '</w:rPr><w:t>' . $text . '</w:t></w:r>';
+        $body = '<w:p>' . $run('Attention', '<w:color w:val="FFFF00"/>') . '</w:p>'
+            . '<w:p>' . $run($english) . '</w:p>'
+            . '<w:p><w:pPr><w:shd w:fill="1E3A8A"/></w:pPr>' . $run('Texte', '<w:color w:val="auto"/>') . '</w:p>'
+            . '<w:p>' . $run($english, '<w:lang w:val="en-GB"/>') . '</w:p>'
+            . '<w:p>' . $run($french) . '</w:p>';
+        $styles = '<w:styles ' . $w . '><w:docDefaults><w:rPrDefault><w:rPr><w:lang w:val="fr-FR"/></w:rPr></w:rPrDefault>'
+            . '</w:docDefaults></w:styles>';
+        $file = $this->package('couleurs.docx', [
+            '[Content_Types].xml' => '<Types/>',
+            'word/document.xml' => '<w:document ' . $w . '><w:body>' . $body . '</w:body></w:document>',
+            'word/styles.xml' => $styles,
+            'docProps/core.xml' => $this->core('Couleurs'),
+        ]);
+        $this->assertSame(['doccontrast' => 1, 'doclang' => 1], document_check::check($file));
+
+        // PowerPoint: a light grey text on a white shape, an English paragraph marked French; a white text on a dark
+        // shape.
+        $ns = 'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" '
+            . 'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"';
+        $shape = fn(string $fill, string $colour, string $text) => '<p:sp><p:spPr><a:solidFill><a:srgbClr val="' . $fill
+            . '"/></a:solidFill></p:spPr><p:txBody><a:p><a:r><a:rPr lang="fr-FR"><a:solidFill><a:srgbClr val="' . $colour
+            . '"/></a:solidFill></a:rPr><a:t>' . $text . '</a:t></a:r></a:p></p:txBody></p:sp>';
+        $title = '<p:sp><p:nvSpPr><p:cNvPr id="1" name="Titre"/><p:cNvSpPr/><p:nvPr><p:ph type="title"/></p:nvPr></p:nvSpPr>'
+            . '<p:txBody><a:p><a:r><a:t>Les risques</a:t></a:r></a:p></p:txBody></p:sp>';
+        $slide = '<p:sld ' . $ns . '><p:cSld><p:spTree>' . $title . $shape('FFFFFF', 'D3D3D3', 'Note')
+            . $shape('FFFFFF', '111418', $english) . $shape('1E3A8A', 'FFFFFF', 'Blanc') . '</p:spTree></p:cSld></p:sld>';
+        $file = $this->package('couleurs.pptx', ['[Content_Types].xml' => '<Types/>', 'ppt/slides/slide1.xml' => $slide,
+            'docProps/core.xml' => $this->core('Cours')]);
+        $this->assertSame(['doccontrast' => 1, 'doclang' => 1], document_check::check($file));
+
+        // LibreOffice Writer: a span in light grey, an English paragraph in a French document.
+        $o = 'xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" '
+            . 'xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" '
+            . 'xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" '
+            . 'xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"';
+        $content = '<office:document-content ' . $o . '><office:automatic-styles><style:style style:name="T1" '
+            . 'style:family="text"><style:text-properties fo:color="#d3d3d3"/></style:style></office:automatic-styles>'
+            . '<office:body><office:text><text:h text:outline-level="1">Titre</text:h><text:p>Un <text:span text:style-name="T1">'
+            . 'mot</text:span></text:p><text:p>' . $english . '</text:p><text:p>' . $french . '</text:p></office:text>'
+            . '</office:body></office:document-content>';
+        $styles = '<office:document-styles ' . $o . '><office:styles><style:default-style style:family="paragraph">'
+            . '<style:text-properties fo:language="fr" fo:country="FR"/></style:default-style></office:styles>'
+            . '</office:document-styles>';
+        $meta = '<office:document-meta xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" '
+            . 'xmlns:dc="http://purl.org/dc/elements/1.1/"><office:meta><dc:title>Texte</dc:title></office:meta>'
+            . '</office:document-meta>';
+        $file = $this->package('couleurs.odt', ['mimetype' => 'application/vnd.oasis.opendocument.text',
+            'content.xml' => $content, 'styles.xml' => $styles, 'meta.xml' => $meta]);
+        $this->assertSame(['doccontrast' => 1, 'doclang' => 1], document_check::check($file));
+    }
+
+    /**
      * A presentation: a slide without a title, an image without a text alternative.
      */
     public function test_slides(): void {
