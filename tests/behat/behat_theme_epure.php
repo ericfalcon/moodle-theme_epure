@@ -185,6 +185,8 @@ class behat_theme_epure extends behat_base {
                 $this->getSession()->resizeWindow($width, 900);
                 $this->getSession()->visit($this->locate_path($path));
                 $this->wait_for_pending_js();
+                // The editors (TinyMCE) ready: their status bar gets its roles once the editor is drawn.
+                $this->getSession()->wait(10000, "!document.querySelector('.tox-statusbar__resize-handle:not([role])')");
                 if ($dark) {
                     // Without the transitions of the colours, axe reads the colours of the dark mode, not those on
                     // the way to it.
@@ -266,35 +268,44 @@ class behat_theme_epure extends behat_base {
             "}"
         );
         $this->getSession()->wait(30000, "typeof window.axe !== 'undefined'");
-        // While the page is still settling, axe may read no results: it runs once more.
+        // While the page is still settling, axe may read no results: it runs once more. Moodle's step reads the results
+        // for a few seconds only: on the pages with editors (TinyMCE and its frame), axe may take longer, and the step
+        // finds « No data ». The audit then runs with the same rules, in the page, waited for a minute.
         for ($attempt = 1; $attempt <= 2; $attempt++) {
             try {
                 $this->execute('behat_accessibility::run_axe_validation_for_tags', ['', 'wcag22aa']);
                 return null;
             } catch (\Exception $e) {
-                if ($attempt === 1 && preg_match('/^No data$|axe is not defined/', trim($e->getMessage()))) {
-                    $this->getSession()->wait(1000);
-                    continue;
+                if (!preg_match('/^No data$|axe is not defined/', trim($e->getMessage()))) {
+                    return trim($e->getMessage());
                 }
-                return trim($e->getMessage());
+                $this->getSession()->wait(1000);
             }
         }
-        return null;
+        return $this->axe_violations(true);
     }
 
     /**
      * The audit of axe-core (WCAG 2.2 A and AA) of the page, run in the page itself: the step of Moodle that runs it
      * looks for exceptions afterwards, and fails on the error pages that Moodle marks as fatal errors.
      *
+     * With the rules of Moodle's step, the frames of the page (the editors) are left out: their content is the text being
+     * written, and axe waits for a minute for a frame without axe.
+     *
+     * @param bool $moodle With the rules of Moodle's step (Section 508, ARIA, visual cues, orientation too).
      * @return string|null The violations, or null when there are none.
      */
-    protected function axe_violations(): ?string {
+    protected function axe_violations(bool $moodle = false): ?string {
+        $tags = $moodle ? ['wcag2a', 'wcag21a', 'wcag22a', 'wcag2aa', 'wcag21aa', 'wcag22aa', 'section508', 'cat.aria',
+            'cat.sensory-and-visual-cues', 'wcag134'] : ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
+        $options = json_encode(['runOnly' => ['type' => 'tag', 'values' => $tags], 'iframes' => !$moodle]);
         $this->getSession()->executeScript(
             "window.epureAxe = null;" .
-            "const run = () => axe.run(document, {runOnly: {type: 'tag', values: " .
-            "['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']}})" .
+            "const run = () => axe.run(document, " . $options . ")" .
             ".then((r) => { window.epureAxe = r.violations.map((v) => v.id + ' (' + v.nodes.length + ')').join(', '); })" .
-            ".catch((e) => { window.epureAxe = 'axe: ' + e.message; });" .
+            // Moodle's step may still be running its audit, which axe does one at a time.
+            ".catch((e) => { if (/already running/i.test(e.message)) { setTimeout(run, 500); } " .
+            "else { window.epureAxe = 'axe: ' + e.message; } });" .
             "if (typeof axe !== 'undefined') { run(); } else {" .
             "const tag = document.createElement('script');" .
             "tag.src = M.cfg.wwwroot + '/lib/behat/axe/axe.min.js';" .
@@ -302,8 +313,11 @@ class behat_theme_epure extends behat_base {
             "document.head.append(tag);" .
             "}"
         );
-        $this->getSession()->wait(30000, 'window.epureAxe !== null');
-        $violations = (string) $this->getSession()->evaluateScript('return window.epureAxe;');
+        $this->getSession()->wait(60000, 'window.epureAxe !== null');
+        $violations = $this->getSession()->evaluateScript('return window.epureAxe;');
+        if ($violations === null) {
+            return 'axe-core: no result within a minute';
+        }
         return $violations === '' ? null : 'axe-core: ' . $violations;
     }
 
