@@ -9,6 +9,21 @@
     border-radius: var(--epure-radius-lg);
 }
 
+// Messaging page: Moodle hides the whole header of the page, its title « Messages » with it, so the page had no
+// heading of level 1 (RGAA 9.1). The header stays hidden on the screen, not from the screen readers.
+#page-message-index #page-header {
+    position: absolute;
+    display: block;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 // Profile and preferences: the person in a header on a tint of the brand; the links of the cards as rows of a menu
 // (the whole row is the target, an arrow on the right), as the settings of a phone, rather than lines of text.
 .path-user .page-context-header {

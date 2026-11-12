@@ -167,8 +167,10 @@ class behat_theme_epure extends behat_base {
      * pixels), with the axe audit of Moodle (WCAG 2.2 A and AA) and, on phones, no scroll across the page (WCAG
      * 1.4.10). All the pages are checked before the step fails, with the list of what failed.
      *
-     * A path can name a course by its short name, {course SAFE}, and an activity by its ID number, {cm page1}. The
-     * column « except » takes « wide table »: a table in two dimensions, which may scroll across (WCAG 1.4.10).
+     * A path can name a course by its short name, {course SAFE}, an activity by its ID number, {cm page1} (or its
+     * instance, {instance forum1}), a user by their username, {user learner1}, a discussion by its name and the last
+     * attempt at a quiz by the ID number of the quiz, {attempt quiz1}. The column « except » takes « wide table »:
+     * a table in two dimensions, which may scroll across (WCAG 1.4.10).
      *
      * @Then /^the following pages should meet accessibility standards in the four displays:$/
      * @param TableNode $data Columns path and, optionally, except.
@@ -398,17 +400,153 @@ class behat_theme_epure extends behat_base {
     }
 
     /**
-     * A path of the pre-audit, its courses and activities replaced by their ids.
+     * Visual regression: each page, in its display, compared with its reference image (tests/behat/visual/NAME.png).
+     * Only where the environment variable EPURE_VISUAL names a folder (one job of the continuous integration): the
+     * fonts and the browser draw the pixels, which differ from a machine to another. Without its reference, the image
+     * of a page is saved in EPURE_VISUAL/new, to be added to the references; when it differs, the image and its
+     * differences (in red) are saved in EPURE_VISUAL/diff, and the step fails.
      *
-     * @param string $path Path with {course SHORTNAME} and {cm IDNUMBER}.
+     * The animations, the transitions and the caret are stopped; the dates (elements time), the year of the footer and
+     * the elements of the column « mask » (CSS selectors) are hidden, as content that changes from a day to another.
+     *
+     * @Then /^the following pages should look like their references:$/
+     * @param TableNode $data Columns name, path, display (light 1300, dark 1300, light 390) and, optionally, mask.
+     */
+    public function the_following_pages_should_look_like_their_references(TableNode $data): void {
+        $folder = getenv('EPURE_VISUAL');
+        if (!$folder) {
+            throw new SkippedException('The visual regression runs where EPURE_VISUAL names a folder.');
+        }
+        $failures = [];
+        foreach ($data->getHash() as $row) {
+            [$scheme, $width] = explode(' ', $row['display']);
+            $this->getSession()->resizeWindow((int) $width, 900);
+            $this->getSession()->visit($this->locate_path($this->epure_path($row['path'])));
+            $this->wait_for_pending_js();
+            $mask = implode(', ', array_filter(['time', '.epure-footer-copyright', trim($row['mask'] ?? '')]));
+            $this->getSession()->executeScript(
+                "const style = document.createElement('style');" .
+                "style.textContent = '*, *::before, *::after { transition: none !important; animation: none !important;" .
+                " caret-color: transparent !important; scroll-behavior: auto !important; }" .
+                " " . addslashes($mask) . " { visibility: hidden !important; }';" .
+                "document.head.appendChild(style);" .
+                ($scheme === 'dark' ? "document.documentElement.classList.add('epure-dark');" : '') .
+                "document.activeElement && document.activeElement.blur && document.activeElement.blur();" .
+                "window.scrollTo(0, 0);"
+            );
+            $this->getSession()->wait(500);
+            $image = $this->getSession()->getScreenshot();
+            $name = clean_param($row['name'], PARAM_ALPHANUMEXT);
+            $reference = __DIR__ . '/visual/' . $name . '.png';
+            if (!is_readable($reference)) {
+                $this->epure_save_image($folder . '/new', $name . '.png', $image);
+                continue;
+            }
+            $difference = $this->epure_compare_images(file_get_contents($reference), $image);
+            if ($difference !== null) {
+                $this->epure_save_image($folder . '/diff', $name . '.png', $image);
+                if ($difference['image'] !== null) {
+                    $this->epure_save_image($folder . '/diff', $name . '-diff.png', $difference['image']);
+                }
+                $failures[] = "{$row['name']} ({$row['path']}, {$row['display']}): {$difference['message']}";
+            }
+        }
+        if ($failures) {
+            throw new ExpectationException(
+                "The pages differ from their references:\n" . implode("\n", $failures),
+                $this->getSession()
+            );
+        }
+    }
+
+    /**
+     * Saves an image of the visual regression.
+     *
+     * @param string $folder Folder.
+     * @param string $file Name of the file.
+     * @param string $image Image (PNG).
+     */
+    protected function epure_save_image(string $folder, string $file, string $image): void {
+        if (!is_dir($folder)) {
+            mkdir($folder, 0777, true);
+        }
+        file_put_contents($folder . '/' . $file, $image);
+    }
+
+    /**
+     * Compares an image with its reference: the pixels whose colour differs by more than 48 (out of 255) on one channel
+     * at least, beyond 0.02 % of the pixels (the edges of the letters, drawn a little differently from a run to another).
+     *
+     * @param string $reference Reference image (PNG).
+     * @param string $image Image of the page (PNG).
+     * @return array|null Null when they are alike; else the message and an image of the differences in red.
+     */
+    protected function epure_compare_images(string $reference, string $image): ?array {
+        $expected = imagecreatefromstring($reference);
+        $actual = imagecreatefromstring($image);
+        $width = imagesx($actual);
+        $height = imagesy($actual);
+        if (imagesx($expected) !== $width || imagesy($expected) !== $height) {
+            return ['message' => 'the size is ' . $width . '×' . $height . ', not ' . imagesx($expected) . '×'
+                . imagesy($expected), 'image' => null];
+        }
+        $diff = imagecreatetruecolor($width, $height);
+        imagecopy($diff, $actual, 0, 0, 0, 0, $width, $height);
+        imagefilter($diff, IMG_FILTER_GRAYSCALE);
+        imagefilter($diff, IMG_FILTER_BRIGHTNESS, 80);
+        $red = imagecolorallocate($diff, 230, 0, 0);
+        $count = 0;
+        for ($y = 0; $y < $height; $y++) {
+            for ($x = 0; $x < $width; $x++) {
+                $a = imagecolorat($expected, $x, $y);
+                $b = imagecolorat($actual, $x, $y);
+                if ($a === $b) {
+                    continue;
+                }
+                if (
+                    abs((($a >> 16) & 255) - (($b >> 16) & 255)) > 48 || abs((($a >> 8) & 255) - (($b >> 8) & 255)) > 48
+                        || abs(($a & 255) - ($b & 255)) > 48
+                ) {
+                    $count++;
+                    imagesetpixel($diff, $x, $y, $red);
+                }
+            }
+        }
+        if ($count <= $width * $height * 0.0002) {
+            return null;
+        }
+        ob_start();
+        imagepng($diff);
+        return ['message' => $count . ' pixels differ', 'image' => ob_get_clean()];
+    }
+
+    /**
+     * A path of the pre-audit, its courses, activities, users, discussions and attempts replaced by their ids.
+     *
+     * @param string $path Path with {course SHORTNAME}, {cm IDNUMBER}, {instance IDNUMBER} (the instance of the
+     *     activity), {user USERNAME}, {discussion NAME} and {attempt IDNUMBER} (the last attempt at the quiz).
      * @return string
      */
     protected function epure_path(string $path): string {
         global $DB;
-        return preg_replace_callback('/\{(course|cm) ([^}]+)\}/', function (array $m) use ($DB): string {
-            return $m[1] === 'course'
-                ? (string) $DB->get_field('course', 'id', ['shortname' => $m[2]], MUST_EXIST)
-                : (string) $DB->get_field('course_modules', 'id', ['idnumber' => $m[2]], MUST_EXIST);
+        $tokens = '/\{(course|cm|instance|user|discussion|attempt) ([^}]+)\}/';
+        return preg_replace_callback($tokens, function (array $m) use ($DB): string {
+            switch ($m[1]) {
+                case 'course':
+                    return (string) $DB->get_field('course', 'id', ['shortname' => $m[2]], MUST_EXIST);
+                case 'cm':
+                    return (string) $DB->get_field('course_modules', 'id', ['idnumber' => $m[2]], MUST_EXIST);
+                case 'instance':
+                    return (string) $DB->get_field('course_modules', 'instance', ['idnumber' => $m[2]], MUST_EXIST);
+                case 'user':
+                    return (string) $DB->get_field('user', 'id', ['username' => $m[2]], MUST_EXIST);
+                case 'discussion':
+                    return (string) $DB->get_field('forum_discussions', 'id', ['name' => $m[2]], MUST_EXIST);
+                default:
+                    // The last attempt at the quiz of this ID number.
+                    $quiz = $DB->get_field('course_modules', 'instance', ['idnumber' => $m[2]], MUST_EXIST);
+                    return (string) $DB->get_field_sql('SELECT MAX(id) FROM {quiz_attempts} WHERE quiz = ?', [$quiz]);
+            }
         }, $path);
     }
 

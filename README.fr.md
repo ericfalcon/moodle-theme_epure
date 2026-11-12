@@ -122,6 +122,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.17.0** : aucun nouveau réglage ; mettez le site à jour. Les widgets de Moodle (test, formulaires, évaluation, carnet de notes) dans le pré-audit, corrigés là où le thème le peut ; une régression visuelle dans les tests.
 - **1.16.0** : aucun nouveau réglage ; mettez le site à jour. Le guide vérifie les couleurs et les langues des textes, exporte son bilan et décrit les images sur place.
 - **1.15.2** : aucun nouveau réglage.
 - **1.15.1** : aucun nouveau réglage ; mettez le site à jour (un nouveau cache).

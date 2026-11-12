@@ -1,5 +1,23 @@
 # Changes
 
+## 1.17.0 — the widgets of Moodle in the pre-audit, and a visual regression
+
+Pre-audit of the widgets (axe-core with the rules of Moodle's Behat, and the keyboard): a quiz attempt with the common types of questions (drag and drop into text included), its summary, the editor of a submission, a discussion and a new post of a forum, the profile form, the grader of the assignments, the gradebook setup, the editing and the report of a quiz, the calendar. Each in the four displays of the pre-audit (light and dark at 1300 px, light at 390 and 320 px): 12 pages more, 52 in all. Fixed in the theme:
+
+- Quiz, multiple choice with one answer: before an answer was chosen, the key Tab stayed on the first answer, never reaching the rest of the page (WCAG 2.1.1, 2.4.3). Moodle checks a hidden choice « Clear my choice », which the browser makes the stop of the group: Épure makes it inert while it is hidden. Boost does the same: it comes from Moodle.
+- Autocomplete fields (tags, groups…): their empty list of the chosen items was a listbox without option (WCAG 4.1.2, axe critical), on every form with such a field, a new post of a forum for a learner among them. The text « No selection » stays on the screen, hidden from the screen readers, for which the empty list says it.
+- Messages page: Moodle hides its whole header, its title with it; the page had no heading of level 1 (RGAA 9.1). The header stays hidden on the screen only.
+- The menu of the site and the menu of the page (two navigations of Moodle without a name) are named « Site menu » and « Page menu » (RGAA 12.6).
+- The strip at the top of the activities, the banner of the course and the bar of the edit mode of Épure are now in landmarks of their own, named (a navigation, regions).
+- Grader of the assignments: the link of the assignment, the box « Notify student » and its help were targets of less than 24 px (WCAG 2.5.8).
+- Dark mode: the words to drag of the questions « Drag and drop into text » and « onto image » (light text on their light colours), the gradebook setup, the state, the sections and the marks of the editing of a quiz, the graded and dubious attempts and the first column of its reports, the summary of a review: in the colours of the mode (WCAG 1.4.3).
+
+What the theme cannot fix is listed in the documentation (« Pré-audit d'accessibilité », limits of Moodle), to mention in the accessibility statement; the defects of Moodle are reported to it. The limits: the activity chooser (menu items holding a link and buttons), the drag and drop onto an image or with markers (unusable without sight), the grader report (a large table), the editor TinyMCE and the H5P contents (their own components), the timed quizzes (WCAG 2.2.1: the extra time of a user is given by an override).
+
+Visual regression: `tests/behat/visual.feature` compares 16 pages (light, dark, phone; a visitor, a learner, a teacher) with their reference images, pixel by pixel, on one job of the continuous integration (Moodle 4.5, PHP 8.3, PostgreSQL), where the fonts and the browser are the same from a run to another. The animations, the caret, the dates and the year of the footer are left out. A page without its reference, or that differs, is saved in the artifact « visual » of the job, with its differences in red. A change of the styles that changes a page by mistake now fails the tests: the ground to remove the `!important` of the theme one by one.
+
+- Behat: the paths of the pre-audit can name the instance of an activity, a user, a discussion and the last attempt at a quiz.
+
 ## 1.16.0 — the guide « Accessibility of the course » checks the colours and the languages, in the texts and the documents, exports its report and describes the images
 
 - Colours: a text whose colour does not stand out enough from its background (WCAG 1.4.3, RGAA 3.2) is a point to fix, in the guide and in the checker of the editor, with the same rules: the colours of the text and of the background written in the editor (style, `<font color>`, `bgcolor`), in #hex, rgb() or by name, around them the dark text of the theme on white; 4.5:1, 3:1 for a large text (titles 1 to 3, 24 px, 18.66 px in bold). A transparent colour or a variable is not judged. Counted once by element that colours the text.

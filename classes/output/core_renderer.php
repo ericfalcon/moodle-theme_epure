@@ -188,10 +188,11 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
         // Focus never hidden under the bars fixed at the top and at the bottom of the screen.
         $this->page->requires->js_call_amd('theme_epure/focus_clear', 'init');
-        // ARIA attributes that Moodle and IOMAD write wrongly; the fields of IOMAD with an empty label.
+        // ARIA attributes that Moodle and IOMAD write wrongly; the fields of IOMAD with an empty label; the names of the menus.
         $names = \theme_epure\iomad::installed()
             ? ['deptid' => get_string('department', 'block_iomad_company_admin')] : [];
-        $this->page->requires->js_call_amd('theme_epure/aria_repair', 'init', [$names]);
+        $menus = ['site' => get_string('menusite', 'theme_epure'), 'page' => get_string('menupage', 'theme_epure')];
+        $this->page->requires->js_call_amd('theme_epure/aria_repair', 'init', [$names, $menus]);
         // The course index scrolls the page back to itself when its drawer does not scroll on its own (styles turned off).
         $this->page->requires->js_call_amd('theme_epure/courseindex_scroll', 'init');
         // Moodle 5.0 nests the tree items of the subsections in the course index; Moodle 5.1 corrected it.

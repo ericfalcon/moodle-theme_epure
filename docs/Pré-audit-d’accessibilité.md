@@ -1,4 +1,4 @@
-Pré-audit d'Épure 0.56.2 (31 octobre 2026). Il s'agit d'un **contrôle automatisé et de vérifications au clavier**, pas d'un audit RGAA complet : il prépare l'audit manuel, qui reste nécessaire avant de déclarer la conformité. Il remplace le pré-audit de la 0.21.0 (5 octobre 2026), qui ne valait plus pour la version courante.
+Pré-audit d'Épure 0.56.2 (31 octobre 2026), étendu aux widgets de Moodle en 1.17.0 (12 novembre 2026). Il s'agit d'un **contrôle automatisé et de vérifications au clavier**, pas d'un audit RGAA complet : il prépare l'audit manuel, qui reste nécessaire avant de déclarer la conformité. Il remplace le pré-audit de la 0.21.0 (5 octobre 2026), qui ne valait plus pour la version courante.
 
 ## Ce qui est contrôlé, et où
 
@@ -9,15 +9,15 @@ Le pré-audit fait partie des tests du thème : chaque modification le refait, �
 | Versions | 4.5, 5.0, 5.1, 5.2, 5.3 | 4.5, 5.1, 5.2 |
 | PHP | 8.1 (4.5), 8.3, 8.4 (5.3) | 8.3 |
 | Bases de données | PostgreSQL, et MariaDB pour 4.5 et 5.3 | PostgreSQL |
-| Pages | 40 | les 40 pages de Moodle et 24 pages d'IOMAD |
-| Contrôles par version | 160 | 416 |
+| Pages | 52 | les 52 pages de Moodle et 24 pages d'IOMAD |
+| Contrôles par version | 208 | 464 |
 
 Chaque page est contrôlée dans **quatre affichages** : clair et sombre sur ordinateur (1300 px), clair sur téléphone (390 et 320 px). Chaque contrôle :
 
 - passe l'audit **axe-core** de Moodle, règles WCAG 2.0, 2.1 et 2.2, niveaux A et AA ;
 - sur téléphone, vérifie que la page **ne défile pas de côté** (WCAG 1.4.10). Seuls le carnet de notes et l'aperçu de l'achèvement d'IOMAD, des tableaux à deux dimensions, peuvent défiler de côté.
 
-**Pages de Moodle (40).**
+**Pages de Moodle (52).**
 
 - **Visiteur** : connexion, déclaration d'accessibilité.
 - **Apprenant** :
@@ -27,6 +27,9 @@ Chaque page est contrôlée dans **quatre affichages** : clair et sombre sur ord
   - le compte : profil, préférences, messagerie ;
   - les pages d'Épure : déclaration d'accessibilité, Ma synthèse.
 - **Formateur** : mes cours, page de cours, participants, carnet de notes, évaluation d'un devoir, paramètres du cours et d'une activité.
+- **Widgets** (depuis la 1.17.0) :
+  - apprenant : une tentative de test avec les types de questions courants (vrai/faux, choix unique et multiple, appariement, réponse courte, numérique, glisser-déposer dans le texte, composition), son récapitulatif, l'éditeur d'un devoir, une discussion et un nouveau message de forum, le formulaire du profil ;
+  - formateur : l'évaluation d'un devoir (écran de notation), la configuration du carnet de notes, la modification et le rapport d'un test, un forum, le calendrier des événements à venir.
 - **Administrateur** :
   - tableau de bord et recherche de l'administration ;
   - réglages : Apparence, réglages du thème, réglages HTML ;
@@ -79,11 +82,37 @@ Pendant le pré-audit, chaque défaut trouvé a été corrigé dans le thème, p
 | Alt + A qui empêche d'écrire « å » sur Mac | 2.1.4 | Panneau Aa | Raccourci ignoré pendant la saisie |
 | Préférences changées vite : un ancien choix pouvait être enregistré en dernier | — | Panneau Aa | Enregistrements faits l'un après l'autre |
 
+### Widgets de Moodle (1.17.0)
+
+| Défaut | Critère | Où | Correction |
+|---|---|---|---|
+| La touche Tab reste sur la première réponse tant qu'aucune n'est choisie : le reste de la page est hors d'atteinte au clavier vers l'avant | 2.1.1, 2.4.3 | Questions à choix unique (vient de Moodle, Boost compris) | Le choix caché « Effacer mon choix » est inerte tant qu'il est caché |
+| Liste des éléments choisis vide sans option | 1.3.1, 4.1.2 | Champs à suggestions (tags, groupes), dont le nouveau message de forum | « Aucune sélection » masqué aux lecteurs d'écran, la liste vide le dit |
+| Page sans titre de niveau 1 | RGAA 9.1 | Messagerie (Moodle masque tout l'en-tête) | L'en-tête n'est masqué qu'à l'écran |
+| Deux navigations sans nom | RGAA 12.6 | Menus du site et de la page | « Menu du site », « Menu de la page » |
+| Contenus hors des zones de la page | RGAA 12.6 | Bandeau des activités, bannière du cours, barre du mode édition d'Épure | Une navigation et des régions nommées |
+| Cibles de moins de 24 px | 2.5.8 | Écran de notation des devoirs : lien du devoir, case « Notifier l'étudiant » et son aide | 24 px |
+| Texte clair sur fond clair en mode sombre | 1.4.3 | Étiquettes à glisser, configuration du carnet de notes, modification et rapports des tests, relecture d'une tentative | Couleurs du mode sombre |
+
 ## Limites connues
 
 - **Barres fixes.** Quand une barre collée en bas de l'écran (enregistrement d'un formulaire long, « Continuer ») passe sur un champ, axe signale ce champ comme masqué. Pour l'utilisateur, la page défile et le champ reçu au clavier est toujours dégagé (script `focus_clear`).
 - **Défauts d'IOMAD hors du thème.** La liste des gestionnaires d'une entreprise sans étiquette, la page des rapports des entreprises sans titre et la liste d'autocomplétion vide sans option viennent du code d'IOMAD ou de Moodle, et apparaissent selon les données de la plateforme. Ils sont signalés pour correction en amont.
 - **Pages en erreur.** Les pages qui renvoient une erreur, faute de droits par exemple, ne sont pas contrôlées.
+
+## Limites de Moodle, à mentionner dans la déclaration d'accessibilité
+
+Le thème peut corriger l'apparence, le balisage de ses pages et réparer quelques attributs par script. Il ne peut pas changer le fonctionnement des composants de Moodle ou de bibliothèques tierces. Ces limites relèvent de Moodle ; elles peuvent figurer dans la partie « Contenus non accessibles » de la déclaration, avec leur alternative :
+
+- **Sélecteur d'activités** (mode édition) : chaque activité est un élément de menu qui contient un lien et deux boutons (favori, information), ce que les lecteurs d'écran annoncent mal (WCAG 4.1.2). *Alternative :* le lien « Ajouter une activité » de chaque section ouvre le même choix, et l'activité se crée aussi depuis le formulaire.
+- **Questions glisser-déposer sur une image et marqueurs** : le placement dépend de la vue ; le clavier les déplace, mais sans repère pour un utilisateur non voyant (WCAG 1.1.1, 1.3.1). *Alternative :* proposer une question équivalente d'un autre type (appariement, choix multiple), ou une dérogation.
+- **Rapport de l'évaluateur** (carnet de notes) : un grand tableau à deux dimensions, éditable, long à parcourir au lecteur d'écran ; il défile de côté sur téléphone (exception admise par WCAG 1.4.10). *Alternative :* l'écran de notation d'un devoir, le rapport de l'utilisateur, l'export des notes.
+- **Éditeur de texte TinyMCE** : un composant tiers, avec ses propres raccourcis (Alt+F9 pour le menu, Alt+F10 pour la barre d'outils) ; ses boîtes de dialogue suivent ses propres règles.
+- **Contenus H5P** : chaque type de contenu a son accessibilité, très variable (glisser-déposer, points sensibles…), affichée dans un cadre ; le thème n'y applique que ses couleurs.
+- **Tests chronométrés** (WCAG 2.2.1) : Moodle ne propose pas à l'apprenant d'allonger lui-même le temps. *Alternative :* une dérogation de l'utilisateur, ou du groupe, donne le temps supplémentaire.
+- **Messages d'erreur des formulaires** : affichés sous chaque champ et annoncés par Moodle, sans récapitulatif en haut du formulaire (RGAA 11.10, selon la lecture de l'auditeur).
+
+Les défauts de Moodle trouvés par le pré-audit sont signalés au suivi de Moodle (tracker.moodle.org), avec leur correction proposée, au fur et à mesure : choix caché des questions à choix unique, liste vide des champs à suggestions, sélecteur d'activités, titre de la messagerie, noms des navigations, champ de réponse rapide des forums. Le thème les contourne en attendant.
 
 ## Ce que le pré-audit ne couvre pas
 
@@ -105,3 +134,11 @@ Les scénarios sont dans le thème : `tests/behat/preaudit.feature` pour Moodle,
 ```
 vendor/bin/behat --config <behat_dataroot>/behatrun/behat/behat.yml --tags @theme_epure_preaudit
 ```
+
+## Régression visuelle
+
+Depuis la 1.17.0, `tests/behat/visual.feature` compare 16 pages (clair, sombre, téléphone ; visiteur, apprenant, formateur) à leurs images de référence (`tests/behat/visual/`), pixel par pixel, sur un job de l'intégration continue (Moodle 4.5, PHP 8.3, PostgreSQL) : les polices et le navigateur y sont les mêmes d'une fois à l'autre. Les animations, le curseur de saisie, les dates et l'année du pied de page sont écartés.
+
+Une page sans référence, ou qui diffère, est enregistrée dans l'artefact « visual » du job, avec ses différences en rouge. Une modification des styles qui change une page par erreur fait échouer les tests ; une modification voulue se valide en remplaçant l'image de référence par celle de l'artefact.
+
+Ailleurs, l'étape est ignorée ; pour la passer en local, la variable d'environnement `EPURE_VISUAL` nomme le dossier des images (les références de la CI ne valent que pour sa machine).
