@@ -4,7 +4,7 @@ Feature: Pre-audit of accessibility of the Épure theme
   As a visitor, a learner, a teacher or an administrator
   I need every page to meet the WCAG 2.2 A and AA in light, in dark and on phones, without scrolling across
 
-  # The same 40 pages, each in the four displays (160 checks), on every version of Moodle and IOMAD and with every
+  # The same 52 pages, each in the four displays (208 checks), on every version of Moodle and IOMAD and with every
   # version of PHP of the continuous integration.
 
   Background:
@@ -84,6 +84,56 @@ Feature: Pre-audit of accessibility of the Épure theme
       | /mod/assign/view.php?id={cm assign1}&action=grading |            |
       | /course/edit.php?id={course SAFE}                   |            |
       | /course/modedit.php?update={cm page1}               |            |
+
+  Scenario: The widgets of Moodle meet accessibility standards in the four displays
+    # A quiz with the common types of questions, drag and drop included, an attempt in progress; a discussion; the
+    # editor of the submissions; the grader of the assignments; the editing of the quiz and its report.
+    Given the following "question categories" exist:
+      | contextlevel    | reference | name           |
+      | Activity module | quiz1     | Test questions |
+    And the following "questions" exist:
+      | questioncategory | qtype       | name        | template    |
+      | Test questions   | truefalse   | True false  | true        |
+      | Test questions   | multichoice | One choice  | one_of_four |
+      | Test questions   | multichoice | Two choices | two_of_four |
+      | Test questions   | match       | Matching    | foursubq    |
+      | Test questions   | shortanswer | Short       | frogtoad    |
+      | Test questions   | numerical   | Number      | pi          |
+      | Test questions   | ddwtos      | Drag words  | fox         |
+      | Test questions   | essay       | Essay       | editor      |
+    And quiz "Final test" contains the following questions:
+      | question    | page |
+      | True false  | 1    |
+      | One choice  | 1    |
+      | Two choices | 1    |
+      | Matching    | 1    |
+      | Short       | 1    |
+      | Number      | 1    |
+      | Drag words  | 1    |
+      | Essay       | 1    |
+    And user "learner1" has started an attempt at quiz "Final test"
+    And the following "mod_forum > discussions" exist:
+      | user     | forum  | name          | message           |
+      | learner1 | forum1 | How to submit | How do I submit?  |
+    And I log in as "learner1"
+    Then the following pages should meet accessibility standards in the four displays:
+      | path                                                       |
+      | /mod/quiz/attempt.php?attempt={attempt quiz1}              |
+      | /mod/quiz/summary.php?attempt={attempt quiz1}              |
+      | /mod/assign/view.php?id={cm assign1}&action=editsubmission |
+      | /mod/forum/discuss.php?d={discussion How to submit}        |
+      | /mod/forum/post.php?forum={instance forum1}                |
+      | /user/edit.php                                             |
+    And I log out
+    And I log in as "teacher1"
+    And the following pages should meet accessibility standards in the four displays:
+      | path                                                                          | except     |
+      | /mod/assign/view.php?id={cm assign1}&action=grader&userid={user learner1}     |            |
+      | /grade/edit/tree/index.php?id={course SAFE}                                   | wide table |
+      | /mod/quiz/edit.php?cmid={cm quiz1}                                            |            |
+      | /mod/quiz/report.php?id={cm quiz1}&mode=overview                              | wide table |
+      | /mod/forum/view.php?id={cm forum1}                                            |            |
+      | /calendar/view.php?view=upcoming                                              |            |
 
   Scenario: The pages of an administrator meet accessibility standards in the four displays
     Given I log in as "admin"

@@ -35,7 +35,8 @@ jobs:
       matrix:
         include-moodle:
           - { branch: MOODLE_405_STABLE, php: '8.1' }
-          - { branch: MOODLE_405_STABLE, php: '8.3', certificate: MOODLE_400_STABLE }
+          # The visual regression runs on this job only (tests/behat/visual.feature).
+          - { branch: MOODLE_405_STABLE, php: '8.3', certificate: MOODLE_400_STABLE, visual: true }
           - { branch: MOODLE_500_STABLE, php: '8.3', certificate: MOODLE_500_STABLE }
           - { branch: MOODLE_501_STABLE, php: '8.3', certificate: MOODLE_500_STABLE }
           - { branch: MOODLE_502_STABLE, php: '8.3', certificate: MOODLE_500_STABLE }
@@ -181,3 +182,29 @@ jobs:
       - name: Behat tests
         if: ${{ !cancelled() }}
         run: moodle-plugin-ci behat --profile chrome --tags '${{ matrix.include-moodle.repo && '@theme_epure' || '@theme_epure&&~@theme_epure_iomad' }}'
+        env:
+          # The visual regression: its images (new pages, differences) in this folder, on one job only.
+          EPURE_VISUAL: ${{ matrix.include-moodle.visual && format('{0}/visual', github.workspace) || '' }}
+
+      # The images of the visual regression: the pages without a reference, and those that differ, with their
+      # differences in red. Kept 30 days.
+      - name: Images of the visual regression
+        if: ${{ !cancelled() && matrix.include-moodle.visual }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual
+          path: visual/
+          if-no-files-found: ignore
+          retention-days: 30
+
+      # The same images in the log, as a base64 tar between two markers, for whoever can read the logs but not
+      # download the artifacts.
+      - name: Images of the visual regression, in the log
+        if: ${{ !cancelled() && matrix.include-moodle.visual }}
+        run: |
+          if [ -d visual ]; then
+            echo "EPURE-VISUAL-BEGIN"
+            tar -czf - -C visual . | base64 -w 0
+            echo
+            echo "EPURE-VISUAL-END"
+          fi

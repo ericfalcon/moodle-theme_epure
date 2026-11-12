@@ -27,7 +27,7 @@
         "next": {"name": "Quiz 1", "url": "#"}, "summary": "3 activities left · due tomorrow", "detail": "2 completed · 1 in progress", "action": "Continue", "actionurl": "#"
     }
 }}
-<div class="epure-course-banner {{#learning}}epure-course-banner-learning{{/learning}} {{#teaching}}epure-course-banner-teaching{{/teaching}}">
+<section class="epure-course-banner {{#learning}}epure-course-banner-learning{{/learning}} {{#teaching}}epure-course-banner-teaching{{/teaching}}" aria-label="{{name}}">
     <div class="epure-course-banner-image" style="background-image: url('{{image}}');"></div>
     <div class="epure-course-banner-body">
         {{#category}}<p class="epure-course-banner-category">{{category}}</p>{{/category}}
@@ -102,4 +102,4 @@
             </div>
         {{/teaching}}
     </div>
-</div>
+</section>

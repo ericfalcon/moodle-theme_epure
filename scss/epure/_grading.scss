@@ -13,6 +13,28 @@
     [data-region="assignment-info"] {
         font-size: .875rem;
         line-height: 1.6;
+
+        // The link of the assignment: a target of 24 pixels high at least (WCAG 2.5.8).
+        a {
+            display: inline-flex;
+            align-items: center;
+            min-height: 1.5rem;
+        }
+    }
+
+    // The box « Notify student » and its help: targets of 24 pixels at least (WCAG 2.5.8).
+    input[type="checkbox"][name="sendstudentnotifications"] {
+        width: 1.5rem;
+        height: 1.5rem;
+        vertical-align: middle;
+    }
+
+    a.btn-link.p-0[data-toggle="popover"] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 1.5rem;
+        min-height: 1.5rem;
     }
 
     // Back to the course: a button in place of the link of the course, at the top of the header.

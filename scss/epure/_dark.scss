@@ -1031,6 +1031,84 @@
     #page #region-main .remui-format-card .activity-cards .modtype_label .activity-content {
         color: var(--epure-ink);
     }
+
+    // Widgets of the quiz and of the gradebook, which Moodle paints in light colours whatever the mode.
+    // The words to drag of the questions « Drag and drop into text » and « onto image » keep the colours of their
+    // groups, light: their text stays dark on them.
+    .que:is(.ddwtos, .ddimageortext) [class*="group"] {
+        color: $body-color;
+    }
+
+    // Gradebook setup: its grey frame and cells.
+    #page-grade-edit-tree-index .gradetree-wrapper,
+    #page-grade-edit-tree-index .gradetree-wrapper .setup-grades :is(th, td) {
+        color: var(--epure-ink);
+        background-color: var(--epure-surface-muted);
+    }
+
+    // Editing of a quiz: the state of the quiz (yellow), the headings of its sections (grey).
+    #page-mod-quiz-edit .statusdisplay {
+        color: var(--epure-ink);
+        background-color: var(--epure-state-soon-soft);
+    }
+
+    #page-mod-quiz-edit ul.slots li.section .content {
+        background-color: var(--epure-surface-muted);
+    }
+
+    // The rows of the questions and their actions, light grey in Moodle 4.5; their names and texts and the headings
+    // of the sections, dark grey (Moodle 5.x: --bs-gray-700).
+    #page-mod-quiz-edit ul.slots li.section li.activity:not(.page),
+    #page-mod-quiz-edit .section .activity .actions {
+        background: var(--epure-surface-raised);
+    }
+
+    #page-mod-quiz-edit .question-bank-table .questionname,
+    #page-mod-quiz-edit ul.slots li.activity div.activityinstance .questionname,
+    #page-mod-quiz-edit .section-heading .instancesectioncontainer h3 {
+        color: var(--epure-ink);
+    }
+
+    #page-mod-quiz-edit ul.slots li.activity div.activityinstance .questiontext {
+        color: var(--epure-ink-muted);
+    }
+
+    // The mark of each question, in a white box.
+    #page-mod-quiz-edit ul.slots li.section li.activity .instancemaxmarkcontainer:not(.infoitem) {
+        background: var(--epure-surface);
+    }
+
+    // Reports of a quiz: the graded attempts (blue), the dubious ones (red), the first column fixed on the left,
+    // painted in the light colours of the rows; the summary of a review.
+    body.path-mod-quiz .gradedattempt,
+    body.path-mod-quiz table tbody tr.gradedattempt > td,
+    body.path-mod-quiz table tbody tr.gradedattempt > td.sticky-column,
+    #page-mod-quiz-report .highlight {
+        color: var(--epure-ink);
+        background-color: var(--epure-brand-soft);
+        border-color: var(--epure-border);
+    }
+
+    #page-mod-quiz-report .dubious {
+        color: var(--epure-ink);
+        background-color: var(--epure-state-late-soft);
+    }
+
+    body.path-mod-quiz .generaltable tbody tr:not(.gradedattempt):nth-of-type(odd) > td.sticky-column {
+        background-color: color-mix(in srgb, #fff 4%, var(--epure-surface));
+    }
+
+    body.path-mod-quiz .generaltable tbody tr:not(.gradedattempt):nth-of-type(even) > td.sticky-column {
+        background-color: var(--epure-surface);
+    }
+
+    body.path-mod-quiz .generaltable tbody tr:not(.gradedattempt):hover > td.sticky-column {
+        background-color: color-mix(in srgb, #fff 6%, var(--epure-surface));
+    }
+
+    table.quizreviewsummary td.cell {
+        background: var(--epure-surface-muted);
+    }
 }
 
 // Screens only: printed pages and their PDF stay light.

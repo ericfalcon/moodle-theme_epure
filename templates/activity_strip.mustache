@@ -18,7 +18,7 @@
     @template theme_epure/activity_strip
 
     Strip at the top of the page of an activity: the course, the position of the activity, the
-    progress of the learner and the button of the reading mode.
+    progress of the learner and the button of the reading mode. A navigation of its own, named.
 
     Example context (json):
     {
@@ -26,7 +26,7 @@
         "hasprogress": true, "progress": 40, "focus": false
     }
 }}
-<div class="epure-activity-strip">
+<nav class="epure-activity-strip" aria-label="{{#str}}activitystrip, theme_epure{{/str}}">
     <a class="epure-activity-strip-course" href="{{courseurl}}">
         <i class="fa fa-arrow-left" aria-hidden="true"></i><span>{{course}}</span>
     </a>
@@ -44,4 +44,4 @@
         aria-pressed="{{#focus}}true{{/focus}}{{^focus}}false{{/focus}}" title="{{#str}}focusmode_help, theme_epure{{/str}}">
         <i class="fa fa-book-open" aria-hidden="true"></i>{{#str}}focusmode, theme_epure{{/str}}
     </button>
-</div>
+</nav>
