@@ -121,6 +121,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.15.2** : aucun nouveau réglage.
 - **1.15.1** : aucun nouveau réglage ; mettez le site à jour (un nouveau cache).
 - **1.15.0** : aucun nouveau réglage ; mettez le site à jour pour que Moodle lise le nouvel observateur d'Épure (ou purgez les caches).
 - **1.14.0** : aucun nouveau réglage. Le guide juge aussi Learning map, Lightbox Gallery et Mindmap.

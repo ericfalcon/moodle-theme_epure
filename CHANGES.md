@@ -1,5 +1,9 @@
 # Changes
 
+## 1.15.2 — a course page that scrolls with its styles turned off
+
+- With the styles turned off, as an auditor does with an extension such as « Assistant RGAA » (RGAA, criteria of theme 10), the page of a course could no longer be scrolled past a screen or two, with the wheel or the keyboard. Moodle's course index brings the current activity into view in its drawer as the page scrolls (`scrollIntoView`); without styles the drawer does not scroll on its own, so the browser scrolled the whole page back to the index at each step. Boost does the same: it comes from Moodle. Épure now lets the index bring an activity into view only when a container of its own scrolls (`theme_epure/courseindex_scroll`); with the styles, the index follows the page in its drawer as before.
+
 ## 1.15.1 — security review
 
 An external security review found no critical nor major flaw; its minor points:

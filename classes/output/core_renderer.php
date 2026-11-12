@@ -192,6 +192,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $names = \theme_epure\iomad::installed()
             ? ['deptid' => get_string('department', 'block_iomad_company_admin')] : [];
         $this->page->requires->js_call_amd('theme_epure/aria_repair', 'init', [$names]);
+        // The course index scrolls the page back to itself when its drawer does not scroll on its own (styles turned off).
+        $this->page->requires->js_call_amd('theme_epure/courseindex_scroll', 'init');
         // Moodle 5.0 nests the tree items of the subsections in the course index; Moodle 5.1 corrected it.
         if ($CFG->branch == 500) {
             $this->page->requires->js_call_amd('theme_epure/courseindex_tree', 'init');
