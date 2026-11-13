@@ -151,7 +151,7 @@ vendor/bin/behat --config <behat_dataroot>/behatrun/behat/behat.yml --tags @them
 
 ## Régression visuelle
 
-Depuis la 1.17.0, `tests/behat/visual.feature` compare 16 pages (clair, sombre, téléphone ; visiteur, apprenant, formateur) à leurs images de référence (`tests/behat/visual/`), pixel par pixel, sur un job de l'intégration continue (Moodle 4.5, PHP 8.3, PostgreSQL) : les polices et le navigateur y sont les mêmes d'une fois à l'autre. Les animations, le curseur de saisie, les dates et l'année du pied de page sont écartés.
+Depuis la 1.17.0, `tests/behat/visual.feature` compare 16 pages (clair, sombre, téléphone ; visiteur, apprenant, formateur) à leurs images de référence (`tests/behat/visual/`), pixel par pixel, sur un job de l'intégration continue (Moodle 4.5, PHP 8.3, PostgreSQL) : les polices et le navigateur y sont les mêmes d'une fois à l'autre. Les animations et le curseur de saisie sont arrêtés ; ce qui change d'un passage à l'autre est masqué : les dates et les heures (« Dernière modification » des ressources, champs de date des formulaires), l'année du pied de page et l'image de la bannière d'un cours, que Moodle génère d'après l'identifiant du cours quand il n'en a pas.
 
 Une page sans référence, ou qui diffère, est enregistrée dans l'artefact « visual » du job, avec ses différences en rouge. Une modification des styles qui change une page par erreur fait échouer les tests ; une modification voulue se valide en remplaçant l'image de référence par celle de l'artefact.
 
