@@ -112,7 +112,21 @@ Le thème peut corriger l'apparence, le balisage de ses pages et réparer quelqu
 - **Tests chronométrés** (WCAG 2.2.1) : Moodle ne propose pas à l'apprenant d'allonger lui-même le temps. *Alternative :* une dérogation de l'utilisateur, ou du groupe, donne le temps supplémentaire.
 - **Messages d'erreur des formulaires** : affichés sous chaque champ et annoncés par Moodle, sans récapitulatif en haut du formulaire (RGAA 11.10, selon la lecture de l'auditeur).
 
-Les défauts de Moodle trouvés par le pré-audit sont signalés au suivi de Moodle (tracker.moodle.org), avec leur correction proposée, au fur et à mesure : choix caché des questions à choix unique, liste vide des champs à suggestions, sélecteur d'activités, titre de la messagerie, noms des navigations, champ de réponse rapide des forums. Le thème les contourne en attendant.
+## Défauts signalés à Moodle
+
+Les défauts de Moodle trouvés par le pré-audit sont signalés au suivi de Moodle (moodle.atlassian.net), avec un correctif quand le défaut existe encore dans la version de développement (branches `MDL-…-main` du dépôt <https://github.com/ericfalcon/moodle>). Épure les contourne en attendant. Quand un correctif est intégré à Moodle, le contournement peut être retiré pour les versions qui l'incluent.
+
+| Ticket | Défaut | Contournement dans Épure | État (13 novembre 2026) |
+|---|---|---|---|
+| [MDL-90599](https://moodle.atlassian.net/browse/MDL-90599) | Questions à choix unique : la touche Tab reste sur la première réponse tant qu'aucune n'est choisie | `amd/src/aria_repair.js` (`clearChoices`) | Correctif proposé |
+| [MDL-90600](https://moodle.atlassian.net/browse/MDL-90600) | Champs à suggestions : la liste vide des éléments choisis n'a pas d'option | `amd/src/aria_repair.js` (`emptySelections`) | Correctif proposé |
+| [MDL-90601](https://moodle.atlassian.net/browse/MDL-90601) | Sélecteur d'activités : éléments de menu qui contiennent un lien et des boutons | Aucun (limite de Moodle, citée plus haut) | Plus signalé par axe sur la version de développement ; question de conception laissée à Moodle |
+| [MDL-90602](https://moodle.atlassian.net/browse/MDL-90602) | Messagerie : pas de titre de niveau 1 | `scss/epure/_people.scss` (`#page-message-index #page-header`) | Correctif proposé |
+| [MDL-90603](https://moodle.atlassian.net/browse/MDL-90603) | Menus du site et de la page sans nom | `amd/src/aria_repair.js` (`nameMenus`) | Corrigé dans Moodle 5.3 ; reste en 4.5 à 5.2 |
+| [MDL-90604](https://moodle.atlassian.net/browse/MDL-90604) | Forum : champ de réponse rapide nommé seulement par son titre | Aucun (bonne pratique, pas un critère WCAG du pré-audit) | Correctif proposé |
+| [MDL-90605](https://moodle.atlassian.net/browse/MDL-90605) | Page de cours qu'on ne peut plus faire défiler sans styles (index du cours) | `amd/src/courseindex_scroll.js` (1.15.2) | Correctif proposé |
+
+Sans ticket : la poignée de redimensionnement de TinyMCE sans rôle, propre à la version de TinyMCE de Moodle 5.0 (les versions suivantes lui donnent son rôle), contournée par `amd/src/aria_repair.js` (`resizeHandles`).
 
 ## Ce que le pré-audit ne couvre pas
 
