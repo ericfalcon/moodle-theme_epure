@@ -270,6 +270,21 @@ Les chantiers du thème prévus ci-dessus (0.29 à 0.57) sont livrés. Avant la 
 
 - [ ] **Vocabulaire dans d'autres langues**, une langue à la fois et à la demande de clients : espagnol, italien ou portugais d'abord (grammaire proche du français : genre et élision suffisent), allemand plus tard (déclinaisons, mots composés). Chaque langue demande un relecteur natif et un jeu de phrases de test. Les limites actuelles sont documentées dans [docs/Vocabulaire.md](docs/Vocabulaire.md).
 
+#### Prochaines évolutions (après la 1.17)
+
+Idées retenues de l'exploration du thème Retani Studio (Moodle 5.3, GPL v3) en novembre 2026 : seules les idées sont reprises, réécrites dans Épure.
+
+- [ ] **Cohabitation avec le mode de couleur de Boost** (Moodle 5.3, réglage expérimental `theme_boost/enablecolourmodes`, désactivé par défaut) : il s'applique aux thèmes enfants de Boost, donc à Épure (`data-bs-theme` de Bootstrap et menu de mode de couleur). Tester, puis le neutraliser dans Épure ou s'appuyer dessus en 5.3. *En cours.*
+- [ ] **Tableau des cours des formateurs** : dans « Mes cours », une vue en tableau des cours enseignés (bascule cartes / tableau gardée dans les préférences) : apprenants (dans les groupes du formateur), actifs sur 7 jours, à relancer (sans accès depuis 14 jours), achèvement (des apprenants seulement), à évaluer, prochaine échéance. Vrai tableau trié au clavier sur tous les cours, cartes sur téléphone, chiffres en cache quelques minutes, export.
+- [ ] **Progression qui suit la page** : la progression des sections et de la bannière du cours mise à jour par l'état du cours de Moodle (`core_courseformat`), quand une activité est cochée, sans dépendre de l'index du cours.
+- [ ] **État d'enregistrement des formulaires longs** : « Modifications enregistrées » / « Modifications non enregistrées », annoncé aux lecteurs d'écran, sur la barre d'enregistrement.
+- [ ] **Test : « N questions sur M répondues »** dans la navigation pendant une tentative.
+- [ ] **Pages de réglages de l'administration en cartes**, une par titre.
+- [ ] **Assistant de premier démarrage** (logo, couleur, pied de page, déclaration d'accessibilité), avec des modèles de page d'accueil par secteur (université, entreprise, enseignement scolaire, administration).
+- [ ] **Tableau de bord de gestion** pour l'administrateur : indicateurs comparés au mois précédent, nouveaux apprenants, cours les plus suivis, répartition des achèvements.
+
+Écarté : remplacer la navigation de Boost par une barre latérale (rupture pour les sites existants), les composants React (Moodle 5.3 seulement), un carrousel sur la page de connexion (WCAG 2.2.2), une police chargée depuis un service externe.
+
 ## Plugins complémentaires (possibles)
 
 Il n'y aura pas d'offre payante (« Épure Pro » est abandonné). Ce qui dépasse le thème (rapports, pilotage pédagogique, Qualiopi, calendrier semaine) pourra devenir des **plugins séparés**, gratuits et sous GPL, créés au besoin. Le thème les détecte et affiche leurs liens quand ils sont installés ; ils fonctionnent aussi avec un autre thème. Avant chaque fonction, on vérifie ce que Moodle, IOMAD et Kopere Dashboard font déjà, pour ne pas le refaire. Ces plugins ne conditionnent pas la 1.0 du thème.
