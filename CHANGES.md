@@ -4,6 +4,7 @@
 
 - Moodle 5.3 gives Boost colour modes (light, dark, automatic), an experimental setting turned off by default, which also applies to the child themes of Boost. Turned on, its dark mode (chosen by a user, or « automatic » on a device in dark mode) mixed with the light palette of Épure: light text on light surfaces (the title of a course, the name of an activity, « Mark as done »), 14 failures of contrast on a dashboard, a course page and an activity page, measured on Moodle 5.3.1. On a page of Épure, Bootstrap now stays light, and only the colour scheme of Épure decides (its setting « Dark mode », the panel « Aa »); its dark mode is unchanged. The menu of the colour modes of Boost is not shown in the bar of Épure, where it competed with the panel « Aa ».
 - Tests: PHPUnit (the attributes of the page and the menu, on Épure and on Boost, before and from Moodle 5.3) and Behat (a learner on a course page, the colour modes of Boost turned on in dark: no dark mode of Boost, no menu, axe-core).
+- Continuous integration: a job on the development version of Moodle (6.0), which does not block a merge, to see early what it changes. A first look at Moodle 6.0dev: Épure installs, and 22 pages show no PHP or JavaScript error and no failure of axe-core; the page « My courses » of Moodle goes away (sent to the dashboard) and its new navigation is not dressed by Épure yet (ROADMAP).
 
 ## 1.17.0 — the widgets of Moodle in the pre-audit, and a visual regression
 
