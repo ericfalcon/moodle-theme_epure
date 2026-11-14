@@ -122,6 +122,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.17.1**: no new setting. On Moodle 5.3, the experimental colour modes of Boost are ignored on the pages of Épure, whose own dark mode decides.
 - **1.17.0**: no new setting; upgrade the site. The widgets of Moodle (quiz, forms, grading, gradebook) in the pre-audit, fixed where the theme can; a visual regression in the tests.
 - **1.16.0**: no new setting; upgrade the site. The guide checks the colours and the languages of the texts, exports its report and describes the images in place.
 - **1.15.2**: no new setting.

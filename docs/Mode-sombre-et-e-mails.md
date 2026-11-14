@@ -4,6 +4,8 @@ Le réglage **Mode sombre** (onglet Apparence du thème) vaut *Jamais*, *Automat
 
 Les couleurs sombres sont calculées à partir de la couleur de marque, avec les mêmes contrastes AA ; l'en-tête aux couleurs de la marque garde sa couleur. Les pages de Moodle et d'IOMAD (tableaux de bord, cours, formulaires, menus, tableaux) passent en sombre ; l'éditeur de texte garde l'apparence de son propre thème. Les boutons qui ouvrent les tiroirs (sommaire du cours, blocs) prennent la couleur de marque ; les contours des champs et des boutons secondaires atteignent 3:1 sur les fonds sombres (WCAG 1.4.11).
 
+**Modes de couleur de Boost (Moodle 5.3).** Moodle 5.3 donne à Boost des modes de couleur clair, sombre et automatique, en réglage expérimental (Administration › Apparence › Thèmes › Boost › Réglages expérimentaux), désactivé par défaut. Ce réglage s'applique aussi aux thèmes enfants de Boost. Sous Épure, il est ignoré depuis la 1.17.1 : le mode sombre de Boost se mélangeait aux couleurs claires d'Épure (textes clairs sur fonds clairs). Le menu de mode de couleur de Boost n'apparaît pas ; seuls le réglage **Mode sombre** d'Épure et le bouton « Aa » décident.
+
 ## Pages d'erreur, visites guidées et impression
 
 - **Pages d'erreur** : au lieu de l'encadré rouge de Moodle, une carte aux couleurs de la marque dit en clair ce qui s'est passé (*Page introuvable*, *Accès refusé*, *Contenu inaccessible*, *Session expirée*, ou *Une erreur s'est produite*), garde le message de Moodle en dessous et mène au tableau de bord, ou à la page de connexion. La page « introuvable » de Moodle (`error/index.php`) prend la même carte.

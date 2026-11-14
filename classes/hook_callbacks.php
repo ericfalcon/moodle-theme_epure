@@ -429,6 +429,16 @@ class hook_callbacks {
         if ($classes = a11y::html_classes()) {
             $hook->add_attribute('class', $classes);
         }
+        // Moodle 5.3: the colour modes of Boost (experimental setting theme_boost/enablecolourmodes) apply to the child
+        // themes of Boost. Their dark mode, on a page of Épure in its light palette, mixed the two palettes (light text
+        // on light surfaces). The colour scheme of Épure (its setting, the panel « Aa ») decides: Bootstrap stays light,
+        // and the script of Boost that resolves « auto » finds light too. This callback runs after the one of Boost
+        // (db/hooks.php, a lower priority).
+        $attributes = $hook->get_attributes();
+        if (isset($attributes['data-colourmode']) || isset($attributes['data-bs-theme'])) {
+            $hook->add_attribute('data-bs-theme', 'light');
+            $hook->add_attribute('data-colourmode', 'light');
+        }
     }
 
     /**

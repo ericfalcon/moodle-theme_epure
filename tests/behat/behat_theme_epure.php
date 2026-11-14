@@ -422,6 +422,22 @@ class behat_theme_epure extends behat_base {
     }
 
     /**
+     * The page is not in the dark colour mode of Boost (Moodle 5.3, theme_boost/enablecolourmodes): Bootstrap stays
+     * light on a page of Épure, whose own scheme decides.
+     *
+     * @Then /^the page should not be in the dark colour mode of Boost$/
+     */
+    public function the_page_should_not_be_in_the_dark_colour_mode_of_boost(): void {
+        $mode = $this->getSession()->evaluateScript("return document.documentElement.getAttribute('data-bs-theme');");
+        if ($mode === 'dark') {
+            throw new ExpectationException(
+                'The page is in the dark colour mode of Boost (data-bs-theme="dark").',
+                $this->getSession()
+            );
+        }
+    }
+
+    /**
      * Visual regression: each page, in its display, compared with its reference image (tests/behat/visual/NAME.png).
      * Only where the environment variable EPURE_VISUAL names a folder (one job of the continuous integration): the
      * fonts and the browser draw the pixels, which differ from a machine to another. Without its reference, the image

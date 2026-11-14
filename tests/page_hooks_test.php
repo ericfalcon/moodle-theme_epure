@@ -64,4 +64,31 @@ final class page_hooks_test extends \advanced_testcase {
         $this->assertStringNotContainsString('epure-print-header', $boost->standard_top_of_body_html());
         $this->assertStringNotContainsString('epure-shortcuts-link', $boost->standard_footer_html());
     }
+
+    /**
+     * Moodle 5.3: the colour modes of Boost, turned on and dark by default, change a page of Boost; on a page of
+     * Épure, Bootstrap stays light and the menu of the colour modes is not shown (the scheme of Épure decides).
+     * Before Moodle 5.3, neither page gets the attributes of the colour modes.
+     */
+    public function test_colour_modes_of_boost(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        set_config('enablecolourmodes', 1, 'theme_boost');
+        set_config('defaultcolourmode', 'dark', 'theme_boost');
+
+        $epure = $this->renderer('epure');
+        $attributes = $epure->htmlattributes();
+        $this->assertStringNotContainsString('data-bs-theme="dark"', $attributes);
+        $this->assertSame('', $epure->colour_mode_menu());
+
+        $boost = $this->renderer('boost');
+        if (class_exists(\theme_boost\colour_mode::class)) {
+            $this->assertStringContainsString('data-bs-theme="light"', $attributes);
+            $this->assertStringContainsString('data-bs-theme="dark"', $boost->htmlattributes());
+            $this->assertNotSame('', $boost->colour_mode_menu());
+        } else {
+            $this->assertStringNotContainsString('data-bs-theme', $attributes);
+            $this->assertStringNotContainsString('data-bs-theme', $boost->htmlattributes());
+        }
+    }
 }
