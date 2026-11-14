@@ -163,6 +163,16 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
 
     /**
+     * The menu of the colour modes of Boost (Moodle 5.3, experimental setting theme_boost/enablecolourmodes): none.
+     * The colour scheme of a page of Épure is chosen in its panel « Aa »; two menus would compete.
+     *
+     * @return string
+     */
+    public function colour_mode_menu(): string {
+        return '';
+    }
+
+    /**
      * Header of the page; on the page of a course, inside a banner with the image of the course and,
      * depending on the role of the user, their progress or the figures of the course; on the dashboard,
      * followed by the overview of the learner.

@@ -48,6 +48,12 @@ jobs:
           - { branch: IOMAD_500_STABLE, php: '8.3', repo: 'https://github.com/iomad/iomad.git', certificate: MOODLE_500_STABLE }
           - { branch: IOMAD_501_STABLE, php: '8.3', repo: 'https://github.com/iomad/iomad.git', certificate: MOODLE_500_STABLE }
           - { branch: IOMAD_502_STABLE, php: '8.3', repo: 'https://github.com/iomad/iomad.git', certificate: MOODLE_500_STABLE }
+          # The development version of Moodle (6.0), not supported yet: it tells early what changes, without blocking a
+          # merge (continue-on-error below).
+          - { branch: main, php: '8.4', pg: '17', experimental: true }
+
+    # The job of the development version of Moodle may fail without failing the workflow.
+    continue-on-error: ${{ matrix.include-moodle.experimental || false }}
 
     name: theme_epure — ${{ matrix.include-moodle.branch }} — PHP ${{ matrix.include-moodle.php }} — ${{ matrix.include-moodle.db || 'pgsql' }}
 

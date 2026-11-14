@@ -32,6 +32,8 @@ $callbacks = [
     [
         'hook' => \core\hook\output\before_html_attributes::class,
         'callback' => [\theme_epure\hook_callbacks::class, 'before_html_attributes'],
+        // After the callback of Boost (100), whose colour modes Épure overrides.
+        'priority' => 50,
     ],
     [
         'hook' => \core\hook\output\after_standard_main_region_html_generation::class,
