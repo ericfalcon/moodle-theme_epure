@@ -1,5 +1,21 @@
 # Changes
 
+## 1.18.0 — the courses a teacher teaches as a table, and getting started with Épure
+
+The courses a teacher teaches, as a table on « My courses »:
+
+- A button Cards / Table above the courses the user teaches; the choice is kept in a user preference (exported and deleted with the privacy API).
+- The columns: the course (its category, hidden or not), the learners (those followed by the completion reports, in the groups of the teacher in separate groups), active this week, to follow up (learners who did not open the course for 14 days, or never, with a link to the participants), the completion of the learners (when the course tracks it; the teachers who completed it are not counted), to grade (with a link to the grading) and the next deadline (the closest due or closing date of its activities to come, from the calendar).
+- A real table: a caption, row headers, the buttons of the columns sort it (ascending, then descending) with `aria-sort` and an announcement; the rows without a value (no completion, no deadline) stay last. The search and the filters of the page apply to it. On phones, each row reads as a card.
+- A download of the table in the formats of Moodle (CSV, Excel, ODS, PDF…), with the figures the user sees, nothing more.
+
+Getting started with Épure, for the administrator:
+
+- Five steps, on the model of the step-by-step accessibility statement: the name of the site and its logo; the brand colour, the accent colour and the header; the login page from a model by sector (university, company, school, training organisation, public administration: a tagline and a text in the language of the site, which only fill what is left empty, and whether the catalogue shows); the footer (text, legal notice, personal data, contact); then the accessibility statement, with its state and a link to its own steps.
+- No setting of its own: each step writes the settings of Moodle (name, logo) and of the theme, which stay in their tabs. Offered above the cards of the home of the administration until it is finished or dismissed (« Do not show again »); always in Appearance › Themes › Getting started with Épure, and among the tasks of the card Appearance.
+
+Tests: PHPUnit (the figures of the table, the completion of the learners only, the next deadline, the rows of the download, the view kept; each step of the getting started, a model and what the administrator wrote, offered and dismissed) and Behat (a teacher shows the table, sorts it, finds it again after a reload, in the four displays of the pre-audit; an administrator goes through the getting started, an invalid colour, a model, the login page and the footer afterwards; the getting started dismissed).
+
 ## 1.17.2 — the badges of the design system of Moodle in dark mode
 
 - Dark mode: the colours of state of the design system of Moodle (`--mds-text-feedback-*`, their soft backgrounds and borders), drawn for light surfaces, now follow the dark palette of Épure. The badges of the dates of the activities of Moodle 6.0 (« Opened », « Due »), in dark grey on a transparent background, were unreadable in dark mode (1.5:1): found by the job of the continuous integration on the development version of Moodle, on the course page and the pages of the assignments. Checked on Moodle 6.0dev: light grey on the dark surface, no failure of axe-core in light and in dark.

@@ -34,6 +34,12 @@ class mycourses {
     /** @var string Role of a user who teaches a course. */
     public const TEACHING = 'teaching';
 
+    /** @var string User preference: the courses the user teaches as cards or as a table. */
+    public const VIEW_PREFERENCE = 'theme_epure_mycourses_view';
+
+    /** @var int Without opening the course for this long, a learner is to follow up (two weeks). */
+    public const FOLLOW_UP = 2 * WEEKSECS;
+
     /** @var string Role of a user who takes a course. */
     public const LEARNING = 'learning';
 
@@ -74,8 +80,9 @@ class mycourses {
         $userid = $userid ?? (int) $USER->id;
         $user = \core_user::get_user($userid);
 
-        // The revision of the course keys the progress kept in the caches, that of Épure and that of Moodle.
-        $courses = enrol_get_all_users_courses($userid, true, 'cacherev');
+        // The revision of the course keys the progress kept in the caches, that of Épure and that of Moodle; whether
+        // the completion is tracked, for the table of the courses the user teaches.
+        $courses = enrol_get_all_users_courses($userid, true, 'cacherev, enablecompletion');
         $favourites = [];
         $service = \core_favourites\service_factory::get_service_for_user_context(\context_user::instance($userid));
         foreach ($service->find_favourites_by_type('core_course', 'courses') as $favourite) {
@@ -126,12 +133,27 @@ class mycourses {
                 continue;
             }
             usort($sections[$role], $sort);
-            $result[] = [
+            $section = [
                 'role' => $role,
                 'title' => get_string('mycourses_' . $role, 'theme_epure', $coursesword),
                 'courses' => $sections[$role],
                 'count' => count($sections[$role]),
             ];
+            // The courses the user teaches: as cards or as a table, the choice of the user, which they can download.
+            if ($role === self::TEACHING) {
+                $table = get_user_preferences(self::VIEW_PREFERENCE, 'cards', $userid) === 'table';
+                $section += [
+                    'teachingview' => true,
+                    'tableview' => $table,
+                    'cardsview' => !$table,
+                    'hascompletioncolumn' => (bool) array_filter(array_column($sections[$role], 'hascompletion')),
+                    'downloadselector' => $output->download_dataformat_selector(
+                        get_string('mycourses_download', 'theme_epure'),
+                        new \moodle_url('/theme/epure/mycourses_download.php')
+                    ),
+                ];
+            }
+            $result[] = $section;
         }
         // IOMAD: the courses the user can start (company courses, licences), not enrolled yet.
         $available = [];
@@ -322,20 +344,32 @@ class mycourses {
      * @return array
      */
     protected static function teacher_data(\stdClass $course, \context_course $context): array {
-        global $DB;
+        global $CFG, $DB;
+        require_once($CFG->libdir . '/completionlib.php');
         // Learners: the users whose progress is followed in the course; in separate groups, those of the groups of
         // the teacher.
         $groups = self::visible_groups($course);
-        $participants = $active = 0;
+        $participants = $active = $recent = $completed = 0;
         if ($groups !== []) {
             $learners = get_enrolled_sql($context, 'moodle/course:isincompletionreports', $groups ?? 0, true);
             $participants = (int) $DB->count_records_sql("SELECT COUNT(1) FROM ($learners[0]) l", $learners[1]);
-            $active = (int) $DB->count_records_sql(
+            $accessed = fn(int $since) => (int) $DB->count_records_sql(
                 "SELECT COUNT(1) FROM {user_lastaccess} la JOIN ($learners[0]) l ON l.id = la.userid
                   WHERE la.courseid = :courseid AND la.timeaccess > :since",
-                $learners[1] + ['courseid' => $course->id, 'since' => time() - WEEKSECS]
+                $learners[1] + ['courseid' => $course->id, 'since' => $since]
             );
+            $active = $accessed(time() - WEEKSECS);
+            // To follow up: the learners who did not open the course for two weeks, or never.
+            $recent = $accessed(time() - self::FOLLOW_UP);
+            if ($participants && !empty($course->enablecompletion) && \completion_info::is_enabled_for_site()) {
+                $completed = (int) $DB->count_records_sql(
+                    "SELECT COUNT(1) FROM {course_completions} cc JOIN ($learners[0]) l ON l.id = cc.userid
+                      WHERE cc.course = :courseid AND cc.timecompleted IS NOT NULL",
+                    $learners[1] + ['courseid' => $course->id]
+                );
+            }
         }
+        $hascompletion = $participants && !empty($course->enablecompletion) && \completion_info::is_enabled_for_site();
 
         // What waits for a grade: the submissions of the assignments, the answers of the quizzes graded by hand.
         $items = self::to_grade($course);
@@ -353,9 +387,17 @@ class mycourses {
         if (has_capability('moodle/course:update', $context)) {
             $links[] = $link(get_string('settings'), '/course/edit.php', 'fa-gear');
         }
+        $deadline = self::course_deadline($course);
         return [
             'participants' => $participants,
             'active' => $active,
+            'followup' => $participants - $recent,
+            'hasfollowup' => $participants > $recent,
+            'followupurl' => (new \moodle_url('/user/index.php', ['id' => $course->id]))->out(false),
+            'hascompletion' => $hascompletion,
+            'completionrate' => $hascompletion ? (int) round($completed / $participants * 100) : null,
+            'deadline' => $deadline,
+            'deadlinetime' => $deadline['time'] ?? PHP_INT_MAX,
             'tograde' => $tograde,
             'hastograde' => $tograde > 0,
             // One activity: its grading page; several: their list, under the figures of the course page.
@@ -365,6 +407,73 @@ class mycourses {
             'hastogradeitems' => count($items) > 1,
             'links' => $links,
         ];
+    }
+
+    /**
+     * The courses a user teaches, as rows of the table of « My courses », for its download: name, short name,
+     * category, learners, active this week, to follow up, completion, to grade, next deadline.
+     *
+     * @param int $userid User.
+     * @return array[]
+     */
+    public static function teaching_rows(int $userid): array {
+        global $PAGE;
+        $rows = [];
+        // The renderer of the page: before the page is output, $OUTPUT is only Moodle's bootstrap renderer.
+        foreach (self::export($PAGE->get_renderer('core'), $userid)['sections'] as $section) {
+            if ($section['role'] !== self::TEACHING) {
+                continue;
+            }
+            foreach ($section['courses'] as $course) {
+                $rows[] = [
+                    'course' => $course['name'],
+                    'category' => $course['category'],
+                    'learners' => $course['participants'],
+                    'active' => $course['active'],
+                    'followup' => $course['followup'],
+                    'completion' => $course['completionrate'] === null ? '' : $course['completionrate'] . ' %',
+                    'tograde' => $course['tograde'],
+                    'deadline' => $course['deadline'] ? $course['deadline']['name'] . ' – ' . $course['deadline']['date'] : '',
+                ];
+            }
+        }
+        return $rows;
+    }
+
+    /**
+     * The next deadline of a course, for its teachers: the closest due or closing date of its activities to come
+     * (assignments, quizzes, forums…), from the events of the calendar.
+     *
+     * @param \stdClass $course Course.
+     * @return array|null Name, date, time and address of the activity, or null.
+     */
+    public static function course_deadline(\stdClass $course): ?array {
+        global $DB;
+        $events = $DB->get_records_select(
+            'event',
+            "courseid = :courseid AND modulename <> '' AND instance > 0 AND visible = 1 AND timestart > :now
+                AND eventtype IN ('due', 'close', 'expectcompletionon')",
+            ['courseid' => $course->id, 'now' => time()],
+            'timestart ASC',
+            'id, modulename, instance, timestart',
+            0,
+            10
+        );
+        $modinfo = get_fast_modinfo($course);
+        foreach ($events as $event) {
+            $instances = $modinfo->get_instances_of($event->modulename);
+            $cm = $instances[$event->instance] ?? null;
+            if (!$cm || !$cm->uservisible) {
+                continue;
+            }
+            return [
+                'name' => $cm->get_formatted_name(),
+                'url' => $cm->url ? $cm->url->out(false) : '',
+                'time' => (int) $event->timestart,
+                'date' => userdate($event->timestart, get_string('strftimedatefullshort', 'langconfig')),
+            ];
+        }
+        return null;
     }
 
     /**

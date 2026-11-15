@@ -35,7 +35,8 @@ class admin_home {
         ['category' => 'courses', 'icon' => 'fa-graduation-cap',
             'pages' => ['coursemgmt', 'addnewcourse', 'restorecourse', 'tooluploadcourse']],
         ['category' => 'appearance', 'icon' => 'fa-palette',
-            'pages' => ['themesettingepure', 'theme_epure_vocabulary', 'themeselector', 'navigation', 'tool_usertours/tours']],
+            'pages' => ['themesettingepure', 'theme_epure_setup', 'theme_epure_vocabulary', 'themeselector', 'navigation',
+                'tool_usertours/tours']],
         ['category' => 'modules', 'icon' => 'fa-puzzle-piece',
             'pages' => ['pluginsoverview', 'tool_installaddon_index', 'manageenrols', 'manageauths']],
         ['category' => 'reports', 'icon' => 'fa-chart-column',
@@ -101,7 +102,12 @@ class admin_home {
             $cards[] = ['name' => 'IOMAD', 'url' => iomad::url('dashboard')->out(false), 'icon' => 'fa-building',
                 'tasks' => $tasks];
         }
-        return ['cards' => $cards];
+        // The getting started with Épure, until it is finished or dismissed.
+        $setup = setup::offered() ? [
+            'url' => setup::url()->out(false),
+            'dismissurl' => (new \moodle_url(setup::url(), ['dismiss' => 1, 'sesskey' => sesskey()]))->out(false),
+        ] : null;
+        return ['cards' => $cards, 'setup' => $setup];
     }
 
     /**

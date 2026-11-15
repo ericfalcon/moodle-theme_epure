@@ -226,3 +226,39 @@
     border-radius: var(--epure-radius-lg);
     box-shadow: var(--epure-shadow);
 }
+
+// The getting started with Épure, above the cards until it is finished or dismissed.
+.epure-admin-setup {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    background-color: var(--epure-brand-soft);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+}
+
+.epure-admin-setup-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    color: var(--epure-on-brand);
+    background-color: var(--epure-brand);
+    border-radius: 50%;
+}
+
+.epure-admin-setup-title {
+    margin-bottom: .25rem;
+    font-size: 1.25rem;
+}
+
+.epure-admin-setup-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    align-items: center;
+}

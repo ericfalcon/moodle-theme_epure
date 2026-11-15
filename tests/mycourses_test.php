@@ -195,4 +195,62 @@ final class mycourses_test extends \advanced_testcase {
         $this->assertTrue(mycourses::is_teaching(\context_course::instance($teaching->id), (int) $teacher->id));
         $this->assertFalse(mycourses::is_teaching(\context_course::instance($other->id), (int) $teacher->id));
     }
+
+    /**
+     * The table of the courses a teacher teaches: the learners to follow up (no access for two weeks, or never),
+     * the completion of the learners only, the next deadline to come; its rows for the download; the view kept.
+     */
+    public function test_teaching_table(): void {
+        global $CFG, $DB, $PAGE;
+        $this->resetAfterTest();
+        $CFG->enablecompletion = true;
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course(['fullname' => 'Taught', 'enablecompletion' => 1]);
+        $teacher = $generator->create_user();
+        $generator->enrol_user($teacher->id, $course->id, 'editingteacher');
+        $learners = [];
+        foreach (['recent', 'old', 'never', 'done'] as $name) {
+            $learners[$name] = $generator->create_user(['username' => $name]);
+            $generator->enrol_user($learners[$name]->id, $course->id, 'student');
+        }
+        $DB->insert_record('user_lastaccess', ['userid' => $learners['recent']->id, 'courseid' => $course->id,
+            'timeaccess' => time() - DAYSECS]);
+        $DB->insert_record('user_lastaccess', ['userid' => $learners['old']->id, 'courseid' => $course->id,
+            'timeaccess' => time() - 3 * WEEKSECS]);
+        $DB->insert_record('user_lastaccess', ['userid' => $learners['done']->id, 'courseid' => $course->id,
+            'timeaccess' => time() - 2 * DAYSECS]);
+        $DB->insert_record('course_completions', ['userid' => $learners['done']->id, 'course' => $course->id,
+            'timeenrolled' => 0, 'timestarted' => 0, 'timecompleted' => time()]);
+        // The teacher completed the course too: not counted, they are no learner.
+        $DB->insert_record('course_completions', ['userid' => $teacher->id, 'course' => $course->id,
+            'timeenrolled' => 0, 'timestarted' => 0, 'timecompleted' => time()]);
+        $generator->create_module('assign', ['course' => $course->id, 'name' => 'Later', 'duedate' => time() + 9 * DAYSECS]);
+        $generator->create_module('assign', ['course' => $course->id, 'name' => 'Sooner', 'duedate' => time() + 2 * DAYSECS]);
+        $generator->create_module('assign', ['course' => $course->id, 'name' => 'Past', 'duedate' => time() - DAYSECS]);
+
+        $this->setUser($teacher);
+        $section = mycourses::export($PAGE->get_renderer('core'))['sections'][0];
+        $this->assertTrue($section['teachingview']);
+        $this->assertTrue($section['cardsview']);
+        $this->assertFalse($section['tableview']);
+        $this->assertTrue($section['hascompletioncolumn']);
+        $this->assertStringContainsString('mycourses_download.php', $section['downloadselector']);
+        $row = $section['courses'][0];
+        $this->assertSame(4, $row['participants']);
+        $this->assertSame(2, $row['active']);
+        $this->assertSame(2, $row['followup']);
+        $this->assertSame(25, $row['completionrate']);
+        $this->assertSame('Sooner', $row['deadline']['name']);
+
+        $rows = mycourses::teaching_rows((int) $teacher->id);
+        $this->assertSame(
+            ['course' => 'Taught', 'learners' => 4, 'followup' => 2, 'completion' => '25 %'],
+            array_intersect_key($rows[0], array_flip(['course', 'learners', 'followup', 'completion']))
+        );
+
+        set_user_preference(mycourses::VIEW_PREFERENCE, 'table');
+        $section = mycourses::export($PAGE->get_renderer('core'))['sections'][0];
+        $this->assertTrue($section['tableview']);
+        $this->assertFalse($section['cardsview']);
+    }
 }

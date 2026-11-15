@@ -56,6 +56,7 @@ Choose a brand colour (or click a colour of your logo), and optionally an accent
 ### For teachers and administrators
 
 - Quick search (Ctrl+K / ⌘K) across menus, courses, activities and administration pages, the best matches first, with a page of all the results; for visitors, across the catalogue, the categories and the public pages.
+- A getting started offered to the administrator: name and logo, colours, login page from a model by sector, footer, then the accessibility statement.
 - Settings grouped in tabs, a clearer administration home, long forms with their sections listed and the save buttons always in view.
 - A course header for teachers: participants, active this week, to grade, with shortcuts, and the edit mode at hand on phones.
 - Branded e-mails, a certificate template in the brand colours for the plugin Certificate (tool_certificate), usable with the activity Course certificate.
@@ -122,6 +123,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.18.0**: no new setting; upgrade the site. The table of the courses you teach on « My courses »; the getting started with Épure, offered once on the home of the administration (on a site already set up too: « Do not show again » closes it).
 - **1.17.2**: no new setting. The badges of the design system of Moodle (dates of the activities in Moodle 6.0) readable in dark mode.
 - **1.17.1**: no new setting. On Moodle 5.3, the experimental colour modes of Boost are ignored on the pages of Épure, whose own dark mode decides.
 - **1.17.0**: no new setting; upgrade the site. The widgets of Moodle (quiz, forms, grading, gradebook) in the pre-audit, fixed where the theme can; a visual regression in the tests.
@@ -237,6 +239,8 @@ The courses you **teach** and the courses you **take** are shown in two sections
 | Card for a course you take | Card for a course you teach |
 |---|---|
 | Progress, next activity to do, next deadline, Start / Continue / Review button, Completed label | Banner and role badge, participants, learners active this week, assignments to grade, shortcuts to Participants, Grades, Settings |
+
+The courses you teach show as **cards** or as a **table** (Cards / Table button, the choice kept in your preferences): learners, active this week, to follow up (no access to the course for 14 days), the completion of the learners, to grade, next deadline. Each column sorts with the keyboard; on phones, each row becomes a card; the table downloads (CSV, Excel, ODS, PDF…).
 
 A search box (accent-insensitive) and In progress, Future and Past filters complete the page. Starred courses come first, followed by the most recently accessed; courses you have hidden stay hidden. A teacher is identified by the capability to view all grades in the course (`moodle/grade:viewall`). With IOMAD, which replaces Moodle's block with its own ("My courses" with available, in progress and completed tabs), the same layout applies, with an extra "Programmes available" section and IOMAD's certificate download button. The "My courses by role" setting (Courses tab): untick it to restore the Moodle or IOMAD block.
 
