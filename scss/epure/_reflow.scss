@@ -8,6 +8,13 @@ html,
     scroll-padding-top: calc(#{$navbar-height} + 1rem);
 }
 
+// Nor under the bar of the buttons to save of the long forms (theme_epure/long_form), sticky at the bottom of the
+// screen: a field or a button reached below it, with the keyboard or by a click from the tests, is scrolled clear.
+html:has(.epure-longform-actions),
+body:has(.epure-longform-actions) #page.drawers {
+    scroll-padding-bottom: calc(5.5rem + var(--epure-mobilenav-height, 0px)); // stylelint-disable-line length-zero-no-unit
+}
+
 @media (max-width: 767.98px) {
     html:has(body.epure-has-mobilenav:not(.hasstickyfooter)),
     body.epure-has-mobilenav:not(.hasstickyfooter) #page.drawers {
