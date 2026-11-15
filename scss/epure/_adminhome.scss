@@ -262,3 +262,10 @@
     gap: .5rem;
     align-items: center;
 }
+
+// The error of a setting not saved, on the page of the settings and in the getting started: Moodle's red on its pink
+// reads at 3.9:1; the red and the pink of the states of Épure, in light and in dark.
+#adminsettings span.error {
+    color: var(--epure-state-late);
+    background-color: var(--epure-state-late-soft);
+}

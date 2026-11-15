@@ -25,7 +25,6 @@
     * logourl - URL of the logo, or null when there is no logo.
     * help - Optional help text, instead of the default one.
     * none - Optional text shown when there is no logo, instead of the default one.
-    * hidelogo - Optional: the logo is not shown again (already shown above), its colours are.
 
     Example context (json):
     {
@@ -38,10 +37,10 @@
     <div data-region="content" {{^logourl}}hidden{{/logourl}}>
         <p class="epure-logocolours-title">{{#str}}logocolours, theme_epure{{/str}}</p>
         <p class="small text-muted mb-2">{{#help}}{{help}}{{/help}}{{^help}}{{#str}}logocolours_help, theme_epure{{/str}}{{/help}}</p>
-        {{#logourl}}<img src="{{logourl}}" alt="" class="epure-logocolours-logo" style="max-width: 100%; max-height: 160px;" data-region="logo" {{#hidelogo}}hidden{{/hidelogo}}>{{/logourl}}
+        {{#logourl}}<img src="{{logourl}}" alt="" class="epure-logocolours-logo" style="max-width: 100%; max-height: 160px;" data-region="logo">{{/logourl}}
         <div class="epure-logocolours-swatches" data-region="swatches" role="group"
             aria-label="{{#str}}logocolours, theme_epure{{/str}}"></div>
         <p class="small mb-0" data-region="status" aria-live="polite"></p>
     </div>
-    {{^hidelogo}}<p class="small text-muted mt-2 mb-0" data-region="none" {{#logourl}}hidden{{/logourl}}>{{#none}}{{none}}{{/none}}{{^none}}{{#str}}logocolours_none, theme_epure{{/str}}{{/none}}</p>{{/hidelogo}}
+    <p class="small text-muted mt-2 mb-0" data-region="none" {{#logourl}}hidden{{/logourl}}>{{#none}}{{none}}{{/none}}{{^none}}{{#str}}logocolours_none, theme_epure{{/str}}{{/none}}</p>
 </div>

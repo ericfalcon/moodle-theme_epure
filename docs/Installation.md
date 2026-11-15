@@ -13,7 +13,7 @@
    - **sur le serveur** : décompressez le ZIP dans le dossier `theme` de Moodle (`public/theme` à partir de Moodle 5.1), puis ouvrez la page Administration du site › Notifications.
 3. Lancez la mise à jour de la base de données. Pendant les étapes, Épure affiche « Moodle travaille… » pour éviter un second clic.
 4. Choisissez Épure dans Administration du site › Présentation › Thèmes.
-5. Suivez la **mise en route d'Épure**, proposée sur l'accueil de l'administration : le nom et le logo, la couleur de marque, la page de connexion à partir d'un modèle par secteur (université, entreprise, école, organisme de formation, administration), le pied de page, puis la déclaration d'accessibilité. Elle remplit les réglages de Moodle et du thème, qui restent modifiables dans leurs onglets ; on la retrouve dans Administration du site › Présentation › Thèmes › Mise en route d'Épure.
+5. Suivez la **mise en route d'Épure**, proposée sur l'accueil de l'administration : elle affiche l'un après l'autre les onglets des réglages du thème qui comptent au départ, tels qu'ils sont dans les réglages : Identité (avec le nom du site : les logos, la couleur de marque et les couleurs du logo, la palette calculée), Page de connexion (avec un modèle par secteur : université, entreprise, école, organisme de formation, administration) et Pied de page, puis la déclaration d'accessibilité. On la retrouve dans Administration du site › Présentation › Réglages personnalisés du thème › Mise en route d'Épure.
 
 ## Mettre à jour
 
