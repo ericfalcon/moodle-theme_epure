@@ -67,7 +67,7 @@ const cmidOf = (link) => {
 const fill = (text, values) => text.replace(/\{\$a->(\w+)\}/g, (match, key) => String(values[key] ?? ''));
 
 /**
- * The viewer of a file: the reader of PDF of the browser, an image, the players of video and sound, the text.
+ * The viewer of a file: the reader of PDF of the browser, an image, the players of video and sound, the text in the page.
  *
  * @param {Object} file File.
  * @returns {HTMLElement}
@@ -86,8 +86,25 @@ const viewer = (file) => {
             element.preload = 'metadata';
             element.setAttribute('aria-label', file.name);
             break;
+        case 'text':
+            // In the page, with the font, the size and the colours of the user; a region that scrolls with the keyboard.
+            element = document.createElement('pre');
+            element.tabIndex = 0;
+            element.setAttribute('role', 'region');
+            element.setAttribute('aria-label', file.name);
+            element.className = 'epure-preview-media epure-preview-text';
+            fetch(file.url, {credentials: 'same-origin'})
+                .then((response) => (response.ok ? response.text() : Promise.reject(response.status)))
+                .then((text) => {
+                    element.textContent = text;
+                    return text;
+                })
+                .catch(() => {
+                    element.textContent = file.filename;
+                });
+            return element;
         default:
-            // PDF and text.
+            // PDF, in the reader of the browser.
             element = document.createElement('iframe');
             element.title = file.name;
     }

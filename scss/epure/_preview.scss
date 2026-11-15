@@ -4,9 +4,9 @@
 .epure-preview {
     display: flex;
     flex-direction: column;
-    width: min(72rem, calc(100vw - 2rem));
+    width: calc(100vw - 2rem);
     height: calc(100vh - 3rem);
-    max-width: none;
+    max-width: 72rem;
     max-height: none;
     margin: auto;
     padding: 0;
@@ -82,12 +82,32 @@ html.epure-preview-open {
     max-height: 100%;
 }
 
-.epure-preview-pdf,
-.epure-preview-text {
+.epure-preview-pdf {
     width: 100%;
     height: 100%;
     background-color: #fff;
     border: 1px solid var(--epure-border);
+}
+
+// A text file, in the page: the font, the size and the colours of the user.
+.epure-preview-text {
+    align-self: stretch;
+    width: 100%;
+    margin: 0;
+    padding: 1rem;
+    overflow: auto;
+    color: var(--epure-ink);
+    font-family: inherit;
+    font-size: 1rem;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+
+    &:focus-visible {
+        outline: 3px solid var(--epure-focus);
+        outline-offset: -3px;
+    }
 }
 
 .epure-preview-image {
@@ -95,7 +115,8 @@ html.epure-preview-open {
 }
 
 .epure-preview-audio {
-    width: min(36rem, 100%);
+    width: 36rem;
+    max-width: 100%;
 }
 
 .epure-preview-footer {
