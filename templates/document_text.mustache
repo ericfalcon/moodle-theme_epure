@@ -1,0 +1,55 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/document_text
+
+    The text of a document of an office suite in the preview of the files (theme_epure/file_preview): its titles under
+    the title of the preview, its paragraphs, lists and tables, the text alternatives of its images. Read by
+    theme_epure\document_text; all of it escaped.
+
+    Example context (json):
+    {
+        "truncated": false, "empty": false,
+        "blocks": [
+            {"isheading": true, "tag": "h3", "text": "Safety rules"},
+            {"isparagraph": true, "text": "Read them before the training."},
+            {"islist": true, "items": [{"text": "Wear the helmet"}, {"text": "Keep the exits free"}]},
+            {"isimage": true, "alttext": "Image: plan of the exits"},
+            {"istable": true, "caption": "", "header": {"cells": [{"text": "Room"}, {"text": "Exit"}]},
+                "rows": [{"cells": [{"text": "A"}, {"text": "North"}]}], "truncated": false}
+        ]
+    }
+}}
+<div class="epure-doctext">
+    <p class="epure-doctext-note">{{#str}}preview_textversion, theme_epure{{/str}}</p>
+    {{#empty}}<p>{{#str}}preview_notext, theme_epure{{/str}}</p>{{/empty}}
+    {{#blocks}}
+        {{#isheading}}<{{tag}} class="epure-doctext-heading">{{text}}</{{tag}}>{{/isheading}}
+        {{#isparagraph}}<p class="epure-doctext-paragraph">{{text}}</p>{{/isparagraph}}
+        {{#islist}}<ul>{{#items}}<li class="epure-doctext-paragraph">{{text}}</li>{{/items}}</ul>{{/islist}}
+        {{#isimage}}<p class="epure-doctext-image"><i class="fa fa-image" aria-hidden="true"></i> {{alttext}}</p>{{/isimage}}
+        {{#istable}}
+            <table class="generaltable epure-doctext-table">
+                {{#caption}}<caption>{{caption}}</caption>{{/caption}}
+                {{#header}}<thead><tr>{{#cells}}<th scope="col">{{text}}</th>{{/cells}}</tr></thead>{{/header}}
+                <tbody>{{#rows}}<tr>{{#cells}}<td class="epure-doctext-paragraph">{{text}}</td>{{/cells}}</tr>{{/rows}}</tbody>
+            </table>
+            {{#truncated}}<p class="epure-doctext-note">{{#str}}preview_tabletruncated, theme_epure{{/str}}</p>{{/truncated}}
+        {{/istable}}
+    {{/blocks}}
+    {{#truncated}}<p class="epure-doctext-note">{{#str}}preview_truncated, theme_epure{{/str}}</p>{{/truncated}}
+</div>

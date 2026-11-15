@@ -1,5 +1,12 @@
 # Changes
 
+## 1.21.0 — the text of the office documents in the preview of the files
+
+- In the preview of the files of a course (1.19.0), a document of Word, PowerPoint or Excel, or of LibreOffice (Writer, Impress, Calc), shows its text, without downloading the file: its titles (under the title of the window), paragraphs, lists and tables; each slide with its title, texts and tables; each sheet as a table with its name. The text alternatives of the images are given (« Image: plan of the exits »), or that an image has none.
+- A version that reads with a screen reader and with the keyboard, in the font, the size and the colours chosen by the user; « Download » stays for the layout of the file. A long document stops at 2,000 blocks, a table at 200 rows and 30 columns, with a note that the rest is in the file. The old binary formats (.doc, .xls, .ppt) and the damaged files keep « Download ».
+- Read in the XML of the document with the limits of the accessibility check of the documents (size of the file and of its parts, budget of reading, no network, no entities), kept by content of file; the text is escaped by a template, never shown as HTML of the document. A web service of the theme, for whoever can view the resource.
+- Tests: PHPUnit (Word, PowerPoint in the order of the presentation, Excel with its shared and inline texts, a text, a presentation and a spreadsheet of LibreOffice with their repeated rows and columns, a text that looks like HTML, a damaged file, the web service) and Behat (a learner reads the text of a document of Word in the preview, axe-core).
+
 ## 1.20.0 — the activities added since the previous visit are marked « New »
 
 - On the page of a course, a badge « New » beside the name of each activity added since the previous visit of the learner, with « since your last visit » for screen readers (a text, not a colour alone). On the card of the course (« My courses »), their number: « 2 new activities since your last visit ».

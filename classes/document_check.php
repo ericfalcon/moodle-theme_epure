@@ -72,6 +72,8 @@ class document_check {
         'presentation' => 'urn:oasis:names:tc:opendocument:xmlns:presentation:1.0',
         'style' => 'urn:oasis:names:tc:opendocument:xmlns:style:1.0',
         'fo' => 'urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0',
+        'r' => 'http://schemas.openxmlformats.org/officeDocument/2006/relationships',
+        'rel' => 'http://schemas.openxmlformats.org/package/2006/relationships',
     ];
 
     /**
@@ -148,6 +150,24 @@ class document_check {
      * @return array|null
      */
     protected static function check_package(\stored_file $file, string $kind): ?array {
+        $found = static::read_package($file, fn(callable $read, array $names) => match ($kind) {
+            'word' => self::check_word($read),
+            'slides' => self::check_slides($read, $names),
+            'sheets' => self::check_sheets($read, $names),
+            default => self::check_opendocument($read, $kind),
+        });
+        return $found === null ? null : array_filter($found);
+    }
+
+    /**
+     * Opens a document of an office suite, a ZIP archive of XML, and gives its parts to a reader: each part read at most
+     * to its limit, whatever size the archive declares, and all of them within a budget.
+     *
+     * @param \stored_file $file File.
+     * @param callable $use Reader: fn(callable $read, string[] $names), $read giving the XPath of a part, or null.
+     * @return mixed What the reader gives; null when the archive cannot be opened.
+     */
+    protected static function read_package(\stored_file $file, callable $use): mixed {
         $path = $file->copy_content_to_temp('theme_epure');
         if ($path === false) {
             return null;
@@ -161,12 +181,11 @@ class document_check {
                 $zip->close();
                 return null;
             }
-            // Each part read at most to its limit, whatever size the archive declares, and all of them within a budget.
             $budget = static::MAX_READ;
             $parts = [];
             for ($i = 0; $i < $zip->numFiles; $i++) {
                 $stat = $zip->statIndex($i);
-                if ($stat && str_ends_with($stat['name'], '.xml') && $stat['size'] <= static::MAX_PART) {
+                if ($stat && preg_match('~\.(xml|rels)$~', $stat['name']) && $stat['size'] <= static::MAX_PART) {
                     $parts[$stat['name']] = function () use ($zip, $stat, &$budget): string {
                         if ($budget <= 0) {
                             return '';
@@ -178,14 +197,9 @@ class document_check {
                 }
             }
             $read = fn(string $name): ?\DOMXPath => isset($parts[$name]) ? self::xpath($parts[$name]()) : null;
-            $found = match ($kind) {
-                'word' => self::check_word($read),
-                'slides' => self::check_slides($read, array_keys($parts)),
-                'sheets' => self::check_sheets($read, array_keys($parts)),
-                default => self::check_opendocument($read, $kind),
-            };
+            $result = $use($read, array_keys($parts));
             $zip->close();
-            return $found === null ? null : array_filter($found);
+            return $result;
         } finally {
             @unlink($path);
         }
