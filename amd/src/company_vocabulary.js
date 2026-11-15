@@ -108,8 +108,8 @@ export const init = (guided = false) => {
 
 /**
  * The getting started of the company: only the sections of Épure that matter at first, one after the other, as they
- * are in the form, with the steps and the buttons Previous and Next. The other parts of the form stay posted, out of
- * sight; IOMAD's button saves the company, all the steps together.
+ * are in the form, with the steps, and the buttons Previous and Next beside IOMAD's buttons. The other parts of the
+ * form stay posted, out of sight; IOMAD's button saves the company, all the steps together.
  *
  * @param {HTMLFormElement} form The company form.
  * @param {HTMLElement} region The Épure fields.
@@ -212,7 +212,15 @@ const guide = async(form, region) => {
     back.addEventListener('click', () => show(current - 1, true));
     forward.addEventListener('click', () => show(current + 1, true));
     region.prepend(nav, heading);
-    region.append(hint, buttons);
+    region.append(hint);
+    // Previous and Next with IOMAD's buttons, in the bar to save at the bottom of the screen: nothing passes under it.
+    const bar = form.querySelector('#fgroup_id_buttonar .d-flex.flex-wrap');
+    if (bar) {
+        buttons.classList.add('epure-company-setup-inbar');
+        bar.prepend(buttons);
+    } else {
+        region.append(buttons);
+    }
     show(0, false);
 };
 

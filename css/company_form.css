@@ -221,3 +221,7 @@
 .epure-company-setup-buttons .btn[hidden] {
     display: none;
 }
+
+.epure-company-setup-buttons.epure-company-setup-inbar {
+    margin: 0 .5rem 1rem 0;
+}
