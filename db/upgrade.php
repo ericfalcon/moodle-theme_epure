@@ -171,5 +171,8 @@ function xmldb_theme_epure_upgrade($oldversion) {
         }
     }
 
+    // At each update: the release installed before, from which the home of the administration tells what is new.
+    \theme_epure\whatsnew::upgraded((int) $oldversion);
+
     return true;
 }

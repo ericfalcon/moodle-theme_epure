@@ -123,6 +123,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.25.0**: no new setting; upgrade the site. After each update, the home of the administration tells what is new since the version installed before.
 - **1.24.0**: two new display preferences of the panel « Aa », off by default (and two settings of the display by default of the site): stop the animated images, always show the scroll bars.
 - **1.23.0**: no new setting; upgrade the site. Keys of navigation (next and previous activity or section, dashboard, « My courses », calendar, « To do »), off by default, turned on by each user in the help of the shortcuts.
 - **1.22.0**: no new setting; upgrade the site. A page « To do » for the learners: their activities still to do in all their courses, grouped by deadline and filtered by course and by period.

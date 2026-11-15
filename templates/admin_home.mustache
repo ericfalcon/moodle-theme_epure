@@ -19,7 +19,8 @@
 
     Home of the site administration: a card for each part (Users, Courses, Appearance…) with its common tasks.
     The title of a card leads to the whole part. Above them, until it is finished or dismissed, the getting started
-    with Épure (setup: url, dismissurl).
+    with Épure (setup: url, dismissurl), and what is new in Épure since the version installed before (whatsnew: title,
+    notes with version and text, more, changesurl, dismissurl).
 
     Example context (json):
     {
@@ -29,6 +30,21 @@
         ]
     }
 }}
+{{#whatsnew}}
+<section class="epure-admin-setup epure-whatsnew" aria-labelledby="epure-whatsnew-title">
+    <span class="epure-admin-setup-icon" aria-hidden="true"><i class="fa fa-gift"></i></span>
+    <div class="epure-admin-setup-body">
+        <h2 class="epure-admin-setup-title" id="epure-whatsnew-title">{{title}}</h2>
+        <ul class="epure-whatsnew-notes">
+            {{#notes}}<li><strong>{{version}}</strong> – {{text}}</li>{{/notes}}
+        </ul>
+        <div class="epure-admin-setup-actions">
+            <a class="btn btn-primary" href="{{dismissurl}}">{{#str}}whatsnew_read, theme_epure{{/str}}</a>
+            <a class="btn btn-link" href="{{changesurl}}">{{#more}}{{#str}}whatsnew_more, theme_epure{{/str}}{{/more}}{{^more}}{{#str}}whatsnew_all, theme_epure{{/str}}{{/more}}</a>
+        </div>
+    </div>
+</section>
+{{/whatsnew}}
 {{#setup}}
 <section class="epure-admin-setup" aria-labelledby="epure-admin-setup-title">
     <span class="epure-admin-setup-icon" aria-hidden="true"><i class="fa fa-wand-magic-sparkles"></i></span>

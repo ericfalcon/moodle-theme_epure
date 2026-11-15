@@ -1,5 +1,11 @@
 # Changes
 
+## 1.25.0 — what is new in Épure, after an update
+
+- After an update of the theme, the home of the administration tells what is new for the site since the version installed before: the notes of update of each version (in English or in French), the most recent first, with a link to all the changes. « Read, close » closes them for this administrator until the next update.
+- The version installed before is kept at each update; for a site updated from an earlier version, it is found from the version numbers of the releases since 1.0.0. A new site shows nothing.
+- Tests: PHPUnit (the release of a version number, the notes since the version before, the order, a new site, a user who is not an administrator, closed) and Behat (an administrator reads what is new, then closes it; accessibility).
+
 ## 1.24.0 — two more display preferences: animated images stopped, scroll bars always shown
 
 - « Stop the animated images » in the panel « Aa » (WCAG 2.2.2): the animated GIF images of the pages show their first frame, each with a button « Play the animation » (named after its text alternative) that plays it and stops it again (aria-pressed). Applied at once when the box is ticked, without reloading; an image of another site, which the browser does not let the page read, stays as it is.
