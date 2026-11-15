@@ -121,9 +121,11 @@ const sortBy = async(table, button, status) => {
 export const init = () => {
     const region = document.querySelector('[data-region="epure-mycourses"]');
     const search = region?.querySelector('[data-action="search"]');
-    if (!search) {
+    // Started once: with IOMAD, the page may ask for it twice, and a second listener would undo each sort.
+    if (!search || region.dataset.epureStarted) {
         return;
     }
+    region.dataset.epureStarted = '1';
     search.addEventListener('input', () => update(region));
     region.querySelectorAll('[data-filter]').forEach((button) => {
         button.addEventListener('click', () => {
