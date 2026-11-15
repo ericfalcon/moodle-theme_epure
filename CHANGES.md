@@ -1,5 +1,12 @@
 # Changes
 
+## 1.22.0 — the page « To do » of a learner
+
+- A page « To do » for each learner: all their activities still to do with a deadline, in all the courses they take, grouped by deadline (overdue, this week, later), each with its course, its date and its state (« Due soon », « In progress »…), as « This week » of the dashboard, which links to it (« Everything to do »).
+- Filtered by course and by deadline with a form that works without script; a link brings everything back. How many activities are shown, and a clear message when nothing is left to do, or nothing with these filters.
+- The same activities as the dashboard: those with completion tracking, a deadline, and not completed. No setting.
+- Tests: PHPUnit (the groups by deadline, the activities done and without deadline left out, the filters, no activity) and Behat (a learner goes from the dashboard to the page, filters it, and the page meets accessibility standards in the four displays).
+
 ## 1.21.0 — the text of the office documents in the preview of the files
 
 - In the preview of the files of a course (1.19.0), a document of Word, PowerPoint or Excel, or of LibreOffice (Writer, Impress, Calc), shows its text, without downloading the file: its titles (under the title of the window), paragraphs, lists and tables; each slide with its title, texts and tables; each sheet as a table with its name. The text alternatives of the images are given (« Image: plan of the exits »), or that an image has none.

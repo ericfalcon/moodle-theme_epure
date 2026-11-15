@@ -129,6 +129,7 @@
                     </div>
                 {{/days}}
                 {{#moreweek}}<a class="epure-learner-more" href="{{calendarurl}}">{{moreweek}}</a>{{/moreweek}}
+                <a class="epure-learner-more" href="{{todourl}}">{{#str}}todo_link, theme_epure{{/str}}</a>
                 {{^hasweek}}<p class="epure-learner-empty">{{#str}}learnernoweek, theme_epure{{/str}}</p>{{/hasweek}}
             {{/week}}
         </section>
