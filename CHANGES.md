@@ -1,5 +1,11 @@
 # Changes
 
+## 1.20.0 — the activities added since the previous visit are marked « New »
+
+- On the page of a course, a badge « New » beside the name of each activity added since the previous visit of the learner, with « since your last visit » for screen readers (a text, not a colour alone). On the card of the course (« My courses »), their number: « 2 new activities since your last visit ».
+- The previous visit is the last access to the course before the current session, which Moodle reads at the login (`user_lastaccess`): the same on each device, nothing kept in the browser, no table and no setting; the badges stay for the whole session. A course never visited before shows none. Only the activities the learner can open, visible on the page (not the text and media areas).
+- Tests: PHPUnit (the activities kept and left out, a course never visited, the text of the card) and Behat (a learner sees the new activities on the course page and their number on « My courses », axe-core; a course never visited shows no badge).
+
 ## 1.19.0 — the files of a course open in a preview
 
 - On the page of a course, the file of a resource opens in a window over the course, without leaving it: a PDF in the reader of the browser, an image, a video or a sound with the players of the browser, a text file in the page itself (with the font, the size and the colours chosen by the user). Its name and « File 2 of 5 » at the top; at the bottom, the previous and next files of the page with their names (buttons, and the arrow keys on the buttons of the window), « Open in a new tab » and « Download ».

@@ -140,6 +140,31 @@ const showCurrent = (next, labels) => {
     });
 };
 
+/**
+ * Badge « New » beside the name of the activities added since the previous visit of the learner, with « since your
+ * last visit » for screen readers.
+ *
+ * @param {number[]} cmids Activities.
+ * @param {{new: string, newsince: string}} labels Texts of the badge.
+ */
+const showNew = (cmids, labels) => {
+    cmids.forEach((cmid) => {
+        document.querySelectorAll(`[data-for="cmitem"][data-id="${cmid}"]`).forEach((item) => {
+            const name = item.querySelector('.activity-name-area, .activity-instance');
+            if (!name || name.querySelector('.epure-new')) {
+                return;
+            }
+            const badge = document.createElement('span');
+            badge.className = 'epure-new';
+            const hint = document.createElement('span');
+            hint.className = 'sr-only visually-hidden';
+            hint.textContent = ` ${labels.newsince}`;
+            badge.append(document.createTextNode(labels.new), hint);
+            name.append(badge);
+        });
+    });
+};
+
 /** Completion of an activity in the course index (data-value), and the state it gives. */
 const COMPLETION_STATES = {'1': 'done', '2': 'passed', '3': 'failed'};
 
@@ -223,7 +248,7 @@ const followStickyContinue = () => {
  * Starts the progress of the sections and the states of the activities, from the data in the page (script
  * epure-course-page-data): sections, the progress of each section with completion; states, the state of each
  * activity (cmid, state, icon, label, text, notable); all, all the states without dates, for an activity whose
- * completion changes on the page.
+ * completion changes on the page; added, the activities added since the previous visit of the learner.
  */
 export const init = () => {
     followStickyContinue();
@@ -231,7 +256,8 @@ export const init = () => {
     if (!data) {
         return;
     }
-    const {sections = [], states = [], all = {}, labels = {}, next = null} = JSON.parse(data.textContent);
+    const {sections = [], states = [], all = {}, labels = {}, next = null, added = []} = JSON.parse(data.textContent);
+    showNew(added, labels);
     sections.forEach(addBadge);
     sections.forEach(addIndexBar);
     const initial = new Map(states.map((state) => [state.cmid, state]));

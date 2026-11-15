@@ -74,6 +74,9 @@
                     </div>
                 </div>
             {{/hasprogress}}
+            {{#newtext}}
+                <p class="epure-course-card-new"><span class="epure-new">{{newtext}}</span></p>
+            {{/newtext}}
             {{#next}}
                 <p class="epure-course-card-next">{{#str}}mycourses_next, theme_epure{{/str}} <a href="{{url}}">{{name}}</a>{{#state}} {{>theme_epure/activity_state}}{{/state}}</p>
             {{/next}}

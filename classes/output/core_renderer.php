@@ -264,7 +264,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $items = \theme_epure\activity_state::items($this->page->course, (int) $USER->id);
             $states = \theme_epure\activity_state::course($items);
             $next = \theme_epure\activity_state::next($items);
-            if ($sections || $states) {
+            // The activities added since the previous visit of the learner.
+            $new = \theme_epure\new_activities::course($this->page->course);
+            if ($sections || $states || $new) {
                 // A course has many activities: their data goes in the page, not in the call of the script.
                 $this->page->requires->js_call_amd('theme_epure/course_page', 'init');
                 $header .= \html_writer::tag(
@@ -275,7 +277,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
                             'labels' => [
                                 'activity' => get_string('currentactivity', 'theme_epure'),
                                 'section' => get_string('currentsection', 'theme_epure'),
-                            ]],
+                                'new' => get_string('new_badge', 'theme_epure'),
+                                'newsince' => get_string('new_badge_since', 'theme_epure'),
+                            ],
+                            'added' => $new],
                         JSON_HEX_TAG | JSON_HEX_AMP
                     ),
                     ['type' => 'application/json', 'id' => 'epure-course-page-data']
