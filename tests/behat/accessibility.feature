@@ -180,6 +180,33 @@ Feature: Accessibility of the Épure theme
     And I press the ? key
     And "#epure-shortcuts" "css_element" should not be visible
 
+  Scenario: The keys of navigation, off by default, move between the sections and the activities once turned on
+    Given the following "courses" exist:
+      | fullname       | shortname | numsections |
+      | Safety at work | SAFE      | 2           |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | learner1 | SAFE   | student |
+    And the following "activities" exist:
+      | activity | course | name    | section |
+      | page     | SAFE   | Welcome | 1       |
+      | page     | SAFE   | Rules   | 1       |
+    And I log in as "learner1"
+    And I am on "Safety at work" course homepage
+    # Off by default (WCAG 2.1.4): J does nothing.
+    When I press the j key
+    Then the focused element is "body" "css_element"
+    And I press the ? key
+    And I click on "Turn on the keys of navigation (N, P, J, K, G)" "checkbox"
+    And I press the escape key
+    And I wait "1" seconds
+    And I reload the page
+    And I press the j key
+    And the focused element is "#region-main h3[data-for='section_title']" "css_element"
+    And I am on the "Welcome" "page activity" page
+    And I press the n key
+    And I should see "Rules" in the "h1" "css_element"
+
   Scenario: The quick search works with the keyboard alone
     Given the following "courses" exist:
       | fullname       | shortname |

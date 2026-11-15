@@ -65,6 +65,9 @@ class a11y {
         // The key « ? » opens the help of the keyboard shortcuts, or not (WCAG 2.1.4).
         $definitions[shortcuts::PREFERENCE] = ['type' => PARAM_INT, 'null' => NULL_NOT_ALLOWED,
             'default' => 1, 'choices' => [0, 1], 'permissioncallback' => $own];
+        // The keys of navigation (N, P, J, K, G then a letter): off by default (WCAG 2.1.4).
+        $definitions[shortcuts::NAV_PREFERENCE] = ['type' => PARAM_INT, 'null' => NULL_NOT_ALLOWED,
+            'default' => 0, 'choices' => [0, 1], 'permissioncallback' => $own];
         // The page « My courses »: the courses the user teaches as cards or as a table.
         $definitions[mycourses::VIEW_PREFERENCE] = ['type' => PARAM_ALPHA, 'null' => NULL_NOT_ALLOWED,
             'default' => 'cards', 'choices' => ['cards', 'table'], 'permissioncallback' => $own];

@@ -18,7 +18,8 @@
     @template theme_epure/shortcuts
 
     Help of the keyboard shortcuts: a window that lists the shortcuts of the page by group, each with its keys (on a
-    Mac, their symbols), and a box to turn off the key « ? » (WCAG 2.1.4).
+    Mac, their symbols), a box to turn off the key « ? » and a box to turn on the keys of navigation, off by default
+    (WCAG 2.1.4).
 
     Example context (json):
     {
@@ -29,6 +30,7 @@
                 "action": "Open the quick search"}
         ]}],
         "keyenabled": true,
+        "navenabled": false,
         "loggedin": true
     }
 }}
@@ -46,7 +48,7 @@
             <tbody>
                 {{#items}}
                     <tr>
-                        <td class="epure-shortcuts-keys">{{#keys}}{{^first}}{{#either}} {{#str}}shortcuts_or, theme_epure{{/str}} {{/either}}{{^either}} <span aria-hidden="true">+</span> {{/either}}{{/first}}<kbd{{#mac}} data-mac="{{mac}}"{{/mac}}>{{name}}</kbd>{{/keys}}</td>
+                        <td class="epure-shortcuts-keys">{{#keys}}{{^first}}{{#either}} {{#str}}shortcuts_or, theme_epure{{/str}} {{/either}}{{#then}} {{#str}}shortcuts_then, theme_epure{{/str}} {{/then}}{{^either}}{{^then}} <span aria-hidden="true">+</span> {{/then}}{{/either}}{{/first}}<kbd{{#mac}} data-mac="{{mac}}"{{/mac}}>{{name}}</kbd>{{/keys}}</td>
                         <td>{{action}}</td>
                     </tr>
                 {{/items}}
@@ -57,5 +59,10 @@
         <input type="checkbox" class="form-check-input" id="epure-shortcuts-key" data-action="epure-shortcuts-key" aria-describedby="epure-shortcuts-key-help"{{#keyenabled}} checked{{/keyenabled}}>
         <label class="form-check-label" for="epure-shortcuts-key">{{#str}}shortcuts_key, theme_epure{{/str}}</label>
         <p class="epure-shortcuts-help" id="epure-shortcuts-key-help">{{#str}}shortcuts_key_help, theme_epure{{/str}}</p>
+    </div>
+    <div class="form-check epure-shortcuts-switch">
+        <input type="checkbox" class="form-check-input" id="epure-shortcuts-nav" data-action="epure-shortcuts-nav" aria-describedby="epure-shortcuts-nav-help"{{#navenabled}} checked{{/navenabled}}>
+        <label class="form-check-label" for="epure-shortcuts-nav">{{#str}}shortcuts_navkeys, theme_epure{{/str}}</label>
+        <p class="epure-shortcuts-help" id="epure-shortcuts-nav-help">{{#str}}shortcuts_navkeys_help, theme_epure{{/str}}</p>
     </div>
 </dialog>

@@ -1,5 +1,11 @@
 # Changes
 
+## 1.23.0 — keys of navigation
+
+- Keys of navigation, turned on by each user in the help of the keyboard shortcuts (« ? », or the button of the panel « Aa »): N and P for the next and the previous activity, J and K for the next and the previous section of the course page (the focus goes to its title), G then D, C, A or F for the dashboard, « My courses », the calendar and the page « To do ».
+- Off by default: keys of one letter can be pressed by mistake with the voice dictation (WCAG 2.1.4). Never while typing in a field, nor while a window or a menu is open, nor with Ctrl, Alt or ⌘. Kept in the preferences of the user (exported and deleted with the privacy API), in the browser for a visitor; listed in the help, « G then D » read as such.
+- Tests: PHPUnit (the keys listed, off by default, the preference) and Behat (J does nothing while off; turned on in the help, J reaches the first section and N the next activity).
+
 ## 1.22.0 — the page « To do » of a learner
 
 - A page « To do » for each learner: all their activities still to do with a deadline, in all the courses they take, grouped by deadline (overdue, this week, later), each with its course, its date and its state (« Due soon », « In progress »…), as « This week » of the dashboard, which links to it (« Everything to do »).

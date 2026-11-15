@@ -33,6 +33,12 @@ class shortcuts {
     public const PREFERENCE = 'theme_epure_shortcuts';
 
     /**
+     * @var string Preference of the user: the keys of navigation, one key each (N, P, J, K, G then a letter), on (1) or
+     * off (0, by default: keys of one character get in the way of the voice dictation, WCAG 2.1.4).
+     */
+    public const NAV_PREFERENCE = 'theme_epure_navkeys';
+
+    /**
      * Whether the key « ? » opens the help for the current user.
      *
      * @return bool
@@ -42,6 +48,18 @@ class shortcuts {
             return true;
         }
         return (int) get_user_preferences(self::PREFERENCE, 1) === 1;
+    }
+
+    /**
+     * Whether the keys of navigation are on for the current user (a visitor chooses in the browser).
+     *
+     * @return bool
+     */
+    public static function nav_enabled(): bool {
+        if (!isloggedin() || isguestuser()) {
+            return false;
+        }
+        return (int) get_user_preferences(self::NAV_PREFERENCE, 0) === 1;
     }
 
     /**
@@ -87,6 +105,20 @@ class shortcuts {
                 $item([$alt, $key('0')], 'editorhelp'),
             ]];
         }
+        // The keys of navigation, off by default: listed with their switch below.
+        $nav = [
+            $item([$key('N'), $key('P')], 'navactivity', true),
+            $item([$key('J'), $key('K')], 'navsection', true),
+        ];
+        if (isloggedin() && !isguestuser()) {
+            foreach (['D' => 'navdashboard', 'C' => 'navmycourses', 'A' => 'navcalendar', 'F' => 'navtodo'] as $letter => $action) {
+                // G, then the letter: one key after the other.
+                $sequence = $item([$key('G'), $key($letter)], $action);
+                $sequence['keys'][1]['then'] = true;
+                $nav[] = $sequence;
+            }
+        }
+        $groups[] = ['title' => get_string('shortcuts_nav', 'theme_epure'), 'items' => $nav, 'nav' => true];
         foreach ($groups as $index => &$group) {
             $group['id'] = 'epure-shortcuts-group-' . $index;
         }
@@ -94,6 +126,7 @@ class shortcuts {
         return [
             'groups' => $groups,
             'keyenabled' => self::key_enabled(),
+            'navenabled' => self::nav_enabled(),
             'loggedin' => isloggedin() && !isguestuser(),
         ];
     }
