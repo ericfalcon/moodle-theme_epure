@@ -248,7 +248,7 @@ const followStickyContinue = () => {
  * Starts the progress of the sections and the states of the activities, from the data in the page (script
  * epure-course-page-data): sections, the progress of each section with completion; states, the state of each
  * activity (cmid, state, icon, label, text, notable); all, all the states without dates, for an activity whose
- * completion changes on the page; new, the activities added since the previous visit of the learner.
+ * completion changes on the page; added, the activities added since the previous visit of the learner.
  */
 export const init = () => {
     followStickyContinue();
@@ -256,7 +256,7 @@ export const init = () => {
     if (!data) {
         return;
     }
-    const {sections = [], states = [], all = {}, labels = {}, next = null, new: added = []} = JSON.parse(data.textContent);
+    const {sections = [], states = [], all = {}, labels = {}, next = null, added = []} = JSON.parse(data.textContent);
     showNew(added, labels);
     sections.forEach(addBadge);
     sections.forEach(addIndexBar);

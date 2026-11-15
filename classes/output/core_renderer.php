@@ -280,7 +280,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
                                 'new' => get_string('new_badge', 'theme_epure'),
                                 'newsince' => get_string('new_badge_since', 'theme_epure'),
                             ],
-                            'new' => $new],
+                            'added' => $new],
                         JSON_HEX_TAG | JSON_HEX_AMP
                     ),
                     ['type' => 'application/json', 'id' => 'epure-course-page-data']
