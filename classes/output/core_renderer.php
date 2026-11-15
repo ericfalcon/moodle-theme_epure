@@ -282,6 +282,15 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 );
             }
         }
+        // The files of the resources that open in the preview, without leaving the course.
+        if (\theme_epure\file_preview::applies($this->page) && ($files = \theme_epure\file_preview::items($this->page->course))) {
+            $this->page->requires->js_call_amd('theme_epure/file_preview', 'init');
+            $header .= \html_writer::tag(
+                'script',
+                json_encode(['files' => $files], JSON_HEX_TAG | JSON_HEX_AMP),
+                ['type' => 'application/json', 'id' => 'epure-file-preview-data']
+            );
+        }
         if (!\theme_epure\course_page::applies($this->page)) {
             return $header . $editbar;
         }

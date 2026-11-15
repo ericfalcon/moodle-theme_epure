@@ -40,4 +40,12 @@ $functions = [
         'ajax' => true,
         'loginrequired' => false,
     ],
+    'theme_epure_view_resource' => [
+        'classname' => \theme_epure\external\view_resource::class,
+        'description' => 'Records the view of a resource whose file is opened in the preview of the files of a course.',
+        'type' => 'write',
+        'ajax' => true,
+        'loginrequired' => true,
+        'capabilities' => 'mod/resource:view',
+    ],
 ];

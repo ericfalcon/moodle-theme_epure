@@ -123,6 +123,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.19.0** : aucun nouveau réglage ; mettez le site à jour. Les fichiers d'un cours (PDF, image, vidéo, son, texte) s'ouvrent dans un aperçu sur la page du cours, avec les fichiers précédent et suivant.
 - **1.18.0** : aucun nouveau réglage ; mettez le site à jour. Le tableau des cours que l'on anime dans « Mes cours » ; la mise en route d'Épure, proposée une fois sur l'accueil de l'administration (y compris sur un site déjà réglé : « Ne plus proposer » la ferme).
 - **1.17.2** : aucun nouveau réglage. Les badges du système de design de Moodle (dates des activités de Moodle 6.0) lisibles en mode sombre.
 - **1.17.1** : aucun nouveau réglage. Sous Moodle 5.3, les modes de couleur expérimentaux de Boost sont ignorés sur les pages d'Épure, dont le mode sombre décide.

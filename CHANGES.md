@@ -1,5 +1,14 @@
 # Changes
 
+## 1.19.0 — the files of a course open in a preview
+
+- On the page of a course, the file of a resource opens in a window over the course, without leaving it: a PDF in the reader of the browser, an image, a video or a sound with the players of the browser, a text file. Its name and « File 2 of 5 » at the top; at the bottom, the previous and next files of the page with their names (buttons, and the arrow keys on the buttons of the window), « Open in a new tab » and « Download ».
+- A true modal window (`dialog`): the focus goes to « Close the preview », Escape or a click beside it closes it, a video or a sound stops, and the focus goes back to the link. Going to another file is announced to screen readers. On phones, the whole screen.
+- Opening a file counts as a view of the resource, as on its page: the event of Moodle and the completion « view » (a web service of the theme, as `mod_resource_view_resource` is not open to the pages).
+- Only the resources that Moodle shows in its own page (« Embed », « Open », « In frame », and « Automatic » when it comes to one of them): « Force download », « New window » and « In pop-up » keep their behaviour, as do the other kinds of files (office documents, archives…) and Ctrl, Shift or middle click on a link. Nothing in edit mode. No setting.
+- Tests: PHPUnit (the kinds of files, the resources kept and left out, hidden ones included for whoever can see them, the view and the completion) and Behat (a learner opens a file, goes to the next one and closes the preview with Escape; axe-core with the window open).
+- IOMAD: the page « My courses » by role was drawn twice on IOMAD, once out of sight in Moodle's block that IOMAD hides; it is drawn once, in IOMAD's block (shipped in 1.18.0).
+
 ## 1.18.0 — the courses a teacher teaches as a table, and getting started with Épure
 
 The courses a teacher teaches, as a table on « My courses »:

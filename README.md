@@ -123,6 +123,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.19.0**: no new setting; upgrade the site. The files of a course (PDF, image, video, sound, text) open in a preview on the page of the course, with the previous and next files.
 - **1.18.0**: no new setting; upgrade the site. The table of the courses you teach on « My courses »; the getting started with Épure, offered once on the home of the administration (on a site already set up too: « Do not show again » closes it).
 - **1.17.2**: no new setting. The badges of the design system of Moodle (dates of the activities in Moodle 6.0) readable in dark mode.
 - **1.17.1**: no new setting. On Moodle 5.3, the experimental colour modes of Boost are ignored on the pages of Épure, whose own dark mode decides.
