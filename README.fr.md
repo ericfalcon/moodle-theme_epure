@@ -122,6 +122,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.17.2** : aucun nouveau réglage. Les badges du système de design de Moodle (dates des activités de Moodle 6.0) lisibles en mode sombre.
 - **1.17.1** : aucun nouveau réglage. Sous Moodle 5.3, les modes de couleur expérimentaux de Boost sont ignorés sur les pages d'Épure, dont le mode sombre décide.
 - **1.17.0** : aucun nouveau réglage ; mettez le site à jour. Les widgets de Moodle (test, formulaires, évaluation, carnet de notes) dans le pré-audit, corrigés là où le thème le peut ; une régression visuelle dans les tests.
 - **1.16.0** : aucun nouveau réglage ; mettez le site à jour. Le guide vérifie les couleurs et les langues des textes, exporte son bilan et décrit les images sur place.
