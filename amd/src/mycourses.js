@@ -119,29 +119,31 @@ const sortBy = async(table, button, status) => {
  * Starts the search, the filters, the choice of the view and the sorting of the table.
  */
 export const init = () => {
-    const region = document.querySelector('[data-region="epure-mycourses"]');
-    const search = region?.querySelector('[data-action="search"]');
-    // Started once: with IOMAD, the page may ask for it twice, and a second listener would undo each sort.
-    if (!search || region.dataset.epureStarted) {
-        return;
-    }
-    region.dataset.epureStarted = '1';
-    search.addEventListener('input', () => update(region));
-    region.querySelectorAll('[data-filter]').forEach((button) => {
-        button.addEventListener('click', () => {
-            region.querySelectorAll('[data-filter]').forEach((other) => {
-                other.setAttribute('aria-pressed', String(other === button));
+    // Each copy of the page, should a page hold two (two blocks « My courses »), each once: a second listener would undo
+    // each sort.
+    document.querySelectorAll('[data-region="epure-mycourses"]').forEach((region) => {
+        const search = region.querySelector('[data-action="search"]');
+        if (!search || region.dataset.epureStarted) {
+            return;
+        }
+        region.dataset.epureStarted = '1';
+        search.addEventListener('input', () => update(region));
+        region.querySelectorAll('[data-filter]').forEach((button) => {
+            button.addEventListener('click', () => {
+                region.querySelectorAll('[data-filter]').forEach((other) => {
+                    other.setAttribute('aria-pressed', String(other === button));
+                });
+                update(region);
             });
-            update(region);
         });
-    });
-    const status = region.querySelector('[data-region="status"]');
-    region.querySelectorAll('[data-view]').forEach((button) => {
-        button.addEventListener('click', () => showView(button.closest('section'), button.dataset.view));
-    });
-    region.querySelectorAll('.epure-mycourses-table').forEach((table) => {
-        table.querySelectorAll('[data-sort]').forEach((button) => {
-            button.addEventListener('click', () => sortBy(table, button, status));
+        const status = region.querySelector('[data-region="status"]');
+        region.querySelectorAll('[data-view]').forEach((button) => {
+            button.addEventListener('click', () => showView(button.closest('section'), button.dataset.view));
+        });
+        region.querySelectorAll('.epure-mycourses-table').forEach((table) => {
+            table.querySelectorAll('[data-sort]').forEach((button) => {
+                button.addEventListener('click', () => sortBy(table, button, status));
+            });
         });
     });
 };

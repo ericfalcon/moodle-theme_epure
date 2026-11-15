@@ -37,6 +37,23 @@ class mycourses {
     /** @var string User preference: the courses the user teaches as cards or as a table. */
     public const VIEW_PREFERENCE = 'theme_epure_mycourses_view';
 
+    /** @var bool Whether the page by role is drawn on the page already. */
+    protected static bool $drawn = false;
+
+    /**
+     * Whether the page by role may be drawn here: once per page. Several blocks « My courses » can be on the page (IOMAD
+     * adds its own, sometimes twice); the first one draws it, the others stay empty, and Moodle does not show them.
+     *
+     * @return bool
+     */
+    public static function claim(): bool {
+        if (self::$drawn && !(defined('PHPUNIT_TEST') && PHPUNIT_TEST)) {
+            return false;
+        }
+        self::$drawn = true;
+        return true;
+    }
+
     /** @var int Without opening the course for this long, a learner is to follow up (two weeks). */
     public const FOLLOW_UP = 2 * WEEKSECS;
 

@@ -5,6 +5,7 @@
 - « Stop the animated images » in the panel « Aa » (WCAG 2.2.2): the animated GIF images of the pages show their first frame, each with a button « Play the animation » (named after its text alternative) that plays it and stops it again (aria-pressed). Applied at once when the box is ticked, without reloading; an image of another site, which the browser does not let the page read, stays as it is.
 - « Always show the scroll bars »: wide scroll bars, always visible, their thumb contrasted with its track (WCAG 1.4.11), instead of the bars that hide on macOS and phones; Firefox takes their width and colours.
 - As the other preferences: kept in the profile (exported and deleted with the privacy API), and each a setting of the display by default of the site.
+- IOMAD: « My courses » showed the page by role twice, both visible, when the page held two blocks « My courses » (IOMAD can add its own twice); the second one did not react (« Table »). The page by role is drawn once per page, whatever the number of blocks, and each copy would react.
 - Tests: PHPUnit (the classes of the page) and Behat (a page with an animated image: stopped from the panel, played with its button, kept after a reload; accessibility).
 
 ## 1.23.0 — keys of navigation
