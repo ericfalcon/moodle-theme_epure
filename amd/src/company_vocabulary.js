@@ -31,6 +31,10 @@
  */
 
 import {init as initColours, followManager} from 'theme_epure/logo_colours';
+import {getStrings} from 'core/str';
+
+/** @var {string[]} The sections of Épure shown as steps by the getting started of the company, in their order. */
+const SETUP_STEPS = ['brand', 'login', 'footer', 'vocabulary'];
 
 /**
  * Shows the custom word fields of a choice when « Other word » is selected.
@@ -45,9 +49,12 @@ const toggleCustom = (select) => {
 };
 
 /**
- * Moves the fields into the company form, or restores IOMAD's own form when the company uses another theme.
+ * Moves the fields into the company form, or restores IOMAD's own form when the company uses another theme; with the
+ * getting started of the company, shows its sections of Épure one after the other.
+ *
+ * @param {boolean} guided Whether the form is opened as the getting started of the company.
  */
-export const init = () => {
+export const init = (guided = false) => {
     const region = document.querySelector('[data-region="epure-company-vocabulary"]');
     // The company form, and not another form of the page (IOMAD can show a company selector above it).
     const anchor = document.querySelector('#id_appearancecontainer, #id_appearance, [name="headingcolor"], [name="shortname"]');
@@ -94,6 +101,119 @@ export const init = () => {
     };
     choice?.addEventListener('change', apply);
     apply();
+    if (guided && !region.hidden) {
+        guide(form, region);
+    }
+};
+
+/**
+ * The getting started of the company: only the sections of Épure that matter at first, one after the other, as they
+ * are in the form, with the steps and the buttons Previous and Next. The other parts of the form stay posted, out of
+ * sight; IOMAD's button saves the company, all the steps together.
+ *
+ * @param {HTMLFormElement} form The company form.
+ * @param {HTMLElement} region The Épure fields.
+ */
+const guide = async(form, region) => {
+    const sections = SETUP_STEPS
+        .map((key) => region.querySelector(`[data-epure-company-section="${key}"]`))
+        .filter((section) => section && !section.hidden);
+    if (!sections.length) {
+        return;
+    }
+    const keys = ['a11ywizard_step', 'companysetup_previous', 'companysetup_next', 'companysetup_steps',
+        'companysetup_last'];
+    const [step, previous, next, steps, last] = await getStrings(keys.map((key) => ({key, component: 'theme_epure'})));
+    const fill = (text, values) => text.replace(/\{\$a->(\w+)\}/g, (match, key) => String(values[key] ?? ''));
+    const title = (section) => section.querySelector('.epure-company-section-title').textContent.trim();
+
+    // The other parts of IOMAD's form, and the sections of Épure that are not steps, out of sight: all that is not the
+    // Appearance section or the buttons of the form (its hidden fields stay posted).
+    const top = (element) => {
+        while (element && element.parentElement !== form) {
+            element = element.parentElement;
+        }
+        return element;
+    };
+    const keep = [top(region), top(form.querySelector('#fgroup_id_buttonar'))];
+    [...form.children].filter((child) => !keep.includes(child)).forEach((child) => {
+        child.hidden = true;
+    });
+    const own = region.closest('fieldset');
+    if (own) {
+        own.classList.remove('collapsed');
+        own.querySelector('.fcontainer')?.classList.add('show');
+        own.querySelectorAll('[data-toggle="collapse"], [data-bs-toggle="collapse"]').forEach((toggle) => {
+            toggle.classList.remove('collapsed');
+            toggle.setAttribute('aria-expanded', 'true');
+        });
+    }
+    region.querySelectorAll('[data-epure-company-section]').forEach((section) => {
+        section.hidden = !sections.includes(section);
+    });
+    region.classList.add('epure-company-guided');
+
+    // The steps, each a button to it, the current one marked; the heading of the step, which gets the focus.
+    const nav = document.createElement('nav');
+    nav.setAttribute('aria-label', steps);
+    const list = document.createElement('ol');
+    list.className = 'epure-a11ywizard-steps';
+    const heading = document.createElement('h2');
+    heading.className = 'epure-company-setup-step h4';
+    heading.tabIndex = -1;
+    const hint = document.createElement('p');
+    hint.className = 'epure-company-setup-last alert alert-info';
+    hint.textContent = last;
+    const buttons = document.createElement('div');
+    buttons.className = 'epure-company-setup-buttons';
+    const button = (text, className) => {
+        const element = document.createElement('button');
+        element.type = 'button';
+        element.className = `btn ${className}`;
+        element.textContent = text;
+        return element;
+    };
+    const back = button(previous, 'btn-secondary');
+    const forward = button(next, 'btn-primary');
+    buttons.append(back, forward);
+
+    let current = 0;
+    const show = (index, focus) => {
+        current = index;
+        sections.forEach((section, i) => {
+            section.hidden = i !== index;
+        });
+        list.querySelectorAll('li').forEach((item, i) => {
+            const control = item.firstElementChild;
+            if (i === index) {
+                control.setAttribute('aria-current', 'step');
+            } else {
+                control.removeAttribute('aria-current');
+            }
+        });
+        heading.textContent = fill(step, {step: index + 1, total: sections.length, title: title(sections[index])});
+        back.hidden = index === 0;
+        forward.hidden = index === sections.length - 1;
+        hint.hidden = index !== sections.length - 1;
+        if (focus) {
+            heading.focus();
+        }
+    };
+    sections.forEach((section, i) => {
+        const item = document.createElement('li');
+        const control = document.createElement('button');
+        control.type = 'button';
+        control.textContent = title(section);
+        control.addEventListener('click', () => show(i, true));
+        item.append(control);
+        list.append(item);
+    });
+    nav.append(list);
+    back.addEventListener('click', () => show(current - 1, true));
+    forward.addEventListener('click', () => show(current + 1, true));
+    region.prepend(nav, heading);
+    region.append(hint, buttons);
+    show(0, false);
 };
 
 /**

@@ -410,11 +410,15 @@ class hook_callbacks {
         if (!iomad::has_capability('block/iomad_company_admin:company_edit_appearance', $context)) {
             return;
         }
+        // The getting started of the company: its sections of Épure one after the other.
+        $guided = $companyid && optional_param(company_setup::PARAM, 0, PARAM_BOOL)
+            && company_setup::allowed(iomad::company($companyid));
         $hook->add_html($OUTPUT->render_from_template(
             'theme_epure/company_vocabulary_fields',
-            \theme_epure\vocabulary\company_form::context($companyid)
+            \theme_epure\vocabulary\company_form::context($companyid) + ['guided' => $guided,
+                'setupfield' => company_setup::DONE_FIELD]
         ));
-        $PAGE->requires->js_call_amd('theme_epure/company_vocabulary', 'init');
+        $PAGE->requires->js_call_amd('theme_epure/company_vocabulary', 'init', [$guided]);
     }
 
     /**

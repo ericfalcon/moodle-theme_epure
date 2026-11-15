@@ -23,6 +23,7 @@
     Context variables required for this template:
     * company - name, label, logourl, category (url, label), onecompany, selectform (HTML), suspended (HTML)
     * hasfigures, figures - key figures of the company: key, label, value, detail, url
+    * setup - the getting started of the company, until finished or dismissed: name, url, dismissurl
     * tabs - tabs of IOMAD: category, selected, icon, label
     * panes - category, selected, showheadings, groups (id, label, items: url, label, icon)
 
@@ -65,6 +66,19 @@
         {{/company.onecompany}}
     </div>
 
+    {{#setup}}
+        <section class="epure-admin-setup" aria-labelledby="epure-company-setup-title">
+            <span class="epure-admin-setup-icon" aria-hidden="true"><i class="fa fa-wand-magic-sparkles"></i></span>
+            <div class="epure-admin-setup-body">
+                <h2 class="epure-admin-setup-title" id="epure-company-setup-title">{{#str}}companysetup, theme_epure, {{name}}{{/str}}</h2>
+                <p>{{#str}}companysetup_offer, theme_epure{{/str}}</p>
+                <div class="epure-admin-setup-actions">
+                    <a class="btn btn-primary" href="{{url}}">{{#str}}setup_start, theme_epure{{/str}}</a>
+                    <a class="btn btn-link" href="{{dismissurl}}">{{#str}}setup_dismiss, theme_epure{{/str}}</a>
+                </div>
+            </div>
+        </section>
+    {{/setup}}
     {{#hasfigures}}
         {{> theme_epure/figures }}
     {{/hasfigures}}

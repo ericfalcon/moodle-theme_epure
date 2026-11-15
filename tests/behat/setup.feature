@@ -21,7 +21,8 @@ Feature: Getting started with Épure
     And I press "Save and continue"
     And I should see "Enter a hex colour code"
     And the page should meet accessibility standards
-    And I set the field "id_s_theme_epure_brandcolor" to "#1E6B52"
+    # Back to its colour: a new brand colour would build the stylesheet of the theme again, longer than the tests wait.
+    And I set the field "id_s_theme_epure_brandcolor" to "#2559A8"
     And I press "Save and continue"
     And I should see "Step 2 of 4: Login page"
     And I set the field "Model" to "Company: training of the employees"
