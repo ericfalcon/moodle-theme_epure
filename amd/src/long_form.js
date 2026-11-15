@@ -268,25 +268,31 @@ const followState = async(form, actions) => {
         return;
     }
     show('none', none);
-    // The values as loaded, then once the scripts of Moodle have set up the form (lists with suggestions), if the user
-    // has not changed anything by then. The texts of the editors are read every two seconds.
+    // Until the user acts on a field, the form is as loaded: what the scripts of Moodle set or turn off (dates, lists
+    // with suggestions) is not a change. The texts of the editors are read every two seconds.
     let initial = snapshot(form);
     let touched = false;
     const editorsChanged = followEditors(form);
+    const touch = (e) => {
+        if (e.isTrusted && e.target.closest?.('.fitem')) {
+            touched = true;
+        }
+    };
     const update = (e) => {
-        touched = touched || Boolean(e?.isTrusted);
+        if (e) {
+            touch(e);
+        }
+        if (!touched) {
+            initial = snapshot(form);
+        }
         const changed = snapshot(form) !== initial || editorsChanged();
         show(changed ? 'unsaved' : 'none', changed ? unsaved : none);
     };
+    form.addEventListener('pointerdown', touch);
+    form.addEventListener('keydown', touch);
     form.addEventListener('input', update);
     form.addEventListener('change', update);
-    window.setTimeout(() => {
-        if (!touched) {
-            initial = snapshot(form);
-            update();
-        }
-    }, 1500);
-    window.setInterval(update, 2000);
+    window.setInterval(() => update(), 2000);
 };
 
 /**
