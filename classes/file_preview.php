@@ -17,8 +17,9 @@
 namespace theme_epure;
 
 /**
- * Preview of the files of a course: the file of a resource (PDF, image, video, sound, text) opens in a dialog on the
- * page of the course, without leaving it, with the previous and next files of the page (theme_epure/file_preview).
+ * Preview of the files of a course: the file of a resource (PDF, image, video, sound, text, and the text of a document
+ * of an office suite) opens in a dialog on the page of the course, without leaving it, with the previous and next
+ * files of the page (theme_epure/file_preview).
  *
  * Only the resources that Moodle shows in its own page (« Embed », « Open », « In frame », and « Automatic » when it
  * comes to one of them): « Force download », « New window » and « In pop-up » keep their behaviour, as do the other
@@ -34,10 +35,10 @@ class file_preview {
 
     /**
      * Kind of preview of a type of file, null when it has none: PDF in the reader of the browser, image, video and
-     * sound with the players of the browser, plain text.
+     * sound with the players of the browser, plain text, the text of a document of an office suite.
      *
      * @param string $mimetype Type of the file.
-     * @return string|null pdf, image, video, audio or text.
+     * @return string|null pdf, image, video, audio, text or document.
      */
     public static function kind(string $mimetype): ?string {
         $mimetype = strtolower($mimetype);
@@ -57,7 +58,33 @@ class file_preview {
         if ($mimetype === 'text/plain') {
             return 'text';
         }
+        // The documents of an office suite: their text, read by the theme (theme_epure\document_text).
+        if (document_text::supported($mimetype)) {
+            return 'document';
+        }
         return null;
+    }
+
+    /**
+     * The main file of a resource that opens in the preview, as on its page: the first by sort order.
+     *
+     * @param \cm_info $cm Module of the resource.
+     * @return \stored_file|null
+     */
+    public static function main_file(\cm_info $cm): ?\stored_file {
+        $files = get_file_storage()->get_area_files(
+            $cm->context->id,
+            'mod_resource',
+            'content',
+            0,
+            'sortorder DESC, id ASC',
+            false,
+            0,
+            0,
+            1
+        );
+        $file = reset($files);
+        return $file ?: null;
     }
 
     /**

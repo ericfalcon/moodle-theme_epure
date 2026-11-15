@@ -307,3 +307,40 @@
     font-size: 1rem;
     font-weight: 600;
 }
+
+// Getting started of a company (theme_epure/company_vocabulary): one section of Épure at a time in the company form,
+// the steps above, the buttons Previous and Next below.
+.epure-company-guided {
+    .epure-company-section-title::before {
+        content: none;
+    }
+}
+
+.epure-company-setup-step {
+    margin: 1rem 0;
+
+    &:focus {
+        outline: none;
+    }
+
+    &:focus-visible {
+        outline: 3px solid var(--epure-focus);
+        outline-offset: 2px;
+    }
+}
+
+.epure-company-setup-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin: 1rem 0;
+
+    .btn[hidden] {
+        display: none;
+    }
+}
+
+// In the bar of the buttons to save, before IOMAD's buttons.
+.epure-company-setup-buttons.epure-company-setup-inbar {
+    margin: 0 .5rem 1rem 0;
+}

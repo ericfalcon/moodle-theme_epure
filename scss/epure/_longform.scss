@@ -71,6 +71,15 @@ body.epure-longform-side {
         align-items: start;
     }
 
+    // The getting started of an IOMAD company shows one section at a time: no list of the sections.
+    .epure-longform:has(.epure-company-guided) {
+        display: block;
+
+        .epure-longform-nav {
+            display: none;
+        }
+    }
+
     .epure-longform-nav {
         position: sticky;
         top: calc(#{$navbar-height} + 1rem);

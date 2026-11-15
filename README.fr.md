@@ -123,6 +123,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.21.0** : aucun nouveau réglage ; mettez le site à jour. L'aperçu des fichiers montre le texte des documents bureautiques (Word, PowerPoint, Excel, LibreOffice) : titres, listes, tableaux, diapositives et feuilles. La mise en route d'Épure affiche les onglets des réglages du thème eux-mêmes ; avec IOMAD, chaque entreprise a la sienne, proposée à ses gestionnaires sur le tableau de bord d'IOMAD.
 - **1.20.0** : aucun nouveau réglage ; mettez le site à jour. Les activités ajoutées depuis la dernière visite d'un apprenant sont marquées « Nouveau » sur la page du cours, et comptées sur sa carte.
 - **1.19.0** : aucun nouveau réglage ; mettez le site à jour. Les fichiers d'un cours (PDF, image, vidéo, son, texte) s'ouvrent dans un aperçu sur la page du cours, avec les fichiers précédent et suivant.
 - **1.18.0** : aucun nouveau réglage ; mettez le site à jour. Le tableau des cours que l'on anime dans « Mes cours » ; la mise en route d'Épure, proposée une fois sur l'accueil de l'administration (y compris sur un site déjà réglé : « Ne plus proposer » la ferme).

@@ -161,3 +161,49 @@ html.epure-preview-open {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+// The text of a document of an office suite: a page to read, in the font and the colours of the user.
+.epure-preview-document {
+    align-self: stretch;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    overflow: auto;
+    color: var(--epure-ink);
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+
+    &:focus-visible {
+        outline: 3px solid var(--epure-focus);
+        outline-offset: -3px;
+    }
+}
+
+.epure-doctext {
+    max-width: 48rem;
+    margin: 0 auto;
+}
+
+.epure-doctext-note {
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+}
+
+.epure-doctext-heading {
+    margin-top: 1.25rem;
+}
+
+.epure-doctext-paragraph {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.epure-doctext-image {
+    color: var(--epure-ink-muted);
+    font-style: italic;
+}
+
+.epure-doctext-table caption {
+    caption-side: top;
+    color: var(--epure-ink);
+    font-weight: 600;
+}

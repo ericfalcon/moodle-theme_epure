@@ -73,4 +73,10 @@ $definitions = [
         'simplekeys' => true,
         'simpledata' => true,
     ],
+    // The text of a document of an office suite, for the preview of the files, by its content.
+    'documenttext' => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => true,
+    ],
 ];

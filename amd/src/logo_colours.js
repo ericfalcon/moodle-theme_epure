@@ -401,7 +401,10 @@ export const setLogo = (selector, url) => {
         region.querySelector('[data-region="swatches"]').before(img);
     }
     region.querySelector('[data-region="content"]').hidden = false;
-    region.querySelector('[data-region="none"]').hidden = true;
+    const none = region.querySelector('[data-region="none"]');
+    if (none) {
+        none.hidden = true;
+    }
     img.classList.remove('epure-logocolours-pickable');
     img.src = url;
 };

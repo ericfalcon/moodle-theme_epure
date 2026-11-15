@@ -27,38 +27,54 @@ namespace theme_epure;
  */
 final class setup_test extends \advanced_testcase {
     /**
-     * Each step writes the settings of Moodle and of the theme; a model fills only what is left empty.
+     * Each step shows a tab of the settings of the theme, as in the settings; step 1 the names of the site too.
+     */
+    public function test_pages(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $this->assertSame('theme_epure_brand', setup::page('identity')->name);
+        $this->assertSame('theme_epure_login', setup::page('login')->name);
+        $this->assertSame('theme_epure_footer', setup::page('footer')->name);
+        $this->assertNull(setup::page('accessibility'));
+        $this->assertSame(['fullname', 'shortname'], array_map(fn($setting) => $setting->name, setup::site_settings()));
+        // The tab as in the settings: its logos, its colours and its palette.
+        $names = array_map(fn($setting) => $setting->name, (array) setup::page('identity')->settings);
+        $expected = ['logo', 'logoonbrand', 'logomobile', 'favicon', 'brandcolor', 'accentcolor', 'headerstyle', 'palettepreview'];
+        foreach ($expected as $name) {
+            $this->assertContains($name, $names);
+        }
+    }
+
+    /**
+     * Each step saves as the page of the settings saves: the names of the site, the settings of the theme, validated; a
+     * model fills only what is left empty.
      */
     public function test_save(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        setup::save('identity', (object) ['fullname' => 'Clinique des Tilleuls', 'shortname' => 'Tilleuls']);
+        $this->assertTrue(setup::save('identity', ['s__fullname' => 'Clinique des Tilleuls', 's__shortname' => 'Tilleuls',
+            's_theme_epure_brandcolor' => '#1E6B52', 's_theme_epure_headerstyle' => 'brand']));
         $this->assertSame('Clinique des Tilleuls', get_site()->fullname);
         $this->assertSame('Tilleuls', get_site()->shortname);
-
-        setup::save('colours', (object) ['brandcolor' => '1e6b52', 'accentcolor' => '', 'headerstyle' => 'brand']);
         $this->assertSame('#1E6B52', get_config('theme_epure', 'brandcolor'));
-        $this->assertSame('', get_config('theme_epure', 'accentcolor'));
         $this->assertSame('brand', get_config('theme_epure', 'headerstyle'));
 
-        // The model of a company: its texts where nothing was written, no catalogue.
-        setup::save('login', (object) ['model' => 'company', 'logintagline' => 'Notre campus', 'logintext' => '',
-            'catalogue' => 1]);
-        $this->assertSame('Notre campus', get_config('theme_epure', 'logintagline'));
-        $this->assertSame(get_string('setup_model_company_text', 'theme_epure'), get_config('theme_epure', 'logintext'));
-        $this->assertSame('0', get_config('theme_epure', 'catalogue'));
-        // Without a model, the choice of the catalogue.
-        setup::save('login', (object) ['model' => '', 'logintagline' => '', 'logintext' => 'Bienvenue', 'catalogue' => 1]);
-        $this->assertSame('', get_config('theme_epure', 'logintagline'));
-        $this->assertSame('1', get_config('theme_epure', 'catalogue'));
+        // A colour that is not one is not saved, and the error is kept for the field.
+        $this->assertFalse(setup::save('identity', ['s_theme_epure_brandcolor' => 'nonsense']));
+        $this->assertSame('#1E6B52', get_config('theme_epure', 'brandcolor'));
+        $this->assertArrayHasKey('s_theme_epure_brandcolor', admin_get_root()->errors);
 
-        set_config('footer', 0, 'theme_epure');
-        setup::save('footer', (object) ['footertext' => ' Formation continue ', 'footerlegalurl' => 'https://example.com/legal',
-            'footerprivacyurl' => '', 'footercontacturl' => '']);
+        $this->assertTrue(setup::save('login', ['model' => 'company', 's_theme_epure_logintagline' => 'Notre campus',
+            's_theme_epure_logintext' => '']));
+        $this->assertSame('Notre campus', get_config('theme_epure', 'logintagline'));
+        $this->assertSame(setup::model_texts('company')['logintext'], get_config('theme_epure', 'logintext'));
+        $this->assertSame('0', (string) get_config('theme_epure', 'catalogue'));
+
+        $this->assertTrue(setup::save('footer', ['s_theme_epure_footertext' => 'Formation continue',
+            's_theme_epure_footerlegalurl' => 'https://example.com/legal']));
         $this->assertSame('Formation continue', get_config('theme_epure', 'footertext'));
         $this->assertSame('https://example.com/legal', get_config('theme_epure', 'footerlegalurl'));
-        $this->assertSame('1', get_config('theme_epure', 'footer'));
     }
 
     /**

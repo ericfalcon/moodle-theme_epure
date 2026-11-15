@@ -79,6 +79,8 @@ class block_iomad_company_admin_renderer extends \block_iomad_company_admin\outp
         $data['figures'] = $company && \theme_epure\iomad_figures::visible_to((int) $company->id, (int) $USER->id)
             ? \theme_epure\iomad_figures::export((int) $company->id) : [];
         $data['hasfigures'] = !empty($data['figures']);
+        // The getting started of the company, until it is finished or dismissed.
+        $data['setup'] = \theme_epure\company_setup::offer($company);
         $data['label'] = get_string('iomadfigures', 'theme_epure');
         return $this->render_from_template('theme_epure/iomad_dashboard', $data);
     }

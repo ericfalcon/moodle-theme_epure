@@ -17,18 +17,28 @@
 namespace theme_epure;
 
 /**
- * Getting started with Épure, for the administrator: a few steps that fill the settings that matter most on a new
- * site (the name and the logo, the colours, the login page from a model by sector, the footer), then lead to the
- * accessibility statement. It adds no setting: each step writes the settings of Moodle and of the theme, which
- * stay in their tabs. Offered on the home of the administration until it is finished or dismissed.
+ * Getting started with Épure, for the administrator: the tabs of the settings of the theme that matter most on a new
+ * site, one after the other, as they are in the settings (Identity: the name of the site, the logos, the colours and
+ * their palette; the login page, with a model by sector; the footer), then the accessibility statement. The same
+ * settings and the same fields as the tabs, saved as the page of the settings saves them: the getting started adds
+ * only the steps, the name of the site and the models. Offered on the home of the administration until it is
+ * finished or dismissed.
  *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class setup {
-    /** @var string[] The steps, in their order. */
-    public const STEPS = ['identity', 'colours', 'login', 'footer', 'accessibility'];
+    /** @var array<string, string|null> The steps, in their order: the tab of the settings of the theme each shows. */
+    public const STEPS = [
+        'identity' => 'theme_epure_brand',
+        'login' => 'theme_epure_login',
+        'footer' => 'theme_epure_footer',
+        'accessibility' => null,
+    ];
+
+    /** @var string[] The settings of the site at the top of step 1: its full and short names. */
+    public const SITE_SETTINGS = ['fullname', 'shortname'];
 
     /** @var string[] The models of the login page, by sector: its tagline and its text, and whether the catalogue shows. */
     public const MODELS = ['university', 'company', 'school', 'training', 'administration'];
@@ -36,9 +46,6 @@ class setup {
     /** @var bool[] Whether the catalogue of the courses shows, by model: open offers yes, internal training no. */
     public const CATALOGUE = ['university' => true, 'company' => false, 'school' => false, 'training' => true,
         'administration' => false];
-
-    /** @var string[] Styles of the header, as in the Appearance tab. */
-    public const HEADER_STYLES = ['light', 'brand', 'gradient'];
 
     /** @var string Configuration of the theme: the getting started is finished or dismissed (not a setting). */
     public const DONE = 'setupdone';
@@ -70,39 +77,39 @@ class setup {
     }
 
     /**
-     * The current values of a step, for its form.
+     * The tab of the settings of the theme that a step shows, as in the settings: null for the accessibility statement.
      *
      * @param string $step Step.
-     * @return array
+     * @return \admin_settingpage|null
      */
-    public static function values(string $step): array {
-        $config = get_config('theme_epure');
-        switch ($step) {
-            case 'identity':
-                $site = get_site();
-                return ['fullname' => $site->fullname, 'shortname' => $site->shortname];
-            case 'colours':
-                return [
-                    'brandcolor' => (string) ($config->brandcolor ?? palette::DEFAULT_BRAND),
-                    'accentcolor' => (string) ($config->accentcolor ?? ''),
-                    'headerstyle' => (string) ($config->headerstyle ?? 'light'),
-                ];
-            case 'login':
-                return [
-                    'model' => '',
-                    'logintagline' => (string) ($config->logintagline ?? ''),
-                    'logintext' => (string) ($config->logintext ?? ''),
-                    'catalogue' => (int) ($config->catalogue ?? 1),
-                ];
-            case 'footer':
-                return [
-                    'footertext' => (string) ($config->footertext ?? ''),
-                    'footerlegalurl' => (string) ($config->footerlegalurl ?? ''),
-                    'footerprivacyurl' => (string) ($config->footerprivacyurl ?? ''),
-                    'footercontacturl' => (string) ($config->footercontacturl ?? ''),
-                ];
+    public static function page(string $step): ?\admin_settingpage {
+        $name = self::STEPS[$step] ?? null;
+        $settings = $name ? self::root()->locate('themesettingepure') : null;
+        if (!$settings instanceof \theme_boost_admin_settingspage_tabs) {
+            return null;
         }
-        return [];
+        foreach ($settings->get_tabs() as $tab) {
+            if ($tab->name === $name) {
+                return $tab;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * The settings of the full and the short names of the site, as on the page of the front page.
+     *
+     * @return \admin_setting[]
+     */
+    public static function site_settings(): array {
+        $page = self::root()->locate('frontpagesettings');
+        $settings = [];
+        foreach (self::SITE_SETTINGS as $name) {
+            if ($page instanceof \admin_settingpage && isset($page->settings->$name)) {
+                $settings[] = $page->settings->$name;
+            }
+        }
+        return $settings;
     }
 
     /**
@@ -119,91 +126,69 @@ class setup {
     }
 
     /**
-     * Writes the values of a step into the settings of Moodle and of the theme.
+     * The data of the login page with a model: it fills the tagline and the text left empty (what the administrator
+     * wrote stays), and decides whether the catalogue shows.
+     *
+     * @param array $data Data submitted, as the page of the settings receives it (s_theme_epure_…).
+     * @return array
+     */
+    public static function apply_model(array $data): array {
+        $model = (string) ($data['model'] ?? '');
+        if (!in_array($model, self::MODELS, true)) {
+            return $data;
+        }
+        foreach (self::model_texts($model) as $name => $text) {
+            $key = 's_theme_epure_' . $name;
+            if (trim((string) ($data[$key] ?? '')) === '') {
+                $data[$key] = $text;
+            }
+        }
+        set_config('catalogue', (int) self::CATALOGUE[$model], 'theme_epure');
+        return $data;
+    }
+
+    /**
+     * Saves a step as the page of the settings saves its settings (validation, callbacks, log of the changes).
      *
      * @param string $step Step.
-     * @param \stdClass $data Submitted data, cleaned by the form.
+     * @param array $data Data submitted.
+     * @return bool Whether all was saved; the errors are kept in the tree of the administration, shown with the fields.
      */
-    public static function save(string $step, \stdClass $data): void {
-        global $DB;
-        switch ($step) {
-            case 'identity':
-                $site = get_site();
-                $site->fullname = trim($data->fullname);
-                $site->shortname = trim($data->shortname);
-                $DB->update_record('course', (object) ['id' => $site->id, 'fullname' => $site->fullname,
-                    'shortname' => $site->shortname]);
-                rebuild_course_cache($site->id, true);
-                if (!empty($data->logo)) {
-                    self::save_logo((int) $data->logo);
-                }
-                break;
-            case 'colours':
-                set_config('brandcolor', palette::normalise($data->brandcolor) ?? palette::DEFAULT_BRAND, 'theme_epure');
-                set_config(
-                    'accentcolor',
-                    trim($data->accentcolor) === '' ? '' : (string) palette::normalise($data->accentcolor),
-                    'theme_epure'
-                );
-                set_config('headerstyle', $data->headerstyle, 'theme_epure');
-                mobile_app::appearance_updated();
-                break;
-            case 'login':
-                // A model fills what is left empty; what the administrator wrote stays.
-                $texts = in_array($data->model, self::MODELS, true) ? self::model_texts($data->model) : [];
-                foreach (['logintagline', 'logintext'] as $name) {
-                    $value = trim((string) $data->$name);
-                    set_config($name, $value === '' ? ($texts[$name] ?? '') : $value, 'theme_epure');
-                }
-                $catalogue = in_array($data->model, self::MODELS, true) ? self::CATALOGUE[$data->model]
-                    : !empty($data->catalogue);
-                set_config('catalogue', (int) $catalogue, 'theme_epure');
-                break;
-            case 'footer':
-                foreach (['footertext', 'footerlegalurl', 'footerprivacyurl', 'footercontacturl'] as $name) {
-                    set_config($name, trim((string) $data->$name), 'theme_epure');
-                }
-                set_config('footer', 1, 'theme_epure');
-                break;
+    public static function save(string $step, array $data): bool {
+        if ($step === 'login') {
+            $data = self::apply_model($data);
         }
-        theme_reset_all_caches();
+        self::root()->errors = [];
+        admin_write_settings($data);
+        return empty(self::root()->errors);
     }
 
     /**
-     * The logo of the site (Appearance › Logos), from the draft area of the form.
+     * The HTML of the settings of a step, as the page of the settings shows them: a setting not saved keeps what was
+     * submitted, with its error.
      *
-     * @param int $draftitemid Draft area.
+     * @param \admin_setting[] $settings Settings.
+     * @return string
      */
-    protected static function save_logo(int $draftitemid): void {
-        $context = \context_system::instance();
-        file_save_draft_area_files(
-            $draftitemid,
-            $context->id,
-            'core_admin',
-            'logo',
-            0,
-            ['subdirs' => 0, 'maxfiles' => 1]
-        );
-        $files = get_file_storage()->get_area_files($context->id, 'core_admin', 'logo', 0, 'sortorder, filepath, filename', false);
-        $file = reset($files);
-        set_config('logo', $file ? $file->get_filepath() . $file->get_filename() : '', 'core_admin');
+    public static function settings_html(array $settings): string {
+        $errors = self::root()->errors;
+        $html = '';
+        foreach ($settings as $setting) {
+            $fullname = $setting->get_full_name();
+            $data = array_key_exists($fullname, $errors) ? $errors[$fullname]->data : $setting->get_setting();
+            $html .= $setting->output_html($data);
+        }
+        return \html_writer::tag('fieldset', $html);
     }
 
     /**
-     * A draft area with the logo of the site, for the form.
+     * The full tree of the administration, with its settings.
      *
-     * @return int Draft item id.
+     * @return \admin_root
      */
-    public static function logo_draft(): int {
-        $draftitemid = file_get_submitted_draft_itemid('logo');
-        file_prepare_draft_area(
-            $draftitemid,
-            \context_system::instance()->id,
-            'core_admin',
-            'logo',
-            0,
-            ['subdirs' => 0, 'maxfiles' => 1]
-        );
-        return $draftitemid;
+    protected static function root(): \admin_root {
+        global $CFG;
+        require_once($CFG->libdir . '/adminlib.php');
+        return admin_get_root(false, true);
     }
 }

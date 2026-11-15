@@ -51,6 +51,10 @@ class observer {
         $context = iomad::company_context($companyid);
         if (iomad::has_capability('block/iomad_company_admin:company_edit_appearance', $context)) {
             company_form::save_from_request($companyid);
+            // Saved from its getting started: not offered any more.
+            if (optional_param(company_setup::DONE_FIELD, 0, PARAM_BOOL)) {
+                company_setup::finish($companyid);
+            }
         }
         // A company that left Épure gets its frame of certificates back.
         certificate_frame::clean_up_after_request();

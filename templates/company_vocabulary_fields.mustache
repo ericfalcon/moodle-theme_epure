@@ -34,6 +34,7 @@
     * logintexts - texts of the login page: name, label, value, multiline, placeholder (value of the site)
     * footer - footer fields of the company: name, label, value, multiline, placeholder (value of the site)
     * logocolours - context of theme_epure/logo_colours
+    * guided, setupfield - the form opened as the getting started of the company, and the field that says so
 
     Example context (json):
     {
@@ -59,6 +60,7 @@
 }}
 <div class="epure-company-vocabulary" data-region="epure-company-vocabulary" hidden>
     <input type="hidden" name="{{marker}}" value="1">
+    {{#guided}}<input type="hidden" name="{{setupfield}}" value="1">{{/guided}}
     <p class="epure-company-vocabulary-desc">{{#str}}companyappearance_desc, theme_epure{{/str}}</p>
     <section class="epure-company-section" data-epure-company-section="theme" aria-labelledby="epure-company-section-theme">
         <h3 class="epure-company-section-title" id="epure-company-section-theme">{{#str}}companysectiontheme, theme_epure{{/str}}</h3>

@@ -37,7 +37,9 @@ final class file_preview_test extends \advanced_testcase {
         $this->assertSame('audio', file_preview::kind('audio/mpeg'));
         $this->assertSame('text', file_preview::kind('text/plain'));
         $this->assertNull(file_preview::kind('text/csv'));
-        $this->assertNull(file_preview::kind('application/vnd.openxmlformats-officedocument.wordprocessingml.document'));
+        $word = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        $this->assertSame('document', file_preview::kind($word));
+        $this->assertNull(file_preview::kind('application/msword'));
     }
 
     /**

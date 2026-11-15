@@ -67,7 +67,8 @@ const cmidOf = (link) => {
 const fill = (text, values) => text.replace(/\{\$a->(\w+)\}/g, (match, key) => String(values[key] ?? ''));
 
 /**
- * The viewer of a file: the reader of PDF of the browser, an image, the players of video and sound, the text in the page.
+ * The viewer of a file: the reader of PDF of the browser, an image, the players of video and sound, the text in the page,
+ * the text of a document of an office suite.
  *
  * @param {Object} file File.
  * @returns {HTMLElement}
@@ -101,6 +102,31 @@ const viewer = (file) => {
                 })
                 .catch(() => {
                     element.textContent = file.filename;
+                });
+            return element;
+        case 'document':
+            // The text of a document of an office suite, read by the theme: titles, paragraphs, lists, tables.
+            element = document.createElement('div');
+            element.tabIndex = 0;
+            element.setAttribute('role', 'region');
+            element.setAttribute('aria-label', file.name);
+            element.setAttribute('aria-busy', 'true');
+            element.className = 'epure-preview-media epure-preview-document';
+            element.textContent = strings.loading;
+            Ajax.call([{methodname: 'theme_epure_document_text', args: {cmid: file.cmid}}])[0]
+                .then(({html}) => {
+                    if (html) {
+                        // Written by the template theme_epure/document_text, which escapes all the text of the document.
+                        element.innerHTML = html;
+                    } else {
+                        element.textContent = strings.unreadable;
+                    }
+                    element.removeAttribute('aria-busy');
+                    return html;
+                })
+                .catch(() => {
+                    element.textContent = strings.unreadable;
+                    element.removeAttribute('aria-busy');
                 });
             return element;
         default:
@@ -264,7 +290,7 @@ export const init = async() => {
     }
     document.documentElement.dataset.epurePreview = '1';
     files = JSON.parse(data.textContent).files || [];
-    const keys = ['close', 'download', 'newtab', 'next', 'opened', 'position', 'previous'];
+    const keys = ['close', 'download', 'loading', 'newtab', 'next', 'opened', 'position', 'previous', 'unreadable'];
     const values = await getStrings(keys.map((key) => ({key: `preview_${key}`, component: 'theme_epure'})));
     keys.forEach((key, i) => {
         strings[key] = values[i];

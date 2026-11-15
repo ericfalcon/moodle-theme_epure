@@ -48,4 +48,12 @@ $functions = [
         'loginrequired' => true,
         'capabilities' => 'mod/resource:view',
     ],
+    'theme_epure_document_text' => [
+        'classname' => \theme_epure\external\document_text::class,
+        'description' => 'The text of the document of an office suite of a resource, for the preview of the files of a course.',
+        'type' => 'read',
+        'ajax' => true,
+        'loginrequired' => true,
+        'capabilities' => 'mod/resource:view',
+    ],
 ];
