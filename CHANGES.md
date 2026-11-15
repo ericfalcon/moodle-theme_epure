@@ -1,5 +1,9 @@
 # Changes
 
+## 1.17.2 — the badges of the design system of Moodle in dark mode
+
+- Dark mode: the colours of state of the design system of Moodle (`--mds-text-feedback-*`, their soft backgrounds and borders), drawn for light surfaces, now follow the dark palette of Épure. The badges of the dates of the activities of Moodle 6.0 (« Opened », « Due »), in dark grey on a transparent background, were unreadable in dark mode (1.5:1): found by the job of the continuous integration on the development version of Moodle, on the course page and the pages of the assignments. Checked on Moodle 6.0dev: light grey on the dark surface, no failure of axe-core in light and in dark.
+
 ## 1.17.1 — the colour modes of Boost (Moodle 5.3) do not mix with the colours of Épure
 
 - Moodle 5.3 gives Boost colour modes (light, dark, automatic), an experimental setting turned off by default, which also applies to the child themes of Boost. Turned on, its dark mode (chosen by a user, or « automatic » on a device in dark mode) mixed with the light palette of Épure: light text on light surfaces (the title of a course, the name of an activity, « Mark as done »), 14 failures of contrast on a dashboard, a course page and an activity page, measured on Moodle 5.3.1. On a page of Épure, Bootstrap now stays light, and only the colour scheme of Épure decides (its setting « Dark mode », the panel « Aa »); its dark mode is unchanged. The menu of the colour modes of Boost is not shown in the bar of Épure, where it competed with the panel « Aa ».

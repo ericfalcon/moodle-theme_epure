@@ -87,6 +87,26 @@
     --mds-bg-nav-pill-selected: var(--epure-surface-raised);
     --mds-border-default: var(--epure-border);
     --mds-border-subtle: var(--epure-border);
+    // Its colours of state (badges: the dates of the activities in Moodle 6.0, on a transparent background), drawn
+    // for light surfaces: their text, their soft backgrounds and their borders in the dark palette.
+    --mds-text-feedback-primary: var(--epure-brand-text);
+    --mds-text-feedback-secondary: var(--epure-ink-muted);
+    --mds-text-feedback-info: var(--epure-brand-text);
+    --mds-text-feedback-success: var(--epure-state-done);
+    --mds-text-feedback-warning: var(--epure-state-soon);
+    --mds-text-feedback-danger: var(--epure-state-late);
+    --mds-bg-feedback-primary-subtle: var(--epure-brand-soft);
+    --mds-bg-feedback-secondary-subtle: var(--epure-surface-muted);
+    --mds-bg-feedback-info-subtle: var(--epure-brand-soft);
+    --mds-bg-feedback-success-subtle: var(--epure-state-done-soft);
+    --mds-bg-feedback-warning-subtle: var(--epure-state-soon-soft);
+    --mds-bg-feedback-danger-subtle: var(--epure-state-late-soft);
+    --mds-border-feedback-primary: var(--epure-brand-text);
+    --mds-border-feedback-secondary: var(--epure-border);
+    --mds-border-feedback-info: var(--epure-brand-text);
+    --mds-border-feedback-success: var(--epure-state-done);
+    --mds-border-feedback-warning: var(--epure-state-soon);
+    --mds-border-feedback-danger: var(--epure-state-late);
 
     &.epure-a11y-contrast {
         --epure-ink: #fff;
