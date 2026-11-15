@@ -15,8 +15,9 @@
 
 /**
  * Long settings forms (course, activity, section): the sections as cards, the buttons to save at the bottom of the
- * screen, and on wide screens a list of the sections beside the form that opens and shows each one, the sections with
- * an error marked.
+ * screen with the state of the form (no changes, changes not saved, fields to correct), announced to screen readers,
+ * and on wide screens a list of the sections beside the form that opens and shows each one, the sections with an error
+ * marked.
  *
  * The fields, their order and the saving stay Moodle's: only the way to reach them changes.
  *
@@ -192,6 +193,69 @@ const gatherLead = (form, actions) => {
 /**
  * Starts the long form of the page, if there is one.
  */
+/**
+ * The values of a form, to tell whether they changed: its fields, but not its buttons nor its key of session.
+ *
+ * @param {HTMLFormElement} form Form.
+ * @returns {string}
+ */
+const snapshot = (form) => JSON.stringify([...new FormData(form).entries()]
+    .filter(([name, value]) => name !== 'sesskey' && typeof value === 'string'));
+
+/**
+ * The state of the form in the bar of the buttons to save: no changes, changes not saved (a field changed, or the text
+ * of an editor), or fields to correct once Moodle sent the form back. Announced at each change.
+ *
+ * @param {HTMLFormElement} form Form.
+ * @param {HTMLElement} actions The bar of the buttons to save.
+ */
+const followState = async(form, actions) => {
+    const [none, unsaved, errors, error] = await getStrings([
+        {key: 'longform_nochanges', component: 'theme_epure'},
+        {key: 'longform_unsaved', component: 'theme_epure'},
+        {key: 'longform_errors', component: 'theme_epure', param: form.querySelectorAll('.is-invalid').length},
+        {key: 'longform_errors_one', component: 'theme_epure'},
+    ]);
+    const status = document.createElement('p');
+    status.className = 'epure-longform-status';
+    status.setAttribute('role', 'status');
+    actions.prepend(status);
+    const invalid = form.querySelectorAll('.is-invalid').length;
+    let state = '';
+    const show = (next, text) => {
+        if (next !== state) {
+            state = next;
+            status.dataset.state = next;
+            status.textContent = text;
+        }
+    };
+    if (invalid) {
+        // Sent back by Moodle: not saved, and so until it is saved again.
+        show('errors', invalid === 1 ? error : errors);
+        form.addEventListener('input', () => show('unsaved', unsaved), {once: true});
+        return;
+    }
+    show('none', none);
+    // The values as loaded, then once the scripts of Moodle have set up the form (editors, lists with suggestions), if
+    // the user has not changed anything by then. The text of an editor is copied into the form as it is typed.
+    let initial = snapshot(form);
+    let touched = false;
+    const update = (e) => {
+        touched = touched || Boolean(e?.isTrusted);
+        const changed = snapshot(form) !== initial;
+        show(changed ? 'unsaved' : 'none', changed ? unsaved : none);
+    };
+    form.addEventListener('input', update);
+    form.addEventListener('change', update);
+    window.setTimeout(() => {
+        if (!touched) {
+            initial = snapshot(form);
+            update();
+        }
+    }, 1500);
+    window.setInterval(update, 2000);
+};
+
 export const init = async() => {
     const form = [...document.querySelectorAll('#region-main form.mform')]
         .sort((a, b) => sections(b).length - sections(a).length)[0];
@@ -206,6 +270,9 @@ export const init = async() => {
         || form.querySelector('[name="submitbutton"]')?.closest('.fitem, .form-group');
     actions?.classList.add('epure-longform-actions');
     gatherLead(form, actions);
+    if (actions) {
+        followState(form, actions);
+    }
 
     const items = sections(form);
     if (items.length < MIN_SECTIONS) {

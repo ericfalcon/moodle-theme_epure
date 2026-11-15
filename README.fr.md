@@ -57,7 +57,7 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo), et 
 
 - Une recherche rapide (Ctrl+K / ⌘K) dans les menus, les cours, les activités et les pages d'administration, les résultats les plus pertinents d'abord, avec une page de tous les résultats ; pour les visiteurs, dans le catalogue, les catégories et les pages publiques.
 - Une mise en route proposée à l'administrateur : nom et logo, couleurs, page de connexion à partir d'un modèle par secteur, pied de page, puis déclaration d'accessibilité.
-- Des réglages rangés en onglets, un accueil de l'administration plus clair, des formulaires longs avec la liste de leurs sections et les boutons d'enregistrement toujours visibles.
+- Des réglages rangés en onglets, un accueil de l'administration plus clair, des formulaires longs avec la liste de leurs sections, les boutons d'enregistrement toujours visibles et l'état de l'enregistrement.
 - Un en-tête de cours pour les formateurs : participants, actifs cette semaine, à corriger, avec des raccourcis, et le mode édition à portée de main sur téléphone.
 - Des e-mails aux couleurs de la marque, un modèle d'attestation aux couleurs de la marque pour le plugin Certificate (tool_certificate), utilisable avec l'activité Attestation de formation.
 
@@ -123,6 +123,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.27.0** : aucun nouveau réglage ; mettez le site à jour. La barre des boutons d'enregistrement des formulaires longs indique si les modifications sont enregistrées, ou les champs à corriger, annoncé aux lecteurs d'écran.
 - **1.26.0** : aucun nouveau réglage ; mettez le site à jour. La progression des sections et de la bannière d'un cours suit une activité marquée comme faite sur la page, sans rechargement.
 - **1.25.0** : aucun nouveau réglage ; mettez le site à jour. Après chaque mise à jour, l'accueil de l'administration présente les nouveautés depuis la version installée avant.
 - **1.24.0** : deux nouvelles préférences d'affichage du panneau « Aa », désactivées par défaut (et deux réglages de l'affichage par défaut du site) : arrêter les images animées, toujours montrer les barres de défilement.
