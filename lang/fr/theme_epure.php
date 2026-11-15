@@ -934,6 +934,7 @@ $string['setup_identity_intro'] = 'Le nom de la plateforme s’affiche dans l’
 $string['setup_login'] = 'Page de connexion';
 $string['setup_login_intro'] = 'La page de connexion est la première que voient vos utilisateurs. Un modèle par secteur remplit son accroche et son texte, et affiche ou non le catalogue des cours ; vous pouvez écrire vos propres mots à la place.';
 $string['setup_logo_desc'] = 'Une image dans ses couleurs, plus large que haute (un PNG, un SVG ou un WebP sur fond transparent convient le mieux). Le réglage « Logo » d’Apparence › Logos.';
+$string['setup_logo_theme'] = 'C\'est le logo d\'Épure (onglet Apparence › Logos des réglages du thème), affiché à la place du logo du site : c\'est lui qui est modifié ici, et ses couleurs sont proposées à l\'étape suivante.';
 $string['setup_logocolours_accentcolor'] = 'Cliquez une couleur de votre logo pour en faire la couleur d\'accent.';
 $string['setup_logocolours_brandcolor'] = 'Cliquez une couleur de votre logo pour en faire la couleur de marque, ou cliquez un point du logo. Puis enregistrez et continuez.';
 $string['setup_logocolours_none'] = 'Ajoutez un logo à l\'étape 1 : ses couleurs principales seront proposées ici.';

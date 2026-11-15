@@ -934,6 +934,7 @@ $string['setup_identity_intro'] = 'The name of the platform shows in the header,
 $string['setup_login'] = 'Login page';
 $string['setup_login_intro'] = 'The login page is the first page your users see. A model by sector fills its tagline and its text, and shows the catalogue of the courses or not; you can write your own words instead.';
 $string['setup_logo_desc'] = 'An image in its own colours, wider than tall (a PNG, an SVG or a WebP with a transparent background suits best). The setting « Logo » of Appearance › Logos.';
+$string['setup_logo_theme'] = 'This is the logo of Épure (tab Appearance › Logos of the settings of the theme), which is shown instead of the logo of the site: it is the one changed here, and its colours are proposed at the next step.';
 $string['setup_logocolours_accentcolor'] = 'Click a colour of your logo to use it as the accent colour.';
 $string['setup_logocolours_brandcolor'] = 'Click a colour of your logo to use it as the brand colour, or click a point of the logo. Then save and continue.';
 $string['setup_logocolours_none'] = 'Add a logo at step 1: its main colours will be proposed here.';

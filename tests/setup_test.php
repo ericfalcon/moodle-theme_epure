@@ -75,4 +75,33 @@ final class setup_test extends \advanced_testcase {
         $this->assertFalse(setup::offered());
         $this->assertNull(admin_home::export()['setup']);
     }
+
+    /**
+     * Step 1 changes the logo that Épure shows: the logo of the site, or the logo of the theme when it has one, which
+     * comes before it.
+     */
+    public function test_logo(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $draft = function (string $filename): int {
+            $itemid = file_get_unused_draft_itemid();
+            get_file_storage()->create_file_from_string(['contextid' => \context_user::instance(get_admin()->id)->id,
+                'component' => 'user', 'filearea' => 'draft', 'itemid' => $itemid, 'filepath' => '/',
+                'filename' => $filename], 'logo');
+            return $itemid;
+        };
+        $identity = fn(int $logo) => (object) ['fullname' => 'Clinique', 'shortname' => 'Clinique', 'logo' => $logo];
+
+        $this->assertFalse(setup::logo_target()['theme']);
+        setup::save('identity', $identity($draft('site.png')));
+        $this->assertSame('/site.png', get_config('core_admin', 'logo'));
+
+        // A logo of the theme is shown instead: it is the one changed, the logo of the site stays.
+        set_config('logo', '/theme.png', 'theme_epure');
+        $this->assertSame(['component' => 'theme_epure', 'setting' => 'logo', 'theme' => true], setup::logo_target());
+        setup::save('identity', $identity($draft('nouveau.png')));
+        $this->assertSame('/nouveau.png', get_config('theme_epure', 'logo'));
+        $this->assertSame('/site.png', get_config('core_admin', 'logo'));
+        $this->assertStringEndsWith('/nouveau.png', logos::main_url()->out(false));
+    }
 }

@@ -66,6 +66,13 @@ class setup_form extends \moodleform {
                     ['subdirs' => 0, 'maxfiles' => 1, 'accepted_types' => ['.jpg', '.jpeg', '.png', '.svg', '.webp']]
                 );
                 $mform->addElement('static', 'logo_help', '', get_string('setup_logo_desc', 'theme_epure'));
+                // The logo of the theme comes before the logo of the site: it is the one changed here, and said so.
+                if (setup::logo_target()['theme']) {
+                    $mform->addElement('static', 'logo_theme', '', \html_writer::div(
+                        get_string('setup_logo_theme', 'theme_epure'),
+                        'alert alert-info mb-0'
+                    ));
+                }
                 $mform->setDefault('logo', setup::logo_draft());
                 break;
             case 'colours':

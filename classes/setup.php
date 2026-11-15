@@ -170,37 +170,52 @@ class setup {
     }
 
     /**
-     * The logo of the site (Appearance › Logos), from the draft area of the form.
+     * The logo that Épure shows, which step 1 changes: the logo of the theme (its tab Appearance › Logos) when it has
+     * one, as it comes before the logo of the site; else the logo of the site (Appearance › Logos of Moodle).
+     *
+     * @return array{component: string, setting: string, theme: bool}
+     */
+    public static function logo_target(): array {
+        if ((string) get_config('theme_epure', 'logo') !== '') {
+            return ['component' => 'theme_epure', 'setting' => 'logo', 'theme' => true];
+        }
+        return ['component' => 'core_admin', 'setting' => 'logo', 'theme' => false];
+    }
+
+    /**
+     * The logo that Épure shows ({@see logo_target()}), from the draft area of the form.
      *
      * @param int $draftitemid Draft area.
      */
     protected static function save_logo(int $draftitemid): void {
+        ['component' => $component, 'setting' => $setting] = self::logo_target();
         $context = \context_system::instance();
         file_save_draft_area_files(
             $draftitemid,
             $context->id,
-            'core_admin',
-            'logo',
+            $component,
+            $setting,
             0,
             ['subdirs' => 0, 'maxfiles' => 1]
         );
-        $files = get_file_storage()->get_area_files($context->id, 'core_admin', 'logo', 0, 'sortorder, filepath, filename', false);
+        $files = get_file_storage()->get_area_files($context->id, $component, $setting, 0, 'sortorder, filepath, filename', false);
         $file = reset($files);
-        set_config('logo', $file ? $file->get_filepath() . $file->get_filename() : '', 'core_admin');
+        set_config($setting, $file ? $file->get_filepath() . $file->get_filename() : '', $component);
     }
 
     /**
-     * A draft area with the logo of the site, for the form.
+     * A draft area with the logo that Épure shows, for the form.
      *
      * @return int Draft item id.
      */
     public static function logo_draft(): int {
+        ['component' => $component, 'setting' => $setting] = self::logo_target();
         $draftitemid = file_get_submitted_draft_itemid('logo');
         file_prepare_draft_area(
             $draftitemid,
             \context_system::instance()->id,
-            'core_admin',
-            'logo',
+            $component,
+            $setting,
             0,
             ['subdirs' => 0, 'maxfiles' => 1]
         );
