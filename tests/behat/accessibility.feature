@@ -329,6 +329,7 @@ Feature: Accessibility of the Épure theme
     And I set the field "Course full name" to "Safety at work, 2027"
     And I should see "Changes not saved" in the ".epure-longform-actions" "css_element"
     And I set the field "Course full name" to "Safety at work"
+    And the long form should tell "none"
     And I should see "No changes to save" in the ".epure-longform-actions" "css_element"
     And I set the field "Course short name" to "AID"
     And I press "Save and display"
