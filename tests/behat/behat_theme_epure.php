@@ -685,6 +685,42 @@ class behat_theme_epure extends behat_base {
     }
 
     /**
+     * The last access of a user to a course, some days ago, and the activities of the course added since: as read by
+     * Moodle at the next login of the user (theme_epure\new_activities).
+     *
+     * @Given /^"(?P<username>[^"]*)" last visited the course "(?P<shortname>[^"]*)" (?P<days>\d+) days ago$/
+     * @param string $username User.
+     * @param string $shortname Course.
+     * @param int $days Days.
+     */
+    public function last_visited_the_course_days_ago(string $username, string $shortname, int $days): void {
+        global $DB;
+        $userid = (int) $DB->get_field('user', 'id', ['username' => $username], MUST_EXIST);
+        $courseid = (int) $DB->get_field('course', 'id', ['shortname' => $shortname], MUST_EXIST);
+        $time = time() - $days * DAYSECS;
+        $record = $DB->get_record('user_lastaccess', ['userid' => $userid, 'courseid' => $courseid]);
+        if ($record) {
+            $DB->set_field('user_lastaccess', 'timeaccess', $time, ['id' => $record->id]);
+        } else {
+            $DB->insert_record('user_lastaccess', (object) ['userid' => $userid, 'courseid' => $courseid, 'timeaccess' => $time]);
+        }
+    }
+
+    /**
+     * Sets when an activity was added to its course, some days ago (theme_epure\new_activities).
+     *
+     * @Given /^the activity "(?P<idnumber>[^"]*)" was added (?P<days>\d+) days ago$/
+     * @param string $idnumber Id number of the activity.
+     * @param int $days Days.
+     */
+    public function the_activity_was_added_days_ago(string $idnumber, int $days): void {
+        global $DB;
+        $cm = $DB->get_record('course_modules', ['idnumber' => $idnumber], 'id, course', MUST_EXIST);
+        $DB->set_field('course_modules', 'added', time() - $days * DAYSECS, ['id' => $cm->id]);
+        rebuild_course_cache($cm->course, true);
+    }
+
+    /**
      * Gives an IOMAD company a logo, as IOMAD stores it (core_admin, logo<id>).
      *
      * @Given /^the IOMAD company "(?P<shortname>[^"]*)" has the logo "(?P<path>[^"]*)"$/

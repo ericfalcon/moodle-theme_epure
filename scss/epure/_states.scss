@@ -163,3 +163,29 @@
         text-overflow: ellipsis;
     }
 }
+
+// « New »: an activity added since the previous visit of the learner (theme_epure\new_activities), beside its name on
+// the course page, and their number on the card of the course. In the brand colour, apart from the states.
+.epure-new {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    padding: .125rem .5rem;
+    font-size: .8125rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--epure-brand-text);
+    vertical-align: middle;
+    background-color: var(--epure-brand-soft);
+    border: 1px solid currentcolor;
+    border-radius: 999px;
+}
+
+.activity-name-area > .epure-new {
+    align-self: flex-start;
+    margin-top: .25rem;
+}
+
+.epure-course-card-new {
+    margin: 0;
+}

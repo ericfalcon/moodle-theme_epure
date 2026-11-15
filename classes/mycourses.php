@@ -489,6 +489,7 @@ class mycourses {
      * @return array
      */
     protected static function learner_data(\stdClass $course, \stdClass $user): array {
+        global $USER;
         $cache = \cache::make('theme_epure', 'learnerprogress');
         $key = $user->id . '_' . $course->id;
         $version = ($course->cacherev ?? 0) . '_' . ($cache->get('course_' . $course->id) ?: 0) . '_' . current_language();
@@ -542,6 +543,9 @@ class mycourses {
             'urgentstate' => in_array($next['state']['state'] ?? '', ['soon', 'late'], true) ? $next['state'] : null,
             'action' => $action,
             'actionurl' => $next['url'] ?? (new \moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
+            // The activities added since the previous visit (« 2 new activities since your last visit »).
+            'newtext' => (int) $user->id === (int) $USER->id
+                ? new_activities::count_text(count(new_activities::course($course))) : null,
         ];
     }
 
