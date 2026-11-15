@@ -619,7 +619,15 @@ if ($ADMIN->fulltree) {
     $page->add($setting);
 
     $settings->add($page);
+} else {
+    // Outside the full tree (the lists of the administration), Moodle gives a hidden page, left out of its list
+    // « Custom theme settings »: the page of the settings of Épure is listed there too, with its other pages.
+    $settings = new admin_settingpage('themesettingepure', get_string('configtitle', 'theme_epure'));
 }
+// The page of the settings first in « Custom theme settings », before the other pages of Épure; Moodle does not add it
+// a second time.
+$ADMIN->add('themes', $settings);
+$settings = null;
 
 // Getting started with Épure: the settings that matter most on a new site, step by step (no setting of its own).
 $ADMIN->add('themes', new admin_externalpage(

@@ -103,5 +103,15 @@ final class setup_test extends \advanced_testcase {
         $this->assertSame('/nouveau.png', get_config('theme_epure', 'logo'));
         $this->assertSame('/site.png', get_config('core_admin', 'logo'));
         $this->assertStringEndsWith('/nouveau.png', logos::main_url()->out(false));
+
+        // The other logos of the tab Identity, at the same step.
+        $data = $identity(0);
+        $data->logoonbrand = $draft('blanc.svg');
+        $data->favicon = $draft('icone.png');
+        setup::save('identity', $data);
+        $this->assertSame('/blanc.svg', get_config('theme_epure', 'logoonbrand'));
+        $this->assertSame('/icone.png', get_config('theme_epure', 'favicon'));
+        $this->assertSame('', (string) get_config('theme_epure', 'logomobile'));
+        $this->assertSame('/nouveau.png', get_config('theme_epure', 'logo'));
     }
 }

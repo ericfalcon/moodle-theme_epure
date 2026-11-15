@@ -40,6 +40,13 @@ class setup {
     /** @var string[] Styles of the header, as in the Appearance tab. */
     public const HEADER_STYLES = ['light', 'brand', 'gradient'];
 
+    /** @var array[] The other logos of the tab Identity of the theme, optional, at step 1: their types of file. */
+    public const OTHER_LOGOS = [
+        'logoonbrand' => ['.svg', '.png', '.webp', '.jpg', '.jpeg'],
+        'logomobile' => ['.svg', '.png', '.webp', '.jpg', '.jpeg'],
+        'favicon' => ['.ico', '.png', '.svg'],
+    ];
+
     /** @var string Configuration of the theme: the getting started is finished or dismissed (not a setting). */
     public const DONE = 'setupdone';
 
@@ -137,6 +144,11 @@ class setup {
                 if (!empty($data->logo)) {
                     self::save_logo((int) $data->logo);
                 }
+                foreach (array_keys(self::OTHER_LOGOS) as $name) {
+                    if (!empty($data->$name)) {
+                        self::save_file((int) $data->$name, 'theme_epure', $name);
+                    }
+                }
                 break;
             case 'colours':
                 set_config('brandcolor', palette::normalise($data->brandcolor) ?? palette::DEFAULT_BRAND, 'theme_epure');
@@ -189,15 +201,19 @@ class setup {
      */
     protected static function save_logo(int $draftitemid): void {
         ['component' => $component, 'setting' => $setting] = self::logo_target();
+        self::save_file($draftitemid, $component, $setting);
+    }
+
+    /**
+     * A file of a setting, from the draft area of the form, as the setting stores it (its path, empty without file).
+     *
+     * @param int $draftitemid Draft area.
+     * @param string $component Component of the setting (theme_epure, core_admin).
+     * @param string $setting Setting, which is also its file area.
+     */
+    protected static function save_file(int $draftitemid, string $component, string $setting): void {
         $context = \context_system::instance();
-        file_save_draft_area_files(
-            $draftitemid,
-            $context->id,
-            $component,
-            $setting,
-            0,
-            ['subdirs' => 0, 'maxfiles' => 1]
-        );
+        file_save_draft_area_files($draftitemid, $context->id, $component, $setting, 0, ['subdirs' => 0, 'maxfiles' => 1]);
         $files = get_file_storage()->get_area_files($context->id, $component, $setting, 0, 'sortorder, filepath, filename', false);
         $file = reset($files);
         set_config($setting, $file ? $file->get_filepath() . $file->get_filename() : '', $component);
@@ -210,7 +226,19 @@ class setup {
      */
     public static function logo_draft(): int {
         ['component' => $component, 'setting' => $setting] = self::logo_target();
-        $draftitemid = file_get_submitted_draft_itemid('logo');
+        return self::draft('logo', $component, $setting);
+    }
+
+    /**
+     * A draft area with the file of a setting, for a field of the form.
+     *
+     * @param string $field Field of the form.
+     * @param string $component Component of the setting.
+     * @param string $setting Setting, which is also its file area.
+     * @return int Draft item id.
+     */
+    public static function draft(string $field, string $component, string $setting): int {
+        $draftitemid = file_get_submitted_draft_itemid($field);
         file_prepare_draft_area(
             $draftitemid,
             \context_system::instance()->id,

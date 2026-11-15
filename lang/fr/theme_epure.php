@@ -957,6 +957,7 @@ $string['setup_model_university'] = 'Université ou enseignement supérieur';
 $string['setup_model_university_tagline'] = 'Vos cours, où que vous soyez';
 $string['setup_model_university_text'] = 'Les cours, ressources et évaluations de votre formation, sur ordinateur ou sur téléphone.';
 $string['setup_offer'] = 'Quelques étapes pour donner à la plateforme son nom, son logo et ses couleurs, une page de connexion qui parle à votre public, un pied de page, puis sa déclaration d’accessibilité. Tout reste modifiable dans les réglages.';
+$string['setup_otherlogos'] = 'Autres logos (facultatifs)';
 $string['setup_start'] = 'Commencer';
 $string['shortcuts'] = 'Raccourcis clavier';
 $string['shortcuts_action'] = 'Action';

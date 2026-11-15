@@ -957,6 +957,7 @@ $string['setup_model_university'] = 'University or higher education';
 $string['setup_model_university_tagline'] = 'Your courses, wherever you are';
 $string['setup_model_university_text'] = 'Lectures, resources and assessments of your programme, on a computer or a phone.';
 $string['setup_offer'] = 'A few steps to give the platform its name, its logo and its colours, a login page that speaks to your audience, a footer, and then its accessibility statement. Everything stays editable in the settings.';
+$string['setup_otherlogos'] = 'Other logos (optional)';
 $string['setup_start'] = 'Start';
 $string['shortcuts'] = 'Keyboard shortcuts';
 $string['shortcuts_action'] = 'Action';

@@ -74,6 +74,23 @@ class setup_form extends \moodleform {
                     ));
                 }
                 $mform->setDefault('logo', setup::logo_draft());
+                // The other logos of the tab Identity of the theme, optional: on the coloured header, on phones, in the
+                // tabs of the browsers.
+                $mform->addElement('header', 'otherlogos', get_string('setup_otherlogos', 'theme_epure'));
+                // Open when one of them is already set, to see it.
+                $set = array_filter(array_keys(setup::OTHER_LOGOS), fn($name) => (string) get_config('theme_epure', $name) !== '');
+                $mform->setExpanded('otherlogos', (bool) $set);
+                foreach (setup::OTHER_LOGOS as $name => $types) {
+                    $mform->addElement(
+                        'filemanager',
+                        $name,
+                        get_string($name, 'theme_epure'),
+                        null,
+                        ['subdirs' => 0, 'maxfiles' => 1, 'accepted_types' => $types]
+                    );
+                    $mform->addElement('static', $name . '_help', '', get_string($name . '_desc', 'theme_epure'));
+                    $mform->setDefault($name, setup::draft($name, 'theme_epure', $name));
+                }
                 break;
             case 'colours':
                 $mform->addElement('text', 'brandcolor', get_string('brandcolor', 'theme_epure'), ['size' => 10]);
