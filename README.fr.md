@@ -56,6 +56,7 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo), et 
 ### Pour les formateurs et les administrateurs
 
 - Une recherche rapide (Ctrl+K / ⌘K) dans les menus, les cours, les activités et les pages d'administration, les résultats les plus pertinents d'abord, avec une page de tous les résultats ; pour les visiteurs, dans le catalogue, les catégories et les pages publiques.
+- Une mise en route proposée à l'administrateur : nom et logo, couleurs, page de connexion à partir d'un modèle par secteur, pied de page, puis déclaration d'accessibilité.
 - Des réglages rangés en onglets, un accueil de l'administration plus clair, des formulaires longs avec la liste de leurs sections et les boutons d'enregistrement toujours visibles.
 - Un en-tête de cours pour les formateurs : participants, actifs cette semaine, à corriger, avec des raccourcis, et le mode édition à portée de main sur téléphone.
 - Des e-mails aux couleurs de la marque, un modèle d'attestation aux couleurs de la marque pour le plugin Certificate (tool_certificate), utilisable avec l'activité Attestation de formation.
@@ -122,6 +123,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.18.0** : aucun nouveau réglage ; mettez le site à jour. Le tableau des cours que l'on anime dans « Mes cours » ; la mise en route d'Épure, proposée une fois sur l'accueil de l'administration (y compris sur un site déjà réglé : « Ne plus proposer » la ferme).
 - **1.17.2** : aucun nouveau réglage. Les badges du système de design de Moodle (dates des activités de Moodle 6.0) lisibles en mode sombre.
 - **1.17.1** : aucun nouveau réglage. Sous Moodle 5.3, les modes de couleur expérimentaux de Boost sont ignorés sur les pages d'Épure, dont le mode sombre décide.
 - **1.17.0** : aucun nouveau réglage ; mettez le site à jour. Les widgets de Moodle (test, formulaires, évaluation, carnet de notes) dans le pré-audit, corrigés là où le thème le peut ; une régression visuelle dans les tests.
@@ -235,6 +237,8 @@ Les cours que vous **animez** et ceux que vous **suivez** sont présentés en de
 | Carte d'un cours suivi | Carte d'un cours animé |
 |---|---|
 | Progression, prochaine activité à faire, prochaine échéance, bouton Commencer / Continuer / Revoir, mention Terminé | Bandeau et badge de rôle, participants, apprenants actifs cette semaine, devoirs à corriger, accès directs Participants, Notes, Paramètres |
+
+Les cours que vous animez s'affichent en **cartes** ou en **tableau** (bouton Cartes / Tableau, choix gardé dans vos préférences) : apprenants, actifs cette semaine, à relancer (sans accès au cours depuis 14 jours), achèvement des apprenants, à corriger, prochaine échéance. Chaque colonne se trie au clavier ; sur téléphone, chaque ligne devient une carte ; le tableau se télécharge (CSV, Excel, ODS, PDF…).
 
 Une recherche (insensible aux accents) et des filtres En cours, À venir, Passés complètent la page. Les cours favoris viennent en premier, puis les plus récemment consultés ; les cours que vous avez masqués restent masqués. Un enseignant est reconnu à sa capacité de voir toutes les notes du cours (`moodle/grade:viewall`). Avec IOMAD, qui remplace le bloc de Moodle par le sien (« Mes cours » avec les onglets disponibles, en cours, terminés), la même présentation s'applique, avec en plus une section « Formations disponibles » et le bouton de téléchargement des certificats d'IOMAD. Réglage « Mes cours par rôle » (onglet Cours) : décochez pour retrouver le bloc de Moodle ou d'IOMAD.
 

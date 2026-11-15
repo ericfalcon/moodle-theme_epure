@@ -621,6 +621,13 @@ if ($ADMIN->fulltree) {
     $settings->add($page);
 }
 
+// Getting started with Épure: the settings that matter most on a new site, step by step (no setting of its own).
+$ADMIN->add('themes', new admin_externalpage(
+    'theme_epure_setup',
+    new lang_string('setup', 'theme_epure'),
+    new moodle_url('/theme/epure/setup.php')
+));
+
 // Accessibility statement, filled step by step: a page of its own, with the same settings as the Accessibility tab.
 $ADMIN->add('themes', new admin_externalpage(
     'theme_epure_a11ystatement',
