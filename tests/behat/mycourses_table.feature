@@ -27,6 +27,7 @@ Feature: The courses a teacher teaches as a table on « My courses »
     And the following config values are set as admin:
       | theme            | epure |
       | enablecompletion | 1     |
+      | enablemycourses  | 1     |
 
   Scenario: A teacher shows their courses as a table, sorts it, and finds it again as a table
     Given I log in as "teacher1"
