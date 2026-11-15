@@ -73,9 +73,12 @@ class setup_form extends \moodleform {
                 $mform->setType('brandcolor', PARAM_TEXT);
                 $mform->addRule('brandcolor', null, 'required', null, 'client');
                 $mform->addElement('static', 'brandcolor_help', '', get_string('setup_brandcolor_desc', 'theme_epure'));
+                // The colours of the logo of step 1, as under the brand colour of the tab Appearance.
+                $mform->addElement('static', 'brandcolor_logo', '', $this->logo_colours('brandcolor', false));
                 $mform->addElement('text', 'accentcolor', get_string('accentcolor', 'theme_epure'), ['size' => 10]);
                 $mform->setType('accentcolor', PARAM_TEXT);
                 $mform->addElement('static', 'accentcolor_help', '', get_string('accentcolor_desc', 'theme_epure'));
+                $mform->addElement('static', 'accentcolor_logo', '', $this->logo_colours('accentcolor', true));
                 $styles = [];
                 foreach (setup::HEADER_STYLES as $style) {
                     $styles[$style] = get_string('headerstyle' . $style, 'theme_epure');
@@ -131,6 +134,29 @@ class setup_form extends \moodleform {
             ? get_string('a11ywizard_next', 'theme_epure') : get_string('setup_finish', 'theme_epure'));
         $mform->addGroup($buttons, 'buttonar', '', [' '], false);
         $mform->closeHeaderBefore('buttonar');
+    }
+
+    /**
+     * The colours of the logo of the site proposed under a colour field (theme_epure/logo_colours): a click on a colour,
+     * or on a point of the logo, fills the field.
+     *
+     * @param string $field Field (brandcolor, accentcolor).
+     * @param bool $hidelogo Whether the logo is already shown above, under the brand colour.
+     * @return string HTML.
+     */
+    protected function logo_colours(string $field, bool $hidelogo): string {
+        global $OUTPUT, $PAGE;
+        $logo = \theme_epure\logos::main_url();
+        $id = 'id_' . $field . '_logocolours';
+        $PAGE->requires->js_call_amd('theme_epure/logo_colours', 'init', ['#' . $id]);
+        return $OUTPUT->render_from_template('theme_epure/logo_colours', [
+            'id' => $id,
+            'inputid' => 'id_' . $field,
+            'logourl' => $logo ? $logo->out(false) : null,
+            'hidelogo' => $hidelogo,
+            'help' => get_string('setup_logocolours_' . $field, 'theme_epure'),
+            'none' => $hidelogo ? '' : get_string('setup_logocolours_none', 'theme_epure'),
+        ]);
     }
 
     /**

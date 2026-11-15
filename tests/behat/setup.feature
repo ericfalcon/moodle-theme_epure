@@ -18,6 +18,7 @@ Feature: Getting started with Épure
     And I set the field "Full site name" to "Clinique des Tilleuls"
     And I press "Save and continue"
     And I should see "Step 2 of 5: Colours"
+    And I should see "Add a logo at step 1: its main colours will be proposed here."
     And I set the field "id_brandcolor" to "nonsense"
     And I press "Save and continue"
     And I should see "Enter a hex colour code"
