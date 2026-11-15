@@ -279,6 +279,11 @@ class core_renderer extends \theme_boost\output\core_renderer {
                                 'section' => get_string('currentsection', 'theme_epure'),
                                 'new' => get_string('new_badge', 'theme_epure'),
                                 'newsince' => get_string('new_badge_since', 'theme_epure'),
+                                // The progress once an activity is marked on the page: {done}, {total}, {percent}.
+                                'sectionprogress' => get_string('coursesectionprogress', 'theme_epure',
+                                    (object) ['done' => '{done}', 'total' => '{total}']),
+                                'completed' => get_string('mycourses_completed', 'theme_epure'),
+                                'courseprogress' => get_string('courseprogressnow', 'theme_epure', '{percent}'),
                             ],
                             'added' => $new],
                         JSON_HEX_TAG | JSON_HEX_AMP

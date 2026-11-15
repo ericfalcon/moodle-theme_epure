@@ -498,6 +498,7 @@ $string['coursebannerhide'] = 'Masquée';
 $string['coursebannershow'] = 'Affichée';
 $string['courseoutline_sections'] = '{$a} sections';
 $string['courseoutline_sections_one'] = '1 section';
+$string['courseprogressnow'] = 'Progression du cours : {$a} %';
 $string['coursesectionprogress'] = '{$a->done} activités terminées sur {$a->total}';
 $string['currentactivity'] = 'Reprendre ici';
 $string['currentsection'] = 'Vous en êtes ici';

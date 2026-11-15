@@ -1,5 +1,10 @@
 # Changes
 
+## 1.26.0 — the progress follows the page
+
+- On the page of a course, an activity marked or unmarked as done (« Mark as done », or the course index) updates at once the progress of its section (« 1/3 » and its bar, in the course index too) and of the banner of the course (percentage and bar), announced to screen readers (« Progress of the course: 33 % »), as well as its state and the activity to continue. Whatever the format of the course, with or without the course index; it used to wait for the page to be reloaded.
+- Tests: PHPUnit (the activities of each section and whether each is done) and Behat (a learner marks an activity as done: the progress of the section and of the banner follow).
+
 ## 1.25.0 — what is new in Épure, after an update
 
 - After an update of the theme, the home of the administration tells what is new for the site since the version installed before: the notes of update of each version (in English or in French), the most recent first, with a link to all the changes. « Read, close » closes them for this administrator until the next update.
