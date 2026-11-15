@@ -191,16 +191,48 @@ const gatherLead = (form, actions) => {
 };
 
 /**
- * Starts the long form of the page, if there is one.
+ * Whether a field is the text of an editor (TinyMCE or Atto copy it into the form only now and then).
+ *
+ * @param {string} name Name of the field.
+ * @returns {boolean}
  */
+const isEditorText = (name) => name.endsWith('[text]');
+
 /**
- * The values of a form, to tell whether they changed: its fields, but not its buttons nor its key of session.
+ * The values of a form, to tell whether they changed: its fields, but not its buttons, its key of session, the sections
+ * that Moodle remembers as expanded, nor the texts of the editors (see editorsChanged).
  *
  * @param {HTMLFormElement} form Form.
  * @returns {string}
  */
 const snapshot = (form) => JSON.stringify([...new FormData(form).entries()]
-    .filter(([name, value]) => name !== 'sesskey' && typeof value === 'string'));
+    .filter(([name, value]) => typeof value === 'string' && name !== 'sesskey' && !isEditorText(name)
+        && !/^mform_(isexpanded|showmore|showadvanced)_/.test(name)));
+
+/**
+ * Follows the texts of the editors of a form: the text of TinyMCE as it is typed (it copies it into the form only when
+ * it loses the focus, written its own way), the field itself otherwise.
+ *
+ * @param {HTMLFormElement} form Form.
+ * @returns {Function} Whether the text of an editor changed.
+ */
+const followEditors = (form) => {
+    const fields = [...form.querySelectorAll('textarea')].filter((field) => isEditorText(field.name));
+    const start = new Map(fields.map((field) => [field, {tiny: false, value: field.value}]));
+    return () => fields.some((field) => {
+        const first = start.get(field);
+        const editor = window.tinymce?.get(field.id);
+        if (editor?.initialized) {
+            if (!first.tiny) {
+                // The text as TinyMCE writes it, once it is ready.
+                first.tiny = true;
+                first.value = editor.getContent();
+            }
+            return editor.getContent() !== first.value;
+        }
+        return field.value !== first.value;
+    });
+};
 
 /**
  * The state of the form in the bar of the buttons to save: no changes, changes not saved (a field changed, or the text
@@ -236,13 +268,14 @@ const followState = async(form, actions) => {
         return;
     }
     show('none', none);
-    // The values as loaded, then once the scripts of Moodle have set up the form (editors, lists with suggestions), if
-    // the user has not changed anything by then. The text of an editor is copied into the form as it is typed.
+    // The values as loaded, then once the scripts of Moodle have set up the form (lists with suggestions), if the user
+    // has not changed anything by then. The texts of the editors are read every two seconds.
     let initial = snapshot(form);
     let touched = false;
+    const editorsChanged = followEditors(form);
     const update = (e) => {
         touched = touched || Boolean(e?.isTrusted);
-        const changed = snapshot(form) !== initial;
+        const changed = snapshot(form) !== initial || editorsChanged();
         show(changed ? 'unsaved' : 'none', changed ? unsaved : none);
     };
     form.addEventListener('input', update);
@@ -256,6 +289,9 @@ const followState = async(form, actions) => {
     window.setInterval(update, 2000);
 };
 
+/**
+ * Starts the long form of the page, if there is one.
+ */
 export const init = async() => {
     const form = [...document.querySelectorAll('#region-main form.mform')]
         .sort((a, b) => sections(b).length - sections(a).length)[0];
