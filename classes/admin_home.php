@@ -107,7 +107,8 @@ class admin_home {
             'url' => setup::url()->out(false),
             'dismissurl' => (new \moodle_url(setup::url(), ['dismiss' => 1, 'sesskey' => sesskey()]))->out(false),
         ] : null;
-        return ['cards' => $cards, 'setup' => $setup];
+        // What is new in Épure since the version installed before, until the administrator closes it.
+        return ['cards' => $cards, 'setup' => $setup, 'whatsnew' => whatsnew::export()];
     }
 
     /**

@@ -29,5 +29,7 @@
  */
 function xmldb_theme_epure_install() {
     \theme_epure\onboarding::install();
+    // A new site: nothing new to tell.
+    \theme_epure\whatsnew::installed();
     return true;
 }

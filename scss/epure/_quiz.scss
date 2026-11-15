@@ -512,3 +512,54 @@ body.epure-review-mistakes .que.correct {
         }
     }
 }
+
+// Questions « Drag and drop into text » and « onto image »: the words to drag and their boxes in the shapes of
+// Épure. Moodle tells the groups apart by the corners rounded (square for the first group, then one corner, two,
+// all of them), on top of their colours (WCAG 1.4.1): each corner takes the rounding of Épure, and the corners of the
+// group stay clearly rounder. Their border reads on the page (WCAG 1.4.11), and the focus is the ring of Épure.
+$epure-dd-corner: 1rem;
+
+.que:is(.ddwtos, .ddimageortext) {
+    :is(.drop.active, .draghome, .dropzone) {
+        border-color: var(--epure-ink-muted);
+        border-radius: var(--epure-radius-sm);
+    }
+
+    :is(.drop, .draghome, .dropzone).group2 {
+        border-top-left-radius: $epure-dd-corner;
+    }
+
+    :is(.drop, .draghome, .dropzone).group3 {
+        border-top-right-radius: $epure-dd-corner;
+    }
+
+    :is(.drop, .draghome, .dropzone).group4 {
+        border-bottom-right-radius: $epure-dd-corner;
+    }
+
+    :is(.drop, .draghome, .dropzone).group5 {
+        border-bottom-left-radius: $epure-dd-corner;
+    }
+
+    :is(.drop, .draghome, .dropzone).group6 {
+        border-top-right-radius: $epure-dd-corner;
+        border-bottom-right-radius: $epure-dd-corner;
+    }
+
+    :is(.drop, .draghome, .dropzone).group7 {
+        border-top-left-radius: $epure-dd-corner;
+        border-bottom-left-radius: $epure-dd-corner;
+    }
+
+    :is(.drop, .draghome, .dropzone).group8 {
+        border-radius: $epure-dd-corner;
+    }
+
+    :is(.drop, .dropzone, .draghome.placed):focus:not(.beingdragged),
+    :is(.drop, .dropzone, .draghome.placed).valid-drag-over-drop {
+        border-color: var(--epure-focus);
+        outline: 3px solid var(--epure-focus);
+        outline-offset: 2px;
+        box-shadow: none;
+    }
+}
