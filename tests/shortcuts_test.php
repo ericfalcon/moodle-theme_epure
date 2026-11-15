@@ -66,6 +66,15 @@ final class shortcuts_test extends \advanced_testcase {
         set_user_preference(shortcuts::PREFERENCE, 0);
         $this->assertFalse(shortcuts::key_enabled());
         $this->assertTrue(\core_user::can_edit_preference(shortcuts::PREFERENCE, $user));
+
+        // The keys of navigation: listed, off by default, on in the preferences of the user.
+        $nav = array_values(array_filter(shortcuts::export()['groups'], fn($group) => !empty($group['nav'])))[0];
+        $this->assertSame(get_string('shortcuts_nav', 'theme_epure'), $nav['title']);
+        $this->assertContains(get_string('shortcuts_navtodo', 'theme_epure'), array_column($nav['items'], 'action'));
+        $this->assertFalse(shortcuts::export()['navenabled']);
+        set_user_preference(shortcuts::NAV_PREFERENCE, 1);
+        $this->assertTrue(shortcuts::nav_enabled());
+        $this->assertTrue(\core_user::can_edit_preference(shortcuts::NAV_PREFERENCE, $user));
     }
 
     /**
