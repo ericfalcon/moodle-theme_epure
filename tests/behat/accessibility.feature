@@ -30,6 +30,31 @@ Feature: Accessibility of the Épure theme
     And the "class" attribute of "html" "css_element" should contain "epure-a11y-text-130"
     And the "class" attribute of "html" "css_element" should contain "epure-a11y-underline"
 
+  Scenario: The animated images stop and the scroll bars stay shown, from the display preferences
+    Given the following "courses" exist:
+      | fullname       | shortname |
+      | Safety at work | SAFE      |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | learner1 | SAFE   | student |
+    And the following "activities" exist:
+      | activity | course | name  | content                                                                               |
+      | page     | SAFE   | Exits | <p><img src="/theme/epure/tests/fixtures/anim.gif" alt="Exits of the building"></p> |
+    And I log in as "learner1"
+    And I am on the "Exits" "page activity" page
+    And ".epure-still-play" "css_element" should not exist
+    When I click on "Display preferences" "button"
+    And I click on "Stop the animated images" "checkbox"
+    And I click on "Always show the scroll bars" "checkbox"
+    Then "Play the animation: Exits of the building" "button" should exist
+    And the "class" attribute of "html" "css_element" should contain "epure-a11y-scrollbars"
+    And I wait until "Saved in your profile." "text" exists
+    And I reload the page
+    And the "aria-pressed" attribute of "Play the animation: Exits of the building" "button" should contain "false"
+    And I click on "Play the animation: Exits of the building" "button"
+    And the "aria-pressed" attribute of "Play the animation: Exits of the building" "button" should contain "true"
+    And the page should meet accessibility standards
+
   Scenario: The accessibility statement is published with a mention on every page
     Given the following config values are set as admin:
       | a11ystatus | partial               | theme_epure |

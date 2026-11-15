@@ -38,6 +38,10 @@ trait iomad_mycourses {
      * @return string HTML.
      */
     protected function render_by_role(array $data): string {
+        // Drawn once on the page, whatever the number of blocks « My courses » IOMAD put on it.
+        if (!mycourses::claim()) {
+            return '';
+        }
         $available = [];
         foreach ($data['availableview']['courses'] ?? [] as $course) {
             $available[] = [

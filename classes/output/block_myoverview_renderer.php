@@ -46,6 +46,10 @@ class block_myoverview_renderer extends \block_myoverview\output\renderer {
                 return '';
             }
         }
+        // Drawn once on the page, whatever the number of blocks « My courses ».
+        if (!mycourses::claim()) {
+            return '';
+        }
         $this->page->requires->js_call_amd('theme_epure/mycourses', 'init');
         return $this->render_from_template('theme_epure/mycourses', mycourses::export($this));
     }

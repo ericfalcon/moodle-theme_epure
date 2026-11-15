@@ -377,6 +377,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
      */
     public function navbar_plugin_output() {
         $output = parent::navbar_plugin_output();
+        // The animated images stopped (a display preference, or the display of the site), on every page.
+        if (!during_initial_install()) {
+            $this->page->requires->js_call_amd('theme_epure/still_images', 'init');
+        }
         // The preferences are saved in the profile: guests and visitors who are not logged in do not get them.
         if (isloggedin() && !isguestuser() && !during_initial_install() && \theme_epure\a11y::panel_enabled()) {
             $this->page->requires->js_call_amd('theme_epure/a11y_panel', 'init');

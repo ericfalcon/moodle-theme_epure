@@ -108,6 +108,40 @@ html.epure-a11y-motion {
     @include epure-no-motion;
 }
 
+// Scroll bars always shown, wide, a thumb contrasted with its track (WCAG 1.4.11): the browsers based on WebKit
+// draw them so instead of the bars that hide (macOS, phones); Firefox takes their width and colours.
+html.epure-a11y-scrollbars {
+    ::-webkit-scrollbar {
+        width: 14px;
+        height: 14px;
+        background-color: var(--epure-surface-muted);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: var(--epure-ink-muted);
+        border: 3px solid var(--epure-surface-muted);
+        border-radius: 7px;
+    }
+
+    @supports not selector(::-webkit-scrollbar) {
+        &,
+        * {
+            scrollbar-width: auto;
+            scrollbar-color: var(--epure-ink-muted) var(--epure-surface-muted);
+        }
+    }
+}
+
+// The button to play an animated image stopped by the preference (theme_epure/still_images), under it.
+.epure-still-play {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    gap: .375rem;
+    min-height: 2.75rem;
+    margin: .25rem 0 .5rem;
+}
+
 // :root, as the tokens (_tokens.scss), for the same weight: this rule comes after them.
 @media (prefers-reduced-motion: reduce) {
     :root {

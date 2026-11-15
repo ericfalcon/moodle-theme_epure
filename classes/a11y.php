@@ -38,7 +38,7 @@ class a11y {
     public const SCHEMES = ['light', 'dark', 'auto'];
 
     /** @var string[] Preferences that are on or off. */
-    public const SWITCHES = ['spacing', 'lines', 'contrast', 'underline', 'motion'];
+    public const SWITCHES = ['spacing', 'lines', 'contrast', 'underline', 'motion', 'stillimages', 'scrollbars'];
 
     /**
      * Definitions of the preferences, for Moodle's user preference API.
@@ -103,7 +103,8 @@ class a11y {
      * Display of the site for the users who did not choose theirs, and for the visitors: the settings « Display by
      * default » of the theme.
      *
-     * @return array{text: int, font: string, spacing: bool, lines: bool, contrast: bool, underline: bool, motion: bool}
+     * @return array{text: int, font: string, spacing: bool, lines: bool, contrast: bool, underline: bool, motion: bool,
+     *     stillimages: bool, scrollbars: bool}
      */
     public static function site_defaults(): array {
         $config = get_config('theme_epure');

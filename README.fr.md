@@ -123,6 +123,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.24.0** : deux nouvelles préférences d'affichage du panneau « Aa », désactivées par défaut (et deux réglages de l'affichage par défaut du site) : arrêter les images animées, toujours montrer les barres de défilement.
 - **1.23.0** : aucun nouveau réglage ; mettez le site à jour. Des touches de navigation (activité ou section suivante et précédente, tableau de bord, « Mes cours », calendrier, « À faire »), désactivées par défaut, que chacun active dans l'aide des raccourcis.
 - **1.22.0** : aucun nouveau réglage ; mettez le site à jour. Une page « À faire » pour les apprenants : leurs activités restantes dans tous leurs cours, groupées par échéance et filtrables par cours et par période.
 - **1.21.0** : aucun nouveau réglage ; mettez le site à jour. L'aperçu des fichiers montre le texte des documents bureautiques (Word, PowerPoint, Excel, LibreOffice) : titres, listes, tableaux, diapositives et feuilles. La mise en route d'Épure affiche les onglets des réglages du thème eux-mêmes ; avec IOMAD, chaque entreprise a la sienne, proposée à ses gestionnaires sur le tableau de bord d'IOMAD.
