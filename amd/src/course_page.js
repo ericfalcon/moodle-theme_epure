@@ -245,10 +245,65 @@ const followStickyContinue = () => {
 };
 
 /**
+ * A text with its values: {done}, {total}, {percent}.
+ *
+ * @param {string} text Text.
+ * @param {Object} values Values.
+ * @returns {string}
+ */
+const fill = (text, values) => text.replace(/\{(\w+)\}/g, (match, key) => String(values[key] ?? match));
+
+/**
+ * The progress of a section shown again, after an activity of it was marked or unmarked on the page.
+ *
+ * @param {{id: number, done: number, total: number, label: string}} section Progress of the section.
+ */
+const refreshSection = (section) => {
+    document.querySelectorAll(`[data-for="section"][data-id="${section.id}"] .epure-section-progress`)
+        .forEach((badge) => badge.remove());
+    document.querySelectorAll(`#courseindex [data-for="section"][data-id="${section.id}"] .epure-section-bar`)
+        .forEach((bar) => bar.remove());
+    addBadge(section);
+    addIndexBar(section);
+};
+
+/**
+ * The progress of the course in its banner, after an activity was marked or unmarked on the page, announced.
+ *
+ * @param {number} percent Progress, in percent.
+ * @param {Object} labels Texts.
+ */
+const refreshBanner = (percent, labels) => {
+    const box = document.querySelector('.epure-course-banner-progress');
+    if (!box) {
+        return;
+    }
+    const value = box.querySelector('.epure-course-banner-progress-label span:last-child');
+    if (value) {
+        value.textContent = percent === 100 ? labels.completed : `${percent} %`;
+    }
+    box.querySelector('.progress')?.setAttribute('aria-valuenow', String(percent));
+    const bar = box.querySelector('.progress-bar');
+    if (bar) {
+        bar.style.width = `${percent}%`;
+    }
+    let status = box.querySelector('.epure-course-progress-status');
+    if (!status) {
+        status = document.createElement('p');
+        status.className = 'sr-only visually-hidden epure-course-progress-status';
+        status.setAttribute('role', 'status');
+        box.append(status);
+    }
+    status.textContent = fill(labels.courseprogress, {percent});
+};
+
+/**
  * Starts the progress of the sections and the states of the activities, from the data in the page (script
  * epure-course-page-data): sections, the progress of each section with completion; states, the state of each
  * activity (cmid, state, icon, label, text, notable); all, all the states without dates, for an activity whose
- * completion changes on the page; added, the activities added since the previous visit of the learner.
+ * completion changes on the page; added, the activities added since the previous visit of the learner. A completion
+ * marked or unmarked on the page (« Mark as done », or the course index) updates the state of the activity, the
+ * activity to continue, the progress of its sections and of the banner, announced.
  */
 export const init = () => {
     followStickyContinue();
@@ -265,29 +320,52 @@ export const init = () => {
     initial.forEach((state, cmid) => showState(cmid, state));
     showCurrent(nextState(states, current, next), labels);
 
+    // Whether each activity followed by the progress is done; the sections that count it.
+    const done = new Map();
+    sections.forEach((section) => (section.cms || []).forEach((cm) => done.set(cm.id, cm.done)));
+    const progress = (cmid, isdone) => {
+        if (!done.has(cmid) || done.get(cmid) === isdone) {
+            return;
+        }
+        done.set(cmid, isdone);
+        sections.filter((section) => (section.cms || []).some((cm) => cm.id === cmid)).forEach((section) => {
+            section.done = section.cms.filter((cm) => done.get(cm.id)).length;
+            section.label = fill(labels.sectionprogress || section.label, {done: section.done, total: section.total});
+            refreshSection(section);
+        });
+        refreshBanner(Math.round(100 * [...done.values()].filter(Boolean).length / done.size), labels);
+    };
+    // A completion that changed on the page: the state of the activity, the activity to continue, the progress.
+    // Unmarked, an activity that was completed when the page was shown is to do; another gets back its state.
+    const changed = (cmid, completed) => {
+        progress(cmid, completed === 'done' || completed === 'passed');
+        if (!current.has(cmid)) {
+            return;
+        }
+        const before = initial.get(cmid);
+        const reset = Object.values(COMPLETION_STATES).includes(before.state) ? all.todo : before;
+        const after = completed ? all[completed] : reset;
+        if (after && after.state !== current.get(cmid).state) {
+            current.set(cmid, after);
+            showState(cmid, after);
+            showCurrent(nextState(states, current, next), labels);
+        }
+    };
+    // « Mark as done » on the page, whatever the format of the course and with or without the course index.
+    document.addEventListener('core_course:manualcompletiontoggled', (event) => {
+        changed(Number(event.detail?.cmid), event.detail?.completed ? 'done' : null);
+    });
+
     const index = document.getElementById('courseindex');
     if (!index || (!current.size && !sections.length)) {
         return;
     }
-    // The index renders its lines again when they change, and tells the completion of each activity: a completion
-    // marked on the page changes the state; unmarked, the activity gets back its state, or « to do ».
+    // The index renders its lines again when they change, and tells the completion of each activity.
     new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             if (mutation.type === 'attributes') {
                 const cmid = Number(mutation.target.closest('[data-for="cm"]')?.dataset.id);
-                if (!current.has(cmid)) {
-                    return;
-                }
-                const completed = COMPLETION_STATES[mutation.target.dataset.value];
-                const before = initial.get(cmid);
-                // Unmarked, an activity that was completed when the page was shown is to do; another gets back its state.
-                const reset = Object.values(COMPLETION_STATES).includes(before.state) ? all.todo : before;
-                const after = completed ? all[completed] : reset;
-                if (after && after.state !== current.get(cmid).state) {
-                    current.set(cmid, after);
-                    showState(cmid, after);
-                    showCurrent(nextState(states, current, next), labels);
-                }
+                changed(cmid, COMPLETION_STATES[mutation.target.dataset.value] || null);
                 return;
             }
             const items = new Set();

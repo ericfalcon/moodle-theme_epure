@@ -201,34 +201,34 @@ class course_page {
         }
         $modinfo = get_fast_modinfo($course, $userid);
         $sections = [];
+        // Each section: its activities with completion and whether each is done, those of its subsections included.
         $count = function (\section_info $section) use (&$count, &$sections, $modinfo, $completion, $userid): array {
-            $done = $total = 0;
+            $cms = [];
             foreach ($modinfo->sections[$section->section] ?? [] as $cmid) {
                 $cm = $modinfo->cms[$cmid];
                 if ($delegated = $cm->get_delegated_section_info()) {
-                    [$subdone, $subtotal] = $cm->uservisible ? $count($delegated) : [0, 0];
-                    $done += $subdone;
-                    $total += $subtotal;
+                    $cms += $cm->uservisible ? $count($delegated) : [];
                     continue;
                 }
                 if (!$cm->uservisible || $cm->deletioninprogress || $completion->is_enabled($cm) == COMPLETION_TRACKING_NONE) {
                     continue;
                 }
-                $total++;
                 $state = $completion->get_data($cm, false, $userid)->completionstate;
-                if ($state == COMPLETION_COMPLETE || $state == COMPLETION_COMPLETE_PASS) {
-                    $done++;
-                }
+                $cms[(int) $cmid] = $state == COMPLETION_COMPLETE || $state == COMPLETION_COMPLETE_PASS;
             }
-            if ($total) {
+            if ($cms) {
+                $done = count(array_filter($cms));
+                $total = count($cms);
                 $sections[] = [
                     'id' => (int) $section->id,
                     'done' => $done,
                     'total' => $total,
                     'label' => get_string('coursesectionprogress', 'theme_epure', (object) ['done' => $done, 'total' => $total]),
+                    // For the page to follow the completion of each activity without being reloaded.
+                    'cms' => array_map(fn($id, $isdone) => ['id' => $id, 'done' => $isdone], array_keys($cms), $cms),
                 ];
             }
-            return [$done, $total];
+            return $cms;
         };
         foreach ($modinfo->get_listed_section_info_all() as $section) {
             $count($section);

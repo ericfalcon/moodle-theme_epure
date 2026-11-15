@@ -82,6 +82,10 @@ Feature: Accessibility of the Épure theme
     Then I should see "Next: Welcome"
     And I should see "0/2" in the "General" "section"
     And the page should meet accessibility standards
+    # Marked on the page, the progress of the section and of the banner follows without reloading.
+    And I press "Mark as done"
+    And I should see "1/2" in the "General" "section"
+    And I should see "50 %" in the ".epure-course-banner-progress" "css_element"
 
   Scenario: The dashboard shows the overview of the learner and meets accessibility standards
     Given the following "courses" exist:

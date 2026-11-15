@@ -167,6 +167,9 @@ final class course_page_test extends \advanced_testcase {
             get_string('coursesectionprogress', 'theme_epure', (object) ['done' => 1, 'total' => 2]),
             $sections[0]['label']
         );
+        // The activities of each section and whether each is done, for the page to follow their completion.
+        $this->assertCount(2, $sections[0]['cms']);
+        $this->assertSame(1, count(array_filter(array_column($sections[0]['cms'], 'done'))));
 
         $course->enablecompletion = 0;
         $this->assertSame([], course_page::sections($course, $learner->id));
