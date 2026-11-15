@@ -14,7 +14,8 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Search and status filters of the « My courses » page of Épure.
+ * Search and status filters of the « My courses » page of Épure; for the courses the user teaches, the choice
+ * between cards and a table (kept in their preferences) and the sorting of the table by its columns.
  *
  * @module     theme_epure/mycourses
  * @copyright  2026 Eric Falcon
@@ -22,6 +23,10 @@
  */
 
 import {getString} from 'core/str';
+import {setUserPreference} from 'core_user/repository';
+
+/** @var {string} The preference of the view of the courses the user teaches. */
+const VIEW_PREFERENCE = 'theme_epure_mycourses_view';
 
 /**
  * Text in lower case and without accents, so that « secu » finds « Sécurité ».
@@ -29,10 +34,11 @@ import {getString} from 'core/str';
  * @param {string} text Text.
  * @returns {string}
  */
-const normalise = (text) => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+const normalise = (text) => text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
 
 /**
- * Shows the courses matching the search and the selected status, and announces how many are shown.
+ * Shows the courses matching the search and the selected status, as cards and as rows of the table, and
+ * announces how many are shown.
  *
  * @param {HTMLElement} region The page.
  */
@@ -46,7 +52,8 @@ const update = async(region) => {
             const visible = (filter === 'all' || item.dataset.status === filter)
                 && (query === '' || normalise(item.dataset.name).includes(query));
             item.hidden = !visible;
-            count += visible ? 1 : 0;
+            // Each course is a card and, for the courses the user teaches, a row of the table too: counted once.
+            count += visible && item.tagName === 'LI' ? 1 : 0;
         });
         const counter = section.querySelector('[data-region="count"]');
         if (counter) {
@@ -59,7 +66,57 @@ const update = async(region) => {
 };
 
 /**
- * Starts the search and the filters.
+ * Shows the courses the user teaches as cards or as a table, and keeps the choice.
+ *
+ * @param {HTMLElement} section The section of the courses the user teaches.
+ * @param {string} view cards or table.
+ */
+const showView = (section, view) => {
+    section.querySelectorAll('[data-view]').forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.view === view));
+    });
+    section.querySelector('[data-region="cards"]').hidden = view !== 'cards';
+    section.querySelector('[data-region="table"]').hidden = view !== 'table';
+    const download = section.querySelector('[data-region="download"]');
+    if (download) {
+        download.hidden = view !== 'table';
+    }
+    setUserPreference(VIEW_PREFERENCE, view).catch(() => null);
+};
+
+/**
+ * Sorts the table by a column: ascending, then descending at the next press. The rows without a value (no
+ * completion, no deadline) stay last.
+ *
+ * @param {HTMLElement} table The table.
+ * @param {HTMLButtonElement} button The button of the column.
+ * @param {HTMLElement} status The live region of the page.
+ */
+const sortBy = async(table, button, status) => {
+    const header = button.closest('th');
+    const ascending = header.getAttribute('aria-sort') !== 'ascending';
+    table.querySelectorAll('thead th').forEach((th) => th.setAttribute('aria-sort', 'none'));
+    header.setAttribute('aria-sort', ascending ? 'ascending' : 'descending');
+    const key = 'sort' + button.dataset.sort.charAt(0).toUpperCase() + button.dataset.sort.slice(1);
+    const numeric = button.dataset.numeric === '1';
+    const value = (row) => (numeric ? Number(row.dataset[key]) : row.dataset[key]);
+    // No completion (-1) or no deadline (the largest integer of PHP).
+    const missing = (row) => numeric && (Number(row.dataset[key]) < 0 || Number(row.dataset[key]) >= 9e15);
+    const body = table.querySelector('tbody');
+    const rows = [...body.rows].sort((a, b) => {
+        if (missing(a) !== missing(b)) {
+            return missing(a) ? 1 : -1;
+        }
+        const order = numeric ? value(a) - value(b) : value(a).localeCompare(value(b));
+        return ascending ? order : -order;
+    });
+    rows.forEach((row) => body.appendChild(row));
+    status.textContent = await getString(ascending ? 'mycourses_sortedasc' : 'mycourses_sorteddesc', 'theme_epure',
+        button.textContent.trim());
+};
+
+/**
+ * Starts the search, the filters, the choice of the view and the sorting of the table.
  */
 export const init = () => {
     const region = document.querySelector('[data-region="epure-mycourses"]');
@@ -74,6 +131,15 @@ export const init = () => {
                 other.setAttribute('aria-pressed', String(other === button));
             });
             update(region);
+        });
+    });
+    const status = region.querySelector('[data-region="status"]');
+    region.querySelectorAll('[data-view]').forEach((button) => {
+        button.addEventListener('click', () => showView(button.closest('section'), button.dataset.view));
+    });
+    region.querySelectorAll('.epure-mycourses-table').forEach((table) => {
+        table.querySelectorAll('[data-sort]').forEach((button) => {
+            button.addEventListener('click', () => sortBy(table, button, status));
         });
     });
 };

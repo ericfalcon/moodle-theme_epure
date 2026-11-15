@@ -299,3 +299,134 @@
 .epure-company-colour-code[aria-invalid="true"] {
     border-color: $danger;
 }
+
+// The courses the user teaches as cards or as a table: the choice of the view, the table and its sorting.
+.epure-mycourses-viewbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    margin-bottom: 1rem;
+}
+
+.epure-mycourses-views {
+    display: inline-flex;
+    padding: .1875rem;
+    background-color: var(--epure-surface-muted);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-pill);
+}
+
+.epure-mycourses-viewbutton {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    min-height: 2.25rem;
+    padding: .25rem .875rem;
+    color: var(--epure-ink-muted);
+    font-weight: 500;
+    background: transparent;
+    border: 0;
+    border-radius: var(--epure-radius-pill);
+
+    &:hover {
+        color: var(--epure-brand-text);
+    }
+
+    &[aria-pressed="true"] {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand);
+    }
+}
+
+// The selector of the format of the download, on one line.
+.epure-mycourses-download form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+
+    label {
+        margin: 0;
+    }
+}
+
+.epure-mycourses-tablewrap {
+    overflow-x: auto;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+}
+
+.epure-mycourses-table {
+    margin: 0;
+
+    th,
+    td {
+        padding: .75rem 1rem;
+        vertical-align: middle;
+    }
+
+    thead th {
+        white-space: nowrap;
+        border-top: 0;
+    }
+
+    tbody th {
+        font-weight: 600;
+    }
+
+    .epure-mycourses-number {
+        text-align: end;
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+.epure-mycourses-table-category,
+.epure-mycourses-table-date {
+    display: block;
+    color: var(--epure-ink-muted);
+    font-size: .8125rem;
+    font-weight: 400;
+}
+
+.epure-mycourses-alert a {
+    color: var(--epure-state-late);
+    font-weight: 700;
+}
+
+// The buttons of the columns: the whole header is the target, an arrow tells the order.
+.epure-mycourses-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    min-height: 1.5rem;
+    padding: 0;
+    color: inherit;
+    font-weight: 600;
+    background: none;
+    border: 0;
+
+    &:hover {
+        color: var(--epure-brand-text);
+        text-decoration: underline;
+    }
+}
+
+// The arrow, hidden from the screen readers (aria-sort tells them the order).
+.epure-mycourses-sort-icon::after {
+    content: "\2195";
+    color: var(--epure-ink-muted);
+    font-weight: 400;
+}
+
+[aria-sort="ascending"] .epure-mycourses-sort-icon::after {
+    content: "\2191";
+    color: var(--epure-brand-text);
+}
+
+[aria-sort="descending"] .epure-mycourses-sort-icon::after {
+    content: "\2193";
+    color: var(--epure-brand-text);
+}

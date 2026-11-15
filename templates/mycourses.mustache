@@ -23,7 +23,8 @@
     Context variables required for this template:
     * hascourses, showheadings
     * filters - value, label, selected
-    * sections - role, title, count, courses (see theme_epure/mycourses_card)
+    * sections - role, title, count, courses (see theme_epure/mycourses_card); for the courses the user teaches,
+      teachingview, cardsview, tableview, hascompletioncolumn and downloadselector (HTML) (see theme_epure/mycourses_table)
 
     Example context (json):
     {
@@ -65,13 +66,29 @@
                         {{title}} <span class="epure-mycourses-count" data-region="count">{{count}}</span>
                     </h2>
                 {{/showheadings}}
-                <ul class="epure-mycourses-grid">
+                {{#teachingview}}
+                    <div class="epure-mycourses-viewbar">
+                        <div class="epure-mycourses-views" role="group" aria-label="{{#str}}mycourses_view, theme_epure{{/str}}">
+                            <button type="button" class="epure-mycourses-viewbutton" data-view="cards"
+                                aria-pressed="{{#cardsview}}true{{/cardsview}}{{^cardsview}}false{{/cardsview}}">
+                                <i class="fa fa-grip" aria-hidden="true"></i>{{#str}}mycourses_viewcards, theme_epure{{/str}}
+                            </button>
+                            <button type="button" class="epure-mycourses-viewbutton" data-view="table"
+                                aria-pressed="{{#tableview}}true{{/tableview}}{{^tableview}}false{{/tableview}}">
+                                <i class="fa fa-table" aria-hidden="true"></i>{{#str}}mycourses_viewtable, theme_epure{{/str}}
+                            </button>
+                        </div>
+                        <div class="epure-mycourses-download" data-region="download" {{^tableview}}hidden{{/tableview}}>{{{downloadselector}}}</div>
+                    </div>
+                {{/teachingview}}
+                <ul class="epure-mycourses-grid" data-region="cards" {{#tableview}}hidden{{/tableview}}>
                     {{#courses}}
                         <li class="epure-mycourses-item" data-status="{{status}}" data-name="{{sortname}} {{category}}">
                             {{> theme_epure/mycourses_card }}
                         </li>
                     {{/courses}}
                 </ul>
+                {{#teachingview}}{{> theme_epure/mycourses_table }}{{/teachingview}}
                 <p class="epure-mycourses-empty" data-region="empty" hidden>{{#str}}mycourses_nomatch, theme_epure{{/str}}</p>
             </section>
         {{/sections}}

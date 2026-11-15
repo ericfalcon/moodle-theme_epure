@@ -28,7 +28,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
 
     /** @var string Tables read as cards on phones ({@see full_header()}). */
     public const CARD_TABLES = '#participants, #overview-grade, table.reportlog, #outlinereport, table.reportbuilder-table, '
-        . '.path-local-report_users table.generaltable, .path-local-report_completion_overview table.generaltable';
+        . '.path-local-report_users table.generaltable, .path-local-report_completion_overview table.generaltable, '
+        . 'table.epure-mycourses-table';
 
     /** @var string Code of the error being shown by fatal_error(), for its card. */
     protected $epureerrorcode = '';
