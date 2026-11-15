@@ -21,6 +21,8 @@ Feature: The files of a course open in a preview, without leaving the course
       | resource | SAFE   | Printed sheet  | sheet.txt       | 4       |
     And the following config values are set as admin:
       | theme | epure |
+    # IOMAD sends a user without company away from the courses.
+    And the users belong to an IOMAD company when IOMAD is installed
 
   Scenario: A learner opens a file, goes to the next one and closes the preview
     Given I log in as "learner1"
