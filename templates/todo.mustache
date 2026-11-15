@@ -1,0 +1,69 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/todo
+
+    The page « To do » of a learner: a form to filter by course and by period (sent by the browser, without script),
+    how many activities are shown, then the activities grouped by deadline, each as an item of the week of the
+    dashboard (theme_epure/learner_week_item).
+
+    Example context (json):
+    {
+        "url": "#", "filtered": false, "hasitems": true, "count": "2 activities to do", "empty": "Nothing to do for now.",
+        "reseturl": "#", "dashboardurl": "#", "calendarurl": "#",
+        "courses": [{"value": 0, "label": "All courses", "selected": true}, {"value": 2, "label": "Safety at work", "selected": false}],
+        "periods": [{"value": "", "label": "All", "selected": true}, {"value": "late", "label": "Overdue", "selected": false}],
+        "groups": [{"key": "late", "title": "Overdue", "count": 1, "items": [{"name": "Report", "course": "Safety at work",
+            "url": "#", "icon": "", "faicon": "fa-regular fa-file", "time": "12/11/26, 23:59", "state": null}]}]
+    }
+}}
+<div class="epure-todo">
+    <form class="epure-todo-filters" method="get" action="{{url}}">
+        <div class="epure-todo-filter">
+            <label for="epure-todo-course">{{#str}}course{{/str}}</label>
+            <select class="form-select custom-select" id="epure-todo-course" name="course">
+                {{#courses}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/courses}}
+            </select>
+        </div>
+        <div class="epure-todo-filter">
+            <label for="epure-todo-period">{{#str}}todo_period, theme_epure{{/str}}</label>
+            <select class="form-select custom-select" id="epure-todo-period" name="period">
+                {{#periods}}<option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>{{/periods}}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">{{#str}}todo_filter, theme_epure{{/str}}</button>
+        {{#filtered}}<a class="btn btn-link" href="{{reseturl}}">{{#str}}todo_reset, theme_epure{{/str}}</a>{{/filtered}}
+    </form>
+
+    {{#hasitems}}
+        <p class="epure-todo-count">{{count}}</p>
+        {{#groups}}
+            <section class="epure-todo-group epure-todo-{{key}}" aria-labelledby="epure-todo-{{key}}-title">
+                <h2 class="epure-todo-title" id="epure-todo-{{key}}-title">{{title}} <span class="epure-todo-number">({{count}})</span></h2>
+                <ul class="epure-week-items">
+                    {{#items}}<li class="epure-week-item">{{>theme_epure/learner_week_item}}</li>{{/items}}
+                </ul>
+            </section>
+        {{/groups}}
+    {{/hasitems}}
+    {{^hasitems}}
+        <div class="epure-todo-empty">
+            <p>{{empty}}</p>
+            <p><a href="{{dashboardurl}}">{{#str}}myhome{{/str}}</a> · <a href="{{calendarurl}}">{{#str}}calendar, calendar{{/str}}</a></p>
+        </div>
+    {{/hasitems}}
+</div>

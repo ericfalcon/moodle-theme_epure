@@ -417,3 +417,47 @@ p.epure-learner-more {
         }
     }
 }
+
+// The page « To do » (theme_epure/todo): the filters on one line when there is room, then the activities grouped by
+// deadline, as in « This week » of the dashboard.
+.epure-todo {
+    max-width: 48rem;
+}
+
+.epure-todo-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: .75rem 1rem;
+    margin-bottom: 1.5rem;
+
+    label {
+        display: block;
+        margin-bottom: .25rem;
+        font-weight: 600;
+    }
+
+    .btn {
+        min-height: 2.75rem;
+    }
+}
+
+.epure-todo-count {
+    color: var(--epure-ink-muted);
+}
+
+.epure-todo-group {
+    margin-bottom: 1.5rem;
+}
+
+.epure-todo-title {
+    font-size: 1.25rem;
+}
+
+.epure-todo-late .epure-todo-title {
+    color: var(--epure-state-late);
+}
+
+.epure-todo-number {
+    font-weight: 400;
+}
