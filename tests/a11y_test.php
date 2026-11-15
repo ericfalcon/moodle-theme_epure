@@ -43,7 +43,7 @@ final class a11y_test extends \advanced_testcase {
         $this->assertSame('', a11y::html_classes());
         $this->assertSame(['text' => 100, 'font' => '', 'scheme' => '',
             'spacing' => false, 'lines' => false, 'contrast' => false, 'underline' => false,
-            'motion' => false], a11y::preferences());
+            'motion' => false, 'stillimages' => false, 'scrollbars' => false], a11y::preferences());
     }
 
     /**
@@ -102,6 +102,10 @@ final class a11y_test extends \advanced_testcase {
         set_user_preference('theme_epure_a11y_text', 100);
         set_user_preference('theme_epure_a11y_motion', 0);
         $this->assertSame('epure-a11y-font-atkinson', a11y::html_classes());
+        // The two last switches of the panel: the animated images stopped, the scroll bars shown.
+        set_user_preference('theme_epure_a11y_stillimages', 1);
+        set_user_preference('theme_epure_a11y_scrollbars', 1);
+        $this->assertSame('epure-a11y-font-atkinson epure-a11y-stillimages epure-a11y-scrollbars', a11y::html_classes());
 
         $this->assertTrue(a11y::panel_enabled());
         set_config('prefpanel', 0, 'theme_epure');

@@ -1,5 +1,12 @@
 # Changes
 
+## 1.24.0 — two more display preferences: animated images stopped, scroll bars always shown
+
+- « Stop the animated images » in the panel « Aa » (WCAG 2.2.2): the animated GIF images of the pages show their first frame, each with a button « Play the animation » (named after its text alternative) that plays it and stops it again (aria-pressed). Applied at once when the box is ticked, without reloading; an image of another site, which the browser does not let the page read, stays as it is.
+- « Always show the scroll bars »: wide scroll bars, always visible, their thumb contrasted with its track (WCAG 1.4.11), instead of the bars that hide on macOS and phones; Firefox takes their width and colours.
+- As the other preferences: kept in the profile (exported and deleted with the privacy API), and each a setting of the display by default of the site.
+- Tests: PHPUnit (the classes of the page) and Behat (a page with an animated image: stopped from the panel, played with its button, kept after a reload; accessibility).
+
 ## 1.23.0 — keys of navigation
 
 - Keys of navigation, turned on by each user in the help of the keyboard shortcuts (« ? », or the button of the panel « Aa »): N and P for the next and the previous activity, J and K for the next and the previous section of the course page (the focus goes to its title), G then D, C, A or F for the dashboard, « My courses », the calendar and the page « To do ».

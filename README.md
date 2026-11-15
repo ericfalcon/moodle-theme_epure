@@ -123,6 +123,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.24.0**: two new display preferences of the panel « Aa », off by default (and two settings of the display by default of the site): stop the animated images, always show the scroll bars.
 - **1.23.0**: no new setting; upgrade the site. Keys of navigation (next and previous activity or section, dashboard, « My courses », calendar, « To do »), off by default, turned on by each user in the help of the shortcuts.
 - **1.22.0**: no new setting; upgrade the site. A page « To do » for the learners: their activities still to do in all their courses, grouped by deadline and filtered by course and by period.
 - **1.21.0**: no new setting; upgrade the site. The preview of the files shows the text of the office documents (Word, PowerPoint, Excel, LibreOffice): titles, lists, tables, slides and sheets. The getting started with Épure shows the tabs of the settings of the theme themselves; with IOMAD, each company has its own, offered to its managers on IOMAD's dashboard.

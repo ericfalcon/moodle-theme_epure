@@ -28,7 +28,7 @@ import Ajax from 'core/ajax';
 import {getString} from 'core/str';
 
 /** Preferences that are on or off. */
-const SWITCHES = ['spacing', 'lines', 'contrast', 'underline', 'motion'];
+const SWITCHES = ['spacing', 'lines', 'contrast', 'underline', 'motion', 'stillimages', 'scrollbars'];
 
 /**
  * Current choices of the panel.
