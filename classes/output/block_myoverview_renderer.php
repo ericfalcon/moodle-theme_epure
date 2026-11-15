@@ -39,6 +39,13 @@ class block_myoverview_renderer extends \block_myoverview\output\renderer {
         if (!\theme_epure\company_style::enabled('mycoursesbyrole')) {
             return parent::render_main($main);
         }
+        // IOMAD puts its own « My courses » block on the page and hides this one: the page by role is drawn once, by
+        // IOMAD's block, and not a second time, out of sight.
+        foreach (['iomad_mycourses', 'mycourses'] as $block) {
+            if ($this->page->blocks->is_block_present($block)) {
+                return '';
+            }
+        }
         $this->page->requires->js_call_amd('theme_epure/mycourses', 'init');
         return $this->render_from_template('theme_epure/mycourses', mycourses::export($this));
     }
