@@ -2,8 +2,9 @@
 
 ## 1.27.0 — long forms tell whether they are saved
 
-- The bar of the buttons to save of the long forms (settings of a course, of an activity, of a user…) tells the state of the form: « No changes to save », « Changes not saved » as soon as a field or the text of an editor changes (and « No changes to save » again when it is put back), « Not saved: 2 fields to correct » when Moodle sends the form back. Announced to screen readers (status), a mark of colour beside the words, which say it all (WCAG 1.4.1).
-- Tests: Behat (a field changed, put back, then emptied and saved: the three states; accessibility).
+- The bar of the buttons to save of the long forms (settings of a course, of an activity, of a user…) tells the state of the form: « No changes to save », « Changes not saved » as soon as a field or the text of an editor changes (and « No changes to save » again when it is put back), « Not saved: 2 fields to correct » when Moodle sends the form back with errors. Announced to screen readers (status), a mark of colour beside the words, which say it all (WCAG 1.4.1).
+- Only what the user changes counts: each field from its value when the user first goes to it, the text of an editor from what TinyMCE makes of it once ready. What the scripts of Moodle set or turn off by themselves (a date turned off, a section expanded, a list with suggestions) is not a change, however late they do it.
+- Tests: Behat (a field changed, then put back, then a short name already taken saved: the three states; accessibility; the state told with the fields changed when it is not the one expected); the reference image of the course settings, with the line of the state.
 
 ## 1.26.0 — the progress follows the page
 
