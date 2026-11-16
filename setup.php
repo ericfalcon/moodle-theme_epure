@@ -76,22 +76,6 @@ $content = html_writer::tag('p', get_string('setup_' . $key . '_intro', 'theme_e
 if ($settings) {
     $content .= setup::settings_html($settings);
 }
-if ($key === 'login') {
-    // A model by sector fills the tagline and the text left empty, and decides whether the catalogue shows.
-    $models = ['' => get_string('setup_model_none', 'theme_epure')];
-    foreach (setup::MODELS as $model) {
-        $models[$model] = get_string('setup_model_' . $model, 'theme_epure');
-    }
-    $content .= html_writer::div(
-        html_writer::div(html_writer::label(get_string('setup_model', 'theme_epure'), 'id_model'), 'form-label col-md-3') .
-        html_writer::div(
-            html_writer::select($models, 'model', '', false, ['id' => 'id_model', 'class' => 'form-select custom-select']) .
-            html_writer::div(get_string('setup_model_desc', 'theme_epure'), 'form-description mt-2'),
-            'form-setting col-md-9'
-        ),
-        'form-item row mb-3'
-    );
-}
 if ($page) {
     $content .= $page->output_html();
 }

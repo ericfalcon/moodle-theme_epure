@@ -533,6 +533,9 @@ if ($ADMIN->fulltree) {
     $setting->set_updatedcallback('theme_reset_all_caches');
     $page->add($setting);
 
+    // The models by sector of the getting started: they fill the tagline, the text and the catalogue on the page.
+    $page->add(new \theme_epure\admin\setting_loginmodel());
+
     $page->add(new admin_setting_configtext(
         'theme_epure/logintagline',
         get_string('logintagline', 'theme_epure'),
