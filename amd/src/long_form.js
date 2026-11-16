@@ -277,7 +277,7 @@ const followState = async(form, actions) => {
         return;
     }
     show('none', none);
-    // Until the user acts on a field, the form is as loaded: what the scripts of Moodle set or turn off (dates, lists
+    // Until the user goes to a field, the form is as loaded: what the scripts of Moodle set or turn off (dates, lists
     // with suggestions) is not a change. The texts of the editors are read every two seconds.
     let initial = snapshot(form);
     let touched = false;
@@ -297,6 +297,9 @@ const followState = async(form, actions) => {
         const changed = snapshot(form) !== initial || editorsChanged();
         show(changed ? 'unsaved' : 'none', changed ? unsaved : none);
     };
+    // A field that gets the focus is in the hands of the user: what happens to it from then on is theirs (a field
+    // emptied before it is typed in, by the browser or a tool, is not the form as loaded).
+    form.addEventListener('focusin', touch);
     form.addEventListener('pointerdown', touch);
     form.addEventListener('keydown', touch);
     form.addEventListener('input', update);
