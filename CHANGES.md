@@ -1,5 +1,15 @@
 # Changes
 
+## 1.30.0 — a management dashboard
+
+- A management dashboard of the platform (Site administration › Reports › Management dashboard), for those who see the reports of the site: the users who logged in, the new users, the new enrolments and the courses completed over the last 30 days, each compared with the 30 days before, in words (« 40 % more than the period before (30) ») with an arrow; the courses most followed (enrolled, came in the last 30 days, completed); how far the learners are in the courses that track their completion (completed, in progress, not started), in words with a bar that repeats them.
+- A manager of the site who does not configure it reaches it from the figure « Courses completed » of the key figures of the dashboard: Moodle builds the settings of the themes only for those who configure the site, so the page sets itself up as a report for them.
+- The colours of the logo under the brand colour: read from the first logo uploaded (the main one, else the one for a header in the brand colour, else the one for phones), as soon as it is uploaded, on the settings of the theme as on the page of the new settings of an installation. They were read from the main logo only: a site whose only logo was the one for a header in the brand colour got none. The message under the colour no longer sends to a tab « Header » that does not exist.
+- « Moodle is working », on the pages of installation and upgrade: the time since the step started under the message (« Working for 1 min 05 s »), each second, so that it shows the page is alive even when the circle seems still. For the eyes only: read out each second, it would drown the page.
+- The models of the login page by sector (university, company, school, training organisation, public administration), until now in the getting started only, are in the tab « Login page » of the settings too: a model fills the tagline and the text when they are empty or still those of a model (what the administrator wrote stays), ticks or unticks the catalogue, says so, and is saved with the page. Not a new setting: nothing of its own is stored. The getting started shows the same list, from the tab.
+- Read from the tables of Moodle at each display; the logins from the standard log, or from the last access of the users when it is off (without the period before). No new setting, no new table.
+- Tests: PHPUnit (the change in words, the indicators of the two periods, the courses, the completion, an empty site) and Behat (an administrator from the reports, a manager, a learner refused; accessibility).
+
 ## 1.29.0 — the pages of settings in cards
 
 - The pages of settings of the administration are in cards: one card per title of the page (« Logos », « Colours »…), with its description and its settings, separated by a fine line; a page without a title in one card; the results of the search of the administration, one card per page found. Drawn on the HTML of Moodle as it is, in CSS only: no change of the pages, no script, the same on every version of Moodle; dark mode and phones included.

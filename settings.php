@@ -533,6 +533,9 @@ if ($ADMIN->fulltree) {
     $setting->set_updatedcallback('theme_reset_all_caches');
     $page->add($setting);
 
+    // The models by sector of the getting started: they fill the tagline, the text and the catalogue on the page.
+    $page->add(new \theme_epure\admin\setting_loginmodel());
+
     $page->add(new admin_setting_configtext(
         'theme_epure/logintagline',
         get_string('logintagline', 'theme_epure'),
@@ -648,6 +651,14 @@ $ADMIN->add('themes', new admin_externalpage(
     'theme_epure_certificate',
     new lang_string('certtemplate', 'theme_epure'),
     new moodle_url('/theme/epure/certificate.php')
+));
+
+// Management dashboard of the platform: the activity of the last 30 days, the courses most followed, the completion.
+$ADMIN->add('reports', new admin_externalpage(
+    'theme_epure_management',
+    new lang_string('management', 'theme_epure'),
+    new moodle_url('/theme/epure/management.php'),
+    \theme_epure\management::CAPABILITY
 ));
 
 // Vocabulary of the platform: a page of its own, as applying it rewrites the language strings.

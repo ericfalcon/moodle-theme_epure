@@ -87,8 +87,13 @@ class busy {
         $message = get_string('busy', 'theme_epure');
         $detail = get_string('busy_detail', 'theme_epure');
         $attributes = ['class' => $class, 'id' => $id];
+        $elapsed = '';
         if ($overlay) {
             $attributes += ['data-message' => $message . ' ' . $detail, 'hidden' => 'hidden'];
+            // The time since the step started, each second: a change seen even when the spinner stays still (reduced
+            // motion). For the eyes only: read out every second, it would drown the page.
+            $elapsed = \html_writer::tag('p', '', ['class' => 'epure-busy-elapsed', 'aria-hidden' => 'true',
+                'data-region' => 'elapsed', 'data-format' => get_string('busy_elapsed', 'theme_epure', '{time}')]);
             // The message is put in the live region when the overlay appears, to be read out.
             $status = \html_writer::tag('p', '', ['class' => 'sr-only visually-hidden', 'role' => 'status',
                 'data-region' => 'message']);
@@ -101,6 +106,7 @@ class busy {
                 \html_writer::span('', 'epure-busy-spinner', ['aria-hidden' => 'true'])
                     . \html_writer::tag('p', $message, ['class' => 'epure-busy-title'])
                     . \html_writer::tag('p', $detail, ['class' => 'epure-busy-detail'])
+                    . $elapsed
                     . $status,
                 'epure-busy-box'
             ),

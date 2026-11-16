@@ -410,27 +410,34 @@ export const setLogo = (selector, url) => {
 };
 
 /**
- * Follows the logo of a file manager of the page: a logo uploaded there is not saved yet, but its
- * preview in the file manager gives its colours.
+ * Follows the file managers of the logos on the page: a logo just uploaded gives its colours before it is saved. With
+ * several logos (the main one, the one for a header in the brand colour, the one for phones), the first one that has a
+ * file gives them, in the order given.
  *
- * @param {string} selector Selector of the logo colours region.
- * @param {string} name Name of the file manager field.
+ * @param {string} selector Selector of the region of the colours.
+ * @param {string|string[]} names Names of the fields of the file managers, the first preferred.
  */
-export const followManager = (selector, name) => {
-    const manager = document.querySelector(`[name="${name}"]`)?.closest('.fitem, .form-group, .form-item');
-    if (!manager) {
+export const followManager = (selector, names) => {
+    const managers = (Array.isArray(names) ? names : [names])
+        .map((name) => document.querySelector(`[name="${name}"]`)?.closest('.fitem, .form-group, .form-item'))
+        .filter((manager) => manager);
+    if (!managers.length) {
         return;
     }
     const follow = () => {
-        const preview = manager.querySelector('.fp-content img[src*="draftfile.php"], .fp-content img[src*="pluginfile.php"]');
-        if (preview) {
-            const url = new URL(preview.src, window.location.href);
-            url.searchParams.delete('preview');
-            url.searchParams.delete('oid');
-            setLogo(selector, url.toString());
+        for (const manager of managers) {
+            const preview = manager.querySelector('.fp-content img[src*="draftfile.php"], .fp-content img[src*="pluginfile.php"]');
+            if (preview) {
+                const url = new URL(preview.src, window.location.href);
+                url.searchParams.delete('preview');
+                url.searchParams.delete('oid');
+                setLogo(selector, url.toString());
+                return;
+            }
         }
     };
     // The file manager first shows a placeholder, then sets the preview address on the same image.
-    new MutationObserver(follow).observe(manager, {childList: true, subtree: true, attributes: true, attributeFilter: ['src']});
+    managers.forEach((manager) => new MutationObserver(follow).observe(manager,
+        {childList: true, subtree: true, attributes: true, attributeFilter: ['src']}));
     follow();
 };

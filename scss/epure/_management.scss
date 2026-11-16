@@ -1,0 +1,121 @@
+// Management dashboard of the platform: indicators in cards, the courses most followed, the completion. The words say
+// every figure; the bar of the completion repeats them for the eyes.
+.epure-management-intro {
+    color: var(--epure-ink-muted);
+}
+
+.epure-management-section {
+    margin-top: 1.5rem;
+
+    > h3 {
+        margin-bottom: .75rem;
+        font-size: 1.25rem;
+    }
+}
+
+.epure-management-indicators {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: .75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.epure-management-indicator {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    padding: 1rem 1.25rem;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+}
+
+.epure-management-label {
+    color: var(--epure-ink-muted);
+    font-weight: 600;
+}
+
+.epure-management-value {
+    color: var(--epure-ink);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.epure-management-change {
+    display: flex;
+    align-items: baseline;
+    gap: .25rem;
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+
+    .icon {
+        margin: 0;
+    }
+}
+
+.epure-management-up .epure-management-change .icon {
+    color: var(--epure-state-done);
+}
+
+.epure-management-down .epure-management-change .icon {
+    color: var(--epure-state-late);
+}
+
+.epure-management-note {
+    margin-top: .75rem;
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+}
+
+.epure-management-table {
+    th[scope="row"] {
+        font-weight: 400;
+    }
+}
+
+// The bar of the completion, in three parts, and its legend with the figures.
+.epure-management-bar {
+    display: flex;
+    height: .75rem;
+    margin: .5rem 0 .75rem;
+    overflow: hidden;
+    background-color: var(--epure-border);
+    border-radius: 999px;
+}
+
+.epure-management-part-completed {
+    background-color: var(--epure-state-done);
+}
+
+.epure-management-part-progress {
+    background-color: var(--epure-brand);
+}
+
+.epure-management-part-notstarted {
+    background-color: var(--epure-ink-muted);
+}
+
+.epure-management-parts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+    }
+}
+
+.epure-management-swatch {
+    flex: none;
+    width: .875rem;
+    height: .875rem;
+    border-radius: calc(var(--epure-radius) / 2);
+}

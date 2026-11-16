@@ -40,7 +40,7 @@ class admin_home {
         ['category' => 'modules', 'icon' => 'fa-puzzle-piece',
             'pages' => ['pluginsoverview', 'tool_installaddon_index', 'manageenrols', 'manageauths']],
         ['category' => 'reports', 'icon' => 'fa-chart-column',
-            'pages' => ['reportlog', 'reportloglive', 'customreports', 'reportconfiglog']],
+            'pages' => ['theme_epure_management', 'reportlog', 'reportloglive', 'customreports', 'reportconfiglog']],
         ['category' => 'server', 'icon' => 'fa-server',
             'pages' => ['adminnotifications', 'scheduledtasks', 'maintenancemode', 'environment']],
     ];

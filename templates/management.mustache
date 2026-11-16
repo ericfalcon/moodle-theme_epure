@@ -1,0 +1,103 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/management
+
+    Management dashboard of the platform: the indicators of the period compared with the period before, the courses
+    most followed, how far the learners are in the courses that track their completion. The words say every figure;
+    the bars repeat them for the eyes.
+
+    Example context (json):
+    {
+        "days": 30,
+        "indicators": [{"key": "active", "label": "Users who logged in", "value": 42, "previous": 30,
+            "change": "40 % more than the 30 days before (30)", "trend": "up", "icon": "fa-arrow-up"}],
+        "hascourses": true,
+        "courses": [{"name": "Safety at work", "url": "#", "enrolled": 20, "active": 12, "completed": 3}],
+        "completion": {"total": 20, "totaltext": "20 enrolments in the courses that track completion:", "hasdata": true, "parts": [
+            {"key": "completed", "text": "Completed: 5 (25 %)", "percent": 25},
+            {"key": "progress", "text": "In progress: 10 (50 %)", "percent": 50},
+            {"key": "notstarted", "text": "Not started: 5 (25 %)", "percent": 25}]},
+        "nolog": false
+    }
+}}
+<div class="epure-management">
+    <h2>{{#str}}management, theme_epure{{/str}}</h2>
+    <p class="epure-management-intro">{{#str}}management_intro, theme_epure, {{days}}{{/str}}</p>
+
+    <section class="epure-management-section" aria-labelledby="epure-management-period">
+        <h3 id="epure-management-period">{{#str}}management_period, theme_epure, {{days}}{{/str}}</h3>
+        <ul class="epure-management-indicators">
+            {{#indicators}}
+            <li class="epure-management-indicator epure-management-{{trend}}">
+                <span class="epure-management-label">{{label}}</span>
+                <span class="epure-management-value">{{value}}</span>
+                <span class="epure-management-change">
+                    <i class="icon fa {{icon}} fa-fw" aria-hidden="true"></i>{{change}}
+                </span>
+            </li>
+            {{/indicators}}
+        </ul>
+        {{#nolog}}<p class="epure-management-note">{{#str}}management_nolog, theme_epure{{/str}}</p>{{/nolog}}
+    </section>
+
+    <section class="epure-management-section" aria-labelledby="epure-management-courses">
+        <h3 id="epure-management-courses">{{#str}}management_courses, theme_epure{{/str}}</h3>
+        {{#hascourses}}
+        <div class="table-responsive">
+            <table class="table generaltable epure-management-table">
+                <caption class="sr-only visually-hidden">{{#str}}management_courses, theme_epure{{/str}}</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">{{#str}}course{{/str}}</th>
+                        <th scope="col" class="text-end">{{#str}}management_enrolled, theme_epure{{/str}}</th>
+                        <th scope="col" class="text-end">{{#str}}management_courseactive, theme_epure, {{days}}{{/str}}</th>
+                        <th scope="col" class="text-end">{{#str}}management_coursecompleted, theme_epure, {{days}}{{/str}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#courses}}
+                    <tr>
+                        <th scope="row"><a href="{{url}}">{{name}}</a></th>
+                        <td class="text-end">{{enrolled}}</td>
+                        <td class="text-end">{{active}}</td>
+                        <td class="text-end">{{completed}}</td>
+                    </tr>
+                    {{/courses}}
+                </tbody>
+            </table>
+        </div>
+        {{/hascourses}}
+        {{^hascourses}}<p>{{#str}}management_nocourses, theme_epure{{/str}}</p>{{/hascourses}}
+    </section>
+
+    <section class="epure-management-section" aria-labelledby="epure-management-completion">
+        <h3 id="epure-management-completion">{{#str}}management_completion, theme_epure{{/str}}</h3>
+        {{#completion.hasdata}}
+        <p>{{completion.totaltext}}</p>
+        <div class="epure-management-bar" aria-hidden="true">
+            {{#completion.parts}}<span class="epure-management-part-{{key}}" style="width: {{percent}}%"></span>{{/completion.parts}}
+        </div>
+        <ul class="epure-management-parts">
+            {{#completion.parts}}
+            <li><span class="epure-management-swatch epure-management-part-{{key}}" aria-hidden="true"></span>{{text}}</li>
+            {{/completion.parts}}
+        </ul>
+        {{/completion.hasdata}}
+        {{^completion.hasdata}}<p>{{#str}}management_completion_none, theme_epure{{/str}}</p>{{/completion.hasdata}}
+    </section>
+</div>
