@@ -76,7 +76,8 @@ class setting_brandcolour extends \admin_setting_configcolourpicker {
         ]);
         $PAGE->requires->js_init_call('M.util.init_colour_picker', [$this->get_id(), $this->previewconfig]);
 
-        $logo = \theme_epure\logos::main_url();
+        // The main logo, else the other logos of the theme: their colours are those of the brand too.
+        $logo = \theme_epure\logos::main_url() ?? \theme_epure\logos::url('logoonbrand') ?? \theme_epure\logos::url('logomobile');
         $regionid = $this->get_id() . '_logocolours';
         $element .= $OUTPUT->render_from_template('theme_epure/logo_colours', [
             'id' => $regionid,
@@ -84,8 +85,12 @@ class setting_brandcolour extends \admin_setting_configcolourpicker {
             'logourl' => $logo ? $logo->out(false) : null,
         ]);
         $PAGE->requires->js_call_amd('theme_epure/logo_colours', 'init', ['#' . $regionid]);
-        // The logo is set on the same tab, above: a logo just uploaded gives its colours before it is saved.
-        $PAGE->requires->js_call_amd('theme_epure/logo_colours', 'followManager', ['#' . $regionid, 's_theme_epure_logo']);
+        // The logos are set on the same page, above: a logo just uploaded gives its colours before it is saved.
+        $PAGE->requires->js_call_amd(
+            'theme_epure/logo_colours',
+            'followManager',
+            ['#' . $regionid, ['s_theme_epure_logo', 's_theme_epure_logoonbrand', 's_theme_epure_logomobile']]
+        );
 
         return format_admin_setting(
             $this,
