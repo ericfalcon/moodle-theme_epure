@@ -123,6 +123,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.28.0**: no new setting; upgrade the site. During a quiz attempt, the panel of the questions tells how many questions are answered, out of how many.
 - **1.27.0**: no new setting; upgrade the site. The bar of the buttons to save of the long forms tells whether the changes are saved, or which fields to correct, announced to screen readers.
 - **1.26.0**: no new setting; upgrade the site. The progress of the sections and of the banner of a course follows an activity marked as done on the page, without reloading.
 - **1.25.0**: no new setting; upgrade the site. After each update, the home of the administration tells what is new since the version installed before.

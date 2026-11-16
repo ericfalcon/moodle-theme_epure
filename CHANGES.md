@@ -1,5 +1,10 @@
 # Changes
 
+## 1.28.0 — how many questions are answered
+
+- Quiz attempt: the panel of the questions tells, above their buttons, how many questions are answered (« 3 of 10 questions answered »), with a bar that repeats it, green and with a mark once all are answered. The real questions only, not the descriptions; as Moodle saves them (when the learner goes to another page, or submits), the same count as the summary of the attempt.
+- Tests: Behat (an attempt on two pages: 0, 1 then 2 questions answered; accessibility).
+
 ## 1.27.0 — long forms tell whether they are saved
 
 - The bar of the buttons to save of the long forms (settings of a course, of an activity, of a user…) tells the state of the form: « No changes to save », « Changes not saved » as soon as a field or the text of an editor changes (and « No changes to save » again when it is put back), « Not saved: 2 fields to correct » when Moodle sends the form back with errors. Announced to screen readers (status), a mark of colour beside the words, which say it all (WCAG 1.4.1).

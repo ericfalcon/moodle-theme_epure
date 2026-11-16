@@ -54,6 +54,44 @@
     gap: .5rem;
 }
 
+// How many questions are answered, above the buttons of the panel: the words, and a bar that repeats them.
+.path-mod-quiz #mod_quiz_navblock .epure-quiz-progress {
+    margin: 0 0 .75rem;
+}
+
+.epure-quiz-progress-text {
+    display: flex;
+    align-items: center;
+    gap: .375rem;
+    margin: 0 0 .375rem;
+    color: var(--epure-ink);
+    font-size: .875rem;
+    font-weight: 600;
+
+    .icon {
+        margin: 0;
+        color: var(--epure-state-done);
+    }
+}
+
+.epure-quiz-progress-bar {
+    height: .375rem;
+    overflow: hidden;
+    background-color: var(--epure-border);
+    border-radius: 999px;
+
+    span {
+        display: block;
+        height: 100%;
+        background-color: var(--epure-brand);
+        border-radius: inherit;
+    }
+
+    .epure-quiz-progress-done & span {
+        background-color: var(--epure-state-done);
+    }
+}
+
 // Meaning of the marks of the panel of the questions, under its buttons.
 .path-mod-quiz #mod_quiz_navblock .epure-quiz-legend {
     display: grid;
