@@ -286,7 +286,7 @@ Idées retenues de l'exploration du thème Retani Studio (Moodle 5.3, GPL v3) en
 - [x] **« Nouveautés d'Épure » pour l'administrateur** (1.25.0) (idée vue dans MoodleFlow, qui affiche son journal des changements) : après une mise à jour, sur l'accueil de l'administration, ce qui change pour le site depuis la version précédente (les notes de mise à jour du README), avec un lien vers le détail ; fermé une fois lu.
 - [x] **Progression qui suit la page** (1.26.0) : la progression des sections et de la bannière du cours mise à jour par l'état du cours de Moodle (`core_courseformat`), quand une activité est cochée, sans dépendre de l'index du cours.
 - [x] **État d'enregistrement des formulaires longs** (1.27.0) : « Aucune modification à enregistrer » / « Modifications non enregistrées » / « Non enregistré : N champs à corriger », annoncé aux lecteurs d'écran, sur la barre d'enregistrement.
-- [ ] **Test : « N questions sur M répondues »** dans la navigation pendant une tentative.
+- [x] **Test : « N questions sur M répondues »** (1.28.0) dans le panneau des questions pendant une tentative, avec une barre ; les vraies questions seulement, telles qu'enregistrées par Moodle (même compte que le récapitulatif).
 - [ ] **Pages de réglages de l'administration en cartes**, une par titre.
 - [x] **Assistant de premier démarrage** (1.18.0, « Mise en route d'Épure ») : nom et logo, couleurs, page de connexion à partir d'un modèle par secteur (université, entreprise, école, organisme de formation, administration), pied de page, puis déclaration d'accessibilité.
 - [ ] **Tableau de bord de gestion** pour l'administrateur : indicateurs comparés au mois précédent, nouveaux apprenants, cours les plus suivis, répartition des achèvements.

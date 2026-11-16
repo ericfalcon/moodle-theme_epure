@@ -25,8 +25,8 @@ use theme_epure\activity_state;
 
 /**
  * Renderer of the quizzes: a choice is chosen by a click on its row; the summary of an attempt tells what is left
- * before submitting, with the buttons to submit at the top as at the bottom; the panel of the questions explains its
- * marks.
+ * before submitting, with the buttons to submit at the top as at the bottom; the panel of the questions tells how many
+ * are answered and explains its marks.
  *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
@@ -222,7 +222,7 @@ class mod_quiz_renderer extends \mod_quiz\output\renderer {
     }
 
     /**
-     * Panel of the questions, with the meaning of its marks during an attempt.
+     * Panel of the questions, with how many are answered and the meaning of its marks during an attempt.
      *
      * @param navigation_panel_base $panel Panel.
      * @return string HTML.
@@ -234,6 +234,41 @@ class mod_quiz_renderer extends \mod_quiz\output\renderer {
         }
         $legend = $this->render_from_template('theme_epure/quiz_legend', []);
         $position = strpos($output, '<div class="othernav">');
-        return $position === false ? $output . $legend : substr_replace($output, $legend, $position, 0);
+        $output = $position === false ? $output . $legend : substr_replace($output, $legend, $position, 0);
+        // How many questions are answered, above their buttons.
+        $progress = $this->quiz_progress($panel->get_question_buttons());
+        $position = strpos($output, '<div class="qn_buttons');
+        return $position === false ? $progress . $output : substr_replace($output, $progress, $position, 0);
+    }
+
+    /**
+     * How many questions of an attempt are answered, out of how many: the real questions (not the descriptions), as
+     * saved (Moodle saves the answers of a page when the learner goes to another one, or submits).
+     *
+     * @param array $buttons Buttons of the panel (navigation_question_button and navigation_section_heading).
+     * @return string HTML, empty without a real question.
+     */
+    public function quiz_progress(array $buttons): string {
+        $total = 0;
+        $answered = 0;
+        foreach ($buttons as $button) {
+            if (!$button instanceof \mod_quiz\output\navigation_question_button || !$button->isrealquestion) {
+                continue;
+            }
+            $total++;
+            // Not answered yet, an answer that cannot be marked, or a question not reached yet.
+            if (!in_array($button->stateclass, ['notyetanswered', 'invalidanswer', 'blocked'], true)) {
+                $answered++;
+            }
+        }
+        if (!$total) {
+            return '';
+        }
+        $values = (object) ['answered' => $answered, 'total' => $total];
+        return $this->render_from_template('theme_epure/quiz_progress', [
+            'text' => get_string($answered <= 1 ? 'quizprogress_one' : 'quizprogress', 'theme_epure', $values),
+            'percent' => (int) round(100 * $answered / $total),
+            'done' => $answered === $total,
+        ]);
     }
 }
