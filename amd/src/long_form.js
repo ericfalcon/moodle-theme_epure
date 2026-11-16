@@ -211,26 +211,35 @@ const snapshot = (form) => JSON.stringify([...new FormData(form).entries()]
 
 /**
  * Follows the texts of the editors of a form: the text of TinyMCE as it is typed (it copies it into the form only when
- * it loses the focus, written its own way), the field itself otherwise.
+ * it loses the focus, written its own way), the field itself otherwise. Until the user types, pastes or clicks in an
+ * editor, its text is the one it starts with, whatever TinyMCE does to it when it gets ready.
  *
  * @param {HTMLFormElement} form Form.
  * @returns {Function} Whether the text of an editor changed.
  */
 const followEditors = (form) => {
     const fields = [...form.querySelectorAll('textarea')].filter((field) => isEditorText(field.name));
-    const start = new Map(fields.map((field) => [field, {tiny: false, value: field.value}]));
+    const start = new Map(fields.map((field) => [field, {editor: null, touched: false, value: field.value}]));
     return () => fields.some((field) => {
         const first = start.get(field);
         const editor = window.tinymce?.get(field.id);
-        if (editor?.initialized) {
-            if (!first.tiny) {
-                // The text as TinyMCE writes it, once it is ready.
-                first.tiny = true;
-                first.value = editor.getContent();
-            }
-            return editor.getContent() !== first.value;
+        if (!editor?.initialized) {
+            return field.value !== first.value;
         }
-        return field.value !== first.value;
+        if (first.editor !== editor) {
+            first.editor = editor;
+            first.touched = false;
+            const touch = () => {
+                first.touched = true;
+            };
+            editor.on('input keydown paste', touch);
+            editor.getContainer()?.addEventListener('pointerdown', touch);
+        }
+        const value = editor.getContent();
+        if (!first.touched) {
+            first.value = value;
+        }
+        return value !== first.value;
     });
 };
 
