@@ -1,5 +1,10 @@
 # Changes
 
+## 1.27.0 — long forms tell whether they are saved
+
+- The bar of the buttons to save of the long forms (settings of a course, of an activity, of a user…) tells the state of the form: « No changes to save », « Changes not saved » as soon as a field or the text of an editor changes (and « No changes to save » again when it is put back), « Not saved: 2 fields to correct » when Moodle sends the form back. Announced to screen readers (status), a mark of colour beside the words, which say it all (WCAG 1.4.1).
+- Tests: Behat (a field changed, put back, then emptied and saved: the three states; accessibility).
+
 ## 1.26.0 — the progress follows the page
 
 - On the page of a course, an activity marked or unmarked as done (« Mark as done », or the course index) updates at once the progress of its section (« 1/3 » and its bar, in the course index too) and of the banner of the course (percentage and bar), announced to screen readers (« Progress of the course: 33 % »), as well as its state and the activity to continue. Whatever the format of the course, with or without the course index; it used to wait for the page to be reloaded.

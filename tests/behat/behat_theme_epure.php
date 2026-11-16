@@ -802,4 +802,49 @@ class behat_theme_epure extends behat_base {
         global $DB;
         return (int) $DB->get_field(iomad::table('company'), 'id', ['shortname' => $shortname], MUST_EXIST);
     }
+    /**
+     * The state told by the bar of the buttons to save of a long form, with what it shows and the fields changed since
+     * the page was loaded when it is not the one expected.
+     *
+     * @Then /^the long form should tell "(?P<state>none|unsaved|errors)"$/
+     * @param string $state Expected state.
+     */
+    public function the_long_form_should_tell(string $state): void {
+        $script = <<<'JS'
+            return (function() {
+                const status = document.querySelector('.epure-longform-status');
+                const form = status && status.closest('form');
+                const now = form ? [...new FormData(form).entries()].filter(([, value]) => typeof value === 'string')
+                    .map(([name, value]) => name + '=' + value) : [];
+                const before = window.epureLongFormLoaded || [];
+                return JSON.stringify({
+                    state: status ? status.dataset.state : null,
+                    text: status ? status.textContent : null,
+                    visible: status ? Boolean(status.offsetParent) : false,
+                    added: now.filter((item) => !before.includes(item)),
+                    removed: before.filter((item) => !now.includes(item)),
+                });
+            })();
+            JS;
+        // The state follows the form within two seconds.
+        for ($try = 0; $try < 20; $try++) {
+            $result = json_decode($this->evaluate_script($script), true);
+            if (($result['state'] ?? null) === $state && !empty($result['visible'])) {
+                return;
+            }
+            usleep(250000);
+        }
+        throw new ExpectationException('The long form tells: ' . json_encode($result), $this->getSession());
+    }
+
+    /**
+     * Keeps the values of the long form of the page, to tell later which fields changed.
+     *
+     * @Given /^I keep the values of the long form$/
+     */
+    public function i_keep_the_values_of_the_long_form(): void {
+        $this->execute_script('window.epureLongFormLoaded = [...new FormData(document.querySelector(' .
+            '".epure-longform-actions").closest("form")).entries()].filter(([, value]) => typeof value === "string")' .
+            '.map(([name, value]) => name + "=" + value);');
+    }
 }

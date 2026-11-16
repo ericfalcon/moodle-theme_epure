@@ -15,8 +15,9 @@
 
 /**
  * Long settings forms (course, activity, section): the sections as cards, the buttons to save at the bottom of the
- * screen, and on wide screens a list of the sections beside the form that opens and shows each one, the sections with
- * an error marked.
+ * screen with the state of the form (no changes, changes not saved, fields to correct), announced to screen readers,
+ * and on wide screens a list of the sections beside the form that opens and shows each one, the sections with an error
+ * marked.
  *
  * The fields, their order and the saving stay Moodle's: only the way to reach them changes.
  *
@@ -190,6 +191,123 @@ const gatherLead = (form, actions) => {
 };
 
 /**
+ * Whether a field is the text of an editor (TinyMCE or Atto copy it into the form only now and then).
+ *
+ * @param {string} name Name of the field.
+ * @returns {boolean}
+ */
+const isEditorText = (name) => name.endsWith('[text]');
+
+/**
+ * The values of the fields of an item of a form, to tell whether they changed: not its buttons, its key of session, the
+ * sections that Moodle remembers as expanded, nor the texts of the editors (see followEditors).
+ *
+ * @param {HTMLFormElement} form Form.
+ * @param {HTMLElement} item Item of the form (.fitem).
+ * @returns {string}
+ */
+const valuesOf = (form, item) => {
+    const names = new Set([...item.querySelectorAll('[name]')].map((field) => field.name));
+    return JSON.stringify([...new FormData(form).entries()]
+        .filter(([name, value]) => names.has(name) && typeof value === 'string' && name !== 'sesskey'
+            && !isEditorText(name) && !/^mform_(isexpanded|showmore|showadvanced)_/.test(name)));
+};
+
+/**
+ * Follows the texts of the editors of a form: the text of TinyMCE as it is typed (it copies it into the form only when
+ * it loses the focus, written its own way), the field itself otherwise. Until the user types, pastes or clicks in an
+ * editor, its text is the one it starts with, whatever TinyMCE does to it when it gets ready.
+ *
+ * @param {HTMLFormElement} form Form.
+ * @returns {Function} Whether the text of an editor changed.
+ */
+const followEditors = (form) => {
+    const fields = [...form.querySelectorAll('textarea')].filter((field) => isEditorText(field.name));
+    const start = new Map(fields.map((field) => [field, {editor: null, touched: false, value: field.value}]));
+    return () => fields.some((field) => {
+        const first = start.get(field);
+        const editor = window.tinymce?.get(field.id);
+        if (!editor?.initialized) {
+            return field.value !== first.value;
+        }
+        if (first.editor !== editor) {
+            first.editor = editor;
+            first.touched = false;
+            const touch = () => {
+                first.touched = true;
+            };
+            editor.on('input keydown paste', touch);
+            editor.getContainer()?.addEventListener('pointerdown', touch);
+        }
+        const value = editor.getContent();
+        if (!first.touched) {
+            first.value = value;
+        }
+        return value !== first.value;
+    });
+};
+
+/**
+ * The state of the form in the bar of the buttons to save: no changes, changes not saved (a field changed, or the text
+ * of an editor), or fields to correct once Moodle sent the form back. Announced at each change.
+ *
+ * @param {HTMLFormElement} form Form.
+ * @param {HTMLElement} actions The bar of the buttons to save.
+ */
+const followState = async(form, actions) => {
+    const [none, unsaved, errors, error] = await getStrings([
+        {key: 'longform_nochanges', component: 'theme_epure'},
+        {key: 'longform_unsaved', component: 'theme_epure'},
+        {key: 'longform_errors', component: 'theme_epure', param: form.querySelectorAll('.is-invalid').length},
+        {key: 'longform_errors_one', component: 'theme_epure'},
+    ]);
+    const status = document.createElement('p');
+    status.className = 'epure-longform-status';
+    status.setAttribute('role', 'status');
+    actions.prepend(status);
+    const invalid = form.querySelectorAll('.is-invalid').length;
+    let state = '';
+    const show = (next, text) => {
+        if (next !== state) {
+            state = next;
+            status.dataset.state = next;
+            status.textContent = text;
+        }
+    };
+    if (invalid) {
+        // Sent back by Moodle: not saved, and so until it is saved again.
+        show('errors', invalid === 1 ? error : errors);
+        form.addEventListener('input', () => show('unsaved', unsaved), {once: true});
+        return;
+    }
+    show('none', none);
+    // Only the fields the user acts on count, each from its values when the user first goes to it (before a key changes
+    // it, or a tool empties it to type in it): what the scripts of Moodle set or turn off elsewhere, when they please
+    // (dates, lists with suggestions), is not a change. The texts of the editors are read every two seconds.
+    const items = new Map();
+    const editorsChanged = followEditors(form);
+    const touch = (e) => {
+        const item = e.isTrusted ? e.target.closest?.('.fitem') : null;
+        if (item && form.contains(item) && !items.has(item)) {
+            items.set(item, valuesOf(form, item));
+        }
+    };
+    const update = (e) => {
+        if (e) {
+            touch(e);
+        }
+        const changed = [...items].some(([item, values]) => valuesOf(form, item) !== values) || editorsChanged();
+        show(changed ? 'unsaved' : 'none', changed ? unsaved : none);
+    };
+    form.addEventListener('focusin', touch);
+    form.addEventListener('pointerdown', touch);
+    form.addEventListener('keydown', touch);
+    form.addEventListener('input', update);
+    form.addEventListener('change', update);
+    window.setInterval(() => update(), 2000);
+};
+
+/**
  * Starts the long form of the page, if there is one.
  */
 export const init = async() => {
@@ -206,6 +324,9 @@ export const init = async() => {
         || form.querySelector('[name="submitbutton"]')?.closest('.fitem, .form-group');
     actions?.classList.add('epure-longform-actions');
     gatherLead(form, actions);
+    if (actions) {
+        followState(form, actions);
+    }
 
     const items = sections(form);
     if (items.length < MIN_SECTIONS) {

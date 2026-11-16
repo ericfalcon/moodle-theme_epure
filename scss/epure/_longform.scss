@@ -144,3 +144,32 @@ body.epure-longform-side {
         display: none;
     }
 }
+
+// The state of the form, in the bar of the buttons to save: a dot and a text, never the colour alone.
+.epure-longform-status {
+    display: flex;
+    flex-basis: 100%;
+    align-items: center;
+    gap: .5rem;
+    margin: 0 0 .5rem;
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+
+    &::before {
+        width: .625rem;
+        height: .625rem;
+        content: "";
+        background-color: currentcolor;
+        border-radius: 50%;
+    }
+
+    &[data-state="unsaved"] {
+        color: var(--epure-state-soon);
+        font-weight: 600;
+    }
+
+    &[data-state="errors"] {
+        color: var(--epure-state-late);
+        font-weight: 600;
+    }
+}

@@ -57,7 +57,7 @@ Choose a brand colour (or click a colour of your logo), and optionally an accent
 
 - Quick search (Ctrl+K / ⌘K) across menus, courses, activities and administration pages, the best matches first, with a page of all the results; for visitors, across the catalogue, the categories and the public pages.
 - A getting started offered to the administrator: name and logo, colours, login page from a model by sector, footer, then the accessibility statement.
-- Settings grouped in tabs, a clearer administration home, long forms with their sections listed and the save buttons always in view.
+- Settings grouped in tabs, a clearer administration home, long forms with their sections listed, the save buttons always in view and whether the changes are saved.
 - A course header for teachers: participants, active this week, to grade, with shortcuts, and the edit mode at hand on phones.
 - Branded e-mails, a certificate template in the brand colours for the plugin Certificate (tool_certificate), usable with the activity Course certificate.
 
@@ -123,6 +123,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.27.0**: no new setting; upgrade the site. The bar of the buttons to save of the long forms tells whether the changes are saved, or which fields to correct, announced to screen readers.
 - **1.26.0**: no new setting; upgrade the site. The progress of the sections and of the banner of a course follows an activity marked as done on the page, without reloading.
 - **1.25.0**: no new setting; upgrade the site. After each update, the home of the administration tells what is new since the version installed before.
 - **1.24.0**: two new display preferences of the panel « Aa », off by default (and two settings of the display by default of the site): stop the animated images, always show the scroll bars.

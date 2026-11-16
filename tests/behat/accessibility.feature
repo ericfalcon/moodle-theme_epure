@@ -314,13 +314,27 @@ Feature: Accessibility of the Épure theme
     Given the following "courses" exist:
       | fullname       | shortname |
       | Safety at work | SAFE      |
+      | First aid      | AID       |
     And I log in as "admin"
     And I change window size to "large"
     When I am on the "SAFE" "course editing" page
     Then ".epure-longform-actions" "css_element" should exist
+    And I keep the values of the long form
+    And the long form should tell "none"
     And "Completion tracking" "link" should exist in the ".epure-longform-nav" "css_element"
     And I click on "Completion tracking" "link" in the ".epure-longform-nav" "css_element"
     And "Enable completion tracking" "field" should be visible
+    And the long form should tell "none"
+    And I should see "No changes to save" in the ".epure-longform-actions" "css_element"
+    And I set the field "Course full name" to "Safety at work, 2027"
+    And I should see "Changes not saved" in the ".epure-longform-actions" "css_element"
+    And I set the field "Course full name" to "Safety at work"
+    And the long form should tell "none"
+    And I should see "No changes to save" in the ".epure-longform-actions" "css_element"
+    And I set the field "Course short name" to "AID"
+    And I press "Save and display"
+    And I should see "Not saved: 1 field to correct" in the ".epure-longform-actions" "css_element"
+    And the page should meet accessibility standards
 
   Scenario: The window to add a block searches the blocks and meets accessibility standards
     Given I log in as "admin"
