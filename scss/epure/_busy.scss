@@ -46,6 +46,14 @@
     color: var(--epure-ink-muted);
 }
 
+// The time since the step started, under the detail: it changes each second, even without motion.
+.epure-busy-elapsed {
+    margin: .75rem 0 0;
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+    font-variant-numeric: tabular-nums;
+}
+
 // While the server sends the page, as during an upgrade: a message centred at the bottom of the screen, under
 // the progress that grows above it, clear of the help button of the corner; it only appears after a second so
 // that it never flashes.

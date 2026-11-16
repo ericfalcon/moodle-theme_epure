@@ -29,16 +29,37 @@
     // Moodle prints the end of the page inside its footer, which can be hidden: the overlay goes to the page itself.
     document.body.appendChild(overlay);
     var timer = null;
+    var clock = null;
+    var elapsed = overlay.querySelector('[data-region="elapsed"]');
+
+    // « 12 s », « 1 min 05 s »: the time since the step started.
+    var duration = function(seconds) {
+        var minutes = Math.floor(seconds / 60);
+        var rest = seconds % 60;
+        return minutes ? minutes + ' min ' + (rest < 10 ? '0' : '') + rest + ' s' : rest + ' s';
+    };
+    var tick = function(start) {
+        if (elapsed) {
+            var seconds = Math.round((Date.now() - start) / 1000);
+            elapsed.textContent = elapsed.getAttribute('data-format').replace('{time}', duration(seconds));
+        }
+    };
 
     var show = function() {
+        var start = Date.now();
         timer = window.setTimeout(function() {
             overlay.hidden = false;
             overlay.querySelector('[data-region="message"]').textContent = overlay.getAttribute('data-message');
             document.body.setAttribute('aria-busy', 'true');
+            tick(start);
+            clock = window.setInterval(function() {
+                tick(start);
+            }, 1000);
         }, 500);
     };
     var hide = function() {
         window.clearTimeout(timer);
+        window.clearInterval(clock);
         overlay.hidden = true;
         overlay.querySelector('[data-region="message"]').textContent = '';
         document.body.removeAttribute('aria-busy');

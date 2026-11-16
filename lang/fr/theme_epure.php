@@ -206,6 +206,7 @@ $string['breadcrumbhide'] = 'Masqué';
 $string['breadcrumbshow'] = 'Affiché';
 $string['busy'] = 'Moodle travaille…';
 $string['busy_detail'] = 'Cette étape peut prendre quelques minutes. Ne fermez pas et ne rechargez pas cette page.';
+$string['busy_elapsed'] = 'Depuis {$a}';
 $string['cachedef_companystrings'] = 'Chaînes avec les mots d\'une entreprise IOMAD';
 $string['cachedef_courseaccessibility'] = 'Ce que le guide « Accessibilité du cours » a lu de chaque cours';
 $string['cachedef_documentcheck'] = 'Ce qui est trouvé dans chaque document bureautique ou PDF';
