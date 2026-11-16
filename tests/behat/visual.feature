@@ -65,6 +65,13 @@ Feature: Visual regression of the Épure theme
       | preferences         | /user/preferences.php                                      | light 1300 |                            |
       | preferences-dark    | /user/preferences.php                                      | dark 1300  |                            |
 
+  Scenario: The pages of an administrator look like their references
+    Given I log in as "admin"
+    Then the following pages should look like their references:
+      | name                | path                                     | display    |
+      | admin-settings      | /admin/settings.php?section=sitepolicies | light 1300 |
+      | admin-settings-dark | /admin/settings.php?section=sitepolicies | dark 1300  |
+
   Scenario: The pages of a teacher look like their references
     Given I log in as "teacher1"
     Then the following pages should look like their references:

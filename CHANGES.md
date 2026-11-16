@@ -1,5 +1,10 @@
 # Changes
 
+## 1.29.0 — the pages of settings in cards
+
+- The pages of settings of the administration are in cards: one card per title of the page (« Logos », « Colours »…), with its description and its settings, separated by a fine line; a page without a title in one card; the results of the search of the administration, one card per page found. Drawn on the HTML of Moodle as it is, in CSS only: no change of the pages, no script, the same on every version of Moodle; dark mode and phones included.
+- Tests: Behat (three pages of settings meet accessibility standards: a page without a title, the tabs of the theme, the search) and the visual regression (a page of settings in light and dark).
+
 ## 1.28.0 — how many questions are answered
 
 - Quiz attempt: the panel of the questions tells, above their buttons, how many questions are answered (« 3 of 10 questions answered »), with a bar that repeats it, green and with a mark once all are answered. The real questions only, not the descriptions; as Moodle saves them (when the learner goes to another page, or submits), the same count as the summary of the attempt.

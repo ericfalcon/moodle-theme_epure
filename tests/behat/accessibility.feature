@@ -336,6 +336,18 @@ Feature: Accessibility of the Épure theme
     And I should see "Not saved: 1 field to correct" in the ".epure-longform-actions" "css_element"
     And the page should meet accessibility standards
 
+  Scenario: The pages of settings of the administration, in cards, meet accessibility standards
+    Given I log in as "admin"
+    When I navigate to "Security > Site security settings" in site administration
+    Then I should see "Protect usernames"
+    And the page should meet accessibility standards
+    And I visit "/admin/settings.php?section=themesettingepure"
+    And I should see "Logos" in the "#adminsettings" "css_element"
+    And the page should meet accessibility standards
+    And I visit "/admin/search.php?query=password"
+    And I should see "Search results"
+    And the page should meet accessibility standards
+
   Scenario: The window to add a block searches the blocks and meets accessibility standards
     Given I log in as "admin"
     And I visit "/my/"
