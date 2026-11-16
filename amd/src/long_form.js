@@ -199,15 +199,19 @@ const gatherLead = (form, actions) => {
 const isEditorText = (name) => name.endsWith('[text]');
 
 /**
- * The values of a form, to tell whether they changed: its fields, but not its buttons, its key of session, the sections
- * that Moodle remembers as expanded, nor the texts of the editors (see editorsChanged).
+ * The values of the fields of an item of a form, to tell whether they changed: not its buttons, its key of session, the
+ * sections that Moodle remembers as expanded, nor the texts of the editors (see followEditors).
  *
  * @param {HTMLFormElement} form Form.
+ * @param {HTMLElement} item Item of the form (.fitem).
  * @returns {string}
  */
-const snapshot = (form) => JSON.stringify([...new FormData(form).entries()]
-    .filter(([name, value]) => typeof value === 'string' && name !== 'sesskey' && !isEditorText(name)
-        && !/^mform_(isexpanded|showmore|showadvanced)_/.test(name)));
+const valuesOf = (form, item) => {
+    const names = new Set([...item.querySelectorAll('[name]')].map((field) => field.name));
+    return JSON.stringify([...new FormData(form).entries()]
+        .filter(([name, value]) => names.has(name) && typeof value === 'string' && name !== 'sesskey'
+            && !isEditorText(name) && !/^mform_(isexpanded|showmore|showadvanced)_/.test(name)));
+};
 
 /**
  * Follows the texts of the editors of a form: the text of TinyMCE as it is typed (it copies it into the form only when
@@ -277,28 +281,24 @@ const followState = async(form, actions) => {
         return;
     }
     show('none', none);
-    // Until the user goes to a field, the form is as loaded: what the scripts of Moodle set or turn off (dates, lists
-    // with suggestions) is not a change. The texts of the editors are read every two seconds.
-    let initial = snapshot(form);
-    let touched = false;
+    // Only the fields the user acts on count, each from its values when the user first goes to it (before a key changes
+    // it, or a tool empties it to type in it): what the scripts of Moodle set or turn off elsewhere, when they please
+    // (dates, lists with suggestions), is not a change. The texts of the editors are read every two seconds.
+    const items = new Map();
     const editorsChanged = followEditors(form);
     const touch = (e) => {
-        if (e.isTrusted && e.target.closest?.('.fitem')) {
-            touched = true;
+        const item = e.isTrusted ? e.target.closest?.('.fitem') : null;
+        if (item && form.contains(item) && !items.has(item)) {
+            items.set(item, valuesOf(form, item));
         }
     };
     const update = (e) => {
         if (e) {
             touch(e);
         }
-        if (!touched) {
-            initial = snapshot(form);
-        }
-        const changed = snapshot(form) !== initial || editorsChanged();
+        const changed = [...items].some(([item, values]) => valuesOf(form, item) !== values) || editorsChanged();
         show(changed ? 'unsaved' : 'none', changed ? unsaved : none);
     };
-    // A field that gets the focus is in the hands of the user: what happens to it from then on is theirs (a field
-    // emptied before it is typed in, by the browser or a tool, is not the form as loaded).
     form.addEventListener('focusin', touch);
     form.addEventListener('pointerdown', touch);
     form.addEventListener('keydown', touch);
