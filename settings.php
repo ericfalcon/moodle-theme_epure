@@ -650,6 +650,14 @@ $ADMIN->add('themes', new admin_externalpage(
     new moodle_url('/theme/epure/certificate.php')
 ));
 
+// Management dashboard of the platform: the activity of the last 30 days, the courses most followed, the completion.
+$ADMIN->add('reports', new admin_externalpage(
+    'theme_epure_management',
+    new lang_string('management', 'theme_epure'),
+    new moodle_url('/theme/epure/management.php'),
+    \theme_epure\management::CAPABILITY
+));
+
 // Vocabulary of the platform: a page of its own, as applying it rewrites the language strings.
 $ADMIN->add('themes', new admin_externalpage(
     'theme_epure_vocabulary',

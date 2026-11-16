@@ -98,7 +98,8 @@ class iomad_figures {
                     ['since' => $now - self::COMPLETION_DAYS * DAYSECS]
                 ),
                 'detail' => get_string('iomadfigures_days', 'theme_epure', self::COMPLETION_DAYS),
-                'url' => '',
+                // The management dashboard tells more: the period before, the courses, the completion.
+                'url' => $url('/theme/epure/management.php'),
             ],
         ];
     }

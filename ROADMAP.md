@@ -289,7 +289,7 @@ Idées retenues de l'exploration du thème Retani Studio (Moodle 5.3, GPL v3) en
 - [x] **Test : « N questions sur M répondues »** (1.28.0) dans le panneau des questions pendant une tentative, avec une barre ; les vraies questions seulement, telles qu'enregistrées par Moodle (même compte que le récapitulatif).
 - [x] **Pages de réglages de l'administration en cartes** (1.29.0), une par titre, en CSS seul sur le HTML de Moodle ; une page sans titre en une carte ; les résultats de la recherche de l'administration, une carte par page trouvée.
 - [x] **Assistant de premier démarrage** (1.18.0, « Mise en route d'Épure ») : nom et logo, couleurs, page de connexion à partir d'un modèle par secteur (université, entreprise, école, organisme de formation, administration), pied de page, puis déclaration d'accessibilité.
-- [ ] **Tableau de bord de gestion** pour l'administrateur : indicateurs comparés au mois précédent, nouveaux apprenants, cours les plus suivis, répartition des achèvements.
+- [x] **Tableau de bord de gestion** (1.30.0) : utilisateurs connectés, nouveaux utilisateurs, nouvelles inscriptions et cours achevés sur 30 jours comparés aux 30 jours précédents, cours les plus suivis, répartition des achèvements ; pour qui voit les rapports du site (administrateur dans les rapports, gestionnaire depuis les chiffres clés du tableau de bord). Avec IOMAD, un tableau par entreprise reste à faire.
 
 Pour la qualité du thème (idées vues dans MoodleFlow) :
 

@@ -1,5 +1,12 @@
 # Changes
 
+## 1.30.0 — a management dashboard
+
+- A management dashboard of the platform (Site administration › Reports › Management dashboard), for those who see the reports of the site: the users who logged in, the new users, the new enrolments and the courses completed over the last 30 days, each compared with the 30 days before, in words (« 40 % more than the period before (30) ») with an arrow; the courses most followed (enrolled, came in the last 30 days, completed); how far the learners are in the courses that track their completion (completed, in progress, not started), in words with a bar that repeats them.
+- A manager of the site who does not configure it reaches it from the figure « Courses completed » of the key figures of the dashboard: Moodle builds the settings of the themes only for those who configure the site, so the page sets itself up as a report for them.
+- Read from the tables of Moodle at each display; the logins from the standard log, or from the last access of the users when it is off (without the period before). No new setting, no new table.
+- Tests: PHPUnit (the change in words, the indicators of the two periods, the courses, the completion, an empty site) and Behat (an administrator from the reports, a manager, a learner refused; accessibility).
+
 ## 1.29.0 — the pages of settings in cards
 
 - The pages of settings of the administration are in cards: one card per title of the page (« Logos », « Colours »…), with its description and its settings, separated by a fine line; a page without a title in one card; the results of the search of the administration, one card per page found. Drawn on the HTML of Moodle as it is, in CSS only: no change of the pages, no script, the same on every version of Moodle; dark mode and phones included.
