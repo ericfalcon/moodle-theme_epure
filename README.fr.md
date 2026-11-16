@@ -123,6 +123,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.29.0** : aucun nouveau réglage ; mettez le site à jour. Les pages de réglages de l'administration sont en cartes, une par titre.
 - **1.28.0** : aucun nouveau réglage ; mettez le site à jour. Pendant une tentative de test, le panneau des questions indique combien de questions sont répondues, sur combien.
 - **1.27.0** : aucun nouveau réglage ; mettez le site à jour. La barre des boutons d'enregistrement des formulaires longs indique si les modifications sont enregistrées, ou les champs à corriger, annoncé aux lecteurs d'écran.
 - **1.26.0** : aucun nouveau réglage ; mettez le site à jour. La progression des sections et de la bannière d'un cours suit une activité marquée comme faite sur la page, sans rechargement.

@@ -54,7 +54,11 @@ final class whatsnew_test extends \advanced_testcase {
         $this->assertNotNull($export);
         $versions = array_column($export['notes'], 'version');
         $this->assertNotContains('1.22.0', $versions);
-        $this->assertContains('1.23.0', $versions);
+        // The most recent versions, up to whatsnew::MAX, and a link to the rest when there are more.
+        $all = whatsnew::notes('1.22.0', whatsnew::current());
+        $this->assertContains(whatsnew::current(), $versions);
+        $this->assertCount(min(count($all), whatsnew::MAX), $versions);
+        $this->assertSame(count($all) > whatsnew::MAX, $export['more']);
         $sorted = $versions;
         usort($sorted, fn($a, $b) => version_compare($b, $a));
         $this->assertSame($sorted, $versions);

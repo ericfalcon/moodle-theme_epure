@@ -1,0 +1,71 @@
+// Pages of settings of the administration in cards: one card per title of the page (h3.main of Moodle), the
+// settings of a page without a title in one card. Moodle writes the titles and the settings side by side in one
+// fieldset: the cards are drawn on them as they are, with no change of the HTML nor script.
+$epure-settings-card: "#adminsettings fieldset";
+$epure-settings-parts: "h3.main, .formsettingheading, .form-item";
+
+#{$epure-settings-card} > :is(#{$epure-settings-parts}) {
+    margin-inline: 0;
+    padding-inline: 1.25rem;
+    background-color: var(--epure-surface);
+    border-inline: 1px solid var(--epure-border);
+}
+
+// The start of a card: a title, or the first setting of a page without a title.
+#{$epure-settings-card} > h3.main,
+#{$epure-settings-card} > .clearer + :is(.formsettingheading, .form-item) {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--epure-border);
+    border-start-start-radius: var(--epure-radius-lg);
+    border-start-end-radius: var(--epure-radius-lg);
+}
+
+#{$epure-settings-card} > .clearer + h3.main {
+    margin-top: .5rem;
+}
+
+#{$epure-settings-card} > h3.main {
+    margin-bottom: 0;
+    padding-bottom: .75rem;
+    font-size: 1.25rem;
+}
+
+// The end of a card: the last part before the next title, or of the page.
+#{$epure-settings-card} > :is(#{$epure-settings-parts}):is(:has(+ h3.main), :last-child) {
+    margin-bottom: 0;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid var(--epure-border);
+    border-end-start-radius: var(--epure-radius-lg);
+    border-end-end-radius: var(--epure-radius-lg);
+}
+
+// A title alone (its settings on another page, or none): its card ends with it.
+#{$epure-settings-card} > h3.main:is(:has(+ h3.main), :last-child) {
+    padding-bottom: 1rem;
+}
+
+#{$epure-settings-card} > .formsettingheading {
+    padding-bottom: .75rem;
+    color: var(--epure-ink-muted);
+}
+
+// The settings of a card are separated by a line, the first one under the title or its description.
+#{$epure-settings-card} > .form-item {
+    padding-top: 1rem;
+    padding-bottom: .5rem;
+
+    + .form-item {
+        border-top: 1px solid var(--epure-border);
+    }
+}
+
+#{$epure-settings-card} > :is(h3.main, .formsettingheading) + .form-item {
+    border-top: 1px solid var(--epure-border);
+}
+
+@include media-breakpoint-down(sm) {
+    #{$epure-settings-card} > :is(#{$epure-settings-parts}) {
+        padding-inline: .75rem;
+    }
+}
