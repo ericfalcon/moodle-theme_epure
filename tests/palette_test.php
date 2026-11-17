@@ -159,6 +159,8 @@ final class palette_test extends \basic_testcase {
                         $p = palette::derive($brand, $dark);
                         $this->assertGreaterThanOrEqual(palette::AA_TEXT, palette::contrast($p['on'], $p['fill']), $brand);
                         $this->assertGreaterThanOrEqual(palette::AA_TEXT, palette::contrast($p['on'], $p['hover']), $brand);
+                        // The hover is seen: black, which cannot darken, lightens.
+                        $this->assertNotSame($p['fill'], $p['hover'], $brand);
                     }
                 }
             }

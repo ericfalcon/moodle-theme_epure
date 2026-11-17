@@ -206,6 +206,42 @@ body.epure-header-brand .navbar.fixed-top .editmode-switch-form {
     }
 }
 
+// Moodle 5.3 and later draw the primary navigation and the edit mode switch with the components of their design system
+// (pills, a switch of their own), in the colours of a white header: in the colour of the text of the bar, here too.
+body.epure-header-brand .navbar.fixed-top {
+    --mds-focus-default: var(--epure-header-on);
+
+    .mds-nav-pill,
+    .mds-nav-pill:visited,
+    .mds-switch-label {
+        color: var(--epure-header-on);
+    }
+
+    // The page shown: a backing a little darker (or lighter) than the bar, with its dot, in place of the white pill.
+    .mds-nav-pill--selected,
+    .mds-nav-pill--selected:visited,
+    .mds-nav-pill--selected:hover,
+    .mds-nav-pill:hover:not([aria-disabled="true"]) {
+        color: var(--epure-header-on);
+        background-color: var(--epure-header-hover);
+    }
+
+    .mds-nav-pill__indicator {
+        background-color: var(--epure-header-on);
+    }
+
+    // The track of the switch, filled with the brand colour once on, the colour of the bar: outlined and darkened.
+    .mds-switch-track {
+        box-shadow: 0 0 0 1px var(--epure-header-on);
+    }
+
+    .mds-switch-input:checked + .mds-switch-control .mds-switch-track,
+    .mds-switch-input:checked + .mds-switch-control:hover .mds-switch-track {
+        color: rgba(0, 0, 0, .4);
+        background-color: rgba(0, 0, 0, .4);
+    }
+}
+
 // The hamburger icon is a dark image in Bootstrap's light navbar.
 body.epure-header-brand .navbar.fixed-top .navbar-toggler-icon {
     filter: var(--epure-header-toggler-filter);
