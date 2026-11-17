@@ -75,8 +75,8 @@ if (data_submitted() && confirm_sesskey()) {
         get_string('courseaccessibility_saved', 'theme_epure')
             . ($described ? ' ' . get_string('courseaccessibility_alt_saved', 'theme_epure', $described) : '')
             . implode('', array_map(
-                fn($kind) => $fixed[$kind] ? ' ' . get_string('courseaccessibility_fix_' . $kind . '_saved', 'theme_epure',
-                    $fixed[$kind]) : '',
+                fn($kind) => $fixed[$kind]
+                    ? ' ' . get_string('courseaccessibility_fix_' . $kind . '_saved', 'theme_epure', $fixed[$kind]) : '',
                 \theme_epure\content_fix::KINDS
             ))
             . ($renamed ? ' ' . get_string('courseaccessibility_renamed', 'theme_epure', $renamed) : ''),

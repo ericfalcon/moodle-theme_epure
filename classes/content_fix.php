@@ -267,8 +267,8 @@ class content_fix {
      */
     protected static function html(array $field): ?string {
         global $DB;
-        $record = $DB->get_record($field['table'], ['id' => $field['id']], $field['field'] . ', ' . $field['formatfield'],
-            IGNORE_MISSING);
+        $fields = $field['field'] . ', ' . $field['formatfield'];
+        $record = $DB->get_record($field['table'], ['id' => $field['id']], $fields, IGNORE_MISSING);
         if (!$record || !in_array((int) $record->{$field['formatfield']}, [(int) FORMAT_HTML, (int) FORMAT_MOODLE], true)) {
             return null;
         }

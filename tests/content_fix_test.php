@@ -98,8 +98,13 @@ final class content_fix_test extends \advanced_testcase {
         $items = content_fix::items($part, $course);
         $nothing = ['frames' => 0, 'imagelinks' => 0, 'tables' => 0];
 
-        $this->assertSame($nothing, content_fix::apply($course, $parts, [$items['frames'][0]['key'] => '  '], [],
-            [$items['tables'][0]['key'] => false]));
+        $this->assertSame($nothing, content_fix::apply(
+            $course,
+            $parts,
+            [$items['frames'][0]['key'] => '  '],
+            [],
+            [$items['tables'][0]['key'] => false]
+        ));
         $DB->set_field('page', 'content', str_replace('embed/abc', 'embed/xyz', self::HTML), ['id' => $page->id]);
         $this->assertSame(0, content_fix::apply($course, $parts, [$items['frames'][0]['key'] => 'A'], [], [])['frames']);
         $DB->set_field('page', 'content', self::HTML, ['id' => $page->id]);
