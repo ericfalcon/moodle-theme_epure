@@ -54,7 +54,7 @@ final class content_sources_test extends \advanced_testcase {
      * Third-party callbacks are normalised item by item; malformed data and unsafe URLs cannot break the guide.
      */
     public function test_normalise_plugin_texts(): void {
-        $method = new \\ReflectionMethod(content_sources::class, 'normalise_plugin_texts');
+        $method = new \ReflectionMethod(content_sources::class, 'normalise_plugin_texts');
         $fallback = '/course/modedit.php?update=42';
         $given = [
             ['text' => '<p>Valid</p>', 'format' => FORMAT_HTML, 'name' => 'Section',
