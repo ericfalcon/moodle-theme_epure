@@ -184,10 +184,11 @@ jobs:
 
       # Behat, with the accessibility checks (axe) and the pre-audit (the same pages, each in light, dark and on phones),
       # on every job: every version of Moodle and IOMAD, every version of PHP, PostgreSQL and MariaDB. All the scenarios
-      # on IOMAD, all but those of IOMAD on Moodle.
+      # on IOMAD, all but those of IOMAD on Moodle. The page of a failed step in full in the log (--dump): a failure that
+      # comes now and then, on one job, is read from it.
       - name: Behat tests
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci behat --profile chrome --tags '${{ matrix.include-moodle.repo && '@theme_epure' || '@theme_epure&&~@theme_epure_iomad' }}'
+        run: moodle-plugin-ci behat --profile chrome --dump --tags '${{ matrix.include-moodle.repo && '@theme_epure' || '@theme_epure&&~@theme_epure_iomad' }}'
         env:
           # The visual regression: its images (new pages, differences) in this folder, on one job only.
           EPURE_VISUAL: ${{ matrix.include-moodle.visual && format('{0}/visual', github.workspace) || '' }}
