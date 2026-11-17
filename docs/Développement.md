@@ -7,6 +7,33 @@
 - **Application web** : la classe `theme_epure\web_app` fournit le manifeste, l'icône, la page hors ligne et le service worker, servis par les scripts de `webapp/`.
 - **Erreurs** : les erreurs inattendues (thème d'une entreprise, échéances, attestations…) sont signalées en mode débogage développeur, sans interrompre la page.
 
+## Déclarer le contenu d'un module dans le guide d'accessibilité
+
+Un module tiers peut fournir les textes rédigés par les formateurs au guide « Accessibilité du cours » en déclarant, dans son `lib.php`, la fonction suivante :
+
+```php
+/**
+ * Texts written by teachers in this activity.
+ *
+ * @param cm_info $cm Activity.
+ * @return array<int, array{text: string, format?: int, name?: string, url?: string}>
+ */
+function mod_example_epure_accessibility_texts(cm_info $cm): array {
+    return [
+        [
+            'text' => '<h2>Instructions</h2><p>Read this first.</p>',
+            'format' => FORMAT_HTML,
+            'name' => 'Instructions',
+            'url' => (new moodle_url('/mod/example/edit.php', ['id' => $cm->id]))->out(false),
+        ],
+    ];
+}
+```
+
+Chaque entrée doit fournir un champ `text` de type chaîne non vide. `format` est une constante de format Moodle (par défaut `FORMAT_HTML`), `name` est facultatif et `url` pointe vers l'endroit où le formateur peut corriger le contenu. Les URL acceptées sont les chemins relatifs à la racine du site (commençant par un seul `/`) et les URL absolues HTTP ou HTTPS. Toute URL invalide est remplacée par le lien de modification de l'activité. Les entrées mal formées sont ignorées individuellement.
+
+Le callback ne doit retourner que le contenu pédagogique rédigé par les formateurs. Les contributions des apprenants (réponses, dépôts, messages, enregistrements) ne doivent pas être transmises. Une exception du callback est interceptée : elle est signalée en mode débogage développeur et ne doit pas empêcher l'ouverture du guide.
+
 ## Compatibilité testée
 
 L'intégration continue teste Moodle 4.5 à 5.3 (PostgreSQL, et MariaDB pour 4.5 et 5.3) et IOMAD 4.5, 5.0, 5.1 et 5.2. Les tests Behat couvrent les formats de cours thématique, hebdomadaire (avec une sous-section), activité unique et informel, avec l'audit axe-core.
