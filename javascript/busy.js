@@ -30,7 +30,22 @@
     document.body.appendChild(overlay);
     var timer = null;
     var clock = null;
+    var turn = null;
     var elapsed = overlay.querySelector('[data-region="elapsed"]');
+    var spinner = overlay.querySelector('.epure-busy-spinner');
+    // Chrome stops the animations of CSS once the next page is asked for, the scripts not: the circle is turned by the
+    // script, a step every 40 ms, unless the system asks for less motion (it then stays still, the text says it all).
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var spin = function() {
+        if (!spinner || still) {
+            return;
+        }
+        var start = Date.now();
+        spinner.style.animation = 'none';
+        turn = window.setInterval(function() {
+            spinner.style.transform = 'rotate(' + Math.round(((Date.now() - start) % 1000) * 0.36) + 'deg)';
+        }, 40);
+    };
 
     // « 12 s », « 1 min 05 s »: the time since the step started.
     var duration = function(seconds) {
@@ -55,11 +70,13 @@
             clock = window.setInterval(function() {
                 tick(start);
             }, 1000);
+            spin();
         }, 500);
     };
     var hide = function() {
         window.clearTimeout(timer);
         window.clearInterval(clock);
+        window.clearInterval(turn);
         overlay.hidden = true;
         overlay.querySelector('[data-region="message"]').textContent = '';
         document.body.removeAttribute('aria-busy');

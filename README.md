@@ -123,6 +123,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.31.0**: no new setting; upgrade the site. With IOMAD, the management dashboard of each company, from the IOMAD dashboard; those who see all the companies choose one from a list.
 - **1.30.0**: no new setting; upgrade the site. A management dashboard (Site administration › Reports): the activity of the last 30 days compared with the 30 days before, the courses most followed, the completion of the courses.
 - **1.29.0**: no new setting; upgrade the site. The pages of settings of the administration are in cards, one per title.
 - **1.28.0**: no new setting; upgrade the site. During a quiz attempt, the panel of the questions tells how many questions are answered, out of how many.

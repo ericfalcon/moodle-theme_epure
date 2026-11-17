@@ -18,12 +18,18 @@
     @template theme_epure/management
 
     Management dashboard of the platform: the indicators of the period compared with the period before, the courses
-    most followed, how far the learners are in the courses that track their completion. The words say every figure;
+    most followed, how far the learners are in the courses that track their completion; of the whole platform or of an
+    IOMAD company, with the list of the companies for those who see them all. The words say every figure;
     the bars repeat them for the eyes.
 
     Example context (json):
     {
         "days": 30,
+        "company": "Clinique du Parc",
+        "haschoices": true,
+        "url": "#",
+        "choices": [{"value": 0, "name": "The whole platform", "selected": false},
+            {"value": 1, "name": "Clinique du Parc", "selected": true}],
         "indicators": [{"key": "active", "label": "Users who logged in", "value": 42, "previous": 30,
             "change": "40 % more than the 30 days before (30)", "trend": "up", "icon": "fa-arrow-up"}],
         "hascourses": true,
@@ -36,8 +42,17 @@
     }
 }}
 <div class="epure-management">
-    <h2>{{#str}}management, theme_epure{{/str}}</h2>
-    <p class="epure-management-intro">{{#str}}management_intro, theme_epure, {{days}}{{/str}}</p>
+    <h2>{{#str}}management, theme_epure{{/str}}{{#company}}<span class="epure-management-company">{{company}}</span>{{/company}}</h2>
+    <p class="epure-management-intro">{{#company}}{{#str}}management_intro_company, theme_epure, {{days}}{{/str}}{{/company}}{{^company}}{{#str}}management_intro, theme_epure, {{days}}{{/str}}{{/company}}</p>
+    {{#haschoices}}
+    <form class="epure-management-choose" method="get" action="{{url}}">
+        <label for="epure-management-companyid">{{#str}}management_show, theme_epure{{/str}}</label>
+        <select class="form-select custom-select" id="epure-management-companyid" name="companyid">
+            {{#choices}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{name}}</option>{{/choices}}
+        </select>
+        <button type="submit" class="btn btn-secondary">{{#str}}management_go, theme_epure{{/str}}</button>
+    </form>
+    {{/haschoices}}
 
     <section class="epure-management-section" aria-labelledby="epure-management-period">
         <h3 id="epure-management-period">{{#str}}management_period, theme_epure, {{days}}{{/str}}</h3>

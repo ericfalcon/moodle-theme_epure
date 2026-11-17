@@ -48,6 +48,26 @@
     box-shadow: 0 -6px 12px -8px rgba(16, 22, 32, .18);
 }
 
+// Moodle 5.2 and later put the buttons of some forms (the settings of a course) in a footer of their own, fixed across
+// the whole window, away from the form. The bar of the long form is already at the bottom of the screen: the footer of
+// Moodle steps aside, and the bar keeps the width of the form, as on the other forms and versions.
+#sticky-footer:has(.epure-longform-actions) {
+    display: contents;
+
+    .sticky-footer-content-wrapper,
+    .sticky-footer-content {
+        display: contents !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .btn {
+        font-size: inherit;
+    }
+}
+
+#page.drawers.hasstickyfooter:has(.epure-longform-actions) {
+    margin-bottom: 0;
+}
+
 // A section reached from the list is not hidden under the bar at the top of the screen.
 .epure-longform fieldset.collapsible {
     scroll-margin-top: calc(#{$navbar-height} + 1rem);

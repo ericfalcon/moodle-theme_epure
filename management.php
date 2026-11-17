@@ -25,22 +25,34 @@
 require(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
+use theme_epure\iomad;
+use theme_epure\management;
+
 $context = context_system::instance();
+require_login();
+// The dashboard of an IOMAD company, or of the whole platform. A manager of a company who does not see the reports of
+// the site gets the one of their company.
+$companyid = optional_param('companyid', -1, PARAM_INT);
+if ($companyid < 0) {
+    $companyid = iomad::installed() && !has_capability(management::CAPABILITY, $context) ? iomad::my_companyid() : 0;
+}
+if (!management::visible_to($companyid, (int) $USER->id)) {
+    throw new required_capability_exception($context, management::CAPABILITY, 'nopermissions', '');
+}
+$params = $companyid ? ['companyid' => $companyid] : [];
 if (has_capability('moodle/site:config', $context)) {
     // In the administration, under the reports.
-    admin_externalpage_setup('theme_epure_management');
+    admin_externalpage_setup('theme_epure_management', '', $params);
 } else {
-    // The managers who see the reports of the site without configuring it: Moodle builds the settings of the themes
-    // only for those who configure the site, so the page sets itself up as a report.
-    require_login();
-    require_capability(\theme_epure\management::CAPABILITY, $context);
+    // The managers who do not configure the site: Moodle builds the settings of the themes only for those who do, so
+    // the page sets itself up as a report.
     $PAGE->set_context($context);
-    $PAGE->set_url(new moodle_url('/theme/epure/management.php'));
+    $PAGE->set_url(new moodle_url('/theme/epure/management.php', $params));
     $PAGE->set_pagelayout('report');
     $PAGE->set_title(get_string('management', 'theme_epure'));
     $PAGE->set_heading($SITE->fullname);
 }
 
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template('theme_epure/management', \theme_epure\management::export());
+echo $OUTPUT->render_from_template('theme_epure/management', management::export(null, $companyid, management::choices()));
 echo $OUTPUT->footer();

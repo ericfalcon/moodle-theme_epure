@@ -23,6 +23,7 @@
     Context variables required for this template:
     * company - name, label, logourl, category (url, label), onecompany, selectform (HTML), suspended (HTML)
     * hasfigures, figures - key figures of the company: key, label, value, detail, url
+    * managementurl - the management dashboard of the company
     * setup - the getting started of the company, until finished or dismissed: name, url, dismissurl
     * tabs - tabs of IOMAD: category, selected, icon, label
     * panes - category, selected, showheadings, groups (id, label, items: url, label, icon)
@@ -33,6 +34,7 @@
             "category": {"url": "#", "label": "Course categories: Clinique des Tilleuls"} },
         "hasfigures": true,
         "figures": [{"key": "users", "label": "Users", "value": 24, "detail": "10 active this week", "url": "#"}],
+        "managementurl": "#",
         "tabs": [{"category": "CompanyAdmin", "selected": true, "icon": "fa-building", "label": "Companies"}],
         "panes": [{"category": "CompanyAdmin", "selected": true, "showheadings": true, "groups": [
             {"id": "g1", "label": "Create", "items": [{"url": "#", "label": "Create company", "icon": "fa-building"}]},
@@ -81,6 +83,9 @@
     {{/setup}}
     {{#hasfigures}}
         {{> theme_epure/figures }}
+        {{#managementurl}}
+        <p class="epure-iomad-management"><a href="{{managementurl}}">{{#str}}iomadfigures_management, theme_epure{{/str}}<i class="icon fa fa-arrow-right fa-fw ms-1" aria-hidden="true"></i></a></p>
+        {{/managementurl}}
     {{/hasfigures}}
 
     <div class="iomad_company_admin">

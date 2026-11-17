@@ -307,6 +307,10 @@ class palette {
         } else {
             $hover = self::mix($fill, '#000000', $on === self::SURFACE_LIGHT ? 0.14 : 0.08);
         }
+        // A fill already (almost) black cannot darken, nor white lighten: its hover goes the other way, to be seen.
+        if (self::contrast($fill, $hover) < 1.1) {
+            $hover = self::mix($fill, self::luminance($fill) < 0.5 ? '#FFFFFF' : '#000000', 0.16);
+        }
         // The text stays readable on the hover too: else the hover goes the other way, away from the text.
         if (self::contrast($on, $hover) < self::AA_TEXT) {
             $hover = self::mix($fill, $on === self::SURFACE_LIGHT ? '#000000' : '#FFFFFF', 0.12);

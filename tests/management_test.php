@@ -105,4 +105,54 @@ final class management_test extends \advanced_testcase {
         $this->assertFalse($export['completion']['hasdata']);
         $this->assertCount(4, $export['indicators']);
     }
+
+    /**
+     * With IOMAD, the dashboard of a company: its users only, in its courses only; its managers see it, its learners
+     * and the managers of other companies do not.
+     */
+    public function test_company(): void {
+        global $DB;
+        if (!iomad::installed()) {
+            $this->markTestSkipped('IOMAD is not installed.');
+        }
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $companies = [];
+        foreach (['Clinique du Parc', 'Hôtel du Lac'] as $name) {
+            $companies[] = (int) $DB->insert_record(iomad::table('company'), ['name' => $name,
+                'shortname' => substr(md5($name), 0, 8), 'city' => 'Lyon', 'country' => 'FR']);
+        }
+        $course = $generator->create_course(['enablecompletion' => 1, 'fullname' => 'Safety at work']);
+        $other = $generator->create_course(['fullname' => 'Hotel course']);
+        $DB->insert_record(iomad::table('company_course'), ['companyid' => $companies[0], 'courseid' => $course->id,
+            'departmentid' => 0]);
+        $users = [];
+        foreach (['learner' => [0, 0], 'manager' => [0, 1], 'outsider' => [1, 0], 'othermanager' => [1, 1]] as $name => $row) {
+            $users[$name] = $generator->create_user();
+            $DB->insert_record(iomad::table('company_users'), ['companyid' => $companies[$row[0]],
+                'userid' => $users[$name]->id, 'departmentid' => 0, 'managertype' => $row[1], 'suspended' => 0]);
+        }
+        // The learner of the company and an outsider in the course of the company, the outsider in another course.
+        $generator->enrol_user($users['learner']->id, $course->id, 'student');
+        $generator->enrol_user($users['outsider']->id, $course->id, 'student');
+        $generator->enrol_user($users['outsider']->id, $other->id, 'student');
+
+        $export = management::export(time(), $companies[0]);
+        $this->assertSame('Clinique du Parc', $export['company']);
+        $indicators = array_column($export['indicators'], null, 'key');
+        // The two users of the company were created in the period; the enrolment of the learner only.
+        $this->assertSame(2, $indicators['newusers']['value']);
+        $this->assertSame(1, $indicators['enrolments']['value']);
+        $this->assertSame(['Safety at work'], array_column($export['courses'], 'name'));
+        $this->assertSame(1, $export['courses'][0]['enrolled']);
+        $this->assertSame(1, $export['completion']['total']);
+
+        $this->assertTrue(management::visible_to($companies[0], (int) $users['manager']->id));
+        $this->assertFalse(management::visible_to($companies[0], (int) $users['learner']->id));
+        $this->assertFalse(management::visible_to($companies[0], (int) $users['othermanager']->id));
+        $this->assertFalse(management::visible_to(0, (int) $users['manager']->id));
+        // Those who see all the companies: the rule reads the capabilities of the user logged in, as the page does.
+        $this->setAdminUser();
+        $this->assertTrue(management::visible_to($companies[0], get_admin()->id));
+    }
 }
