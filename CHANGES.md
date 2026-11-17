@@ -1,5 +1,10 @@
 # Changes
 
+## 1.31.1 — a header coloured by the custom SCSS, on Moodle 5.3
+
+- A header coloured by the custom SCSS of the theme (Advanced tab), on Moodle 5.3: « Dashboard », « My courses » and the switch « Edit mode » now take the colour of the text that Épure chooses for the bar, as with a header in the brand colour (1.31.0). Moodle 5.3 draws them with the components of its design system, made for a white header; they stayed grey on the colour of the bar.
+- The file managers (the image of the login page, the logos…), while they load: they take at once the room they take once loaded. They grew by some 80 pixels once loaded, after the page, and what followed moved: the buttons of the getting started came down just as one clicked on them, and the area to drop files got the click.
+
 ## 1.31.0 — the management dashboard of an IOMAD company
 
 - With IOMAD, the management dashboard of a company: the users who logged in, the new users, the new enrolments and the courses completed among the users of the company, the courses of the company most followed by them, and their completion in these courses. Its managers reach it from a link under the key figures of the IOMAD dashboard (« Management dashboard of the company ») and from the tab « Reports » of the IOMAD dashboard, first of the reports (without a company selected, the dashboard of the whole platform, for those who see the reports of the site); those who see all the companies choose the company, or the whole platform, from a list at the top of the dashboard. A manager of one company sees that one only, not the others nor the whole platform.

@@ -232,6 +232,23 @@
     }
 }
 
+// The file manager, while it loads (after the page, its files asked for by a script): the room of the loaded one, its
+// toolbar and its area to drop files, the circle in the middle. Else, once loaded, it grows by some 80 pixels and what
+// follows (the buttons to save of the getting started) moves under the pointer, about to click on them.
+.filemanager.fm-loading {
+    .fp-navbar {
+        min-height: 5.3125rem;
+    }
+
+    .filemanager-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 140px;
+        margin-top: 0;
+    }
+}
+
 // Area to drop files: a soft dashed frame, in the colour of the brand when a file is over it.
 .filemanager.fm-noitems .fm-empty-container,
 .filepicker-filelist .dndupload-target,
