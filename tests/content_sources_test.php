@@ -51,6 +51,38 @@ final class content_sources_test extends \advanced_testcase {
     }
 
     /**
+     * Third-party callbacks are normalised item by item; malformed data and unsafe URLs cannot break the guide.
+     */
+    public function test_normalise_plugin_texts(): void {
+        $method = new \ReflectionMethod(content_sources::class, 'normalise_plugin_texts');
+        $fallback = '/course/modedit.php?update=42';
+        $given = [
+            ['text' => '<p>Valid</p>', 'format' => FORMAT_HTML, 'name' => 'Section',
+                'url' => '/mod/example/view.php?id=42'],
+            ['text' => '<p>External</p>', 'format' => FORMAT_MARKDOWN, 'name' => 'External',
+                'url' => 'https://example.org/resource'],
+            ['text' => '<p>Unsafe scheme</p>', 'url' => 'javascript:alert(1)'],
+            ['text' => '<p>Protocol relative</p>', 'url' => '//evil.example/path'],
+            ['text' => '<p>Bad scheme</p>', 'url' => 'data:text/html,hello'],
+            ['text' => '<p>Bad URL</p>', 'url' => "https://example.org/\\npath"],
+            'not an array',
+            ['text' => ['not', 'a', 'string']],
+            ['text' => '   '],
+        ];
+        $normalised = $method->invoke(null, $given, $fallback);
+        $this->assertCount(6, $normalised);
+        $this->assertSame('/mod/example/view.php?id=42', $normalised[0]['url']);
+        $this->assertSame('https://example.org/resource', $normalised[1]['url']);
+        $this->assertSame($fallback, $normalised[2]['url']);
+        $this->assertSame($fallback, $normalised[3]['url']);
+        $this->assertSame($fallback, $normalised[4]['url']);
+        $this->assertSame($fallback, $normalised[5]['url']);
+        $this->assertSame((int) FORMAT_HTML, $normalised[2]['format']);
+        $this->assertSame('', $normalised[2]['name']);
+        $this->assertSame([], $method->invoke(null, 'not an array', $fallback));
+    }
+
+    /**
      * The modules of other plugins Épure knows are read from their tables as published: here those of Unilabel and
      * Questionnaire, made for the test; a table missing gives no text.
      */

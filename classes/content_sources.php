@@ -206,15 +206,18 @@ class content_sources {
         };
         if (!in_array($cm->modname, self::core_modules(), true) && self::gives($cm->modname)) {
             // A module of another plugin that gives its texts.
-            $given = component_callback('mod_' . $cm->modname, self::CALLBACK, [$cm], []);
-            foreach (is_array($given) ? $given : [] as $text) {
-                $add(
-                    $text['text'] ?? '',
-                    $text['format'] ?? FORMAT_HTML,
-                    'content',
-                    (string) ($text['name'] ?? ''),
-                    (string) ($text['url'] ?? $edit)
+            try {
+                $given = component_callback('mod_' . $cm->modname, self::CALLBACK, [$cm], []);
+            } catch (\Throwable $e) {
+                // A third-party callback must never prevent the teacher from opening the guide.
+                debugging(
+                    'The accessibility callback of mod_' . $cm->modname . ' failed: ' . $e->getMessage(),
+                    DEBUG_DEVELOPER
                 );
+                return [];
+            }
+            foreach (self::normalise_plugin_texts($given, $edit) as $text) {
+                $add($text['text'], $text['format'], 'content', $text['name'], $text['url']);
             }
             return $texts;
         }
@@ -299,6 +302,72 @@ class content_sources {
                 break;
         }
         return $texts;
+    }
+
+    /**
+     * Validate the data returned by a third-party accessibility callback.
+     *
+     * Invalid entries are ignored independently: one malformed item must not discard the others.
+     *
+     * @param mixed $given Callback result.
+     * @param string $edit Safe fallback URL in Moodle.
+     * @return array<int, array{text: string, format: int, name: string, url: string}>
+     */
+    protected static function normalise_plugin_texts($given, string $edit): array {
+        if (!is_array($given)) {
+            return [];
+        }
+        $texts = [];
+        foreach ($given as $item) {
+            if (!is_array($item) || !isset($item['text']) || !is_string($item['text'])) {
+                continue;
+            }
+            if (trim($item['text']) === '') {
+                continue;
+            }
+            $format = $item['format'] ?? FORMAT_HTML;
+            if (
+                (!is_int($format) && !(is_string($format) && ctype_digit($format)))
+                || !in_array((int) $format, [FORMAT_MOODLE, FORMAT_HTML, FORMAT_PLAIN, FORMAT_WIKI, FORMAT_MARKDOWN], true)
+            ) {
+                $format = FORMAT_HTML;
+            }
+            $name = $item['name'] ?? '';
+            if (!is_string($name) && !is_numeric($name)) {
+                $name = '';
+            }
+            $url = $item['url'] ?? $edit;
+            if (!is_string($url) || !self::is_safe_plugin_url($url)) {
+                $url = $edit;
+            }
+            $texts[] = [
+                'text' => $item['text'],
+                'format' => (int) $format,
+                'name' => (string) $name,
+                'url' => $url,
+            ];
+        }
+        return $texts;
+    }
+
+    /**
+     * Allow only absolute HTTP(S) URLs or root-relative paths; reject script schemes and protocol-relative URLs.
+     *
+     * @param string $url URL supplied by a plugin callback.
+     * @return bool
+     */
+    protected static function is_safe_plugin_url(string $url): bool {
+        if ($url === '' || preg_match('/[\\x00-\\x20\\\\]/', $url)) {
+            return false;
+        }
+        if (str_starts_with($url, '/')) {
+            return !str_starts_with($url, '//');
+        }
+        $parts = parse_url($url);
+        return is_array($parts)
+            && isset($parts['scheme'], $parts['host'])
+            && in_array(strtolower($parts['scheme']), ['http', 'https'], true)
+            && filter_var($url, FILTER_VALIDATE_URL) !== false;
     }
 
     /**
