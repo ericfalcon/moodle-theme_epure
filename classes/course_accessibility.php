@@ -1005,7 +1005,7 @@ class course_accessibility {
                     $name = format_string($course->fullname, true, ['context' => $context]);
                     $edit = new \moodle_url('/course/edit.php', ['id' => $course->id]);
                 }
-                $sections[$current]['parts'][] = self::with_images(self::export_part(
+                $sections[$current]['parts'][] = self::with_fixes(self::with_images(self::export_part(
                     $part,
                     $name,
                     '',
@@ -1014,7 +1014,7 @@ class course_accessibility {
                     $confirmations,
                     $users,
                     $output
-                ), $part, $course);
+                ), $part, $course), $part, $course);
                 continue;
             }
             $cm = $modinfo->get_cm($part['id']);
@@ -1023,7 +1023,7 @@ class course_accessibility {
             if (isset($content[$cm->modname])) {
                 $links[] = new \moodle_url($content[$cm->modname], [$cm->modname === 'quiz' ? 'cmid' : 'id' => $cm->id]);
             }
-            $sections[$current]['parts'][] = self::with_rename(self::with_images(self::export_part(
+            $sections[$current]['parts'][] = self::with_rename(self::with_fixes(self::with_images(self::export_part(
                 $part,
                 $cm->get_formatted_name(),
                 $cm->get_icon_url()->out(false),
@@ -1033,13 +1033,13 @@ class course_accessibility {
                 $users,
                 $output,
                 $cm
-            ), $part, $course), $part, $cm, $sections[$current]['name']);
+            ), $part, $course), $part, $course), $part, $cm, $sections[$current]['name']);
         }
         $sections = array_values(array_filter($sections, fn($section) => $section['parts']));
         $hasimages = false;
         foreach ($sections as $section) {
             foreach ($section['parts'] as $exported) {
-                $hasimages = $hasimages || $exported['hasaltimages'] || !empty($exported['hasrename']);
+                $hasimages = $hasimages || $exported['hasaltimages'] || $exported['hasfixes'] || !empty($exported['hasrename']);
             }
         }
 
@@ -1065,7 +1065,7 @@ class course_accessibility {
             'percent' => $figures['total'] ? (int) round(100 * $figures['done'] / $figures['total']) : 100,
             'hastoconfirm' => $figures['toconfirm'] > 0 || array_filter($confirmations),
             'sections' => $sections,
-            // The button to save: points to confirm, images to describe or activities to rename here.
+            // The button to save: points to confirm, images, frames, links or tables to correct, activities to rename here.
             'hasform' => $figures['toconfirm'] > 0 || array_filter($confirmations) || $hasimages,
         ];
     }
@@ -1136,6 +1136,52 @@ class course_accessibility {
             ];
         }
         return $data + ['altimages' => $images, 'hasaltimages' => (bool) $images, 'altmax' => content_alt::MAX_LENGTH];
+    }
+
+    /**
+     * The frames without a title, the links made only of images and the tables without a header of a part, to correct
+     * here (content_fix), saved with the button at the bottom of the page.
+     *
+     * @param array $data Context of the part.
+     * @param array $part Part.
+     * @param \stdClass $course Course.
+     * @return array
+     */
+    protected static function with_fixes(array $data, array $part, \stdClass $course): array {
+        $kinds = array_filter(content_fix::KINDS, fn($kind) => !empty($part['issues'][$kind]));
+        $items = $kinds ? content_fix::items($part, $course) : array_fill_keys(content_fix::KINDS, []);
+        $fixes = ['hasfixes' => false, 'altmax' => content_fix::MAX_LENGTH];
+        foreach (content_fix::KINDS as $kind) {
+            $list = [];
+            foreach (in_array($kind, $kinds, true) ? $items[$kind] : [] as $i => $item) {
+                $shown = $kind === 'tables' ? $item['src'] : self::address($item['src']);
+                $label = get_string('courseaccessibility_fix_' . $kind . '_label', 'theme_epure', $shown);
+                $list[] = [
+                    'id' => $data['id'] . '-' . $kind . '-' . $i,
+                    'key' => $item['key'],
+                    'image' => $item['image'],
+                    'label' => $label . ($item['place'] !== '' ? ' (' . $item['place'] . ')' : ''),
+                ];
+            }
+            $fixes[$kind] = $list;
+            $fixes['has' . $kind] = (bool) $list;
+            $fixes['hasfixes'] = $fixes['hasfixes'] || $list;
+        }
+        return $data + $fixes;
+    }
+
+    /**
+     * An address, short enough to be read in a label: a file of the course by its name, the rest without its scheme.
+     *
+     * @param string $src Address.
+     * @return string
+     */
+    protected static function address(string $src): string {
+        if (str_starts_with($src, '@@PLUGINFILE@@/')) {
+            return rawurldecode(basename($src));
+        }
+        $src = preg_replace('~^(https?:)?//(www\.)?~i', '', trim($src));
+        return \core_text::strlen($src) > 60 ? \core_text::substr($src, 0, 57) . '…' : $src;
     }
 
     /**
