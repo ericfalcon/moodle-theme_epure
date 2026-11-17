@@ -3,6 +3,7 @@
 ## 1.31.0 — the management dashboard of an IOMAD company
 
 - With IOMAD, the management dashboard of a company: the users who logged in, the new users, the new enrolments and the courses completed among the users of the company, the courses of the company most followed by them, and their completion in these courses. Its managers reach it from a link under the key figures of the IOMAD dashboard (« Management dashboard of the company ») and from the tab « Reports » of the IOMAD dashboard, first of the reports (without a company selected, the dashboard of the whole platform, for those who see the reports of the site); those who see all the companies choose the company, or the whole platform, from a list at the top of the dashboard. A manager of one company sees that one only, not the others nor the whole platform.
+- « Moodle is working », on the pages of installation and upgrade: the circle turns while the next page is awaited. Chrome stops the animations of the page as soon as the next one is asked for, the scripts not: the circle is now turned by the script (still when the system asks for less motion, the text and the time since the step started then say it all).
 - Tests: PHPUnit (the figures of a company: its users in its courses only; who sees it) and Behat (a manager from the IOMAD dashboard, an administrator choosing the company; accessibility).
 
 ## 1.30.0 — a management dashboard
