@@ -208,7 +208,7 @@ class content_sources {
             // A module of another plugin that gives its texts.
             try {
                 $given = component_callback('mod_' . $cm->modname, self::CALLBACK, [$cm], []);
-            } catch (\\Throwable $e) {
+            } catch (\Throwable $e) {
                 // A third-party callback must never prevent the teacher from opening the guide.
                 debugging(
                     'The accessibility callback of mod_' . $cm->modname . ' failed: ' . $e->getMessage(),
