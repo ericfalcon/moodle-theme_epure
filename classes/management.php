@@ -293,7 +293,7 @@ class management {
      * The choices of the list of the companies, for those who see them all on IOMAD: the whole platform, then each
      * company by name. Empty without IOMAD or for a manager of one company. For the current user.
      *
-     * @return array<int, string>
+     * @return array Names of the companies by id, 0 for the whole platform.
      */
     public static function choices(): array {
         global $DB;
@@ -313,7 +313,7 @@ class management {
      *
      * @param int|null $now Time of reference, now by default.
      * @param int $companyid IOMAD company, 0 for the whole platform.
-     * @param array<int, string> $choices Companies to choose from ({@see self::choices()}), none to hide the list.
+     * @param array $choices Companies to choose from, by id ({@see self::choices()}), none to hide the list.
      * @return array
      */
     public static function export(?int $now = null, int $companyid = 0, array $choices = []): array {
