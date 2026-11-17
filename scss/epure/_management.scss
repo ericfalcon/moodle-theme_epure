@@ -1,5 +1,27 @@
 // Management dashboard of the platform: indicators in cards, the courses most followed, the completion. The words say
 // every figure; the bar of the completion repeats them for the eyes.
+.epure-management-company {
+    display: block;
+    margin-top: .25rem;
+    color: var(--epure-ink-muted);
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+// The list of the companies, for those who see them all on IOMAD.
+.epure-management-choose {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem .75rem;
+    margin-top: .75rem;
+
+    .form-select {
+        width: auto;
+        max-width: 100%;
+    }
+}
+
 .epure-management-intro {
     color: var(--epure-ink-muted);
 }

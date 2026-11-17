@@ -79,6 +79,9 @@ class block_iomad_company_admin_renderer extends \block_iomad_company_admin\outp
         $data['figures'] = $company && \theme_epure\iomad_figures::visible_to((int) $company->id, (int) $USER->id)
             ? \theme_epure\iomad_figures::export((int) $company->id) : [];
         $data['hasfigures'] = !empty($data['figures']);
+        // The management dashboard of the company: the last 30 days compared with the 30 days before.
+        $data['managementurl'] = $data['hasfigures']
+            ? (new \moodle_url('/theme/epure/management.php', ['companyid' => $company->id]))->out(false) : null;
         // The getting started of the company, until it is finished or dismissed.
         $data['setup'] = \theme_epure\company_setup::offer($company);
         $data['label'] = get_string('iomadfigures', 'theme_epure');

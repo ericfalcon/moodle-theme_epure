@@ -1,5 +1,10 @@
 # Changes
 
+## 1.31.0 — the management dashboard of an IOMAD company
+
+- With IOMAD, the management dashboard of a company: the users who logged in, the new users, the new enrolments and the courses completed among the users of the company, the courses of the company most followed by them, and their completion in these courses. Its managers reach it from a link under the key figures of the IOMAD dashboard (« Management dashboard of the company »); those who see all the companies choose the company, or the whole platform, from a list at the top of the dashboard. A manager of one company sees that one only, not the others nor the whole platform.
+- Tests: PHPUnit (the figures of a company: its users in its courses only; who sees it) and Behat (a manager from the IOMAD dashboard, an administrator choosing the company; accessibility).
+
 ## 1.30.0 — a management dashboard
 
 - A management dashboard of the platform (Site administration › Reports › Management dashboard), for those who see the reports of the site: the users who logged in, the new users, the new enrolments and the courses completed over the last 30 days, each compared with the 30 days before, in words (« 40 % more than the period before (30) ») with an arrow; the courses most followed (enrolled, came in the last 30 days, completed); how far the learners are in the courses that track their completion (completed, in progress, not started), in words with a bar that repeats them.
