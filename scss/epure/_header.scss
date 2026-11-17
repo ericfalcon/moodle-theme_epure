@@ -46,36 +46,33 @@ body.epure-header-brand .navbar.fixed-top.bg-white {
     border-bottom-color: transparent;
 }
 
-// A header painted by the custom SCSS (Advanced settings): its text and its icons in the colour that reads on that
-// background, white or the dark ink, chosen by theme_epure\custom_header and applied under the selector of the custom
-// rule, so in the same modes. It wins over the colours of the light, brand and dark headers.
 // Moodle 5.3 and later draw the primary navigation and the edit mode switch with the components of their design system
 // (pills, a switch of their own), in the colours of a white header: in the colour of the text of the bar, here too; the
 // page shown on a backing a little darker (or lighter) than the bar, with its dot, in place of the white pill; the
 // track of the switch, filled with the brand colour once on, outlined and darkened.
-@mixin epure-header-mds($on) {
-    --mds-focus-default: #{$on};
+@mixin epure-header-mds {
+    --mds-focus-default: var(--epure-header-on);
 
     .mds-nav-pill,
     .mds-nav-pill:visited,
     .mds-switch-label {
-        color: $on !important; // stylelint-disable-line declaration-no-important
+        color: var(--epure-header-on) !important; // stylelint-disable-line declaration-no-important
     }
 
     .mds-nav-pill--selected,
     .mds-nav-pill--selected:visited,
     .mds-nav-pill--selected:hover,
     .mds-nav-pill:hover:not([aria-disabled="true"]) {
-        color: $on !important; // stylelint-disable-line declaration-no-important
+        color: var(--epure-header-on) !important; // stylelint-disable-line declaration-no-important
         background-color: var(--epure-header-hover) !important; // stylelint-disable-line declaration-no-important
     }
 
     .mds-nav-pill__indicator {
-        background-color: $on !important; // stylelint-disable-line declaration-no-important
+        background-color: var(--epure-header-on) !important; // stylelint-disable-line declaration-no-important
     }
 
     .mds-switch-track {
-        box-shadow: 0 0 0 1px $on;
+        box-shadow: 0 0 0 1px var(--epure-header-on);
     }
 
     .mds-switch-input:checked + .mds-switch-control .mds-switch-track,
@@ -85,6 +82,9 @@ body.epure-header-brand .navbar.fixed-top.bg-white {
     }
 }
 
+// A header painted by the custom SCSS (Advanced settings): its text and its icons in the colour that reads on that
+// background, white or the dark ink, chosen by theme_epure\custom_header and applied under the selector of the custom
+// rule, so in the same modes. It wins over the colours of the light, brand and dark headers.
 @mixin epure-header-text($on, $on-is-light) {
     --epure-header-on: #{$on};
     @if $on-is-light {
@@ -118,7 +118,7 @@ body.epure-header-brand .navbar.fixed-top.bg-white {
         border-bottom-color: $on !important; // stylelint-disable-line declaration-no-important
     }
 
-    @include epure-header-mds($on);
+    @include epure-header-mds;
 
     .navbar-toggler-icon {
         filter: if($on-is-light, brightness(0) invert(1), none);
@@ -245,7 +245,7 @@ body.epure-header-brand .navbar.fixed-top .editmode-switch-form {
 }
 
 body.epure-header-brand .navbar.fixed-top {
-    @include epure-header-mds(var(--epure-header-on));
+    @include epure-header-mds;
 }
 
 // The hamburger icon is a dark image in Bootstrap's light navbar.
