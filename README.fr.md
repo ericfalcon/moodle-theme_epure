@@ -123,6 +123,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.31.1** : aucun nouveau réglage ; mettez le site à jour. Sur Moodle 5.3, les liens de l’en-tête et l’interrupteur « Mode d’édition » lisibles sur un en-tête coloré par le SCSS personnalisé du thème.
 - **1.31.0** : aucun nouveau réglage ; mettez le site à jour. Avec IOMAD, le tableau de bord de gestion de chaque entreprise, depuis le tableau de bord IOMAD ; qui voit toutes les entreprises en choisit une dans une liste.
 - **1.30.0** : aucun nouveau réglage ; mettez le site à jour. Un tableau de bord de gestion (Administration du site › Rapports) : l'activité des 30 derniers jours comparée aux 30 jours précédents, les cours les plus suivis, l'achèvement des cours.
 - **1.29.0** : aucun nouveau réglage ; mettez le site à jour. Les pages de réglages de l'administration sont en cartes, une par titre.
