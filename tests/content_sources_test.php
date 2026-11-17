@@ -77,7 +77,7 @@ final class content_sources_test extends \advanced_testcase {
         $this->assertSame($fallback, $normalised[3]['url']);
         $this->assertSame($fallback, $normalised[4]['url']);
         $this->assertSame($fallback, $normalised[5]['url']);
-        $this->assertSame(FORMAT_HTML, $normalised[2]['format']);
+        $this->assertSame((int) FORMAT_HTML, $normalised[2]['format']);
         $this->assertSame('', $normalised[2]['name']);
         $this->assertSame([], $method->invoke(null, 'not an array', $fallback));
     }
