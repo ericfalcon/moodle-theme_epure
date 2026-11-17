@@ -37,6 +37,6 @@ Feature: The management dashboard of an IOMAD company
     And I visit "/theme/epure/management.php"
     And I should see "The activity of the platform"
     When I set the field "Dashboard of" to "Hôtel du Lac"
-    And I press "Show"
+    And I click on "Show" "button" in the ".epure-management-choose" "css_element"
     Then I should see "Hôtel du Lac" in the ".epure-management h2" "css_element"
     And the page should meet accessibility standards

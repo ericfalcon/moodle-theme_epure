@@ -151,6 +151,8 @@ final class management_test extends \advanced_testcase {
         $this->assertFalse(management::visible_to($companies[0], (int) $users['learner']->id));
         $this->assertFalse(management::visible_to($companies[0], (int) $users['othermanager']->id));
         $this->assertFalse(management::visible_to(0, (int) $users['manager']->id));
+        // Those who see all the companies: the rule reads the capabilities of the user logged in, as the page does.
+        $this->setAdminUser();
         $this->assertTrue(management::visible_to($companies[0], get_admin()->id));
     }
 }
