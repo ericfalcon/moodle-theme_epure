@@ -326,7 +326,8 @@ class content_sources {
                 continue;
             }
             $format = $item['format'] ?? FORMAT_HTML;
-            if (!is_int($format) && !(is_string($format) && ctype_digit($format))) {
+            if ((!is_int($format) && !(is_string($format) && ctype_digit($format)))
+                    || !in_array((int) $format, [FORMAT_MOODLE, FORMAT_HTML, FORMAT_PLAIN, FORMAT_WIKI, FORMAT_MARKDOWN], true)) {
                 $format = FORMAT_HTML;
             }
             $name = $item['name'] ?? '';
