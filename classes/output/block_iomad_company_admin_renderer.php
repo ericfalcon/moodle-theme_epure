@@ -65,12 +65,23 @@ class block_iomad_company_admin_renderer extends \block_iomad_company_admin\outp
         $data = $adminblock->export_for_template($this);
         $company = company_style::current_company();
         $category = $company ? company_style::company_category($company) : null;
-        $data['panes'] = array_map(function ($pane) use ($category) {
+        // The management dashboard of the company, for its managers and those who see all the companies; without a
+        // company selected, the one of the whole platform, for those who see the reports of the site.
+        $managementid = $company ? (int) $company->id : 0;
+        $management = \theme_epure\management::visible_to($managementid, (int) $USER->id)
+            ? (new \moodle_url('/theme/epure/management.php', ['companyid' => $managementid]))->out(false) : null;
+        $data['panes'] = array_map(function ($pane) use ($category, $management) {
             $pane = (array) $pane;
             // The course category of the company leads the actions on courses.
             if ($category && ($pane['category'] ?? '') === 'CourseAdmin') {
                 array_unshift($pane['items'], ['url' => $category['url'], 'action' => $category['label'],
                     'icon' => 'fa-folder-open', 'iconsmall' => '']);
+            }
+            // The management dashboard leads the reports, with the small icon of IOMAD's reports.
+            if ($management && ($pane['category'] ?? '') === 'Reports') {
+                array_unshift($pane['items'], ['url' => $management,
+                    'action' => get_string('management', 'theme_epure'), 'icon' => 'fa-gauge-high',
+                    'iconsmall' => 'fa-bar-chart-o']);
             }
             return $this->group_pane($pane);
         }, $data['panes']);
@@ -80,8 +91,7 @@ class block_iomad_company_admin_renderer extends \block_iomad_company_admin\outp
             ? \theme_epure\iomad_figures::export((int) $company->id) : [];
         $data['hasfigures'] = !empty($data['figures']);
         // The management dashboard of the company: the last 30 days compared with the 30 days before.
-        $data['managementurl'] = $data['hasfigures']
-            ? (new \moodle_url('/theme/epure/management.php', ['companyid' => $company->id]))->out(false) : null;
+        $data['managementurl'] = $data['hasfigures'] ? $management : null;
         // The getting started of the company, until it is finished or dismissed.
         $data['setup'] = \theme_epure\company_setup::offer($company);
         $data['label'] = get_string('iomadfigures', 'theme_epure');

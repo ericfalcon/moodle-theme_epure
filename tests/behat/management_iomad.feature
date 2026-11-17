@@ -24,6 +24,7 @@ Feature: The management dashboard of an IOMAD company
   Scenario: A manager reads the management dashboard of their company from the IOMAD dashboard
     Given I log in as "manager1"
     And I visit "/blocks/iomad_company_admin/index.php"
+    And "#Reports a[href*='/theme/epure/management.php']" "css_element" should exist
     When I click on "Management dashboard of the company" "link"
     Then I should see "Clinique des Tilleuls" in the ".epure-management h2" "css_element"
     And I should see "The activity of the users of the company"
