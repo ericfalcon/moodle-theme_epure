@@ -3,6 +3,7 @@
 ## 1.31.1 — a header coloured by the custom SCSS, on Moodle 5.3
 
 - A header coloured by the custom SCSS of the theme (Advanced tab), on Moodle 5.3: « Dashboard », « My courses » and the switch « Edit mode » now take the colour of the text that Épure chooses for the bar, as with a header in the brand colour (1.31.0). Moodle 5.3 draws them with the components of its design system, made for a white header; they stayed grey on the colour of the bar.
+- The file managers (the image of the login page, the logos…), while they load: they take at once the room they take once loaded. They grew by some 80 pixels once loaded, after the page, and what followed moved: the buttons of the getting started came down just as one clicked on them, and the area to drop files got the click.
 
 ## 1.31.0 — the management dashboard of an IOMAD company
 
