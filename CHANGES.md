@@ -1,5 +1,10 @@
 # Changes
 
+## 1.32.0 — rename an activity from the accessibility of the course
+
+- Accessibility of the course: an activity whose name another activity shares, or whose name says nothing (« Document 2 »), has its name in a field under what is wrong with it, to change there and save with the button at the bottom of the page, with the confirmations and the descriptions of the images (« Activities renamed: 1 »). Renamed as the course page renames them: a subsection with its section, the events and the gradebook. Each field says the activity and its section (« New name of « Course materials » (Block 1) »): two activities of the same name are told apart. For those who may change the activities of the course; not printed.
+- Tests: PHPUnit (the fields of the activities to rename, renamed from the guide, an empty or unchanged name left, a learner refused).
+
 ## 1.31.1 — a header coloured by the custom SCSS, on Moodle 5.3
 
 - A header coloured by the custom SCSS of the theme (Advanced tab), on Moodle 5.3: « Dashboard », « My courses » and the switch « Edit mode » now take the colour of the text that Épure chooses for the bar, as with a header in the brand colour (1.31.0). Moodle 5.3 draws them with the components of its design system, made for a white header; they stayed grey on the colour of the bar.

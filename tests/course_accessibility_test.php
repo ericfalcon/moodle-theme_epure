@@ -428,4 +428,54 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         ])->trigger();
         $this->assertFalse($cache->get((int) $course->id));
     }
+
+    /**
+     * The activities of the same name, or of a name that says nothing: their name in a field of the guide, for a
+     * teacher who may change them; renamed from it, they have nothing left to fix; an empty or unchanged name is left.
+     */
+    public function test_rename(): void {
+        global $PAGE;
+        [$course, $teacher, $page] = $this->course();
+        $this->setUser($teacher);
+        $duplicates = array_values(array_filter(
+            get_fast_modinfo($course)->get_cms(),
+            fn($cm) => $cm->name === 'Consignes de sécurité'
+        ));
+        $this->assertCount(2, $duplicates);
+
+        $export = course_accessibility::export($course, $PAGE->get_renderer('core'));
+        $renames = [];
+        foreach ($export['sections'] as $section) {
+            foreach ($section['parts'] as $part) {
+                if (!empty($part['hasrename'])) {
+                    $renames[$part['rename']['cmid']] = $part['rename'];
+                }
+            }
+        }
+        $this->assertEqualsCanonicalizing([$page->cmid, $duplicates[0]->id, $duplicates[1]->id], array_keys($renames));
+        $this->assertSame('Consignes de sécurité', $renames[$duplicates[0]->id]['value']);
+        $this->assertStringContainsString('« Consignes de sécurité »', $renames[$duplicates[0]->id]['label']);
+        $this->assertTrue($export['hasform']);
+
+        $done = course_accessibility::rename($course, [
+            $duplicates[0]->id => 'Consignes de sécurité sur le chantier',
+            $duplicates[1]->id => 'Consignes de sécurité',
+            $page->cmid => '  ',
+        ]);
+        $this->assertSame(1, $done);
+        $names = array_map(fn($cm) => $cm->name, get_fast_modinfo($course->id)->get_cms());
+        $this->assertSame('Consignes de sécurité sur le chantier', $names[$duplicates[0]->id]);
+        $this->assertSame('Document 2', $names[$page->cmid]);
+        $parts = array_column(array_filter(
+            course_accessibility::analyse(get_course($course->id)),
+            fn($part) => $part['type'] === 'cm'
+        ), null, 'id');
+        $this->assertArrayNotHasKey('duplicate', $parts[$duplicates[0]->id]['issues']);
+        $this->assertArrayNotHasKey('duplicate', $parts[$duplicates[1]->id]['issues']);
+
+        // A student may not rename.
+        $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
+        $this->setUser($student);
+        $this->assertSame(0, course_accessibility::rename($course, [$page->cmid => 'Consignes du chantier']));
+    }
 }

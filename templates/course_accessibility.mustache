@@ -19,7 +19,7 @@
 
     Guide « Accessibility of the course », for its teachers: the figures of the course, then each section with the
     parts of the course that hold something to fix or to confirm. The points found without a person are listed with
-    what to do and a link to change the part; the points to confirm are boxes, confirmed for all the teachers of the
+    what to do and a link to change the part, a name to change here; the points to confirm are boxes, confirmed for all the teachers of the
     course with one button. Printed, it is the report of the course, without its buttons.
 
     Example context (json):
@@ -33,6 +33,7 @@
             "hasissues": true, "issues": [{"text": "Images without a text alternative: 2. Describe each one.", "cause": "Images without a text alternative: 2.", "advice": "Describe each one."}],
             "hasplaces": true, "places": [{"label": "Chapter « Settings »", "sep": ": ", "issues": "2 images used as links",
                 "url": "#", "linktext": "Change chapter « Settings »"}],
+            "hasrename": true, "rename": {"id": "epure-a11y-cm-4-rename", "cmid": 4, "value": "Risks", "label": "New name of « Risks » (Week 1)"},
             "haschecks": true, "checks": [{"name": "4|captions:abc", "id": "epure-a11y-check-cm-4-0",
                 "label": "The video « youtube.com » has subtitles", "help": "Subtitles let the deaf follow.",
                 "checked": false}],
@@ -84,6 +85,15 @@
                                 {{/places}}
                             </ul>
                         {{/hasplaces}}
+                        {{#hasrename}}
+                            <div class="epure-a11yguide-rename d-print-none">
+                                {{#rename}}
+                                    <label for="{{id}}">{{label}}</label>
+                                    <input type="text" class="form-control" id="{{id}}" name="rename[{{cmid}}]" value="{{value}}" maxlength="255" required aria-describedby="{{id}}-help">
+                                    <p class="epure-a11yguide-check-help" id="{{id}}-help">{{#str}}courseaccessibility_rename_help, theme_epure{{/str}}</p>
+                                {{/rename}}
+                            </div>
+                        {{/hasrename}}
                         {{#hasaltimages}}
                             <fieldset class="epure-a11yguide-alts d-print-none">
                                 <legend class="epure-a11yguide-checks-title">{{#str}}courseaccessibility_alt_title, theme_epure{{/str}}</legend>
