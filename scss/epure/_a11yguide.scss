@@ -392,6 +392,19 @@ html:has(.epure-a11yguide-save) {
     margin-top: .75rem;
 }
 
+// The name of an activity to change here: its field under what is wrong with it.
+.epure-a11yguide-rename {
+    margin-top: .75rem;
+
+    label {
+        font-weight: 600;
+    }
+
+    .form-control {
+        max-width: 36rem;
+    }
+}
+
 .epure-a11yguide-alt {
     display: flex;
     flex-wrap: wrap;

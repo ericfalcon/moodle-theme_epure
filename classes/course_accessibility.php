@@ -1023,7 +1023,7 @@ class course_accessibility {
             if (isset($content[$cm->modname])) {
                 $links[] = new \moodle_url($content[$cm->modname], [$cm->modname === 'quiz' ? 'cmid' : 'id' => $cm->id]);
             }
-            $sections[$current]['parts'][] = self::with_images(self::export_part(
+            $sections[$current]['parts'][] = self::with_rename(self::with_images(self::export_part(
                 $part,
                 $cm->get_formatted_name(),
                 $cm->get_icon_url()->out(false),
@@ -1033,13 +1033,13 @@ class course_accessibility {
                 $users,
                 $output,
                 $cm
-            ), $part, $course);
+            ), $part, $course), $part, $cm, $sections[$current]['name']);
         }
         $sections = array_values(array_filter($sections, fn($section) => $section['parts']));
         $hasimages = false;
         foreach ($sections as $section) {
             foreach ($section['parts'] as $exported) {
-                $hasimages = $hasimages || $exported['hasaltimages'];
+                $hasimages = $hasimages || $exported['hasaltimages'] || !empty($exported['hasrename']);
             }
         }
 
@@ -1065,7 +1065,7 @@ class course_accessibility {
             'percent' => $figures['total'] ? (int) round(100 * $figures['done'] / $figures['total']) : 100,
             'hastoconfirm' => $figures['toconfirm'] > 0 || array_filter($confirmations),
             'sections' => $sections,
-            // The button to save: points to confirm, or images to describe here.
+            // The button to save: points to confirm, images to describe or activities to rename here.
             'hasform' => $figures['toconfirm'] > 0 || array_filter($confirmations) || $hasimages,
         ];
     }
@@ -1136,6 +1136,61 @@ class course_accessibility {
             ];
         }
         return $data + ['altimages' => $images, 'hasaltimages' => (bool) $images, 'altmax' => content_alt::MAX_LENGTH];
+    }
+
+    /**
+     * An activity whose name says nothing, or that another activity shares: its name in a field, to change here, saved
+     * with the button at the bottom of the page, for those who may change the activity.
+     *
+     * @param array $data Context of the part.
+     * @param array $part Part.
+     * @param \cm_info $cm Activity.
+     * @param string $section Name of its section, in the label: two activities of the same name are told apart.
+     * @return array
+     */
+    protected static function with_rename(array $data, array $part, \cm_info $cm, string $section): array {
+        if (
+            (empty($part['issues']['duplicate']) && empty($part['issues']['name']))
+                || !has_capability('moodle/course:manageactivities', $cm->context)
+        ) {
+            return $data + ['hasrename' => false];
+        }
+        return $data + ['hasrename' => true, 'rename' => [
+            'id' => $data['id'] . '-rename',
+            'cmid' => $cm->id,
+            'value' => $cm->name,
+            // Escaped once, by the template.
+            'label' => html_entity_decode(strip_tags(get_string('courseaccessibility_rename', 'theme_epure', (object) [
+                'name' => $data['name'], 'section' => $section])), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+        ]];
+    }
+
+    /**
+     * Renames the activities whose name was changed in the guide, as the course page renames them (the name of a
+     * subsection with its section, the events, the gradebook).
+     *
+     * @param \stdClass $course Course.
+     * @param array $names New names, by id of activity.
+     * @return int Activities renamed.
+     */
+    public static function rename(\stdClass $course, array $names): int {
+        $modinfo = get_fast_modinfo($course);
+        $actions = \core_courseformat\formatactions::cm($course);
+        $done = 0;
+        foreach ($names as $cmid => $name) {
+            $cm = $modinfo->get_cms()[(int) $cmid] ?? null;
+            $name = trim(\core_text::substr(clean_param((string) $name, PARAM_TEXT), 0, 255));
+            if (!$cm || $name === '' || $name === $cm->name || !has_capability('moodle/course:manageactivities', $cm->context)) {
+                continue;
+            }
+            if ($actions->rename($cm->id, $name)) {
+                $done++;
+            }
+        }
+        if ($done) {
+            self::forget((int) $course->id);
+        }
+        return $done;
     }
 
     /**

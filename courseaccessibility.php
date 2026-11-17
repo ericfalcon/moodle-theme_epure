@@ -60,10 +60,13 @@ if (data_submitted() && confirm_sesskey()) {
         optional_param_array('alt', [], PARAM_TEXT),
         optional_param_array('decorative', [], PARAM_BOOL)
     );
+    // The names changed in the guide, into their activities.
+    $renamed = course_accessibility::rename($course, optional_param_array('rename', [], PARAM_TEXT));
     redirect(
         course_accessibility::url((int) $course->id),
         get_string('courseaccessibility_saved', 'theme_epure')
-            . ($described ? ' ' . get_string('courseaccessibility_alt_saved', 'theme_epure', $described) : ''),
+            . ($described ? ' ' . get_string('courseaccessibility_alt_saved', 'theme_epure', $described) : '')
+            . ($renamed ? ' ' . get_string('courseaccessibility_renamed', 'theme_epure', $renamed) : ''),
         null,
         \core\output\notification::NOTIFY_SUCCESS
     );
