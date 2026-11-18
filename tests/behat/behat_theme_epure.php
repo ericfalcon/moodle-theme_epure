@@ -171,42 +171,48 @@ class behat_theme_epure extends behat_base {
     }
 
     /**
-     * The pre-audit: each page in the four displays (light and dark on a computer, light on phones of 390 and 320
-     * pixels), with the axe audit of Moodle (WCAG 2.2 A and AA) and, on phones, no scroll across the page (WCAG
-     * 1.4.10). All the pages are checked before the step fails, with the list of what failed.
+     * The pre-audit: each page in every display (light, dark, yellow on black and cream on a computer, light on phones
+     * of 390 and 320 pixels), with the axe audit of Moodle (WCAG 2.2 A and AA), the contrast under the cream overlay
+     * and, on phones, no scroll across the page (WCAG 1.4.10). All the pages are checked before the step fails, with
+     * the list of what failed.
      *
      * A path can name a course by its short name, {course SAFE}, an activity by its ID number, {cm page1} (or its
      * instance, {instance forum1}), a user by their username, {user learner1}, a discussion by its name and the last
      * attempt at a quiz by the ID number of the quiz, {attempt quiz1}. The column « except » takes « wide table »:
      * a table in two dimensions, which may scroll across (WCAG 1.4.10).
      *
-     * @Then /^the following pages should meet accessibility standards in the four displays:$/
+     * @Then /^the following pages should meet accessibility standards in every display:$/
      * @param TableNode $data Columns path and, optionally, except.
      */
     public function the_following_pages_should_meet_accessibility_standards_in_the_four_displays(TableNode $data): void {
-        $displays = ['light 1300' => [1300, false], 'dark 1300' => [1300, true], 'light 390' => [390, false],
-            'light 320' => [320, false]];
+        // Light, dark, the colours of « Aa » yellow on black and cream, on a computer; light on phones.
+        $displays = ['light 1300' => [1300, ''], 'dark 1300' => [1300, 'dark'], 'yellow 1300' => [1300, 'yellow'],
+            'cream 1300' => [1300, 'cream'], 'light 390' => [390, ''], 'light 320' => [320, '']];
         $failures = [];
         foreach ($data->getHash() as $row) {
             $path = $this->epure_path($row['path']);
-            foreach ($displays as $label => [$width, $dark]) {
+            foreach ($displays as $label => [$width, $scheme]) {
                 $this->getSession()->resizeWindow($width, 900);
                 $this->getSession()->visit($this->locate_path($path));
                 $this->wait_for_pending_js();
                 // The editors (TinyMCE) ready: their status bar gets its roles once the editor is drawn.
                 $this->getSession()->wait(10000, "!document.querySelector('.tox-statusbar__resize-handle:not([role])')");
-                if ($dark) {
-                    // Without the transitions of the colours, axe reads the colours of the dark mode, not those on
-                    // the way to it.
+                if ($scheme !== '') {
+                    // Without the transitions of the colours, axe reads the colours of the scheme, not those on the way
+                    // to it. Yellow on black is a dark scheme.
+                    $classes = ['dark' => ['epure-dark'], 'yellow' => ['epure-dark', 'epure-a11y-scheme-yellow'],
+                        'cream' => ['epure-a11y-scheme-cream']][$scheme];
                     $this->getSession()->executeScript(
                         "const style = document.createElement('style');" .
                         "style.textContent = '*, *::before, *::after { transition: none !important; }';" .
                         "document.head.appendChild(style);" .
-                        "document.documentElement.classList.add('epure-dark');"
+                        "document.documentElement.classList.add(" . implode(', ', array_map('json_encode', $classes)) . ");"
                     );
                     $this->getSession()->wait(500);
                 }
-                if (($axe = $this->axe_failure()) !== null) {
+                // The cream colours are an overlay, which axe does not see: their contrast is measured under it.
+                $axe = $scheme === 'cream' ? $this->cream_failure() : $this->axe_failure();
+                if ($axe !== null) {
                     $failures[] = "{$row['path']} ({$label}): " . $axe;
                 }
                 if ($width < 1000 && ($row['except'] ?? '') !== 'wide table') {
@@ -260,9 +266,96 @@ class behat_theme_epure extends behat_base {
     }
 
     /**
-     * The audit of axe-core (WCAG 2.2 A and AA) of the page.
+     * The contrast of the texts of the page under the cream overlay of « Aa », which axe does not see: each text and its
+     * background multiplied by the colour of the overlay, as the browser draws them. What already fails without it is
+     * left to axe; a text over an image is not measured.
      *
-     * @return string|null The violations, or null when there are none.
+     * @return string|null The texts that no longer reach 4.5:1 (3:1 for a large text), or null.
+     */
+    protected function cream_failure(): ?string {
+        $failures = $this->getSession()->evaluateScript(<<<'JS'
+            return (() => {
+                // The colour of the overlay (_preferences.scss), multiplied with what is under it.
+                const cream = [246, 233, 201];
+                const parse = (value) => {
+                    const match = /rgba?\(([^)]+)\)/.exec(value || '');
+                    if (!match) {
+                        return null;
+                    }
+                    const parts = match[1].split(/[\s,/]+/).filter(Boolean).map(Number);
+                    return {rgb: parts.slice(0, 3), alpha: parts.length > 3 ? parts[3] : 1};
+                };
+                const channel = (value) => {
+                    const c = value / 255;
+                    return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+                };
+                const luminance = (rgb) => 0.2126 * channel(rgb[0]) + 0.7152 * channel(rgb[1]) + 0.0722 * channel(rgb[2]);
+                const ratio = (a, b) => {
+                    const [x, y] = [luminance(a), luminance(b)].sort((p, q) => q - p);
+                    return (x + 0.05) / (y + 0.05);
+                };
+                const blend = (top, under) => top.rgb.map((v, i) => v * top.alpha + under[i] * (1 - top.alpha));
+                const multiplied = (rgb) => rgb.map((v, i) => v * cream[i] / 255);
+                // The colour behind an element: its backgrounds, from the page up to it; none known over an image.
+                const background = (element) => {
+                    const layers = [];
+                    for (let node = element; node; node = node.parentElement) {
+                        const style = getComputedStyle(node);
+                        if (style.backgroundImage && style.backgroundImage !== 'none') {
+                            return null;
+                        }
+                        const colour = parse(style.backgroundColor);
+                        if (colour && colour.alpha > 0) {
+                            layers.push(colour);
+                            if (colour.alpha >= 1) {
+                                break;
+                            }
+                        }
+                    }
+                    return layers.reverse().reduce((under, layer) => blend(layer, under), [255, 255, 255]);
+                };
+                const failures = [];
+                const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+                const seen = new Set();
+                for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+                    const element = node.parentElement;
+                    if (!node.textContent.trim() || !element || seen.has(element)) {
+                        continue;
+                    }
+                    seen.add(element);
+                    const rect = element.getBoundingClientRect();
+                    const style = getComputedStyle(element);
+                    if (rect.width <= 1 || rect.height <= 1 || style.visibility !== 'visible' || Number(style.opacity) === 0
+                            || element.closest('[aria-hidden="true"], script, style, noscript')) {
+                        continue;
+                    }
+                    const under = background(element);
+                    const colour = parse(style.color);
+                    if (!under || !colour) {
+                        continue;
+                    }
+                    const text = blend(colour, under);
+                    const size = parseFloat(style.fontSize);
+                    const large = size >= 24 || (size >= 18.66 && Number(style.fontWeight) >= 700);
+                    const minimum = large ? 3 : 4.5;
+                    // What already fails in light is axe's; here, what the overlay makes fail.
+                    const after = ratio(multiplied(text), multiplied(under));
+                    if (ratio(text, under) >= minimum && after < minimum - 0.005) {
+                        const name = element.tagName.toLowerCase() + (element.className && typeof element.className === 'string'
+                            ? '.' + element.className.trim().split(/\s+/).slice(0, 2).join('.') : '');
+                        failures.push(name + ' « ' + node.textContent.trim().slice(0, 30) + ' » ' + after.toFixed(2) + ':1');
+                    }
+                }
+                return failures.slice(0, 5).join(', ');
+            })();
+        JS);
+        return $failures ? 'contrast under the cream overlay: ' . $failures : null;
+    }
+
+    /**
+     * The audit of axe-core (WCAG 2.2 A and AA) of the page, run by the step of Moodle, with its rules.
+     *
+     * @return string|null What fails, null when the page meets the standards.
      */
     protected function axe_failure(): ?string {
         // The script of axe is loaded here, and waited for: on the first page after the caches are purged, the one web

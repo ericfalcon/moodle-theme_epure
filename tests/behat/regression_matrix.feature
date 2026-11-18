@@ -7,7 +7,7 @@ Feature: Matrix of non-regression of the accessibility of the Épure theme
   # The pre-audit checks the pages with the default brand colour and display preferences. This matrix crosses the
   # functions: brand colours light, dark and of mid tones, the display preferences together, the elements focused with
   # the keyboard and the fixed bars, the panel « Aa » with the keyboard, the preferences from page to page and a timed
-  # quiz. Each page in the four displays: light and dark at 1300 px, light at 390 and 320 px (reflow at 400 % zoom).
+  # quiz. Each page in every display: light and dark at 1300 px, light at 390 and 320 px (reflow at 400 % zoom).
 
   Background:
     Given the following "users" exist:
@@ -38,7 +38,7 @@ Feature: Matrix of non-regression of the accessibility of the Épure theme
   Scenario Outline: The pages meet accessibility standards with a brand colour <kind>
     Given the brand colour of the site is "<colour>"
     When I log in as "learner1"
-    Then the following pages should meet accessibility standards in the four displays:
+    Then the following pages should meet accessibility standards in every display:
       | path                              |
       | /my/                              |
       | /course/view.php?id={course SAFE} |
@@ -65,7 +65,7 @@ Feature: Matrix of non-regression of the accessibility of the Épure theme
     When I log in as "learner1"
     Then the "class" attribute of "html" "css_element" should contain "epure-a11y-text-130"
     And the "class" attribute of "html" "css_element" should contain "epure-a11y-motion"
-    And the following pages should meet accessibility standards in the four displays:
+    And the following pages should meet accessibility standards in every display:
       | path                              |
       | /my/                              |
       | /course/view.php?id={course SAFE} |

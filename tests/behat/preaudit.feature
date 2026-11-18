@@ -4,8 +4,8 @@ Feature: Pre-audit of accessibility of the Épure theme
   As a visitor, a learner, a teacher or an administrator
   I need every page to meet the WCAG 2.2 A and AA in light, in dark and on phones, without scrolling across
 
-  # The same 52 pages, each in the four displays (208 checks), on every version of Moodle and IOMAD and with every
-  # version of PHP of the continuous integration.
+  # The same 52 pages, each in the six displays (light, dark, yellow on black and cream on a computer, light on two
+  # phones), on every version of Moodle and IOMAD and with every version of PHP of the continuous integration.
 
   Background:
     Given the following "users" exist:
@@ -40,15 +40,15 @@ Feature: Pre-audit of accessibility of the Épure theme
       | a11ystatus | partial               | theme_epure |
       | a11yentity | Clinique des Tilleuls | theme_epure |
 
-  Scenario: The pages of a visitor meet accessibility standards in the four displays
-    Then the following pages should meet accessibility standards in the four displays:
+  Scenario: The pages of a visitor meet accessibility standards in every display
+    Then the following pages should meet accessibility standards in every display:
       | path                           |
       | /login/index.php               |
       | /theme/epure/accessibility.php |
 
-  Scenario: The pages of a learner meet accessibility standards in the four displays
+  Scenario: The pages of a learner meet accessibility standards in every display
     Given I log in as "learner1"
-    Then the following pages should meet accessibility standards in the four displays:
+    Then the following pages should meet accessibility standards in every display:
       | path                                          |
       | /my/                                          |
       | /my/courses.php                               |
@@ -73,9 +73,9 @@ Feature: Pre-audit of accessibility of the Épure theme
       | /theme/epure/accessibility.php                |
       | /theme/epure/summary.php                      |
 
-  Scenario: The pages of a teacher meet accessibility standards in the four displays
+  Scenario: The pages of a teacher meet accessibility standards in every display
     Given I log in as "teacher1"
-    Then the following pages should meet accessibility standards in the four displays:
+    Then the following pages should meet accessibility standards in every display:
       | path                                                | except     |
       | /my/courses.php                                     |            |
       | /course/view.php?id={course SAFE}                   |            |
@@ -85,7 +85,7 @@ Feature: Pre-audit of accessibility of the Épure theme
       | /course/edit.php?id={course SAFE}                   |            |
       | /course/modedit.php?update={cm page1}               |            |
 
-  Scenario: The widgets of Moodle meet accessibility standards in the four displays
+  Scenario: The widgets of Moodle meet accessibility standards in every display
     # A quiz with the common types of questions, drag and drop included, an attempt in progress; a discussion; the
     # editor of the submissions; the grader of the assignments; the editing of the quiz and its report.
     Given the following "question categories" exist:
@@ -116,7 +116,7 @@ Feature: Pre-audit of accessibility of the Épure theme
       | user     | forum  | name          | message           |
       | learner1 | forum1 | How to submit | How do I submit?  |
     And I log in as "learner1"
-    Then the following pages should meet accessibility standards in the four displays:
+    Then the following pages should meet accessibility standards in every display:
       | path                                                       |
       | /mod/quiz/attempt.php?attempt={attempt quiz1}              |
       | /mod/quiz/summary.php?attempt={attempt quiz1}              |
@@ -126,7 +126,7 @@ Feature: Pre-audit of accessibility of the Épure theme
       | /user/edit.php                                             |
     And I log out
     And I log in as "teacher1"
-    And the following pages should meet accessibility standards in the four displays:
+    And the following pages should meet accessibility standards in every display:
       | path                                                                          | except     |
       | /mod/assign/view.php?id={cm assign1}&action=grader&userid={user learner1}     |            |
       | /grade/edit/tree/index.php?id={course SAFE}                                   | wide table |
@@ -135,9 +135,9 @@ Feature: Pre-audit of accessibility of the Épure theme
       | /mod/forum/view.php?id={cm forum1}                                            |            |
       | /calendar/view.php?view=upcoming                                              |            |
 
-  Scenario: The pages of an administrator meet accessibility standards in the four displays
+  Scenario: The pages of an administrator meet accessibility standards in every display
     Given I log in as "admin"
-    Then the following pages should meet accessibility standards in the four displays:
+    Then the following pages should meet accessibility standards in every display:
       | path                                          |
       | /my/                                          |
       | /admin/search.php                             |
