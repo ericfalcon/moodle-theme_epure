@@ -25,12 +25,15 @@
     Example context (json):
     {
         "reporttitle": "Accessibility of « Safety at work » on 05/11/26", "action": "#", "download": "", "sesskey": "abc", "checklisturl": "#", "courseurl": "#",
-        "summary": "3 points to fix, 1 to confirm", "done": "5 parts out of 8 have nothing left", "percent": 62,
+        "summary": "3 points to fix, 1 to confirm", "score": 70, "scoretext": "Accessibility score of the course: 70 %",
+        "levels": [{"level": "blocking", "count": 1, "text": "Blocking: 1"}], "hasfirst": true,
+        "first": [{"name": "Risks", "section": "Week 1", "url": "#epure-a11y-cm-4", "here": true}], "hasfilter": true,
+        "filtershown": "Parts shown: {$a}", "filters": [{"value": "", "label": "All", "checked": true}], "done": "5 parts out of 8 have nothing left", "percent": 62,
         "hastoconfirm": true, "hasform": true,
         "sections": [{"name": "Week 1", "id": "epure-a11y-section-1", "parts": [{
             "id": "epure-a11y-cm-4", "name": "Risks", "icon": "", "type": "Page",
             "state": {"class": "issues", "icon": "fa-triangle-exclamation", "text": "2 points to fix, 1 to confirm"},
-            "hasissues": true, "issues": [{"text": "Images without a text alternative: 2. Describe each one.", "cause": "Images without a text alternative: 2.", "advice": "Describe each one."}],
+            "hasissues": true, "issues": [{"text": "Images without a text alternative: 2. Describe each one.", "cause": "Images without a text alternative: 2.", "advice": "Describe each one.", "level": "blocking", "levellabel": "Blocking"}], "levels": "blocking", "level": "blocking",
             "hasplaces": true, "places": [{"label": "Chapter « Settings »", "sep": ": ", "issues": "2 images used as links",
                 "url": "#", "linktext": "Change chapter « Settings »"}],
             "altmax": 250, "hasfixframes": true, "fixframes": [{"id": "epure-a11y-cm-4-frames-0", "key": "page-content-4-0-abc", "label": "Title of the frame « youtube.com/embed/abc »"}],
@@ -50,9 +53,13 @@
     <p class="epure-a11yguide-intro">{{#str}}courseaccessibility_intro, theme_epure{{/str}}</p>
 
     <div class="epure-a11yguide-summary">
-        <p class="epure-a11yguide-summary-text">{{summary}}</p>
-        <p class="epure-a11yguide-done">{{done}}</p>
-        <div class="epure-a11yguide-bar" aria-hidden="true"><span style="width: {{percent}}%"></span></div>
+        <p class="epure-a11yguide-score">{{scoretext}}</p>
+        <div class="epure-a11yguide-bar" aria-hidden="true"><span style="width: {{score}}%"></span></div>
+        <ul class="epure-a11yguide-levels">
+            {{#levels}}<li class="epure-a11yguide-level epure-a11yguide-level-{{level}}">{{text}}</li>{{/levels}}
+        </ul>
+        <p class="epure-a11yguide-summary-text">{{summary}} · {{done}}</p>
+        <p class="epure-a11yguide-help d-print-none">{{#str}}courseaccessibility_score_help, theme_epure{{/str}}</p>
         <div class="epure-a11yguide-actions d-print-none">
             <button type="button" class="btn btn-secondary" data-action="epure-a11yguide-print">
                 <i class="fa fa-print" aria-hidden="true"></i> {{#str}}courseaccessibility_print, theme_epure{{/str}}
@@ -64,13 +71,42 @@
         {{#download}}<div class="epure-a11yguide-download d-print-none">{{{download}}}</div>{{/download}}
     </div>
 
+    {{#hasfirst}}
+        <section class="epure-a11yguide-first" aria-labelledby="epure-a11yguide-first">
+            <h3 id="epure-a11yguide-first">{{#str}}courseaccessibility_first, theme_epure{{/str}}</h3>
+            <p class="epure-a11yguide-help">{{#str}}courseaccessibility_first_help, theme_epure{{/str}}</p>
+            <ol>
+                {{#first}}
+                    <li><a href="{{url}}">{{name}}</a> <span class="epure-a11yguide-first-section">· {{section}}</span>
+                        {{#here}}<span class="epure-a11yguide-here">{{#str}}courseaccessibility_fixhere, theme_epure{{/str}}</span>{{/here}}</li>
+                {{/first}}
+            </ol>
+            {{#morefirst}}<p class="epure-a11yguide-help">{{#str}}courseaccessibility_first_more, theme_epure{{/str}}</p>{{/morefirst}}
+        </section>
+    {{/hasfirst}}
+
+    {{#hasfilter}}
+        <fieldset class="epure-a11yguide-filter d-print-none" data-shown="{{filtershown}}">
+            <legend>{{#str}}courseaccessibility_filter, theme_epure{{/str}}</legend>
+            <div class="epure-a11yguide-filter-choices">
+                {{#filters}}
+                    <label class="epure-a11yguide-filter-choice">
+                        <input type="radio" name="epure-a11yguide-filter" value="{{value}}" {{#checked}}checked{{/checked}}>
+                        <span>{{label}}</span>
+                    </label>
+                {{/filters}}
+            </div>
+            <p class="epure-a11yguide-filter-status" role="status" data-region="epure-a11yguide-filter-status"></p>
+        </fieldset>
+    {{/hasfilter}}
+
     <form method="post" action="{{action}}" class="epure-a11yguide-form">
         <input type="hidden" name="sesskey" value="{{sesskey}}">
         {{#sections}}
             <section class="epure-a11yguide-section" aria-labelledby="{{id}}">
                 <h3 class="epure-a11yguide-section-name" id="{{id}}">{{name}}</h3>
                 {{#parts}}
-                    <article class="epure-a11yguide-part epure-a11yguide-is-{{state.class}}" id="{{id}}" tabindex="-1" aria-labelledby="{{id}}-name">
+                    <article class="epure-a11yguide-part epure-a11yguide-is-{{state.class}}" id="{{id}}" tabindex="-1" aria-labelledby="{{id}}-name" data-levels="{{levels}}">
                         <div class="epure-a11yguide-part-head">
                             {{#icon}}<img class="epure-a11yguide-part-icon" src="{{icon}}" alt="">{{/icon}}
                             <h4 class="epure-a11yguide-part-name" id="{{id}}-name">{{name}}{{#type}} <span class="epure-a11yguide-part-type">· {{type}}</span>{{/type}}</h4>
@@ -78,7 +114,7 @@
                         </div>
                         {{#hasissues}}
                             <ul class="epure-a11yguide-issues">
-                                {{#issues}}<li><strong class="epure-a11yguide-cause">{{cause}}</strong>{{#advice}} {{advice}}{{/advice}}</li>{{/issues}}
+                                {{#issues}}<li><span class="epure-a11yguide-level epure-a11yguide-level-{{level}}">{{levellabel}}</span> <strong class="epure-a11yguide-cause">{{cause}}</strong>{{#advice}} {{advice}}{{/advice}}</li>{{/issues}}
                             </ul>
                         {{/hasissues}}
                         {{#hasplaces}}
@@ -264,6 +300,25 @@
     </form>
 </div>
 {{#js}}
+    // The filter: only the parts with a mistake of this severity, or with points to confirm; a section without any
+    // part left is hidden too. The number of parts shown is told.
+    document.querySelectorAll('.epure-a11yguide-filter').forEach(function(filter) {
+        var guide = filter.closest('.epure-a11yguide');
+        var status = filter.querySelector('[data-region="epure-a11yguide-filter-status"]');
+        filter.addEventListener('change', function() {
+            var value = filter.querySelector('input:checked').value;
+            var shown = 0;
+            guide.querySelectorAll('.epure-a11yguide-part').forEach(function(part) {
+                var levels = (part.getAttribute('data-levels') || '').split(' ');
+                part.hidden = value !== '' && levels.indexOf(value) === -1;
+                shown += part.hidden ? 0 : 1;
+            });
+            guide.querySelectorAll('.epure-a11yguide-section').forEach(function(section) {
+                section.hidden = !section.querySelector('.epure-a11yguide-part:not([hidden])');
+            });
+            status.textContent = filter.getAttribute('data-shown').replace('{$a}', shown);
+        });
+    });
     document.querySelectorAll('[data-action="epure-a11yguide-print"]').forEach(function(button) {
         button.addEventListener('click', function() {
             window.print();

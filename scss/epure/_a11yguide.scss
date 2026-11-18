@@ -62,7 +62,7 @@
 
 .epure-a11yguide-summary-text {
     margin: 0;
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 600;
 }
 
@@ -446,4 +446,147 @@ html:has(.epure-a11yguide-save) {
 
 .epure-a11yguide-download {
     margin-top: .75rem;
+}
+
+// Severity of the mistakes: blocking, serious, minor, each said in words, its colour repeating it.
+.epure-a11yguide-score {
+    margin-bottom: .5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.epure-a11yguide-levels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .375rem;
+    margin: .75rem 0 .5rem;
+    padding: 0;
+    list-style: none;
+}
+
+.epure-a11yguide-level {
+    display: inline-block;
+    padding: .0625rem .5rem;
+    font-size: .8125rem;
+    font-weight: 600;
+    border: 1px solid currentColor;
+    border-radius: var(--epure-radius-pill);
+}
+
+.epure-a11yguide-level-blocking {
+    color: var(--epure-state-late);
+    background-color: var(--epure-state-late-soft);
+}
+
+.epure-a11yguide-level-serious {
+    color: var(--epure-state-soon);
+    background-color: var(--epure-state-soon-soft);
+}
+
+.epure-a11yguide-level-minor {
+    color: var(--epure-ink-muted);
+    background-color: var(--epure-surface-muted);
+}
+
+.epure-a11yguide-help {
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+}
+
+// To fix first: the parts with a blocking mistake, those corrected here marked.
+.epure-a11yguide-first {
+    margin: 1.5rem 0;
+    padding: 1rem 1.25rem;
+    background-color: var(--epure-state-late-soft);
+    border: 1px solid var(--epure-border);
+    border-left: 4px solid var(--epure-state-late);
+    border-radius: var(--epure-radius-lg);
+
+    h3 {
+        font-size: 1.125rem;
+    }
+
+    ol {
+        margin: 0;
+    }
+
+    // Among the words of the list, the links are told by more than their colour (WCAG 1.4.1).
+    a {
+        text-decoration: underline;
+    }
+}
+
+.epure-a11yguide-first-section {
+    color: var(--epure-ink-muted);
+}
+
+.epure-a11yguide-here {
+    display: inline-block;
+    margin-left: .25rem;
+    padding: 0 .375rem;
+    color: var(--epure-state-done);
+    font-size: .8125rem;
+    font-weight: 600;
+    border: 1px solid currentColor;
+    border-radius: var(--epure-radius-pill);
+}
+
+// The filter of the parts by severity, as choices in pills.
+.epure-a11yguide-filter {
+    margin: 1rem 0;
+
+    legend {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+}
+
+.epure-a11yguide-filter-choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .375rem;
+}
+
+.epure-a11yguide-filter-choice {
+    position: relative;
+    margin: 0;
+
+    input {
+        position: absolute;
+        opacity: 0;
+    }
+
+    span {
+        display: inline-block;
+        padding: .25rem .75rem;
+        border: 1px solid var(--epure-border);
+        border-radius: var(--epure-radius-pill);
+        cursor: pointer;
+    }
+
+    input:checked + span {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand);
+        border-color: var(--epure-brand);
+    }
+
+    input:focus-visible + span {
+        outline: 2px solid var(--epure-focus);
+        outline-offset: 2px;
+    }
+}
+
+.epure-a11yguide-filter-status {
+    margin: .5rem 0 0;
+    color: var(--epure-ink-muted);
+    font-size: .875rem;
+}
+
+// In edit mode, the pill of an activity in the colour of its worst mistake.
+.epure-a11y-pill-blocking {
+    border-left: 3px solid var(--epure-state-late);
+}
+
+.epure-a11y-pill-serious {
+    border-left: 3px solid var(--epure-state-soon);
 }

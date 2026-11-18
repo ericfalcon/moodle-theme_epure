@@ -63,6 +63,33 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
     }
 
     /**
+     * Each mistake has a severity; a part loses the weight of each kind of mistake once; the score of the course is the
+     * average of its parts; the parts with a blocking mistake are to fix first, those corrected on the page before.
+     */
+    public function test_severity_and_score(): void {
+        global $PAGE;
+        foreach (course_accessibility::ISSUES as $issue) {
+            $this->assertArrayHasKey($issue, course_accessibility::SEVERITIES, $issue);
+        }
+        $part = ['issues' => ['images' => 3, 'frames' => 1, 'tables' => 2, 'name' => 1, 'links' => 0]];
+        $this->assertSame(100 - 40 - 40 - 15 - 5, course_accessibility::score($part));
+        $this->assertSame('blocking', course_accessibility::level($part));
+        $this->assertSame('minor', course_accessibility::level(['issues' => ['name' => 1]]));
+        $this->assertSame('', course_accessibility::level(['issues' => ['images' => 0]]));
+        $this->assertSame(0, course_accessibility::score(['issues' => ['images' => 1, 'frames' => 1, 'videos' => 1]]));
+
+        [$course, , $page] = $this->course();
+        $export = course_accessibility::export($course, $PAGE->get_renderer('core'));
+        $this->assertGreaterThan(0, $export['score']);
+        $this->assertLessThan(100, $export['score']);
+        $this->assertSame(['blocking', 'serious', 'minor'], array_column($export['levels'], 'level'));
+        $this->assertSame('#epure-a11y-cm-' . $page->cmid, $export['first'][0]['url']);
+        // Its image is described on the page.
+        $this->assertTrue($export['first'][0]['here']);
+        $this->assertSame(['', 'blocking', 'serious', 'minor', 'toconfirm'], array_column($export['filters'], 'value'));
+    }
+
+    /**
      * A title without text, a text that scrolls or blinks, an order of the key Tab of its own, an id used twice; not a
      * title with a described image, a tabindex of 0 or -1, ids each once.
      */
@@ -256,7 +283,9 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         // the video, the time of the quiz, the instructions and the colours.
         $this->assertSame(7, $figures['issues']);
         $this->assertSame(4, $figures['toconfirm']);
-        $this->assertSame(['issues' => 3, 'toconfirm' => 1], $figures['cms'][$page->cmid]);
+        $this->assertSame(['issues' => 3, 'toconfirm' => 1, 'level' => 'blocking'], $figures['cms'][$page->cmid]);
+        // Images and frame blocking, the name minor; the PDF serious; two duplicates, minor.
+        $this->assertSame(['blocking' => 2, 'serious' => 2, 'minor' => 3], $figures['levels']);
     }
 
     /**

@@ -1,5 +1,14 @@
 # Changes
 
+## 1.37.0 — the severity of the mistakes and a score in the accessibility of the course
+
+- Accessibility of the course, the severity of each mistake, said in words and repeated by its colour: blocking (some learners cannot use the content: images, links of images, frames without a title, videos without subtitles, scanned PDF, moving texts…), serious (they use it with difficulty: tables, titles, contrast, untagged PDF, order of the key Tab, vague links…) or minor (shared or vague names, documents without a title, ids used twice…). Each mistake shows its severity; the report in a file too.
+- A score of the course, out of 100 %: the average of the scores of its parts, each kind of mistake taking off 40 points if it is blocking, 15 if serious, 5 if minor; the points to confirm do not count. With the number of mistakes of each severity under it, and how it is computed.
+- « To fix first »: the parts with a blocking mistake, linked, those corrected on the page itself first.
+- A filter of the parts: all, blocking, serious, minor or to confirm; the number of parts shown is told.
+- In edit mode, the pill of an activity with mistakes in the colour of the worst one.
+- Tests: PHPUnit (every mistake has a severity; the score of a part and of the course; to fix first; the filter).
+
 ## 1.36.0 — reading aloud, « Aa » for the visitors, more checks of the accessibility of the course
 
 - « Aa », reading aloud: a switch shows a bar at the bottom of the screen (Read, Pause, Resume, Stop, speed from 0.75 to 1.5) that reads the text selected, else the page from the block shown at the top of the screen, each block marked while it is read and kept on the screen. With the voices of the device only, in the language marked in the text (an English passage read in English): nothing leaves the browser. The switch is not offered in a browser without voices; a profile keeps it, as the colours.
