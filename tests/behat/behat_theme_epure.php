@@ -172,9 +172,9 @@ class behat_theme_epure extends behat_base {
 
     /**
      * The pre-audit: each page in every display (light, dark, yellow on black and cream on a computer, light on phones
-     * of 390 and 320 pixels, and with the text at 200 % on 320 pixels), with the axe audit of Moodle (WCAG 2.2 A and AA), the contrast under the cream overlay
-     * and, on phones, no scroll across the page (WCAG 1.4.10). All the pages are checked before the step fails, with
-     * the list of what failed.
+     * of 390 and 320 pixels, and with the text at 200 % on 320 pixels), with the axe audit of Moodle (WCAG 2.2 A and
+     * AA), the contrast under the cream overlay and, on phones, no scroll across the page (WCAG 1.4.10). All the pages
+     * are checked before the step fails, with the list of what failed.
      *
      * A path can name a course by its short name, {course SAFE}, an activity by its ID number, {cm page1} (or its
      * instance, {instance forum1}), a user by their username, {user learner1}, a discussion by its name and the last

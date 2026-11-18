@@ -852,6 +852,7 @@ table.quizreviewsummary {
 #page-badges-mybadges ul.badges,
 #page-user-profile ul.badges {
     display: grid;
+    // stylelint-disable-next-line csstree/validator -- min() in minmax(), valid CSS that the validator does not know.
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr));
     gap: 1rem;
     margin: 1rem 0;
@@ -987,6 +988,7 @@ table.quizreviewsummary {
 .path-mod-choice {
     .choices {
         display: grid;
+        // stylelint-disable-next-line csstree/validator -- min() in minmax(), valid CSS that the validator does not know.
         grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
         gap: .75rem;
         margin-bottom: 1rem;

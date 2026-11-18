@@ -131,6 +131,7 @@
 
 .epure-profile-figures {
     display: grid;
+    // stylelint-disable-next-line csstree/validator -- min() in minmax(), valid CSS that the validator does not know.
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.5rem), 1fr));
     gap: .75rem;
     margin: 0 0 1rem;

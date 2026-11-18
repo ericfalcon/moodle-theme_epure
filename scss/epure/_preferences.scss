@@ -312,6 +312,7 @@ html.epure-a11y-scrollbars {
 // The profiles: buttons that set several preferences in one click, two by row.
 .epure-a11y-profiles {
     display: grid;
+    // stylelint-disable-next-line csstree/validator -- min() in minmax(), valid CSS that the validator does not know.
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
     gap: .4rem;
     margin-top: .4rem;
@@ -334,13 +335,13 @@ html.epure-a11y-scrollbars {
         --epure-surface-muted: #0b0b0b;
         --epure-surface-raised: #141414;
         --epure-border: #b8b800;
-        --epure-contrast-border: #ffff00;
-        --epure-ink: #ffff00;
+        --epure-contrast-border: #ff0;
+        --epure-ink: #ff0;
         --epure-ink-muted: #ffff8a;
         --epure-brand-text: #8fd9ff;
         --epure-focus: #fff;
-        --bs-emphasis-color: #ffff00;
-        --mds-text-emphasis: #ffff00;
+        --bs-emphasis-color: #ff0;
+        --mds-text-emphasis: #ff0;
 
         a:not(.btn) {
             color: var(--epure-brand-text);

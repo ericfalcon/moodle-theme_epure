@@ -96,6 +96,7 @@
 
 .epure-palette-list {
     display: grid;
+    // stylelint-disable-next-line csstree/validator -- min() in minmax(), valid CSS that the validator does not know.
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
     gap: .375rem 1rem;
     margin: 0;
