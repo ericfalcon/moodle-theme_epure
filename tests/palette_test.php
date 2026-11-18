@@ -194,4 +194,37 @@ final class palette_test extends \basic_testcase {
         $this->assertSame(palette::DEFAULT_BRAND, palette::derive('not a colour')['brand']);
         $this->assertSame(palette::DEFAULT_BRAND, palette::derive(null)['brand']);
     }
+
+    /**
+     * Under the cream overlay of « Aa », whatever the brand colour: the text on the fill and on its hover, and the text
+     * in the brand colour on white and on its tint, read at 4.5:1 as the browser draws them (multiplied by the cream);
+     * the text on the fills is the one of the light mode; the header in a gradient too.
+     */
+    public function test_cream_keeps_the_contrast_for_any_brand(): void {
+        $under = fn(string $a, string $b) => palette::contrast(palette::under_cream($a), palette::under_cream($b));
+        for ($r = 0; $r < 256; $r += 51) {
+            for ($g = 0; $g < 256; $g += 51) {
+                for ($b = 0; $b < 256; $b += 51) {
+                    $brand = sprintf('#%02X%02X%02X', $r, $g, $b);
+                    $light = palette::derive($brand);
+                    $cream = palette::cream($brand, '#E13C2D', 'gradient');
+                    $on = $cream['epure-cream-on-brand'];
+                    $this->assertSame($light['on'], $on, $brand);
+                    $pairs = [
+                        [$on, $cream['epure-cream-brand']],
+                        [$on, $cream['epure-cream-brand-hover']],
+                        [$cream['epure-cream-brand-text'], '#FFFFFF'],
+                        [$cream['epure-cream-brand-text'], $light['soft2']],
+                        [$cream['epure-cream-header-on'], $cream['epure-cream-header-bg']],
+                        [$cream['epure-cream-header-on'], $cream['epure-cream-header-end']],
+                    ];
+                    foreach ($pairs as [$text, $fill]) {
+                        $this->assertGreaterThanOrEqual(palette::AA_TEXT, $under($text, $fill), "{$brand}: {$text} on {$fill}");
+                    }
+                }
+            }
+        }
+        // Outside of cream(), the contrasts are those of the page without the overlay again.
+        $this->assertEqualsWithDelta(21, palette::contrast('#000000', '#FFFFFF'), 0.01);
+    }
 }

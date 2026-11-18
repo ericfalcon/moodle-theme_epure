@@ -19,6 +19,19 @@
     --epure-on-accent: #{$epure-on-accent};
     --epure-dark-accent: #{$epure-dark-accent};
     --epure-dark-on-accent: #{$epure-dark-on-accent};
+    // The colours of the brand under the cream overlay of « Aa » (palette::cream()), put in place by _preferences.scss.
+    --epure-cream-brand: #{$epure-cream-brand};
+    --epure-cream-brand-hover: #{$epure-cream-brand-hover};
+    --epure-cream-on-brand: #{$epure-cream-on-brand};
+    --epure-cream-brand-text: #{$epure-cream-brand-text};
+    --epure-cream-accent: #{$epure-cream-accent};
+    --epure-cream-on-accent: #{$epure-cream-on-accent};
+    --epure-cream-header-bg: #{$epure-cream-header-bg};
+    --epure-cream-header-end: #{$epure-cream-header-end};
+    --epure-cream-header-on: #{$epure-cream-header-on};
+    --epure-cream-header-hover: #{$epure-cream-header-hover};
+    --epure-cream-header-toggler-filter: #{$epure-cream-header-toggler-filter};
+    --epure-cream-header-divider: #{$epure-cream-header-divider};
     --epure-radius-sm: #{$border-radius-sm};
     --epure-radius: #{$border-radius};
     --epure-radius-lg: #{$border-radius-lg};

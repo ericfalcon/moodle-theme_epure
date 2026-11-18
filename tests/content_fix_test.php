@@ -199,8 +199,8 @@ final class content_fix_test extends \advanced_testcase {
         ]);
         $expected = array_merge(array_fill_keys(content_fix::KINDS, 0), ['emptyheadings' => 1, 'moving' => 1, 'tabindex' => 1]);
         $this->assertSame($expected, $done);
-        $this->assertSame('<h2>Plan</h2><p>Info</p><a href="#a" tabindex="0">A</a>',
-            $DB->get_field('page', 'content', ['id' => $page->id]));
+        $content = $DB->get_field('page', 'content', ['id' => $page->id]);
+        $this->assertSame('<h2>Plan</h2><p>Info</p><a href="#a" tabindex="0">A</a>', $content);
         $parts = course_accessibility::analyse($course);
         $part = array_values(array_filter($parts, fn($part) => $part['type'] === 'cm' && $part['id'] == $page->cmid))[0];
         foreach (['emptyheadings', 'moving', 'tabindex'] as $kind) {

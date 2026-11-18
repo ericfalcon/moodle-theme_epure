@@ -233,7 +233,8 @@ const start = () => {
     // The text selected now, else the one selected just before the button was touched.
     const now = window.getSelection();
     const text = now ? now.toString().replace(/\s+/g, ' ').trim() : '';
-    const chosen = text ? {text, node: now.anchorNode} : (selected && Date.now() - selected.time < 10000 ? selected : null);
+    const recent = selected && Date.now() - selected.time < 10000 ? selected : null;
+    const chosen = text ? {text, node: now.anchorNode} : recent;
     selected = null;
     reading = true;
     if (chosen) {
@@ -255,7 +256,10 @@ const update = () => {
     }
     const synth = window.speechSynthesis;
     const play = bar.querySelector('[data-action="play"]');
-    const label = reading ? (synth.paused ? bar.dataset.resume : bar.dataset.pause) : bar.dataset.play;
+    let label = bar.dataset.play;
+    if (reading) {
+        label = synth.paused ? bar.dataset.resume : bar.dataset.pause;
+    }
     play.querySelector('span').textContent = label;
     play.querySelector('i').className = `fa ${reading && !synth.paused ? 'fa-pause' : 'fa-play'}`;
     bar.querySelector('[data-action="stop"]').disabled = !reading;

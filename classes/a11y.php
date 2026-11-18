@@ -165,8 +165,8 @@ class a11y {
         }
         $valid = [];
         foreach ($values as $name => $value) {
-            if (isset($choices[$name]) && (is_string($value) || is_int($value))
-                    && in_array((string) $value, $choices[$name], true)) {
+            $scalar = is_string($value) || is_int($value);
+            if (isset($choices[$name]) && $scalar && in_array((string) $value, $choices[$name], true)) {
                 $valid[$name] = (string) $value;
             }
         }

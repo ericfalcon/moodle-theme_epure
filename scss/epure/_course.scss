@@ -97,7 +97,10 @@
 .epure-course-banner-figures {
     display: grid;
     flex: 1 1 22rem;
-    grid-template-columns: repeat(3, 1fr);
+    // Three side by side; fewer per line on a narrow screen with a large text (WCAG 1.4.10).
+    // stylelint-disable-next-line csstree/validator -- min() in minmax(), valid CSS that the validator does not know.
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 6.5rem), 1fr));
+    min-width: 0;
     gap: .5rem;
     max-width: 30rem;
     margin: 0;

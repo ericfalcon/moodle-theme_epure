@@ -361,6 +361,60 @@ html.epure-a11y-scheme-cream body::after {
     mix-blend-mode: multiply;
 }
 
+// Under the overlay, the colours of the brand that keep 4.5:1 there (palette::cream()): those of the light mode reach it
+// on white, and the overlay takes up to a tenth off their contrast. Over the colours of an IOMAD company too.
+html.epure-a11y-scheme-cream {
+    --epure-brand: var(--epure-cream-brand);
+    --epure-brand-hover: var(--epure-cream-brand-hover);
+    --epure-on-brand: var(--epure-cream-on-brand);
+    --epure-brand-text: var(--epure-cream-brand-text);
+    --epure-light-brand-text: var(--epure-cream-brand-text);
+    --epure-focus: var(--epure-cream-brand-text);
+    --epure-accent: var(--epure-cream-accent);
+    --epure-on-accent: var(--epure-cream-on-accent);
+    --epure-header-bg: var(--epure-cream-header-bg);
+    --epure-header-end: var(--epure-cream-header-end);
+    --epure-header-on: var(--epure-cream-header-on);
+    --epure-header-hover: var(--epure-cream-header-hover);
+    --epure-header-toggler-filter: var(--epure-cream-header-toggler-filter);
+    --epure-header-divider: var(--epure-cream-header-divider);
+    --bs-primary: var(--epure-cream-brand);
+    --bs-link-color: var(--epure-cream-brand-text);
+    --bs-link-hover-color: var(--epure-cream-brand-text);
+}
+
+// In the rules of Bootstrap written at build time; as light as them, so that the colours given to some links (the
+// course index, the menus) stay.
+:where(html.epure-a11y-scheme-cream) {
+    a,
+    .btn-link {
+        color: var(--epure-brand-text);
+    }
+
+    .text-primary {
+        color: var(--epure-brand-text) !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .bg-primary,
+    .badge-primary {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand) !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .btn-primary {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand);
+        border-color: var(--epure-brand);
+
+        &:hover,
+        &:focus {
+            color: var(--epure-on-brand);
+            background-color: var(--epure-brand-hover);
+            border-color: var(--epure-brand-hover);
+        }
+    }
+}
+
 @media print {
     html.epure-a11y-scheme-cream body::after {
         display: none;

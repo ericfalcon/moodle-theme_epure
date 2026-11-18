@@ -177,6 +177,14 @@ function theme_epure_get_pre_scss($theme) {
         // width, which none makes invalid; with 100%, they come against the edges of the screen.
         'course-content-maxwidth' => '100%',
         'medium-content-maxwidth' => '100%',
+        // The grey of the secondary texts and buttons, and the red of the errors and of what is late, a little darker than
+        // Moodle's (4.8 and 5.3:1 on white): they keep 4.5:1 on the grey surfaces of the page, and under the cream
+        // overlay of « Aa », which takes up to a tenth off the contrasts.
+        'gray-600' => '#5f676f',
+        'red' => '#b42318',
+        // The same in the design system of Moodle 5.x, from which Bootstrap takes them there.
+        'mds-color-gray-600' => '#5f676f',
+        'mds-color-red-500' => '#b42318',
         'epure-brand' => $light['fill'],
         'epure-brand-hover' => $light['hover'],
         'epure-on-brand' => $light['on'],
@@ -205,6 +213,8 @@ function theme_epure_get_pre_scss($theme) {
         'input-btn-focus-color' => 'var(--epure-focus-ring)',
         'focus-ring-color' => 'var(--epure-focus-ring)',
     ];
+    // The colours of the brand under the cream overlay of « Aa », which keep 4.5:1 there.
+    $variables += palette::cream($theme->settings->brandcolor ?? null, $accentcolour, $theme->settings->headerstyle ?? '');
     // Compact density: less space around and between the elements, for pages with a lot of content.
     if (($theme->settings->density ?? '') === 'compact') {
         $variables['spacer'] = '.75rem';
