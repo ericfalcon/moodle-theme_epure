@@ -123,6 +123,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.34.1**: no new setting; upgrade the site. The number of the version in the form of a date, as the Moodle plugins directory asks.
 - **1.34.0**: no new setting; upgrade the site. Accessibility of the course: give the vague links a text, put the levels of the titles in order and take the colours too little contrasted away there.
 - **1.33.0**: no new setting; upgrade the site. Accessibility of the course: give a title to the frames, say where the links of images lead and mark the header of the tables there.
 - **1.32.0**: no new setting; upgrade the site. Accessibility of the course: rename there an activity whose name another shares, or says nothing.

@@ -1,5 +1,9 @@
 # Changes
 
+## 1.34.1 — the number of the version
+
+- The number of the version in the form of a date, YYYYMMDDxx, as the Moodle plugins directory asks: 1.33.0 and 1.34.0 had 2026113100 and 2026113200, days that do not exist. 2026120100, above them, so that the sites that have them are updated. Nothing else changes.
+
 ## 1.34.0 — correct the links, the levels of the titles and the colours from the accessibility of the course
 
 - Accessibility of the course: three more mistakes of the texts of the course corrected on the page itself, saved with the button at the bottom: a link whose text does not say where it leads (« click here » alone in its paragraph) gets the new text written in its field, which tells its address and its text now (a link without any text, an icon, gets it as its name); the titles of a text whose levels skip one (a title 2 followed by a title 4), ticked, are put back in order, each keeping its text (the box says the levels before and after: « levels 2, 4 become 2, 3 »); a text too little contrasted, ticked, loses its colours (of the text and of its background) and takes those of the theme, its other formatting kept (the box says the text and its colours). Found exactly as the guide finds them: once corrected, they are no longer counted. A link « here » in a sentence that says where it leads is left alone.

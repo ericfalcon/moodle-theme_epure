@@ -123,6 +123,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.34.1** : aucun nouveau réglage ; mettez le site à jour. Le numéro de version sous forme de date, comme le demande l’annuaire des plugins de Moodle.
 - **1.34.0** : aucun nouveau réglage ; mettez le site à jour. Accessibilité du cours : donnez un texte aux liens vagues, remettez les niveaux de titres dans l’ordre et retirez les couleurs trop peu contrastées sur place.
 - **1.33.0** : aucun nouveau réglage ; mettez le site à jour. Accessibilité du cours : titrez les cadres, dites où mènent les liens d’images et marquez l’en-tête des tableaux sur place.
 - **1.32.0** : aucun nouveau réglage ; mettez le site à jour. Accessibilité du cours : renommez sur place une activité dont le nom est partagé ou ne dit rien.
