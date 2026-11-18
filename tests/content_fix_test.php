@@ -72,7 +72,8 @@ final class content_fix_test extends \advanced_testcase {
             'imagelinks' => [$items['imagelinks'][0]['key'] => 'Programme de la formation'],
             'tables' => [$items['tables'][0]['key'] => true],
         ]);
-        $this->assertSame(['frames' => 1, 'imagelinks' => 1, 'tables' => 1, 'links' => 0, 'headings' => 0, 'contrast' => 0], $done);
+        $expected = array_merge(array_fill_keys(content_fix::KINDS, 0), ['frames' => 1, 'imagelinks' => 1, 'tables' => 1]);
+        $this->assertSame($expected, $done);
         $this->assertSame(
             '<p><iframe src="https://www.youtube.com/embed/abc" width="560" title="Vidéo : les gestes « utiles »"></iframe></p>'
             . '<p><a href="https://example.org/programme"><img src="@@PLUGINFILE@@/logo.png" alt="Programme de la formation">'
@@ -145,7 +146,8 @@ final class content_fix_test extends \advanced_testcase {
             'headings' => [$items['headings'][0]['key'] => true],
             'contrast' => [$items['contrast'][0]['key'] => true],
         ]);
-        $this->assertSame(['frames' => 0, 'imagelinks' => 0, 'tables' => 0, 'links' => 2, 'headings' => 1, 'contrast' => 1], $done);
+        $expected = array_merge(array_fill_keys(content_fix::KINDS, 0), ['links' => 2, 'headings' => 1, 'contrast' => 1]);
+        $this->assertSame($expected, $done);
         $this->assertSame(
             '<h2>Plan</h2><h3 class="x">Détail</h3><h4>Fin</h4><h3>Suite</h3>'
             . '<p><a href="https://example.org/consignes.pdf">Consignes de sécurité (PDF)</a></p>'
@@ -169,5 +171,40 @@ final class content_fix_test extends \advanced_testcase {
         $this->assertSame([3, 4, 3, 4], content_fix::ordered([3, 6, 3, 5]));
         $this->assertSame([1, 2, 2], content_fix::ordered([1, 2, 2]));
         $this->assertSame([], content_fix::ordered([]));
+    }
+
+    /**
+     * The empty titles taken away, the texts that scroll made still, the order of the key Tab put back: each for a text
+     * ticked, nothing else changed; once corrected, nothing is left.
+     */
+    public function test_apply_structure(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $course = $this->getDataGenerator()->create_course();
+        $html = '<h2>Plan</h2><h3> </h3><p><marquee behavior="alternate">Info</marquee></p><a href="#a" tabindex="3">A</a>';
+        $page = $this->getDataGenerator()->create_module('page', ['course' => $course->id, 'content' => $html,
+            'contentformat' => FORMAT_HTML]);
+        $parts = course_accessibility::analyse($course);
+        $part = array_values(array_filter($parts, fn($part) => $part['type'] === 'cm' && $part['id'] == $page->cmid))[0];
+        $items = content_fix::items($part, $course);
+        $this->assertSame(1, $items['emptyheadings'][0]['count']);
+        $this->assertSame(1, $items['moving'][0]['count']);
+        $this->assertSame(1, $items['tabindex'][0]['count']);
+
+        $done = content_fix::apply($course, $parts, [
+            'emptyheadings' => [$items['emptyheadings'][0]['key'] => true],
+            'moving' => [$items['moving'][0]['key'] => true],
+            'tabindex' => [$items['tabindex'][0]['key'] => true],
+        ]);
+        $expected = array_merge(array_fill_keys(content_fix::KINDS, 0), ['emptyheadings' => 1, 'moving' => 1, 'tabindex' => 1]);
+        $this->assertSame($expected, $done);
+        $this->assertSame('<h2>Plan</h2><p>Info</p><a href="#a" tabindex="0">A</a>',
+            $DB->get_field('page', 'content', ['id' => $page->id]));
+        $parts = course_accessibility::analyse($course);
+        $part = array_values(array_filter($parts, fn($part) => $part['type'] === 'cm' && $part['id'] == $page->cmid))[0];
+        foreach (['emptyheadings', 'moving', 'tabindex'] as $kind) {
+            $this->assertSame(0, $part['issues'][$kind] ?? 0, $kind);
+        }
     }
 }

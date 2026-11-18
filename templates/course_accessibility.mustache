@@ -196,6 +196,42 @@
                                 {{/fixcontrast}}
                             </fieldset>
                         {{/hasfixcontrast}}
+                        {{#hasfixemptyheadings}}
+                            <fieldset class="epure-a11yguide-alts epure-a11yguide-fixes d-print-none">
+                                <legend class="epure-a11yguide-checks-title">{{#str}}courseaccessibility_fix_emptyheadings_title, theme_epure{{/str}}</legend>
+                                {{#fixemptyheadings}}
+                                    <div class="form-check epure-a11yguide-check">
+                                        <input type="checkbox" class="form-check-input" id="{{id}}" name="emptyheadings[{{key}}]" value="1" aria-describedby="{{id}}-help">
+                                        <label class="form-check-label" for="{{id}}">{{label}}</label>
+                                        <p class="epure-a11yguide-check-help" id="{{id}}-help">{{#str}}courseaccessibility_fix_emptyheadings_help, theme_epure{{/str}}</p>
+                                    </div>
+                                {{/fixemptyheadings}}
+                            </fieldset>
+                        {{/hasfixemptyheadings}}
+                        {{#hasfixmoving}}
+                            <fieldset class="epure-a11yguide-alts epure-a11yguide-fixes d-print-none">
+                                <legend class="epure-a11yguide-checks-title">{{#str}}courseaccessibility_fix_moving_title, theme_epure{{/str}}</legend>
+                                {{#fixmoving}}
+                                    <div class="form-check epure-a11yguide-check">
+                                        <input type="checkbox" class="form-check-input" id="{{id}}" name="unmove[{{key}}]" value="1" aria-describedby="{{id}}-help">
+                                        <label class="form-check-label" for="{{id}}">{{label}}</label>
+                                        <p class="epure-a11yguide-check-help" id="{{id}}-help">{{#str}}courseaccessibility_fix_moving_help, theme_epure{{/str}}</p>
+                                    </div>
+                                {{/fixmoving}}
+                            </fieldset>
+                        {{/hasfixmoving}}
+                        {{#hasfixtabindex}}
+                            <fieldset class="epure-a11yguide-alts epure-a11yguide-fixes d-print-none">
+                                <legend class="epure-a11yguide-checks-title">{{#str}}courseaccessibility_fix_tabindex_title, theme_epure{{/str}}</legend>
+                                {{#fixtabindex}}
+                                    <div class="form-check epure-a11yguide-check">
+                                        <input type="checkbox" class="form-check-input" id="{{id}}" name="taborder[{{key}}]" value="1" aria-describedby="{{id}}-help">
+                                        <label class="form-check-label" for="{{id}}">{{label}}</label>
+                                        <p class="epure-a11yguide-check-help" id="{{id}}-help">{{#str}}courseaccessibility_fix_tabindex_help, theme_epure{{/str}}</p>
+                                    </div>
+                                {{/fixtabindex}}
+                            </fieldset>
+                        {{/hasfixtabindex}}
                         {{#haschecks}}
                             <fieldset class="epure-a11yguide-checks">
                                 <legend class="epure-a11yguide-checks-title">{{#str}}courseaccessibility_checks, theme_epure{{/str}}</legend>

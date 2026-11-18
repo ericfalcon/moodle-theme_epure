@@ -45,7 +45,7 @@ class course_accessibility {
     /** @var string[] Mistakes found without a person, in their order on the page. */
     public const ISSUES = ['images', 'imagelinks', 'links', 'tables', 'contrast', 'headings', 'noheadings', 'frames', 'videos',
         'pdf', 'pdfscanned', 'pdflang', 'docimages', 'docnoheadings', 'docheadings', 'doctables', 'doccontrast', 'slidetitles',
-        'sheetnames', 'doctitle', 'h5pimages', 'name', 'duplicate'];
+        'sheetnames', 'doctitle', 'h5pimages', 'emptyheadings', 'moving', 'tabindex', 'duplicateids', 'name', 'duplicate'];
 
     /** @var string|null Language of the course being read, for the passages in another language. */
     protected static ?string $language = null;
@@ -343,7 +343,8 @@ class course_accessibility {
     public static function check_html(string $html, ?string $language = null): array {
         global $CFG;
         $found = ['images' => 0, 'imagelinks' => 0, 'links' => 0, 'tables' => 0, 'contrast' => 0, 'headings' => 0,
-            'noheadings' => 0, 'frames' => 0, 'videos' => 0];
+            'noheadings' => 0, 'frames' => 0, 'videos' => 0, 'emptyheadings' => 0, 'moving' => 0, 'tabindex' => 0,
+            'duplicateids' => 0];
         $checks = [];
         if (trim($html) === '') {
             return ['issues' => $found, 'checks' => []];
@@ -399,6 +400,21 @@ class course_accessibility {
             }
             $previous = $level;
         }
+        // A title without text (WCAG 1.3.1, 2.4.6): a screen reader announces a title, and says nothing.
+        foreach ($headings as $heading) {
+            if ($text($heading) === '' && !$xpath->query('.//img[@alt and @alt != ""]', $heading)->length) {
+                $found['emptyheadings']++;
+            }
+        }
+        // A text that scrolls or blinks by itself, without a way to stop it (WCAG 2.2.2, RGAA 13.8).
+        $found['moving'] = $xpath->query('//marquee | //blink')->length;
+        // An order of the key Tab of its own (WCAG 2.4.3, RGAA 12.8): the page is no longer gone through in the order
+        // it is read.
+        $found['tabindex'] = $xpath->query('//*[@tabindex and number(@tabindex) > 0]')->length;
+        // Two elements with the same id (WCAG 4.1.1): a label, a heading of a table or a link to a part of the page may
+        // lead to the wrong one.
+        $ids = array_count_values(array_map(fn($node) => $node->nodeValue, iterator_to_array($xpath->query('//@id'))));
+        $found['duplicateids'] = count(array_filter($ids, fn($count) => $count > 1));
         // A long text without any title (WCAG 1.3.1, RGAA 9.1): its sections cannot be reached one by one.
         $body = $xpath->query('//body')->item(0);
         if (!$headings->length && $body && count(preg_split('/\s+/u', $text($body), -1, PREG_SPLIT_NO_EMPTY)) >= self::LONG_TEXT) {
@@ -1209,6 +1225,10 @@ class course_accessibility {
             case 'contrast':
                 $a = (object) ['text' => $item['text'], 'fg' => $item['fg'], 'bg' => $item['bg']];
                 return get_string($string, 'theme_epure', $a);
+            case 'emptyheadings':
+            case 'moving':
+            case 'tabindex':
+                return get_string($string, 'theme_epure', $item['count']);
             default:
                 return get_string($string, 'theme_epure', self::address($item['src']));
         }
