@@ -1,5 +1,9 @@
 # Changes
 
+## 1.34.2 — the circle of « Moodle is working »
+
+- « Moodle is working », on the pages of installation and upgrade: the circle could still stay still in Chrome while the next page was awaited, though the time under it went on. Its arc is now painted by the script at its new place on the ring, as the time is written, rather than the ring turned. When the system asks for less motion, the arc moves a quarter of the ring each second, without sliding (it stayed still): a sign that the page is alive. The steps of an upgrade from a version before 1.34.2 still show the circle of the version installed until then.
+
 ## 1.34.1 — the number of the version
 
 - The number of the version in the form of a date, YYYYMMDDxx, as the Moodle plugins directory asks: 1.33.0 and 1.34.0 had 2026113100 and 2026113200, days that do not exist. 2026120100, above them, so that the sites that have them are updated. Nothing else changes.

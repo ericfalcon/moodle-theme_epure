@@ -33,18 +33,35 @@
     var turn = null;
     var elapsed = overlay.querySelector('[data-region="elapsed"]');
     var spinner = overlay.querySelector('.epure-busy-spinner');
-    // Chrome stops the animations of CSS once the next page is asked for, the scripts not: the circle is turned by the
-    // script, a step every 40 ms, unless the system asks for less motion (it then stays still, the text says it all).
+    // Chrome stops the animations of CSS once the next page is asked for, and may hold a circle turned by a transform,
+    // while it still paints what the scripts change (the time below goes on): the arc is painted by the script, its
+    // place on the ring changed every 40 ms. When the system asks for less motion, it moves a quarter of the ring each
+    // second, with the time, without sliding: still a sign that the page is alive.
     var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var spin = function() {
-        if (!spinner || still) {
+        if (!spinner || !window.getComputedStyle) {
             return;
         }
-        var start = Date.now();
+        var style = window.getComputedStyle(spinner);
+        var arc = style.borderTopColor;
+        var ring = style.borderRightColor;
+        var width = style.borderTopWidth;
+        var paint = function(angle) {
+            spinner.style.background = 'conic-gradient(from ' + angle + 'deg, ' + arc + ' 0deg 90deg, ' + ring
+                + ' 90deg 360deg) border-box';
+        };
+        var mask = 'radial-gradient(farthest-side, transparent calc(100% - ' + width + '), #000 calc(100% - ' + width
+            + '))';
         spinner.style.animation = 'none';
+        spinner.style.borderColor = 'transparent';
+        spinner.style.setProperty('-webkit-mask', mask);
+        spinner.style.setProperty('mask', mask);
+        var start = Date.now();
+        paint(0);
         turn = window.setInterval(function() {
-            spinner.style.transform = 'rotate(' + Math.round(((Date.now() - start) % 1000) * 0.36) + 'deg)';
-        }, 40);
+            var time = Date.now() - start;
+            paint(still ? Math.floor(time / 1000) % 4 * 90 : Math.round((time % 1000) * 0.36));
+        }, still ? 250 : 40);
     };
 
     // « 12 s », « 1 min 05 s »: the time since the step started.
