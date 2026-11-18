@@ -60,14 +60,16 @@ if (data_submitted() && confirm_sesskey()) {
         optional_param_array('alt', [], PARAM_TEXT),
         optional_param_array('decorative', [], PARAM_BOOL)
     );
-    // The titles of the frames, where the links of images lead, the headers of the tables, into their texts.
-    $fixed = \theme_epure\content_fix::apply(
-        $course,
-        course_accessibility::analyse($course),
-        optional_param_array('frametitle', [], PARAM_TEXT),
-        optional_param_array('linkalt', [], PARAM_TEXT),
-        optional_param_array('tablehead', [], PARAM_BOOL)
-    );
+    // The titles of the frames, where the links lead, the headers of the tables, the levels of the titles, the colours
+    // taken away, into their texts.
+    $fixed = \theme_epure\content_fix::apply($course, course_accessibility::analyse($course), [
+        'frames' => optional_param_array('frametitle', [], PARAM_TEXT),
+        'imagelinks' => optional_param_array('linkalt', [], PARAM_TEXT),
+        'tables' => optional_param_array('tablehead', [], PARAM_BOOL),
+        'links' => optional_param_array('linktext', [], PARAM_TEXT),
+        'headings' => optional_param_array('headings', [], PARAM_BOOL),
+        'contrast' => optional_param_array('uncolour', [], PARAM_BOOL),
+    ]);
     // The names changed in the guide, into their activities.
     $renamed = course_accessibility::rename($course, optional_param_array('rename', [], PARAM_TEXT));
     redirect(

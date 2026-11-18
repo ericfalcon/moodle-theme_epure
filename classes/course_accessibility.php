@@ -54,11 +54,11 @@ class course_accessibility {
     protected const LONG_TEXT = 400;
 
     /** @var string[] Texts of links that do not say where they go (as theme_epure/content_check). */
-    protected const VAGUE_LINKS = ['ici', 'cliquez ici', 'cliquer ici', 'ce lien', 'lien', 'en savoir plus', 'plus', 'suite',
+    public const VAGUE_LINKS = ['ici', 'cliquez ici', 'cliquer ici', 'ce lien', 'lien', 'en savoir plus', 'plus', 'suite',
         'lire la suite', 'here', 'click here', 'this link', 'link', 'more', 'read more', 'learn more'];
 
     /** @var string Blocks that give a link its context: the sentence, the item of a list, the cell, the caption. */
-    protected const BLOCKS = 'self::p or self::li or self::td or self::th or self::dd or self::dt or self::figcaption'
+    public const BLOCKS = 'self::p or self::li or self::td or self::th or self::dd or self::dt or self::figcaption'
         . ' or self::blockquote or self::caption or self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6';
 
     /** @var string Hosts of videos whose subtitles cannot be read from the course. */
@@ -357,14 +357,11 @@ class course_accessibility {
         $xpath = new \DOMXPath($doc);
         $text = fn(\DOMNode $node): string => trim(preg_replace('/\s+/u', ' ', $node->textContent));
 
-        // A link made only of images without a text alternative: a screen reader says « link », without where it
-        // leads (WCAG 2.4.4, RGAA 6.2). Its images are counted with it, not as images.
-        $imagelink = fn(\DOMElement $link): bool => $xpath->query('.//img', $link)->length && $text($link) === ''
-            && trim($link->getAttribute('aria-label')) === '' && !$xpath->query('.//img[@alt and @alt != ""]', $link)->length;
-        // An image without alt; alt="" marks a decorative one (WCAG H67).
+        // An image without alt; alt="" marks a decorative one (WCAG H67). The images of a link made only of images are
+        // counted with their link (self::link_problem).
         foreach ($xpath->query('//img[not(@alt)]') as $img) {
             $link = $xpath->query('ancestor::a[@href][1]', $img)->item(0);
-            if (!$link || !$imagelink($link)) {
+            if (!$link || self::link_problem($xpath, $link) !== 'imagelinks') {
                 $found['images']++;
             }
         }
@@ -375,21 +372,11 @@ class course_accessibility {
                 $found['tables']++;
             }
         }
-        // A link without text, or whose short text is alone in its block (WCAG 2.4.4, RGAA 6.1).
+        // A link made only of images, or without text, or whose short text is alone in its block.
         foreach ($xpath->query('//a[@href]') as $link) {
-            if ($imagelink($link)) {
-                $found['imagelinks']++;
-                continue;
-            }
-            $label = $link->getAttribute('aria-label') !== '' ? trim($link->getAttribute('aria-label')) : $text($link);
-            $label = preg_replace('/[.…:!]+$/u', '', \core_text::strtolower($label));
-            if ($label === '' && !$xpath->query('.//img[@alt and @alt != ""]', $link)->length) {
-                $found['links']++;
-                continue;
-            }
-            $block = $xpath->query('ancestor::*[' . self::BLOCKS . '][1]', $link)->item(0);
-            if (in_array($label, self::VAGUE_LINKS, true) && (!$block || $text($block) === $text($link))) {
-                $found['links']++;
+            $problem = self::link_problem($xpath, $link);
+            if ($problem !== '') {
+                $found[$problem]++;
             }
             // A video hosted elsewhere, which the media filter shows as a player.
             $href = trim($link->getAttribute('href'));
@@ -438,6 +425,36 @@ class course_accessibility {
             $checks[] = self::media_check('transcript', (string) $source);
         }
         return ['issues' => $found, 'checks' => $checks];
+    }
+
+    /**
+     * What is wrong with a link: « imagelinks » for a link made only of images without a text alternative (a screen
+     * reader says « link », without where it leads; WCAG 2.4.4, RGAA 6.2), « links » for a link without text, or whose
+     * short text is alone in its block (« click here »; WCAG 2.4.4, RGAA 6.1), empty otherwise.
+     *
+     * @param \DOMXPath $xpath Document of the text.
+     * @param \DOMElement $link Link.
+     * @return string
+     */
+    public static function link_problem(\DOMXPath $xpath, \DOMElement $link): string {
+        $text = fn(\DOMNode $node): string => trim(preg_replace('/\s+/u', ' ', $node->textContent));
+        $described = $xpath->query('.//img[@alt and @alt != ""]', $link)->length;
+        if (
+            $xpath->query('.//img', $link)->length && $text($link) === '' && trim($link->getAttribute('aria-label')) === ''
+                && !$described
+        ) {
+            return 'imagelinks';
+        }
+        $label = $link->getAttribute('aria-label') !== '' ? trim($link->getAttribute('aria-label')) : $text($link);
+        $label = preg_replace('/[.…:!]+$/u', '', \core_text::strtolower($label));
+        if ($label === '' && !$described) {
+            return 'links';
+        }
+        $block = $xpath->query('ancestor::*[' . self::BLOCKS . '][1]', $link)->item(0);
+        if (in_array($label, self::VAGUE_LINKS, true) && (!$block || $text($block) === $text($link))) {
+            return 'links';
+        }
+        return '';
     }
 
     /**
@@ -1139,8 +1156,9 @@ class course_accessibility {
     }
 
     /**
-     * The frames without a title, the links made only of images and the tables without a header of a part, to correct
-     * here (content_fix), saved with the button at the bottom of the page.
+     * The frames without a title, the links made only of images, the tables without a header, the links that do not say
+     * where they lead, the titles whose levels skip one and the colours too little contrasted of a part, to correct here
+     * (content_fix), saved with the button at the bottom of the page.
      *
      * @param array $data Context of the part.
      * @param array $part Part.
@@ -1154,8 +1172,7 @@ class course_accessibility {
         foreach (content_fix::KINDS as $kind) {
             $list = [];
             foreach (in_array($kind, $kinds, true) ? $items[$kind] : [] as $i => $item) {
-                $shown = $kind === 'tables' ? $item['src'] : self::address($item['src']);
-                $label = get_string('courseaccessibility_fix_' . $kind . '_label', 'theme_epure', $shown);
+                $label = self::fix_label($kind, $item);
                 $list[] = [
                     'id' => $data['id'] . '-' . $kind . '-' . $i,
                     'key' => $item['key'],
@@ -1163,11 +1180,38 @@ class course_accessibility {
                     'label' => $label . ($item['place'] !== '' ? ' (' . $item['place'] . ')' : ''),
                 ];
             }
-            $fixes[$kind] = $list;
-            $fixes['has' . $kind] = (bool) $list;
+            // Prefixed: the part has its own « links » (to change it).
+            $fixes['fix' . $kind] = $list;
+            $fixes['hasfix' . $kind] = (bool) $list;
             $fixes['hasfixes'] = $fixes['hasfixes'] || $list;
         }
         return $data + $fixes;
+    }
+
+    /**
+     * The label of the field of what the guide corrects: what tells it, as its kind tells it.
+     *
+     * @param string $kind Kind (content_fix::KINDS).
+     * @param array $item What to correct (content_fix::items).
+     * @return string
+     */
+    protected static function fix_label(string $kind, array $item): string {
+        $string = 'courseaccessibility_fix_' . $kind . '_label';
+        switch ($kind) {
+            case 'tables':
+                return get_string($string, 'theme_epure', $item['src']);
+            case 'links':
+                $a = (object) ['address' => self::address($item['src']), 'text' => $item['text']];
+                return get_string($string . ($item['text'] === '' ? '_empty' : ''), 'theme_epure', $a);
+            case 'headings':
+                $a = (object) ['from' => implode(', ', $item['levels']), 'to' => implode(', ', $item['ordered'])];
+                return get_string($string, 'theme_epure', $a);
+            case 'contrast':
+                $a = (object) ['text' => $item['text'], 'fg' => $item['fg'], 'bg' => $item['bg']];
+                return get_string($string, 'theme_epure', $a);
+            default:
+                return get_string($string, 'theme_epure', self::address($item['src']));
+        }
     }
 
     /**
