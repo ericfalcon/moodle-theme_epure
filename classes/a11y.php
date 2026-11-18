@@ -145,7 +145,7 @@ class a11y {
 
     /**
      * The choices kept in the cookie of the browser (a11y_panel.js): each name with its value, as text; what is not
-     * a known preference is left out, the values are checked as those of the profile.
+     * a known preference, or not one of its values, is left out.
      *
      * @return string[]
      */
@@ -155,11 +155,22 @@ class a11y {
         if (!is_array($values)) {
             return [];
         }
-        $names = array_merge(['text', 'font', 'scheme', 'guide', 'speech'], self::SWITCHES);
-        return array_filter(
-            array_intersect_key($values, array_flip($names)),
-            fn($value) => is_string($value) || is_int($value)
-        );
+        // Each value among the choices of its preference, as Moodle checks those of a profile
+        // (self::definitions()): the switches 0 or 1 only, the sizes, fonts, colours and guides known.
+        $choices = [];
+        foreach (self::definitions() as $name => $definition) {
+            if (str_starts_with($name, 'theme_epure_a11y_') && isset($definition['choices'])) {
+                $choices[substr($name, strlen('theme_epure_a11y_'))] = array_map('strval', $definition['choices']);
+            }
+        }
+        $valid = [];
+        foreach ($values as $name => $value) {
+            if (isset($choices[$name]) && (is_string($value) || is_int($value))
+                    && in_array((string) $value, $choices[$name], true)) {
+                $valid[$name] = (string) $value;
+            }
+        }
+        return $valid;
     }
 
     /**
