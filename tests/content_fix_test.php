@@ -67,14 +67,12 @@ final class content_fix_test extends \advanced_testcase {
         $this->assertSame('Nom | Date', $items['tables'][0]['src']);
         $this->assertCount(1, $items['tables']);
 
-        $done = content_fix::apply(
-            $course,
-            $parts,
-            [$items['frames'][0]['key'] => 'Vidéo : les gestes « utiles »'],
-            [$items['imagelinks'][0]['key'] => 'Programme de la formation'],
-            [$items['tables'][0]['key'] => true]
-        );
-        $this->assertSame(['frames' => 1, 'imagelinks' => 1, 'tables' => 1], $done);
+        $done = content_fix::apply($course, $parts, [
+            'frames' => [$items['frames'][0]['key'] => 'Vidéo : les gestes « utiles »'],
+            'imagelinks' => [$items['imagelinks'][0]['key'] => 'Programme de la formation'],
+            'tables' => [$items['tables'][0]['key'] => true],
+        ]);
+        $this->assertSame(['frames' => 1, 'imagelinks' => 1, 'tables' => 1, 'links' => 0, 'headings' => 0, 'contrast' => 0], $done);
         $this->assertSame(
             '<p><iframe src="https://www.youtube.com/embed/abc" width="560" title="Vidéo : les gestes « utiles »"></iframe></p>'
             . '<p><a href="https://example.org/programme"><img src="@@PLUGINFILE@@/logo.png" alt="Programme de la formation">'
@@ -96,21 +94,80 @@ final class content_fix_test extends \advanced_testcase {
         global $DB;
         [$course, $page, $parts, $part] = $this->page();
         $items = content_fix::items($part, $course);
-        $nothing = ['frames' => 0, 'imagelinks' => 0, 'tables' => 0];
+        $nothing = array_fill_keys(content_fix::KINDS, 0);
+        $frame = ['frames' => [$items['frames'][0]['key'] => 'A']];
 
-        $this->assertSame($nothing, content_fix::apply(
-            $course,
-            $parts,
-            [$items['frames'][0]['key'] => '  '],
-            [],
-            [$items['tables'][0]['key'] => false]
-        ));
+        $this->assertSame($nothing, content_fix::apply($course, $parts, [
+            'frames' => [$items['frames'][0]['key'] => '  '],
+            'tables' => [$items['tables'][0]['key'] => false],
+        ]));
         $DB->set_field('page', 'content', str_replace('embed/abc', 'embed/xyz', self::HTML), ['id' => $page->id]);
-        $this->assertSame(0, content_fix::apply($course, $parts, [$items['frames'][0]['key'] => 'A'], [], [])['frames']);
+        $this->assertSame(0, content_fix::apply($course, $parts, $frame)['frames']);
         $DB->set_field('page', 'content', self::HTML, ['id' => $page->id]);
         $this->setUser($this->getDataGenerator()->create_and_enrol($course, 'student'));
         $this->assertSame([], content_fix::items($part, $course)['frames']);
-        $this->assertSame($nothing, content_fix::apply($course, $parts, [$items['frames'][0]['key'] => 'A'], [], []));
+        $this->assertSame($nothing, content_fix::apply($course, $parts, $frame));
         $this->assertSame(self::HTML, $DB->get_field('page', 'content', ['id' => $page->id]));
+    }
+
+    /**
+     * A link « click here » alone in its paragraph gets its new text, a link of an icon without text its name; the
+     * levels of the titles are put in order, their texts kept; a text too little contrasted loses its colours, its other
+     * formatting kept. Once corrected, nothing is left, and a link « here » in a sentence is left alone.
+     */
+    public function test_apply_links_headings_contrast(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $course = $this->getDataGenerator()->create_course();
+        $html = '<h2>Plan</h2><h4 class="x">Détail</h4><h5>Fin</h5><h3>Suite</h3>'
+            . '<p><a href="https://example.org/consignes.pdf">Cliquez ici</a></p>'
+            . '<p>Le règlement est <a href="https://example.org/r">ici</a> pour tous.</p>'
+            . '<p><a href="https://example.org/aide"><i class="fa fa-question"></i></a></p>'
+            . '<p style="color: #FFFF00; font-weight: bold">Attention</p>';
+        $page = $this->getDataGenerator()->create_module('page', ['course' => $course->id, 'content' => $html,
+            'contentformat' => FORMAT_HTML]);
+        $parts = course_accessibility::analyse($course);
+        $part = array_values(array_filter($parts, fn($part) => $part['type'] === 'cm' && $part['id'] == $page->cmid))[0];
+        $this->assertSame(2, $part['issues']['links']);
+        $this->assertSame(1, $part['issues']['headings']);
+        $this->assertSame(1, $part['issues']['contrast']);
+
+        $items = content_fix::items($part, $course);
+        $this->assertSame(['Cliquez ici', ''], array_column($items['links'], 'text'));
+        $this->assertSame([2, 4, 5, 3], $items['headings'][0]['levels']);
+        $this->assertSame([2, 3, 4, 3], $items['headings'][0]['ordered']);
+        $contrast = $items['contrast'][0];
+        $this->assertSame(['#FFFF00', '#FFFFFF', 'Attention'], [$contrast['fg'], $contrast['bg'], $contrast['text']]);
+
+        $done = content_fix::apply($course, $parts, [
+            'links' => [$items['links'][0]['key'] => 'Consignes de sécurité (PDF)', $items['links'][1]['key'] => 'Aide'],
+            'headings' => [$items['headings'][0]['key'] => true],
+            'contrast' => [$items['contrast'][0]['key'] => true],
+        ]);
+        $this->assertSame(['frames' => 0, 'imagelinks' => 0, 'tables' => 0, 'links' => 2, 'headings' => 1, 'contrast' => 1], $done);
+        $this->assertSame(
+            '<h2>Plan</h2><h3 class="x">Détail</h3><h4>Fin</h4><h3>Suite</h3>'
+            . '<p><a href="https://example.org/consignes.pdf">Consignes de sécurité (PDF)</a></p>'
+            . '<p>Le règlement est <a href="https://example.org/r">ici</a> pour tous.</p>'
+            . '<p><a href="https://example.org/aide" aria-label="Aide"><i class="fa fa-question"></i></a></p>'
+            . '<p style="font-weight: bold;">Attention</p>',
+            $DB->get_field('page', 'content', ['id' => $page->id])
+        );
+        $parts = course_accessibility::analyse($course);
+        $part = array_values(array_filter($parts, fn($part) => $part['type'] === 'cm' && $part['id'] == $page->cmid))[0];
+        foreach (content_fix::KINDS as $kind) {
+            $this->assertSame(0, $part['issues'][$kind] ?? 0, $kind);
+        }
+    }
+
+    /**
+     * The levels of titles put in order: none more than one deeper than the one before, the first as it is.
+     */
+    public function test_ordered(): void {
+        $this->assertSame([2, 3, 4, 3], content_fix::ordered([2, 4, 5, 3]));
+        $this->assertSame([3, 4, 3, 4], content_fix::ordered([3, 6, 3, 5]));
+        $this->assertSame([1, 2, 2], content_fix::ordered([1, 2, 2]));
+        $this->assertSame([], content_fix::ordered([]));
     }
 }

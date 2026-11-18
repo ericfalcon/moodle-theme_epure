@@ -19,7 +19,9 @@ namespace theme_epure;
 /**
  * What the guide « Accessibility of the course » corrects in the texts of the course, besides the images
  * (content_alt): the frames without a title get the title written in the guide, the links made only of images without
- * a text alternative get, on their image, where they lead, the tables without a header get their first row as header.
+ * a text alternative get, on their image, where they lead, the tables without a header get their first row as header,
+ * the links whose text does not say where they lead get a new text, the titles of a text whose levels skip one are put
+ * back in order, the colours of a text too little contrasted are taken away.
  * Found as course_accessibility::check_html finds them, so that once corrected they are no longer counted.
  *
  * @package    theme_epure
@@ -31,7 +33,7 @@ class content_fix {
     public const MAX_LENGTH = 250;
 
     /** @var string[] What the guide corrects, in their order on the page. */
-    public const KINDS = ['frames', 'imagelinks', 'tables'];
+    public const KINDS = ['frames', 'imagelinks', 'tables', 'links', 'headings', 'contrast'];
 
     /**
      * The frames without a title of a text: each with its tag, its offset and its address.
@@ -107,12 +109,105 @@ class content_fix {
     }
 
     /**
+     * The links whose text does not say where they lead (« click here », or no text), found as the guide finds them:
+     * each with the whole link, its offset, its address and its text.
+     *
+     * @param string $html Text.
+     * @return array[] Each: tag (the whole link), offset, src (its address), text.
+     */
+    public static function links(string $html): array {
+        $xpath = self::dom($html);
+        $nodes = iterator_to_array($xpath->query('//a[@href]'));
+        $tags = array_values(array_filter(
+            self::all('~<a\b[^>]*>.*?</a\s*>~is', $html),
+            fn($tag) => preg_match('~^<a\b[^>]*\shref\s*=~i', $tag[0])
+        ));
+        // The links of the text read by the parser and found in the text, one for one; else, nothing is touched.
+        if (count($nodes) !== count($tags)) {
+            return [];
+        }
+        $links = [];
+        foreach ($nodes as $i => $node) {
+            if (course_accessibility::link_problem($xpath, $node) === 'links') {
+                [$tag, $offset] = $tags[$i];
+                $links[] = ['tag' => $tag, 'offset' => $offset, 'src' => $node->getAttribute('href'), 'text' => self::text($tag)];
+            }
+        }
+        return $links;
+    }
+
+    /**
+     * The titles of a text, when their levels skip one (a title 2 followed by a title 4): the whole text, and the levels
+     * of its titles, as they are and put back in order.
+     *
+     * @param string $html Text.
+     * @return array[] None, or one: tag (the whole text), offset, src (the levels), levels, ordered.
+     */
+    public static function headings(string $html): array {
+        $levels = array_map('intval', self::all('~<h([1-6])\b[^>]*>~i', $html, 1));
+        $ordered = self::ordered($levels);
+        if ($ordered === $levels) {
+            return [];
+        }
+        return [['tag' => $html, 'offset' => 0, 'src' => implode(',', $levels), 'levels' => $levels, 'ordered' => $ordered]];
+    }
+
+    /**
+     * The elements of a text whose colour (of the text or of its background) makes it too little contrasted, found as the
+     * guide finds them: each with its opening tag, its offset, its colours and the start of its text.
+     *
+     * @param string $html Text.
+     * @return array[] Each: tag (the opening tag), offset, src, fg, bg, text.
+     */
+    public static function contrast(string $html): array {
+        $xpath = self::dom($html);
+        $low = content_colours::low_contrast_elements($xpath);
+        if (!$low) {
+            return [];
+        }
+        $nodes = iterator_to_array($xpath->query('//body//*[@style or @color or @bgcolor]'));
+        $tags = self::all('~<[a-z][a-z0-9]*\b(?=[^>]*\s(?:style|color|bgcolor)\s*=)[^>]*>~i', $html);
+        if (count($nodes) !== count($tags)) {
+            return [];
+        }
+        $found = [];
+        foreach ($nodes as $i => $node) {
+            $element = $low[$node->getNodePath()] ?? null;
+            if ($element) {
+                [$tag, $offset] = $tags[$i];
+                $text = \core_text::strlen($element['text']) > 50
+                    ? \core_text::substr($element['text'], 0, 47) . '…' : $element['text'];
+                $found[] = ['tag' => $tag, 'offset' => $offset, 'src' => $element['fg'] . $element['bg'] . $element['text'],
+                    'fg' => $element['fg'], 'bg' => $element['bg'], 'text' => $text];
+            }
+        }
+        return $found;
+    }
+
+    /**
+     * Levels of titles put back in order: none more than one deeper than the one before, the first as it is.
+     *
+     * @param int[] $levels Levels.
+     * @return int[]
+     */
+    public static function ordered(array $levels): array {
+        $ordered = [];
+        $previous = 0;
+        foreach ($levels as $level) {
+            $previous = $previous ? min($level, $previous + 1) : $level;
+            $ordered[] = $previous;
+        }
+        return $ordered;
+    }
+
+    /**
      * What the guide can correct in a part, for a teacher who can change it: by kind, each with its key, what tells it
      * (an address, the first row of a table) and the place it is in.
      *
      * @param array $part Part of the guide.
      * @param \stdClass $course Course.
-     * @return array[] By kind: each key, src, place, image (the address of the image of a link).
+     * @return array[] By kind: each key, src, place, image (the address of the image of a link), and what its kind
+     *     tells of it (the text of a link, the levels of the titles, the colours).
      */
     public static function items(array $part, \stdClass $course): array {
         $items = array_fill_keys(self::KINDS, []);
@@ -126,8 +221,8 @@ class content_fix {
             }
             foreach (self::KINDS as $kind) {
                 foreach (self::$kind($html) as $index => $item) {
-                    $items[$kind][] = ['key' => self::key($field, $index, $item['src']), 'src' => $item['src'],
-                        'place' => $field['name'],
+                    unset($item['tag'], $item['offset']);
+                    $items[$kind][] = $item + ['key' => self::key($field, $index, $item['src']), 'place' => $field['name'],
                         'image' => isset($item['img']) ? content_alt::image_url($field, self::attribute($item['img'], 'src')) : ''];
                 }
             }
@@ -141,15 +236,13 @@ class content_fix {
      *
      * @param \stdClass $course Course.
      * @param array $parts Parts of the guide.
-     * @param array $titles Title of each frame, by key.
-     * @param array $links Where each link of images leads, by key.
-     * @param array $tables Tables whose first row is the header, by key.
+     * @param array $given By kind, by key: the title of a frame, where a link of images leads, whether the first row
+     *     of a table is its header, the new text of a link, whether to put the titles in order, to take a colour away.
      * @return int[] Corrected, by kind.
      */
-    public static function apply(\stdClass $course, array $parts, array $titles, array $links, array $tables): array {
+    public static function apply(\stdClass $course, array $parts, array $given): array {
         global $DB;
         $done = array_fill_keys(self::KINDS, 0);
-        $given = ['frames' => $titles, 'imagelinks' => $links, 'tables' => $tables];
         foreach ($parts as $part) {
             foreach (content_alt::fields($part, $course) as $field) {
                 if (!has_capability(content_alt::capability($field), $field['context'])) {
@@ -185,14 +278,40 @@ class content_fix {
     }
 
     /**
-     * The corrected HTML of a frame, a link or a table, or null when nothing was given for it.
+     * The corrected HTML of a frame, a link, a table, the titles of a text or an element in colour, or null when nothing
+     * was given for it.
      *
      * @param string $kind Kind.
      * @param array $item Frame, link or table.
-     * @param mixed $value What was given: a title, where the link leads, or whether the first row is the header.
+     * @param mixed $value What was given: a title, where the link leads, a new text, or whether to correct.
      * @return string|null
      */
     protected static function correct(string $kind, array $item, $value): ?string {
+        if ($kind === 'headings') {
+            if (empty($value)) {
+                return null;
+            }
+            // Each title to its level in order, its opening and its closing tags; nothing else of the text.
+            $i = 0;
+            return preg_replace_callback('~<h([1-6])(\b[^>]*>.*?</)h\1(\s*>)~is', function ($title) use (&$i, $item) {
+                $level = $item['ordered'][$i++] ?? (int) $title[1];
+                return '<h' . $level . $title[2] . 'h' . $level . $title[3];
+            }, $item['tag']);
+        }
+        if ($kind === 'contrast') {
+            if (empty($value)) {
+                return null;
+            }
+            // The colours of the text and of its background taken away: the colours of the theme, which read.
+            $tag = preg_replace('~\s(?:color|bgcolor)\s*=\s*(["\']).*?\1~is', '', $item['tag']);
+            return preg_replace_callback('~\sstyle\s*=\s*(["\'])(.*?)\1~is', function ($style) {
+                $kept = array_filter(
+                    array_map('trim', explode(';', $style[2])),
+                    fn($rule) => $rule !== '' && !preg_match('~^(?:color|background(?:-color)?)\s*:~i', $rule)
+                );
+                return $kept ? ' style=' . $style[1] . implode('; ', $kept) . ';' . $style[1] : '';
+            }, $tag);
+        }
         if ($kind === 'tables') {
             if (empty($value)) {
                 return null;
@@ -210,6 +329,12 @@ class content_fix {
         }
         if ($kind === 'frames') {
             return self::with_attribute($item['tag'], 'title', $text);
+        }
+        if ($kind === 'links') {
+            preg_match('~^(<a\b[^>]*>)(.*)(</a\s*>)$~is', $item['tag'], $parts);
+            // A link with a text: the new text in its place. A link without any (an icon): its name.
+            return $item['text'] !== '' ? $parts[1] . s($text) . $parts[3]
+                : self::with_attribute($parts[1], 'aria-label', $text) . $parts[2] . $parts[3];
         }
         // Where the link leads, as the text alternative of its first image; its other images, decorative.
         $first = true;
@@ -247,6 +372,34 @@ class content_fix {
             return '';
         }
         return html_entity_decode($match[2], ENT_QUOTES | ENT_HTML5);
+    }
+
+    /**
+     * The document of a text, read as the guide reads it.
+     *
+     * @param string $html Text.
+     * @return \DOMXPath
+     */
+    protected static function dom(string $html): \DOMXPath {
+        $doc = new \DOMDocument();
+        $errors = libxml_use_internal_errors(true);
+        $doc->loadHTML('<html><head><meta charset="utf-8"></head><body>' . $html . '</body></html>', LIBXML_NONET);
+        libxml_clear_errors();
+        libxml_use_internal_errors($errors);
+        return new \DOMXPath($doc);
+    }
+
+    /**
+     * The matches of a pattern in a text, in their order: each with its offset, or one of its groups.
+     *
+     * @param string $pattern Pattern.
+     * @param string $html Text.
+     * @param int|null $group A group of the pattern, alone; null for each match and its offset.
+     * @return array
+     */
+    protected static function all(string $pattern, string $html, ?int $group = null): array {
+        preg_match_all($pattern, $html, $matches, PREG_OFFSET_CAPTURE);
+        return $group === null ? $matches[0] : array_column($matches[$group], 0);
     }
 
     /**

@@ -90,6 +90,17 @@ class content_colours {
      * @return int
      */
     public static function low_contrast(\DOMXPath $xpath): int {
+        return count(self::low_contrast_elements($xpath));
+    }
+
+    /**
+     * The elements whose colour (of the text or of the background) makes a text too little contrasted, in their order:
+     * each with the colour of its text and of its background, and the text.
+     *
+     * @param \DOMXPath $xpath Document of the text.
+     * @return array[] By path of the element: element, fg, bg, text.
+     */
+    public static function low_contrast_elements(\DOMXPath $xpath): array {
         $found = [];
         foreach ($xpath->query('//body//text()[normalize-space()]') as $node) {
             $fg = null;
@@ -121,10 +132,11 @@ class content_colours {
                 continue;
             }
             if (self::low($fg ?? palette::INK, $bg ?? palette::SURFACE_LIGHT, $large)) {
-                $found[$owner->getNodePath()] = true;
+                $found[$owner->getNodePath()] ??= ['element' => $owner, 'fg' => $fg ?? palette::INK,
+                    'bg' => $bg ?? palette::SURFACE_LIGHT, 'text' => trim(preg_replace('/\s+/u', ' ', $owner->textContent))];
             }
         }
-        return count($found);
+        return $found;
     }
 
     /**
