@@ -1,5 +1,17 @@
 # Changes
 
+## 1.35.0 — profiles, a reading guide and text up to 200 % in « Aa »
+
+- Display preferences « Aa »:
+  - Profiles, set in one click, which replace the preferences of the user (the colours kept), each then changed as the user wishes: « Dyslexia » (Lexend, text at 115 %, more spacing, shorter lines, a reading ruler), « Low vision » (text at 150 %, Atkinson Hyperlegible, more contrast, underlined links, scroll bars shown), « Concentration » (shorter lines, no motion, still images, a reading mask), « No flashing » (no motion, still images). The panel says which profile was applied.
+  - Text up to 200 % (WCAG 1.4.4): 150, 175 and 200 % besides 90, 100, 115 and 130 %, each size with its percentage. The page reflows without scrolling across down to 320 pixels; on phones, the header and the navigation bar at the bottom keep their size.
+  - A reading guide: a ruler under the line read, or a mask that darkens all but a few lines around it. It follows the pointer, or the element reached with the keyboard; hidden from the screen readers, it lets every click through.
+  - Colours yellow on black (black surfaces, yellow text, light blue links, for low vision) and cream (a coloured overlay that takes the glare off the white, against visual stress), besides light, dark and as the device.
+  - The font Lexend, besides Atkinson Hyperlegible and OpenDyslexic (already bundled with the theme).
+- With the plugin local_accessibility on the site, which has its own panel of display preferences: Épure leaves it the place, without its button « Aa », its key Alt + A nor its preferences, which would add to those of the plugin (a text enlarged twice). The colours of the site and the reading mode stay.
+- No new setting. The reading guide is a new preference of the users, exported and deleted with the privacy API.
+- Tests: PHPUnit (the new sizes, Lexend, the colours, the guide; the profiles set known choices).
+
 ## 1.34.2 — the circle of « Moodle is working »
 
 - « Moodle is working », on the pages of installation and upgrade: the circle could still stay still in Chrome while the next page was awaited, though the time under it went on. Its arc is now painted by the script at its new place on the ring, as the time is written, rather than the ring turned. When the system asks for less motion, the arc moves a quarter of the ring each second, without sliding (it stayed still): a sign that the page is alive. The steps of an upgrade from a version before 1.34.2 still show the circle of the version installed until then.

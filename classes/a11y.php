@@ -28,17 +28,33 @@ namespace theme_epure;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class a11y {
-    /** @var int[] Text sizes, in percent. */
-    public const TEXT_SIZES = [90, 100, 115, 130];
+    /** @var int[] Text sizes, in percent: up to 200 % (WCAG 1.4.4). */
+    public const TEXT_SIZES = [90, 100, 115, 130, 150, 175, 200];
 
     /** @var string[] Reading fonts, besides the font of the theme (empty value). */
-    public const FONTS = ['atkinson', 'opendyslexic'];
+    public const FONTS = ['atkinson', 'lexend', 'opendyslexic'];
 
-    /** @var string[] Colour schemes a user can choose, besides the one of the site (empty value). */
-    public const SCHEMES = ['light', 'dark', 'auto'];
+    /** @var string[] Colour schemes a user can choose, besides the one of the site (empty value): light, dark, as the
+     * device, yellow on black and cream (low vision, visual stress). */
+    public const SCHEMES = ['light', 'dark', 'auto', 'yellow', 'cream'];
+
+    /** @var string[] Reading guides, besides none (empty value): a ruler under the line read, or a mask around it. */
+    public const GUIDES = ['ruler', 'mask'];
 
     /** @var string[] Preferences that are on or off. */
     public const SWITCHES = ['spacing', 'lines', 'contrast', 'underline', 'motion', 'stillimages', 'scrollbars'];
+
+    /** @var array[] Profiles: the choices set in one click, all the others back to their default (the colour scheme
+     * kept). Dyslexia: a font drawn to be read easily, more spacing, shorter lines, a ruler under the line read. Low
+     * vision: text at 150 %, more contrast, underlined links, the scroll bars shown. Focus: shorter lines, nothing that
+     * moves, a mask around the lines read. Seizures: nothing that moves nor flashes. */
+    public const PROFILES = [
+        'dyslexia' => ['text' => 115, 'font' => 'lexend', 'guide' => 'ruler', 'switches' => ['spacing', 'lines']],
+        'lowvision' => ['text' => 150, 'font' => 'atkinson', 'guide' => '',
+            'switches' => ['contrast', 'underline', 'scrollbars']],
+        'focus' => ['text' => 100, 'font' => '', 'guide' => 'mask', 'switches' => ['lines', 'motion', 'stillimages']],
+        'seizures' => ['text' => 100, 'font' => '', 'guide' => '', 'switches' => ['motion', 'stillimages']],
+    ];
 
     /**
      * Definitions of the preferences, for Moodle's user preference API.
@@ -54,6 +70,8 @@ class a11y {
                 'choices' => array_merge([''], self::FONTS), 'permissioncallback' => $own],
             'theme_epure_a11y_scheme' => ['type' => PARAM_ALPHA, 'null' => NULL_NOT_ALLOWED, 'default' => '',
                 'choices' => array_merge([''], self::SCHEMES), 'permissioncallback' => $own],
+            'theme_epure_a11y_guide' => ['type' => PARAM_ALPHA, 'null' => NULL_NOT_ALLOWED, 'default' => '',
+                'choices' => array_merge([''], self::GUIDES), 'permissioncallback' => $own],
         ];
         foreach (self::SWITCHES as $switch) {
             $definitions['theme_epure_a11y_' . $switch] = ['type' => PARAM_INT, 'null' => NULL_NOT_ALLOWED,
@@ -80,8 +98,8 @@ class a11y {
     /**
      * Preferences of the current user.
      *
-     * @return array{text: int, font: string, scheme: string, spacing: bool, lines: bool, contrast: bool, underline: bool,
-     *     motion: bool}
+     * @return array{text: int, font: string, scheme: string, guide: string, spacing: bool, lines: bool, contrast: bool,
+     *     underline: bool, motion: bool}
      */
     public static function preferences(): array {
         $enabled = isloggedin() && !isguestuser();
@@ -91,10 +109,12 @@ class a11y {
         $text = (int) ($preference('text') ?? $defaults['text']);
         $font = (string) ($preference('font') ?? $defaults['font']);
         $scheme = (string) ($preference('scheme') ?? '');
+        $guide = (string) ($preference('guide') ?? '');
         $preferences = [
             'text' => in_array($text, self::TEXT_SIZES, true) ? $text : 100,
             'font' => in_array($font, self::FONTS, true) ? $font : '',
             'scheme' => in_array($scheme, self::SCHEMES, true) ? $scheme : '',
+            'guide' => in_array($guide, self::GUIDES, true) ? $guide : '',
         ];
         foreach (self::SWITCHES as $switch) {
             $preferences[$switch] = (bool) ($preference($switch) ?? $defaults[$switch]);
@@ -129,7 +149,19 @@ class a11y {
      * @return bool
      */
     public static function panel_enabled(): bool {
-        return get_config('theme_epure', 'prefpanel') !== '0';
+        return get_config('theme_epure', 'prefpanel') !== '0' && !self::other_panel();
+    }
+
+    /**
+     * Whether the site has another panel of display preferences, the plugin local_accessibility: Épure then leaves it
+     * the place, without its button « Aa », its key Alt + A nor its preferences, which would add to those of the plugin
+     * (a text enlarged twice) and could no longer be changed.
+     *
+     * @return bool
+     */
+    public static function other_panel(): bool {
+        return \core_component::get_component_directory('local_accessibility') !== null
+            && get_config('local_accessibility', 'version') !== false;
     }
 
     /**
@@ -138,6 +170,14 @@ class a11y {
      * @return string Classes separated by spaces, empty with the default display.
      */
     public static function html_classes(): string {
+        if (self::other_panel()) {
+            // The display is the one of the plugin: only the colours of the site, and the reading mode.
+            $classes = array_filter([self::scheme_class(self::default_scheme())]);
+            if (isloggedin() && !isguestuser() && get_user_preferences('theme_epure_focus', 0)) {
+                $classes[] = 'epure-focus';
+            }
+            return implode(' ', $classes);
+        }
         $preferences = self::preferences();
         $classes = [];
         if ($preferences['text'] !== 100) {
@@ -150,6 +190,9 @@ class a11y {
             if ($preferences[$switch]) {
                 $classes[] = 'epure-a11y-' . $switch;
             }
+        }
+        if ($preferences['guide'] !== '') {
+            $classes[] = 'epure-a11y-guide-' . $preferences['guide'];
         }
         if ($class = self::scheme_class($preferences['scheme'] ?: self::default_scheme())) {
             $classes[] = $class;
@@ -173,11 +216,12 @@ class a11y {
     /**
      * Class of the html element for a colour scheme.
      *
-     * @param string $scheme light, dark or auto.
-     * @return string The class, empty for the light scheme.
+     * @param string $scheme light, dark, auto, yellow (on black, a dark scheme) or cream.
+     * @return string The classes, empty for the light scheme.
      */
     public static function scheme_class(string $scheme): string {
-        return ['dark' => 'epure-dark', 'auto' => 'epure-dark-auto'][$scheme] ?? '';
+        return ['dark' => 'epure-dark', 'auto' => 'epure-dark-auto', 'yellow' => 'epure-dark epure-a11y-scheme-yellow',
+            'cream' => 'epure-a11y-scheme-cream'][$scheme] ?? '';
     }
 
     /**
@@ -206,12 +250,24 @@ class a11y {
             $schemes[] = ['value' => $scheme, 'label' => get_string('a11yscheme_' . $scheme, 'theme_epure'),
                 'checked' => $scheme === $preferences['scheme']];
         }
+        $guides = [['value' => '', 'label' => get_string('a11yguide_none', 'theme_epure'),
+            'checked' => $preferences['guide'] === '']];
+        foreach (self::GUIDES as $guide) {
+            $guides[] = ['value' => $guide, 'label' => get_string('a11yguide_' . $guide, 'theme_epure'),
+                'checked' => $guide === $preferences['guide']];
+        }
+        $profiles = [];
+        foreach (self::PROFILES as $profile => $choices) {
+            $profiles[] = ['name' => $profile, 'label' => get_string('a11yprofile_' . $profile, 'theme_epure'),
+                'help' => get_string('a11yprofile_' . $profile . '_help', 'theme_epure'),
+                'choices' => json_encode($choices)];
+        }
         $switches = [];
         foreach (self::SWITCHES as $switch) {
             $switches[] = ['name' => $switch, 'label' => get_string('a11y' . $switch, 'theme_epure'),
                 'help' => get_string('a11y' . $switch . '_help', 'theme_epure'), 'checked' => $preferences[$switch]];
         }
-        return ['sizes' => $sizes, 'fonts' => $fonts, 'schemes' => $schemes, 'switches' => $switches,
-            'defaultscheme' => self::default_scheme()];
+        return ['sizes' => $sizes, 'fonts' => $fonts, 'schemes' => $schemes, 'guides' => $guides, 'switches' => $switches,
+            'profiles' => $profiles, 'defaultscheme' => self::default_scheme()];
     }
 }

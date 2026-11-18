@@ -123,6 +123,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.35.0**: no new setting; upgrade the site. « Aa »: profiles (dyslexia, low vision, concentration, no flashing), text up to 200 %, a reading ruler or mask, colours yellow on black and cream, the font Lexend; Épure steps aside when the plugin local_accessibility is installed.
 - **1.34.2**: no new setting; upgrade the site. The circle of « Moodle is working » turns in Chrome while the next page is awaited; with less motion asked, it moves a quarter of a turn each second.
 - **1.34.1**: no new setting; upgrade the site. The number of the version in the form of a date, as the Moodle plugins directory asks.
 - **1.34.0**: no new setting; upgrade the site. Accessibility of the course: give the vague links a text, put the levels of the titles in order and take the colours too little contrasted away there.

@@ -26,6 +26,7 @@
 
 import Ajax from 'core/ajax';
 import {getString} from 'core/str';
+import * as Guide from 'theme_epure/reading_guide';
 
 /** Preferences that are on or off. */
 const SWITCHES = ['spacing', 'lines', 'contrast', 'underline', 'motion', 'stillimages', 'scrollbars'];
@@ -40,6 +41,7 @@ const read = (panel) => ({
     text: Number(panel.querySelector('[name="epure-a11y-text"]:checked')?.value || 100),
     font: panel.querySelector('[name="epure-a11y-font"]:checked')?.value || '',
     scheme: panel.querySelector('[name="epure-a11y-scheme"]:checked')?.value || '',
+    guide: panel.querySelector('[name="epure-a11y-guide"]:checked')?.value || '',
     switches: Object.fromEntries(SWITCHES.map((name) => [name, panel.querySelector(`[name="epure-a11y-${name}"]`).checked])),
 });
 
@@ -54,11 +56,18 @@ const applyToPage = (choices, defaultScheme) => {
     [...html.classList].filter((name) => name.startsWith('epure-a11y-') || name.startsWith('epure-dark'))
         .forEach((name) => html.classList.remove(name));
     const scheme = choices.scheme || defaultScheme;
-    if (scheme === 'dark') {
+    if (scheme === 'dark' || scheme === 'yellow') {
         html.classList.add('epure-dark');
     } else if (scheme === 'auto') {
         html.classList.add('epure-dark-auto');
     }
+    if (scheme === 'yellow' || scheme === 'cream') {
+        html.classList.add(`epure-a11y-scheme-${scheme}`);
+    }
+    if (choices.guide) {
+        html.classList.add(`epure-a11y-guide-${choices.guide}`);
+    }
+    Guide.set(choices.guide);
     if (choices.text !== 100) {
         html.classList.add(`epure-a11y-text-${choices.text}`);
     }
@@ -81,6 +90,7 @@ const save = async(panel, choices) => {
         {type: 'theme_epure_a11y_text', value: String(choices.text)},
         {type: 'theme_epure_a11y_font', value: choices.font},
         {type: 'theme_epure_a11y_scheme', value: choices.scheme},
+        {type: 'theme_epure_a11y_guide', value: choices.guide},
         ...SWITCHES.map((name) => ({type: `theme_epure_a11y_${name}`, value: choices.switches[name] ? '1' : '0'})),
     ];
     const status = panel.querySelector('[data-region="status"]');
@@ -186,20 +196,45 @@ export const init = () => {
     });
 
     const queue = saver(panel);
-    panel.addEventListener('change', () => {
+    const changed = () => {
         const choices = read(panel);
         applyToPage(choices, defaultScheme);
-        queue(choices);
-    });
-    region.querySelector('[data-action="reset"]').addEventListener('click', () => {
-        panel.querySelector('[name="epure-a11y-text"][value="100"]').checked = true;
-        panel.querySelector('[name="epure-a11y-font"][value=""]').checked = true;
-        panel.querySelector('[name="epure-a11y-scheme"][value=""]').checked = true;
+        return queue(choices);
+    };
+    panel.addEventListener('change', changed);
+    // A preference set from a profile or the reset, as the user would tick it.
+    const check = (name, value) => {
+        const input = panel.querySelector(`[name="epure-a11y-${name}"][value="${value}"]`);
+        if (input) {
+            input.checked = true;
+        }
+    };
+    const defaults = () => {
+        check('text', 100);
+        check('font', '');
+        check('guide', '');
         SWITCHES.forEach((name) => {
             panel.querySelector(`[name="epure-a11y-${name}"]`).checked = false;
         });
-        const choices = read(panel);
-        applyToPage(choices, defaultScheme);
-        queue(choices);
+    };
+    region.querySelector('[data-action="reset"]').addEventListener('click', () => {
+        defaults();
+        check('scheme', '');
+        changed();
     });
+    // A profile replaces the preferences: what it does not set goes back to its default, the colours kept.
+    panel.querySelectorAll('[data-action="profile"]').forEach((button) => button.addEventListener('click', async() => {
+        const profile = JSON.parse(button.dataset.choices);
+        defaults();
+        check('text', profile.text);
+        check('font', profile.font);
+        check('guide', profile.guide);
+        profile.switches.forEach((name) => {
+            panel.querySelector(`[name="epure-a11y-${name}"]`).checked = true;
+        });
+        await changed();
+        panel.querySelector('[data-region="status"]').textContent = await getString('a11yprofile_applied', 'theme_epure',
+            button.textContent.trim());
+    }));
+    Guide.init();
 };

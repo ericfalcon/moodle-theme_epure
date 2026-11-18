@@ -17,13 +17,16 @@
 {{!
     @template theme_epure/a11y_panel
 
-    Button « Aa » of the header and its panel of display preferences, saved in the profile of the user.
+    Button « Aa » of the header and its panel of display preferences, saved in the profile of the user: profiles that
+    set several of them in one click, the size of the text, the font, the colours, a reading guide, the switches.
 
     Example context (json):
     {
         "sizes": [{"value": 100, "label": "Normal", "checked": true}],
         "fonts": [{"value": "", "label": "Font of the site", "checked": true}],
         "schemes": [{"value": "", "label": "As the site (Light)", "checked": true}], "defaultscheme": "light",
+        "guides": [{"value": "", "label": "None", "checked": true}, {"value": "ruler", "label": "Reading ruler", "checked": false}],
+        "profiles": [{"name": "dyslexia", "label": "Dyslexia", "help": "Lexend, more spacing.", "choices": "{}"}],
         "switches": [{"name": "spacing", "label": "More text spacing", "help": "Lines, words and letters further apart.", "checked": false}]
     }
 }}
@@ -41,6 +44,17 @@
             </button>
         </div>
         <div class="epure-a11y-body">
+        <div class="epure-a11y-group" role="group" aria-labelledby="epure-a11y-profiles" aria-describedby="epure-a11y-profiles-help">
+            <h3 class="epure-a11y-legend" id="epure-a11y-profiles">{{#str}}a11yprofiles, theme_epure{{/str}}</h3>
+            <p class="epure-a11y-help" id="epure-a11y-profiles-help">{{#str}}a11yprofiles_help, theme_epure{{/str}}</p>
+            <div class="epure-a11y-profiles">
+                {{#profiles}}
+                    <button type="button" class="btn btn-secondary epure-a11y-profile" data-action="profile" data-profile="{{name}}"
+                        data-choices="{{choices}}" aria-describedby="epure-a11y-profile-{{name}}-help">{{label}}</button>
+                    <span class="sr-only visually-hidden" id="epure-a11y-profile-{{name}}-help">{{help}}</span>
+                {{/profiles}}
+            </div>
+        </div>
         <fieldset class="epure-a11y-group">
             <legend>{{#str}}a11ytext, theme_epure{{/str}}</legend>
             <div class="epure-a11y-choices">
@@ -73,6 +87,18 @@
                     </label>
                 {{/schemes}}
             </div>
+        </fieldset>
+        <fieldset class="epure-a11y-group">
+            <legend>{{#str}}a11yguide, theme_epure{{/str}}</legend>
+            <div class="epure-a11y-choices">
+                {{#guides}}
+                    <label class="epure-a11y-choice">
+                        <input type="radio" name="epure-a11y-guide" value="{{value}}" {{#checked}}checked{{/checked}}>
+                        <span>{{label}}</span>
+                    </label>
+                {{/guides}}
+            </div>
+            <p class="epure-a11y-help">{{#str}}a11yguide_help, theme_epure{{/str}}</p>
         </fieldset>
         <fieldset class="epure-a11y-group">
             <legend>{{#str}}a11yreading, theme_epure{{/str}}</legend>

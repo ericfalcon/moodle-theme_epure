@@ -12,9 +12,27 @@ html.epure-a11y-text-130 {
     font-size: 130%;
 }
 
+// Up to 200 % (WCAG 1.4.4): the page reflows (_reflow.scss), the header keeps its size on phones.
+html.epure-a11y-text-150 {
+    font-size: 150%;
+}
+
+html.epure-a11y-text-175 {
+    font-size: 175%;
+}
+
+html.epure-a11y-text-200 {
+    font-size: 200%;
+}
+
 html.epure-a11y-font-atkinson body,
 .epure-a11y-sample-atkinson {
     font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+}
+
+html.epure-a11y-font-lexend body,
+.epure-a11y-sample-lexend {
+    font-family: "Lexend", system-ui, sans-serif;
 }
 
 html.epure-a11y-font-opendyslexic body,
@@ -244,7 +262,8 @@ html.epure-a11y-scrollbars {
 .epure-a11y-group {
     margin-bottom: 1rem;
 
-    legend {
+    legend,
+    .epure-a11y-legend {
         font-size: .9rem;
         font-weight: 600;
         margin-bottom: .4rem;
@@ -288,6 +307,103 @@ html.epure-a11y-scrollbars {
 
 .epure-a11y-switch {
     margin-bottom: .5rem;
+}
+
+// The profiles: buttons that set several preferences in one click, two by row.
+.epure-a11y-profiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: .4rem;
+    margin-top: .4rem;
+
+    .btn {
+        white-space: normal;
+    }
+}
+
+.epure-a11y-legend {
+    margin: 0 0 .25rem;
+}
+
+// Colours yellow on black: the dark scheme (class epure-dark) with black surfaces, yellow text and light blue links,
+// for low vision. On screens only, as the dark scheme.
+@media screen {
+    html.epure-dark.epure-a11y-scheme-yellow {
+        --epure-page: #000;
+        --epure-surface: #000;
+        --epure-surface-muted: #0b0b0b;
+        --epure-surface-raised: #141414;
+        --epure-border: #b8b800;
+        --epure-contrast-border: #ffff00;
+        --epure-ink: #ffff00;
+        --epure-ink-muted: #ffff8a;
+        --epure-brand-text: #8fd9ff;
+        --epure-focus: #fff;
+        --bs-emphasis-color: #ffff00;
+        --mds-text-emphasis: #ffff00;
+
+        a:not(.btn) {
+            color: var(--epure-brand-text);
+        }
+    }
+}
+
+// Cream colours: a coloured overlay over the whole page, as the overlays used against visual stress. Multiplied, it
+// takes the glare off the white and keeps black text black; nothing under it changes, and it lets every click through.
+html.epure-a11y-scheme-cream body::after {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483000;
+    content: "";
+    pointer-events: none;
+    background-color: #f6e9c9;
+    mix-blend-mode: multiply;
+}
+
+@media print {
+    html.epure-a11y-scheme-cream body::after {
+        display: none;
+    }
+}
+
+// Reading guide (a11y_panel.js): a ruler under the line read, or a mask that darkens all but a few lines around it.
+// It follows the pointer, or the field reached with the keyboard; nothing under it changes, every click goes through.
+.epure-a11y-reader {
+    position: fixed;
+    right: 0;
+    left: 0;
+    z-index: 2147483001;
+    pointer-events: none;
+
+    &[hidden] {
+        display: none;
+    }
+}
+
+.epure-a11y-reader-ruler {
+    height: 2.25em;
+    background-color: color-mix(in srgb, var(--epure-brand) 12%, transparent);
+    border-top: 2px solid var(--epure-brand-text);
+    border-bottom: 2px solid var(--epure-brand-text);
+}
+
+.epure-a11y-reader-top,
+.epure-a11y-reader-bottom {
+    background-color: rgba(0, 0, 0, .6);
+}
+
+.epure-a11y-reader-top {
+    top: 0;
+}
+
+.epure-a11y-reader-bottom {
+    bottom: 0;
+}
+
+@media print {
+    .epure-a11y-reader {
+        display: none;
+    }
 }
 
 .epure-a11y-help {

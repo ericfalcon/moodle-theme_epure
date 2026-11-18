@@ -237,6 +237,33 @@ body:has(.epure-longform-actions) #page.drawers {
     html.epure-a11y-text-130 .navbar.fixed-top {
         zoom: .77;
     }
+
+    html.epure-a11y-text-150 .navbar.fixed-top {
+        zoom: .67;
+    }
+
+    html.epure-a11y-text-175 .navbar.fixed-top {
+        zoom: .57;
+    }
+
+    html.epure-a11y-text-200 .navbar.fixed-top {
+        zoom: .5;
+    }
+}
+
+// From 150 %, the navigation bar at the bottom of the screen too: its labels broke in the middle of the words.
+@media (max-width: 767.98px) {
+    html.epure-a11y-text-150 .epure-mobilenav {
+        zoom: .67;
+    }
+
+    html.epure-a11y-text-175 .epure-mobilenav {
+        zoom: .57;
+    }
+
+    html.epure-a11y-text-200 .epure-mobilenav {
+        zoom: .5;
+    }
 }
 
 // On the smallest phones (320 px), a little more.
@@ -247,6 +274,18 @@ body:has(.epure-longform-actions) #page.drawers {
 
     html.epure-a11y-text-130 .navbar.fixed-top {
         zoom: .7;
+    }
+
+    html.epure-a11y-text-150 .navbar.fixed-top {
+        zoom: .62;
+    }
+
+    html.epure-a11y-text-175 .navbar.fixed-top {
+        zoom: .53;
+    }
+
+    html.epure-a11y-text-200 .navbar.fixed-top {
+        zoom: .47;
     }
 }
 
