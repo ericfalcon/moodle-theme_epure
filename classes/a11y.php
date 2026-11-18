@@ -152,16 +152,23 @@ class a11y {
         return get_config('theme_epure', 'prefpanel') !== '0' && !self::other_panel();
     }
 
+    /** @var string[] Plugins that give every page a panel of display preferences of their own. */
+    public const OTHER_PANELS = ['local_accessibility', 'local_a11y', 'local_accessibilitywidget'];
+
     /**
-     * Whether the site has another panel of display preferences, the plugin local_accessibility: Épure then leaves it
-     * the place, without its button « Aa », its key Alt + A nor its preferences, which would add to those of the plugin
-     * (a text enlarged twice) and could no longer be changed.
+     * Whether the site has another panel of display preferences (local_accessibility, local_a11y,
+     * local_accessibilitywidget): Épure then leaves it the place, without its button « Aa », its key Alt + A nor its
+     * preferences, which would add to those of the plugin (a text enlarged twice) and could no longer be changed.
      *
      * @return bool
      */
     public static function other_panel(): bool {
-        return \core_component::get_component_directory('local_accessibility') !== null
-            && get_config('local_accessibility', 'version') !== false;
+        foreach (self::OTHER_PANELS as $plugin) {
+            if (\core_component::get_component_directory($plugin) !== null && get_config($plugin, 'version') !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
