@@ -96,16 +96,18 @@
 
 .epure-palette-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
     gap: .375rem 1rem;
     margin: 0;
     padding: 0;
     list-style: none;
 
+    // On a narrow screen with a large text, the code of a colour goes under its name rather than past the screen.
     li {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        gap: .5rem;
+        gap: .25rem .5rem;
     }
 }
 
@@ -119,6 +121,7 @@
 
 .epure-palette-label {
     flex: 0 1 auto;
+    min-width: 0;
 }
 
 .epure-palette-hex {

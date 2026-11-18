@@ -312,7 +312,7 @@ html.epure-a11y-scrollbars {
 // The profiles: buttons that set several preferences in one click, two by row.
 .epure-a11y-profiles {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
     gap: .4rem;
     margin-top: .4rem;
 
@@ -366,13 +366,15 @@ html.epure-a11y-scheme-cream body::after {
     }
 }
 
-// Reading guide (a11y_panel.js): a ruler under the line read, or a mask that darkens all but a few lines around it.
-// It follows the pointer, or the field reached with the keyboard; nothing under it changes, every click goes through.
+// Reading guide (reading_guide.js): a ruler under the line read, or a mask that darkens all but a few lines around
+// it. It follows the pointer, or the field reached with the keyboard; nothing under it changes, every click goes
+// through. Over the page and its fixed bars (header, drawers, bars at the bottom), under the windows that open over the
+// page: the dialogs and their backdrop, the popovers, the tooltips, the panel « Aa », the messages.
 .epure-a11y-reader {
     position: fixed;
     right: 0;
     left: 0;
-    z-index: 2147483001;
+    z-index: $zindex-fixed + 5;
     pointer-events: none;
 
     &[hidden] {

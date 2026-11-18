@@ -4,8 +4,9 @@ Feature: Pre-audit of accessibility of the Épure theme
   As a visitor, a learner, a teacher or an administrator
   I need every page to meet the WCAG 2.2 A and AA in light, in dark and on phones, without scrolling across
 
-  # The same 52 pages, each in the six displays (light, dark, yellow on black and cream on a computer, light on two
-  # phones), on every version of Moodle and IOMAD and with every version of PHP of the continuous integration.
+  # The same 52 pages, each in the seven displays (light, dark, yellow on black and cream on a computer, light on two
+  # phones, text at 200 % on the smallest), on every version of Moodle and IOMAD and with every version of PHP of the
+  # continuous integration.
 
   Background:
     Given the following "users" exist:

@@ -172,7 +172,7 @@ class behat_theme_epure extends behat_base {
 
     /**
      * The pre-audit: each page in every display (light, dark, yellow on black and cream on a computer, light on phones
-     * of 390 and 320 pixels), with the axe audit of Moodle (WCAG 2.2 A and AA), the contrast under the cream overlay
+     * of 390 and 320 pixels, and with the text at 200 % on 320 pixels), with the axe audit of Moodle (WCAG 2.2 A and AA), the contrast under the cream overlay
      * and, on phones, no scroll across the page (WCAG 1.4.10). All the pages are checked before the step fails, with
      * the list of what failed.
      *
@@ -185,9 +185,11 @@ class behat_theme_epure extends behat_base {
      * @param TableNode $data Columns path and, optionally, except.
      */
     public function the_following_pages_should_meet_accessibility_standards_in_the_four_displays(TableNode $data): void {
-        // Light, dark, the colours of « Aa » yellow on black and cream, on a computer; light on phones.
+        // Light, dark, the colours of « Aa » yellow on black and cream, on a computer; light on phones, and with the text
+        // at 200 % of « Aa » on the smallest one.
         $displays = ['light 1300' => [1300, ''], 'dark 1300' => [1300, 'dark'], 'yellow 1300' => [1300, 'yellow'],
-            'cream 1300' => [1300, 'cream'], 'light 390' => [390, ''], 'light 320' => [320, '']];
+            'cream 1300' => [1300, 'cream'], 'light 390' => [390, ''], 'light 320' => [320, ''],
+            'text 200 % 320' => [320, 'large']];
         $failures = [];
         foreach ($data->getHash() as $row) {
             $path = $this->epure_path($row['path']);
@@ -201,7 +203,7 @@ class behat_theme_epure extends behat_base {
                     // Without the transitions of the colours, axe reads the colours of the scheme, not those on the way
                     // to it. Yellow on black is a dark scheme.
                     $classes = ['dark' => ['epure-dark'], 'yellow' => ['epure-dark', 'epure-a11y-scheme-yellow'],
-                        'cream' => ['epure-a11y-scheme-cream']][$scheme];
+                        'cream' => ['epure-a11y-scheme-cream'], 'large' => ['epure-a11y-text-200']][$scheme];
                     $this->getSession()->executeScript(
                         "const style = document.createElement('style');" .
                         "style.textContent = '*, *::before, *::after { transition: none !important; }';" .
