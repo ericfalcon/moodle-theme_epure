@@ -98,3 +98,21 @@
         display: flex;
     }
 }
+
+// The button « Aa » of the login page, which has no header: in the top right corner, over the page, its panel under it.
+.epure-login-tools {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: $zindex-fixed;
+
+    .epure-a11y-toggle {
+        padding: .375rem .75rem;
+        color: var(--epure-ink);
+        font-weight: 600;
+        background-color: var(--epure-surface);
+        border: 1px solid var(--epure-border);
+        border-radius: var(--epure-radius-pill);
+        box-shadow: var(--epure-shadow);
+    }
+}

@@ -104,10 +104,15 @@ class a11y {
     public static function preferences(): array {
         // Without the button « Aa » (turned off by the administrator, for another panel for instance), the users can no
         // longer change their preferences: the display of the site.
-        $enabled = isloggedin() && !isguestuser() && self::panel_enabled();
+        $enabled = self::panel_enabled();
         $defaults = self::site_defaults();
+        // The visitors keep their choices in a cookie of their browser; a user logged in in their profile, and, for what
+        // they never chose there, the choices they made in this browser before logging in.
+        $cookie = $enabled ? self::cookie() : [];
+        $user = $enabled && !self::visitor();
         // A preference the user never chose is the one of the site.
-        $preference = fn(string $name) => $enabled ? get_user_preferences('theme_epure_a11y_' . $name, null) : null;
+        $preference = fn(string $name) => ($user ? get_user_preferences('theme_epure_a11y_' . $name, null) : null)
+            ?? $cookie[$name] ?? null;
         $text = (int) ($preference('text') ?? $defaults['text']);
         $font = (string) ($preference('font') ?? $defaults['font']);
         $scheme = (string) ($preference('scheme') ?? '');
@@ -122,6 +127,35 @@ class a11y {
             $preferences[$switch] = (bool) ($preference($switch) ?? $defaults[$switch]);
         }
         return $preferences;
+    }
+
+    /**
+     * Whether the current user is a visitor, not logged in or logged in as a guest: their choices are kept in a cookie
+     * of their browser, not in a profile.
+     *
+     * @return bool
+     */
+    public static function visitor(): bool {
+        return !isloggedin() || isguestuser();
+    }
+
+    /**
+     * The choices kept in the cookie of the browser (a11y_panel.js): each name with its value, as text; what is not
+     * a known preference is left out, the values are checked as those of the profile.
+     *
+     * @return string[]
+     */
+    protected static function cookie(): array {
+        $raw = $_COOKIE[self::COOKIE] ?? '';
+        $values = is_string($raw) && strlen($raw) < 1000 ? json_decode($raw, true) : null;
+        if (!is_array($values)) {
+            return [];
+        }
+        $names = array_merge(['text', 'font', 'scheme', 'guide'], self::SWITCHES);
+        return array_filter(
+            array_intersect_key($values, array_flip($names)),
+            fn($value) => is_string($value) || is_int($value)
+        );
     }
 
     /**
@@ -153,6 +187,9 @@ class a11y {
     public static function panel_enabled(): bool {
         return get_config('theme_epure', 'prefpanel') !== '0';
     }
+
+    /** @var string Cookie of the choices of the visitors (not logged in, or guests), in their browser. */
+    public const COOKIE = 'theme_epure_a11y';
 
     /** @var string[] Plugins that give every page a panel of display preferences of their own. */
     public const OTHER_PANELS = ['local_accessibility', 'local_a11y', 'local_accessibilitywidget'];
@@ -268,7 +305,8 @@ class a11y {
             $switches[] = ['name' => $switch, 'label' => get_string('a11y' . $switch, 'theme_epure'),
                 'help' => get_string('a11y' . $switch . '_help', 'theme_epure'), 'checked' => $preferences[$switch]];
         }
-        return ['sizes' => $sizes, 'fonts' => $fonts, 'schemes' => $schemes, 'guides' => $guides, 'switches' => $switches,
+        return ['visitor' => self::visitor(), 'cookie' => self::COOKIE,
+            'sizes' => $sizes, 'fonts' => $fonts, 'schemes' => $schemes, 'guides' => $guides, 'switches' => $switches,
             'profiles' => $profiles, 'defaultscheme' => self::default_scheme()];
     }
 }

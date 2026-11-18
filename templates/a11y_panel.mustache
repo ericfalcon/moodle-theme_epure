@@ -22,6 +22,7 @@
 
     Example context (json):
     {
+        "visitor": false, "cookie": "theme_epure_a11y",
         "sizes": [{"value": 100, "label": "Normal", "checked": true}],
         "fonts": [{"value": "", "label": "Font of the site", "checked": true}],
         "schemes": [{"value": "", "label": "As the site (Light)", "checked": true}], "defaultscheme": "light",
@@ -30,7 +31,7 @@
         "switches": [{"name": "spacing", "label": "More text spacing", "help": "Lines, words and letters further apart.", "checked": false}]
     }
 }}
-<div class="epure-a11y" data-region="epure-a11y" data-default-scheme="{{defaultscheme}}">
+<div class="epure-a11y" data-region="epure-a11y" data-default-scheme="{{defaultscheme}}"{{#visitor}} data-cookie="{{cookie}}"{{/visitor}}>
     <button type="button" class="btn nav-link epure-a11y-toggle" data-action="toggle" aria-expanded="false"
         aria-controls="epure-a11y-panel" title="{{#str}}a11ypanel, theme_epure{{/str}} (Alt+A)">
         <span aria-hidden="true">Aa</span>

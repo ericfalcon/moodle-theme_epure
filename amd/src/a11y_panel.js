@@ -94,7 +94,17 @@ const save = async(panel, choices) => {
         ...SWITCHES.map((name) => ({type: `theme_epure_a11y_${name}`, value: choices.switches[name] ? '1' : '0'})),
     ];
     const status = panel.querySelector('[data-region="status"]');
+    const cookie = panel.closest('[data-region="epure-a11y"]').dataset.cookie;
     try {
+        if (cookie) {
+            // A visitor: in a cookie of the browser, read by the server for the next pages, kept a year.
+            const values = Object.fromEntries(preferences.map(({type, value}) => [type.replace('theme_epure_a11y_', ''), value]));
+            const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+            const value = encodeURIComponent(JSON.stringify(values));
+            document.cookie = `${cookie}=${value}; path=/; max-age=31536000; SameSite=Lax${secure}`;
+            status.textContent = await getString('a11ysaved_visitor', 'theme_epure');
+            return;
+        }
         await Ajax.call([{methodname: 'core_user_update_user_preferences', args: {preferences}}])[0];
         status.textContent = await getString('a11ysaved', 'theme_epure');
     } catch (error) {

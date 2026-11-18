@@ -77,6 +77,7 @@ $string['a11yrate_desc'] = 'Part des critères respectés selon l’audit (RGAA 
 $string['a11yreading'] = 'Confort de lecture';
 $string['a11yreset'] = 'Revenir à l’affichage par défaut';
 $string['a11ysaved'] = 'Enregistré dans votre profil.';
+$string['a11ysaved_visitor'] = 'Gardé dans ce navigateur.';
 $string['a11yscheme'] = 'Affichage';
 $string['a11yscheme_auto'] = 'Selon mon appareil';
 $string['a11yscheme_cream'] = 'Crème';

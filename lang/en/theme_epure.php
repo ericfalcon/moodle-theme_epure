@@ -77,6 +77,7 @@ $string['a11yrate_desc'] = 'Rate of the criteria met, as given by the audit (RGA
 $string['a11yreading'] = 'Reading comfort';
 $string['a11yreset'] = 'Restore the default display';
 $string['a11ysaved'] = 'Saved in your profile.';
+$string['a11ysaved_visitor'] = 'Kept in this browser.';
 $string['a11yscheme'] = 'Display';
 $string['a11yscheme_auto'] = 'As my device';
 $string['a11yscheme_cream'] = 'Cream';
