@@ -41,7 +41,7 @@ final class a11y_test extends \advanced_testcase {
         $this->assertSame('', a11y::html_classes());
         $this->setUser($this->getDataGenerator()->create_user());
         $this->assertSame('', a11y::html_classes());
-        $this->assertSame(['text' => 100, 'font' => '', 'scheme' => '',
+        $this->assertSame(['text' => 100, 'font' => '', 'scheme' => '', 'guide' => '',
             'spacing' => false, 'lines' => false, 'contrast' => false, 'underline' => false,
             'motion' => false, 'stillimages' => false, 'scrollbars' => false], a11y::preferences());
     }
@@ -311,5 +311,40 @@ final class a11y_test extends \advanced_testcase {
         $preferences = $writer->get_user_preferences('theme_epure');
         $this->assertSame('130', $preferences->theme_epure_a11y_text->value);
         $this->assertFalse(isset($preferences->theme_epure_a11y_font));
+    }
+
+    /**
+     * The text up to 200 %, Lexend, the colours yellow on black (a dark scheme) and cream, the reading guide: classes of
+     * the html element; the profiles each set known choices.
+     */
+    public function test_new_preferences(): void {
+        $this->resetAfterTest();
+        $this->setUser($this->getDataGenerator()->create_user());
+        set_user_preference('theme_epure_a11y_text', 200);
+        set_user_preference('theme_epure_a11y_font', 'lexend');
+        set_user_preference('theme_epure_a11y_guide', 'mask');
+        set_user_preference('theme_epure_a11y_scheme', 'yellow');
+        $this->assertSame(
+            'epure-a11y-text-200 epure-a11y-font-lexend epure-a11y-guide-mask epure-dark epure-a11y-scheme-yellow',
+            a11y::html_classes()
+        );
+        set_user_preference('theme_epure_a11y_scheme', 'cream');
+        set_user_preference('theme_epure_a11y_guide', 'telescope');
+        $this->assertSame('epure-a11y-text-200 epure-a11y-font-lexend epure-a11y-scheme-cream', a11y::html_classes());
+
+        foreach (a11y::PROFILES as $profile) {
+            $this->assertContains($profile['text'], a11y::TEXT_SIZES);
+            $this->assertContains($profile['font'], array_merge([''], a11y::FONTS));
+            $this->assertContains($profile['guide'], array_merge([''], a11y::GUIDES));
+            $this->assertEmpty(array_diff($profile['switches'], a11y::SWITCHES));
+        }
+        $context = a11y::panel_context();
+        $this->assertCount(count(a11y::PROFILES), $context['profiles']);
+        $this->assertCount(3, $context['guides']);
+        $this->assertSame([], a11y::other_panels());
+
+        // Without the button « Aa », the choices of the user no longer apply: the display of the site.
+        set_config('prefpanel', 0, 'theme_epure');
+        $this->assertSame('', a11y::html_classes());
     }
 }

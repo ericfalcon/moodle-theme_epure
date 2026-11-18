@@ -282,10 +282,16 @@ if ($ADMIN->fulltree) {
 
     $heading($page, 'preferences', get_string('settingspreferences_desc', 'theme_epure'));
 
+    // Another plugin with a panel of display preferences on every page: the administrator chooses one of the two.
+    $others = theme_epure\a11y::other_panels();
+    $otherpanels = $others ? \html_writer::div(
+        get_string('prefpanel_other', 'theme_epure', implode(', ', $others)),
+        'alert alert-warning mt-2 mb-0'
+    ) : '';
     $page->add(new admin_setting_configcheckbox(
         'theme_epure/prefpanel',
         get_string('prefpanel', 'theme_epure'),
-        get_string('prefpanel_desc', 'theme_epure'),
+        get_string('prefpanel_desc', 'theme_epure') . $otherpanels,
         1
     ));
 
