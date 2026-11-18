@@ -426,3 +426,44 @@ html.epure-a11y-scheme-cream body::after {
     font-size: .85rem;
     margin: 0;
 }
+
+// Reading aloud (read_aloud.js): its bar at the bottom of the screen, above the navigation bar of the phones, and the
+// block being read, marked.
+.epure-a11y-speechbar {
+    position: fixed;
+    bottom: calc(1rem + var(--epure-mobilenav-height, 0px)); // stylelint-disable-line length-zero-no-unit
+    left: 1rem;
+    z-index: $zindex-fixed;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    align-items: center;
+    max-width: calc(100vw - 2rem);
+    padding: .5rem .75rem;
+    color: var(--epure-ink);
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow-hover);
+
+    .btn {
+        white-space: nowrap;
+    }
+}
+
+.epure-a11y-speechrate {
+    display: flex;
+    gap: .375rem;
+    align-items: center;
+    margin: 0;
+
+    .form-select {
+        width: auto;
+    }
+}
+
+.epure-a11y-speaking {
+    outline: 3px solid var(--epure-brand-text);
+    outline-offset: 2px;
+    background-color: var(--epure-brand-soft);
+}

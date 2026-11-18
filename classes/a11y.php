@@ -72,6 +72,9 @@ class a11y {
                 'choices' => array_merge([''], self::SCHEMES), 'permissioncallback' => $own],
             'theme_epure_a11y_guide' => ['type' => PARAM_ALPHA, 'null' => NULL_NOT_ALLOWED, 'default' => '',
                 'choices' => array_merge([''], self::GUIDES), 'permissioncallback' => $own],
+            // The bar of the reading aloud, with the voices of the device: for each user, not a display of the site.
+            'theme_epure_a11y_speech' => ['type' => PARAM_INT, 'null' => NULL_NOT_ALLOWED, 'default' => 0,
+                'choices' => [0, 1], 'permissioncallback' => $own],
         ];
         foreach (self::SWITCHES as $switch) {
             $definitions['theme_epure_a11y_' . $switch] = ['type' => PARAM_INT, 'null' => NULL_NOT_ALLOWED,
@@ -126,6 +129,7 @@ class a11y {
         foreach (self::SWITCHES as $switch) {
             $preferences[$switch] = (bool) ($preference($switch) ?? $defaults[$switch]);
         }
+        $preferences['speech'] = (bool) ($preference('speech') ?? false);
         return $preferences;
     }
 
@@ -151,7 +155,7 @@ class a11y {
         if (!is_array($values)) {
             return [];
         }
-        $names = array_merge(['text', 'font', 'scheme', 'guide'], self::SWITCHES);
+        $names = array_merge(['text', 'font', 'scheme', 'guide', 'speech'], self::SWITCHES);
         return array_filter(
             array_intersect_key($values, array_flip($names)),
             fn($value) => is_string($value) || is_int($value)
@@ -232,6 +236,9 @@ class a11y {
         if ($preferences['guide'] !== '') {
             $classes[] = 'epure-a11y-guide-' . $preferences['guide'];
         }
+        if ($preferences['speech']) {
+            $classes[] = 'epure-a11y-speech';
+        }
         if ($class = self::scheme_class($preferences['scheme'] ?: self::default_scheme())) {
             $classes[] = $class;
         }
@@ -301,7 +308,7 @@ class a11y {
                 'choices' => json_encode($choices)];
         }
         $switches = [];
-        foreach (self::SWITCHES as $switch) {
+        foreach (array_merge(self::SWITCHES, ['speech']) as $switch) {
             $switches[] = ['name' => $switch, 'label' => get_string('a11y' . $switch, 'theme_epure'),
                 'help' => get_string('a11y' . $switch . '_help', 'theme_epure'), 'checked' => $preferences[$switch]];
         }

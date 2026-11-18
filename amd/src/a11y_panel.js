@@ -27,9 +27,10 @@
 import Ajax from 'core/ajax';
 import {getString} from 'core/str';
 import * as Guide from 'theme_epure/reading_guide';
+import * as ReadAloud from 'theme_epure/read_aloud';
 
 /** Preferences that are on or off. */
-const SWITCHES = ['spacing', 'lines', 'contrast', 'underline', 'motion', 'stillimages', 'scrollbars'];
+const SWITCHES = ['spacing', 'lines', 'contrast', 'underline', 'motion', 'stillimages', 'scrollbars', 'speech'];
 
 /**
  * Current choices of the panel.
@@ -42,7 +43,7 @@ const read = (panel) => ({
     font: panel.querySelector('[name="epure-a11y-font"]:checked')?.value || '',
     scheme: panel.querySelector('[name="epure-a11y-scheme"]:checked')?.value || '',
     guide: panel.querySelector('[name="epure-a11y-guide"]:checked')?.value || '',
-    switches: Object.fromEntries(SWITCHES.map((name) => [name, panel.querySelector(`[name="epure-a11y-${name}"]`).checked])),
+    switches: Object.fromEntries(SWITCHES.map((name) => [name, !!panel.querySelector(`[name="epure-a11y-${name}"]`)?.checked])),
 });
 
 /**
@@ -68,6 +69,7 @@ const applyToPage = (choices, defaultScheme) => {
         html.classList.add(`epure-a11y-guide-${choices.guide}`);
     }
     Guide.set(choices.guide);
+    ReadAloud.set(choices.switches.speech);
     if (choices.text !== 100) {
         html.classList.add(`epure-a11y-text-${choices.text}`);
     }
@@ -219,12 +221,16 @@ export const init = () => {
             input.checked = true;
         }
     };
-    const defaults = () => {
+    // The reading aloud is kept by a profile, as the colours.
+    const defaults = (keep = []) => {
         check('text', 100);
         check('font', '');
         check('guide', '');
-        SWITCHES.forEach((name) => {
-            panel.querySelector(`[name="epure-a11y-${name}"]`).checked = false;
+        SWITCHES.filter((name) => !keep.includes(name)).forEach((name) => {
+            const input = panel.querySelector(`[name="epure-a11y-${name}"]`);
+            if (input) {
+                input.checked = false;
+            }
         });
     };
     region.querySelector('[data-action="reset"]').addEventListener('click', () => {
@@ -235,7 +241,7 @@ export const init = () => {
     // A profile replaces the preferences: what it does not set goes back to its default, the colours kept.
     panel.querySelectorAll('[data-action="profile"]').forEach((button) => button.addEventListener('click', async() => {
         const profile = JSON.parse(button.dataset.choices);
-        defaults();
+        defaults(['speech']);
         check('text', profile.text);
         check('font', profile.font);
         check('guide', profile.guide);
@@ -247,4 +253,9 @@ export const init = () => {
             button.textContent.trim());
     }));
     Guide.init();
+    ReadAloud.init();
+    // Without voices in the browser, no reading aloud to offer.
+    if (!ReadAloud.supported()) {
+        panel.querySelector('[name="epure-a11y-speech"]')?.closest('.epure-a11y-switch')?.remove();
+    }
 };
