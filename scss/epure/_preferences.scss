@@ -454,6 +454,17 @@ html.epure-a11y-scheme-cream body::after {
     }
 }
 
+// What the bar says: a passage without a voice of the device for its language, a reading that failed.
+.epure-a11y-speechstatus {
+    flex-basis: 100%;
+    margin: 0;
+    font-size: .875rem;
+
+    &[hidden] {
+        display: none;
+    }
+}
+
 .epure-a11y-speechrate {
     display: flex;
     gap: .375rem;

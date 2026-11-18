@@ -268,8 +268,11 @@ export const init = () => {
     }));
     Guide.init();
     ReadAloud.init();
-    // Without voices in the browser, no reading aloud to offer.
-    if (!ReadAloud.supported()) {
-        panel.querySelector('[name="epure-a11y-speech"]')?.closest('.epure-a11y-switch')?.remove();
-    }
+    // Without voices of the device, no reading aloud to offer: the voices of a service on the network are not used.
+    ReadAloud.available().then((available) => {
+        if (!available) {
+            panel.querySelector('[name="epure-a11y-speech"]')?.closest('.epure-a11y-switch')?.remove();
+        }
+        return available;
+    }).catch(() => null);
 };
