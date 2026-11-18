@@ -68,6 +68,7 @@ $string['a11yprofile_focus'] = 'Concentration';
 $string['a11yprofile_focus_help'] = 'Lignes plus courtes, aucune animation, images immobiles et masque de lecture.';
 $string['a11yprofile_lowvision'] = 'Basse vision';
 $string['a11yprofile_lowvision_help'] = 'Texte à 150 %, police Atkinson Hyperlegible, contraste renforcé, liens soulignés et barres de défilement visibles.';
+$string['a11yprofile_notsaved'] = 'Profil « {$a} » appliqué à cette page, mais pas enregistré : il sera perdu à la page suivante. Réessayez dans un instant.';
 $string['a11yprofile_seizures'] = 'Sans clignotement';
 $string['a11yprofile_seizures_help'] = 'Aucune animation et images immobiles, contre les risques de crise.';
 $string['a11yprofiles'] = 'Profils';

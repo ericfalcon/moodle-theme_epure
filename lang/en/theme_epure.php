@@ -68,6 +68,7 @@ $string['a11yprofile_focus'] = 'Concentration';
 $string['a11yprofile_focus_help'] = 'Shorter lines, no motion, still images and a reading mask.';
 $string['a11yprofile_lowvision'] = 'Low vision';
 $string['a11yprofile_lowvision_help'] = 'Text at 150 %, Atkinson Hyperlegible font, more contrast, underlined links and scroll bars shown.';
+$string['a11yprofile_notsaved'] = 'Profile « {$a} » applied to this page, but not saved: it will be lost on the next page. Try again in a moment.';
 $string['a11yprofile_seizures'] = 'No flashing';
 $string['a11yprofile_seizures_help'] = 'No motion and still images, against the risks of seizures.';
 $string['a11yprofiles'] = 'Profiles';
