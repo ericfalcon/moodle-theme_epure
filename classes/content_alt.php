@@ -118,16 +118,19 @@ class content_alt {
     }
 
     /**
-     * The tags of the images without a text alternative of a text, in their order: each with its offset and its address.
+     * The tags of the images without a text alternative of a text, in their order, but those of a link made only of
+     * images: each with its offset and its address.
      *
      * @param string $html Text.
      * @return array[] Each: tag, offset, src.
      */
     public static function missing(string $html): array {
         $images = [];
+        // The images of a link made only of images are described with their link (content_fix): where it leads.
+        $links = array_map(fn($link) => [$link['offset'], $link['offset'] + strlen($link['tag'])], content_fix::imagelinks($html));
         preg_match_all('~<img\b[^>]*>~i', $html, $tags, PREG_OFFSET_CAPTURE);
         foreach ($tags[0] as [$tag, $offset]) {
-            if (preg_match('~\salt\s*=~i', $tag)) {
+            if (preg_match('~\salt\s*=~i', $tag) || array_filter($links, fn($link) => $offset > $link[0] && $offset < $link[1])) {
                 continue;
             }
             preg_match('~\ssrc\s*=\s*(["\'])(.*?)\1~is', $tag, $src);
@@ -160,17 +163,7 @@ class content_alt {
             }
             foreach (self::missing((string) $record->{$field['field']}) as $index => $image) {
                 $filename = rawurldecode(basename((string) parse_url($image['src'], PHP_URL_PATH)));
-                $url = str_starts_with($image['src'], '@@PLUGINFILE@@/')
-                    ? \moodle_url::make_pluginfile_url(
-                        $field['context']->id,
-                        $field['component'],
-                        $field['filearea'],
-                        $field['component'] === 'mod_page' || $field['filearea'] === 'section' || $field['filearea'] === 'chapter'
-                        ? $field['itemid'] : null,
-                        '/',
-                        rawurldecode(substr($image['src'], 15))
-                    )->out(false)
-                    : (preg_match('~^https?://~i', $image['src']) ? $image['src'] : '');
+                $url = self::image_url($field, $image['src']);
                 $images[] = [
                     'key' => self::key($field, $index, $image['src']),
                     'filename' => $filename !== '' ? $filename : get_string('courseaccessibility_alt_image', 'theme_epure'),
@@ -180,6 +173,28 @@ class content_alt {
             }
         }
         return $images;
+    }
+
+    /**
+     * The address to show an image of a text: its file in the course, or its address elsewhere; empty otherwise.
+     *
+     * @param array $field Text.
+     * @param string $src Address of the image in the text.
+     * @return string
+     */
+    public static function image_url(array $field, string $src): string {
+        if (str_starts_with($src, '@@PLUGINFILE@@/')) {
+            return \moodle_url::make_pluginfile_url(
+                $field['context']->id,
+                $field['component'],
+                $field['filearea'],
+                $field['component'] === 'mod_page' || $field['filearea'] === 'section' || $field['filearea'] === 'chapter'
+                ? $field['itemid'] : null,
+                '/',
+                rawurldecode(substr($src, 15))
+            )->out(false);
+        }
+        return preg_match('~^https?://~i', $src) ? $src : '';
     }
 
     /**
@@ -251,7 +266,7 @@ class content_alt {
      * @param array $field Text.
      * @return string
      */
-    protected static function capability(array $field): string {
+    public static function capability(array $field): string {
         return $field['context'] instanceof \context_module ? 'moodle/course:manageactivities' : 'moodle/course:update';
     }
 }

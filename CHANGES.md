@@ -1,5 +1,10 @@
 # Changes
 
+## 1.33.0 — correct the frames, the links of images and the tables from the accessibility of the course
+
+- Accessibility of the course: three more mistakes of the texts of the course (pages, labels, descriptions, chapters of books, sections, summary of the course) corrected on the page itself, saved with the button at the bottom, as the descriptions of the images: a frame without a title (a video, a map, another site) gets the title written in its field, which tells its address; a link made only of an image without a text alternative gets where it leads, written in its field with a preview of the image, as the text alternative of its image (its image is no longer offered among the images to describe); a table without a header, ticked, gets its first row as the header of its columns (the box shows that row; left unticked for a table of layout). The message says what was corrected (« Frames titled: 1. »). For those who may change the part; each change checked against the text as it is now; nothing else of the text changes.
+- Tests: PHPUnit (found as the guide finds them, corrected, nothing left; nothing written for an empty title, a text changed meanwhile or a learner).
+
 ## 1.32.0 — rename an activity from the accessibility of the course
 
 - Accessibility of the course: an activity whose name another activity shares, or whose name says nothing (« Document 2 »), has its name in a field under what is wrong with it, to change there and save with the button at the bottom of the page, with the confirmations and the descriptions of the images (« Activities renamed: 1 »). Renamed as the course page renames them: a subsection with its section, the events and the gradebook. Each field says the activity and its section (« New name of « Course materials » (Block 1) »): two activities of the same name are told apart. For those who may change the activities of the course; not printed.

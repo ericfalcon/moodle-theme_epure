@@ -123,6 +123,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.33.0**: no new setting; upgrade the site. Accessibility of the course: give a title to the frames, say where the links of images lead and mark the header of the tables there.
 - **1.32.0**: no new setting; upgrade the site. Accessibility of the course: rename there an activity whose name another shares, or says nothing.
 - **1.31.1**: no new setting; upgrade the site. On Moodle 5.3, the links of the header and the switch « Edit mode » readable on a header coloured by the custom SCSS of the theme.
 - **1.31.0**: no new setting; upgrade the site. With IOMAD, the management dashboard of each company, from the IOMAD dashboard; those who see all the companies choose one from a list.

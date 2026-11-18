@@ -60,12 +60,25 @@ if (data_submitted() && confirm_sesskey()) {
         optional_param_array('alt', [], PARAM_TEXT),
         optional_param_array('decorative', [], PARAM_BOOL)
     );
+    // The titles of the frames, where the links of images lead, the headers of the tables, into their texts.
+    $fixed = \theme_epure\content_fix::apply(
+        $course,
+        course_accessibility::analyse($course),
+        optional_param_array('frametitle', [], PARAM_TEXT),
+        optional_param_array('linkalt', [], PARAM_TEXT),
+        optional_param_array('tablehead', [], PARAM_BOOL)
+    );
     // The names changed in the guide, into their activities.
     $renamed = course_accessibility::rename($course, optional_param_array('rename', [], PARAM_TEXT));
     redirect(
         course_accessibility::url((int) $course->id),
         get_string('courseaccessibility_saved', 'theme_epure')
             . ($described ? ' ' . get_string('courseaccessibility_alt_saved', 'theme_epure', $described) : '')
+            . implode('', array_map(
+                fn($kind) => $fixed[$kind]
+                    ? ' ' . get_string('courseaccessibility_fix_' . $kind . '_saved', 'theme_epure', $fixed[$kind]) : '',
+                \theme_epure\content_fix::KINDS
+            ))
             . ($renamed ? ' ' . get_string('courseaccessibility_renamed', 'theme_epure', $renamed) : ''),
         null,
         \core\output\notification::NOTIFY_SUCCESS

@@ -19,7 +19,7 @@
 
     Guide « Accessibility of the course », for its teachers: the figures of the course, then each section with the
     parts of the course that hold something to fix or to confirm. The points found without a person are listed with
-    what to do and a link to change the part, a name to change here; the points to confirm are boxes, confirmed for all the teachers of the
+    what to do and a link to change the part, a name, the images, frames, links of images and tables to correct here; the points to confirm are boxes, confirmed for all the teachers of the
     course with one button. Printed, it is the report of the course, without its buttons.
 
     Example context (json):
@@ -33,6 +33,8 @@
             "hasissues": true, "issues": [{"text": "Images without a text alternative: 2. Describe each one.", "cause": "Images without a text alternative: 2.", "advice": "Describe each one."}],
             "hasplaces": true, "places": [{"label": "Chapter « Settings »", "sep": ": ", "issues": "2 images used as links",
                 "url": "#", "linktext": "Change chapter « Settings »"}],
+            "altmax": 250, "hasframes": true, "frames": [{"id": "epure-a11y-cm-4-frames-0", "key": "page-content-4-0-abc", "label": "Title of the frame « youtube.com/embed/abc »"}],
+            "hastables": true, "tables": [{"id": "epure-a11y-cm-4-tables-0", "key": "page-content-4-0-def", "label": "The first row of this table is its header: « Name | Date »"}],
             "hasrename": true, "rename": {"id": "epure-a11y-cm-4-rename", "cmid": 4, "value": "Risks", "label": "New name of « Risks » (Week 1)"},
             "haschecks": true, "checks": [{"name": "4|captions:abc", "id": "epure-a11y-check-cm-4-0",
                 "label": "The video « youtube.com » has subtitles", "help": "Subtitles let the deaf follow.",
@@ -113,6 +115,47 @@
                                 {{/altimages}}
                             </fieldset>
                         {{/hasaltimages}}
+                        {{#hasframes}}
+                            <fieldset class="epure-a11yguide-alts epure-a11yguide-fixes d-print-none">
+                                <legend class="epure-a11yguide-checks-title">{{#str}}courseaccessibility_fix_frames_title, theme_epure{{/str}}</legend>
+                                {{#frames}}
+                                    <div class="epure-a11yguide-alt">
+                                        <div class="epure-a11yguide-alt-fields">
+                                            <label for="{{id}}">{{label}}</label>
+                                            <input type="text" class="form-control" id="{{id}}" name="frametitle[{{key}}]" maxlength="{{altmax}}" aria-describedby="{{id}}-help">
+                                            <p class="epure-a11yguide-check-help" id="{{id}}-help">{{#str}}courseaccessibility_fix_frames_help, theme_epure{{/str}}</p>
+                                        </div>
+                                    </div>
+                                {{/frames}}
+                            </fieldset>
+                        {{/hasframes}}
+                        {{#hasimagelinks}}
+                            <fieldset class="epure-a11yguide-alts epure-a11yguide-fixes d-print-none">
+                                <legend class="epure-a11yguide-checks-title">{{#str}}courseaccessibility_fix_imagelinks_title, theme_epure{{/str}}</legend>
+                                {{#imagelinks}}
+                                    <div class="epure-a11yguide-alt">
+                                        {{#image}}<img class="epure-a11yguide-alt-preview" src="{{image}}" alt="">{{/image}}
+                                        <div class="epure-a11yguide-alt-fields">
+                                            <label for="{{id}}">{{label}}</label>
+                                            <input type="text" class="form-control" id="{{id}}" name="linkalt[{{key}}]" maxlength="{{altmax}}" aria-describedby="{{id}}-help">
+                                            <p class="epure-a11yguide-check-help" id="{{id}}-help">{{#str}}courseaccessibility_fix_imagelinks_help, theme_epure{{/str}}</p>
+                                        </div>
+                                    </div>
+                                {{/imagelinks}}
+                            </fieldset>
+                        {{/hasimagelinks}}
+                        {{#hastables}}
+                            <fieldset class="epure-a11yguide-alts epure-a11yguide-fixes d-print-none">
+                                <legend class="epure-a11yguide-checks-title">{{#str}}courseaccessibility_fix_tables_title, theme_epure{{/str}}</legend>
+                                {{#tables}}
+                                    <div class="form-check epure-a11yguide-check">
+                                        <input type="checkbox" class="form-check-input" id="{{id}}" name="tablehead[{{key}}]" value="1" aria-describedby="{{id}}-help">
+                                        <label class="form-check-label" for="{{id}}">{{label}}</label>
+                                        <p class="epure-a11yguide-check-help" id="{{id}}-help">{{#str}}courseaccessibility_fix_tables_help, theme_epure{{/str}}</p>
+                                    </div>
+                                {{/tables}}
+                            </fieldset>
+                        {{/hastables}}
                         {{#haschecks}}
                             <fieldset class="epure-a11yguide-checks">
                                 <legend class="epure-a11yguide-checks-title">{{#str}}courseaccessibility_checks, theme_epure{{/str}}</legend>
