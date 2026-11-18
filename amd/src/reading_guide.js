@@ -127,6 +127,5 @@ export const set = (next) => {
  */
 export const init = () => {
     const html = document.documentElement;
-    set(html.classList.contains('epure-a11y-guide-ruler') ? 'ruler' : (html.classList.contains('epure-a11y-guide-mask')
-        ? 'mask' : ''));
+    set(['ruler', 'mask'].find((name) => html.classList.contains(`epure-a11y-guide-${name}`)) || '');
 };
