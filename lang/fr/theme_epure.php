@@ -876,6 +876,7 @@ $string['preffont'] = 'Police par défaut';
 $string['preffont_desc'] = 'Police de lecture pour les visiteurs et les utilisateurs qui n’ont pas choisi la leur : la police du thème, ou une police conçue pour la lisibilité.';
 $string['prefpanel'] = 'Bouton « Aa »';
 $string['prefpanel_desc'] = 'Le bouton « Aa » de l’en-tête, avec lequel chaque utilisateur choisit ses préférences d’affichage.';
+$string['prefpanel_other'] = 'Un autre plugin du site affiche sur chaque page son propre panneau de préférences d’affichage : {$a}. Avec les deux, les utilisateurs ont deux panneaux et deux raccourcis Alt + A, et un texte agrandi dans les deux l’est deux fois. Choisissez-en un : décochez cette case pour garder le panneau de l’autre plugin (l’affichage par défaut du site ci-dessous s’applique toujours), ou désactivez l’autre plugin. Sans le bouton « Aa », les préférences que les utilisateurs y avaient choisies ne s’appliquent plus.';
 $string['prefswitch_desc'] = 'Par défaut pour les visiteurs et les utilisateurs qui n’ont pas choisi.';
 $string['preftext'] = 'Taille du texte par défaut';
 $string['preftext_desc'] = 'Taille du texte pour les visiteurs et les utilisateurs qui n’ont pas choisi la leur.';

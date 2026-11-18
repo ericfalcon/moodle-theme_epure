@@ -8,7 +8,7 @@
   - A reading guide: a ruler under the line read, or a mask that darkens all but a few lines around it. It follows the pointer, or the element reached with the keyboard; hidden from the screen readers, it lets every click through.
   - Colours yellow on black (black surfaces, yellow text, light blue links, for low vision) and cream (a coloured overlay that takes the glare off the white, against visual stress), besides light, dark and as the device.
   - The font Lexend, besides Atkinson Hyperlegible and OpenDyslexic (already bundled with the theme).
-- With a plugin on the site that has its own panel of display preferences on every page (local_accessibility, local_a11y or local_accessibilitywidget): Épure leaves it the place, without its button « Aa », its key Alt + A nor its preferences, which would add to those of the plugin (a text enlarged twice), and two keys Alt + A. The colours of the site and the reading mode stay.
+- With a plugin on the site that has its own panel of display preferences on every page (local_accessibility, local_a11y or local_accessibilitywidget): the setting « Button Aa » says so and how to choose one of the two panels (two keys Alt + A, a text enlarged twice). The button « Aa » stays until the administrator unticks it. Without the button, the preferences the users chose in it no longer apply: the display of the site by default.
 - No new setting. The reading guide is a new preference of the users, exported and deleted with the privacy API.
 - Tests: PHPUnit (the new sizes, Lexend, the colours, the guide; the profiles set known choices).
 

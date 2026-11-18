@@ -102,7 +102,9 @@ class a11y {
      *     underline: bool, motion: bool}
      */
     public static function preferences(): array {
-        $enabled = isloggedin() && !isguestuser();
+        // Without the button « Aa » (turned off by the administrator, for another panel for instance), the users can no
+        // longer change their preferences: the display of the site.
+        $enabled = isloggedin() && !isguestuser() && self::panel_enabled();
         $defaults = self::site_defaults();
         // A preference the user never chose is the one of the site.
         $preference = fn(string $name) => $enabled ? get_user_preferences('theme_epure_a11y_' . $name, null) : null;
@@ -149,26 +151,26 @@ class a11y {
      * @return bool
      */
     public static function panel_enabled(): bool {
-        return get_config('theme_epure', 'prefpanel') !== '0' && !self::other_panel();
+        return get_config('theme_epure', 'prefpanel') !== '0';
     }
 
     /** @var string[] Plugins that give every page a panel of display preferences of their own. */
     public const OTHER_PANELS = ['local_accessibility', 'local_a11y', 'local_accessibilitywidget'];
 
     /**
-     * Whether the site has another panel of display preferences (local_accessibility, local_a11y,
-     * local_accessibilitywidget): Épure then leaves it the place, without its button « Aa », its key Alt + A nor its
-     * preferences, which would add to those of the plugin (a text enlarged twice) and could no longer be changed.
+     * The plugins of the site that give every page a panel of display preferences of their own, with Épure's: two
+     * panels, two keys Alt + A, two texts enlarged. The administrator chooses one (the setting « Button Aa » says so).
      *
-     * @return bool
+     * @return string[] Their names.
      */
-    public static function other_panel(): bool {
+    public static function other_panels(): array {
+        $found = [];
         foreach (self::OTHER_PANELS as $plugin) {
             if (\core_component::get_component_directory($plugin) !== null && get_config($plugin, 'version') !== false) {
-                return true;
+                $found[] = get_string('pluginname', $plugin);
             }
         }
-        return false;
+        return $found;
     }
 
     /**
@@ -177,14 +179,6 @@ class a11y {
      * @return string Classes separated by spaces, empty with the default display.
      */
     public static function html_classes(): string {
-        if (self::other_panel()) {
-            // The display is the one of the plugin: only the colours of the site, and the reading mode.
-            $classes = array_filter([self::scheme_class(self::default_scheme())]);
-            if (isloggedin() && !isguestuser() && get_user_preferences('theme_epure_focus', 0)) {
-                $classes[] = 'epure-focus';
-            }
-            return implode(' ', $classes);
-        }
         $preferences = self::preferences();
         $classes = [];
         if ($preferences['text'] !== 100) {

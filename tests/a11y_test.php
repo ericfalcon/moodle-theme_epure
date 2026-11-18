@@ -341,6 +341,10 @@ final class a11y_test extends \advanced_testcase {
         $context = a11y::panel_context();
         $this->assertCount(count(a11y::PROFILES), $context['profiles']);
         $this->assertCount(3, $context['guides']);
-        $this->assertFalse(a11y::other_panel());
+        $this->assertSame([], a11y::other_panels());
+
+        // Without the button « Aa », the choices of the user no longer apply: the display of the site.
+        set_config('prefpanel', 0, 'theme_epure');
+        $this->assertSame('', a11y::html_classes());
     }
 }

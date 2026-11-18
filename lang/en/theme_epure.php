@@ -876,6 +876,7 @@ $string['preffont'] = 'Font by default';
 $string['preffont_desc'] = 'Reading font for the visitors and the users who did not choose theirs: the font of the theme, or a font designed for legibility.';
 $string['prefpanel'] = 'Button « Aa »';
 $string['prefpanel_desc'] = 'The button « Aa » of the header, with which each user chooses their display preferences.';
+$string['prefpanel_other'] = 'Another plugin of the site gives every page a panel of display preferences of its own: {$a}. With both, the users get two panels and two keys Alt + A, and a text enlarged in both is enlarged twice. Choose one: untick this box to keep the other plugin\'s panel (the display of the site by default below still applies), or turn the other plugin off. Without the button « Aa », the preferences the users chose in it no longer apply.';
 $string['prefswitch_desc'] = 'By default for the visitors and the users who did not choose.';
 $string['preftext'] = 'Text size by default';
 $string['preftext_desc'] = 'Size of the text for the visitors and the users who did not choose theirs.';
