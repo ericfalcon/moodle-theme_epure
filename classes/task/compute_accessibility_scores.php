@@ -20,7 +20,8 @@ use theme_epure\accessibility_scores;
 
 /**
  * Reads the courses whose score of accessibility of the week is not known, or which changed, for the management
- * dashboard ({@see accessibility_scores}). Nothing when the guide « Accessibility of the course » is off.
+ * dashboard ({@see accessibility_scores}). Nothing when the guide « Accessibility of the course » is off, for the site
+ * and for every IOMAD company.
  *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
@@ -40,8 +41,8 @@ class compute_accessibility_scores extends \core\task\scheduled_task {
      * Reads the courses.
      */
     public function execute(): void {
-        if (get_config('theme_epure', 'courseaccessibility') === '0') {
-            mtrace('The guide « Accessibility of the course » is off: no score.');
+        if (!accessibility_scores::active()) {
+            mtrace('The guide « Accessibility of the course » is off, for the site and for every company: no score.');
             return;
         }
         mtrace('Courses read for their score of accessibility: ' . accessibility_scores::compute());

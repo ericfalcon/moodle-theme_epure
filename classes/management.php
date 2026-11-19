@@ -336,9 +336,9 @@ class management {
             'hascourses' => !empty($courses),
             'completion' => self::completion($companyid),
             'nolog' => !self::has_log(),
-            // The accessibility of the courses, unless its guide is off.
-            'accessibility' => get_config('theme_epure', 'courseaccessibility') === '0' ? null
-                : accessibility_scores::export($now, $categoryid, $companyid),
+            // The accessibility of the courses, where its guide is on.
+            'accessibility' => accessibility_scores::shown($companyid)
+                ? accessibility_scores::export($now, $categoryid, $companyid) : null,
             'companyid' => $companyid,
         ];
     }

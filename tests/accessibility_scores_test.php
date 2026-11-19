@@ -24,6 +24,7 @@ namespace theme_epure;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers     \theme_epure\accessibility_scores
  * @covers     \theme_epure\task\compute_accessibility_scores
+ * @covers     \theme_epure\task\refresh_accessibility_score
  */
 final class accessibility_scores_test extends \advanced_testcase {
     /**
@@ -91,6 +92,52 @@ final class accessibility_scores_test extends \advanced_testcase {
         // A course deleted: its scores too.
         delete_course($mistake->id, false);
         $this->assertSame(0, $DB->count_records(accessibility_scores::TABLE, ['courseid' => $mistake->id]));
+    }
+
+    /**
+     * A course changed: one ad hoc task, a few minutes after its last change, computes its score again, in the row of
+     * the week; none when the guide is off.
+     */
+    public function test_refresh_after_a_change(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        set_config('courseaccessibility', '1', 'theme_epure');
+        $category = $this->getDataGenerator()->create_category();
+        $course = $this->course_with_mistake((int) $category->id);
+        $tasks = fn() => \core\task\manager::get_adhoc_tasks(task\refresh_accessibility_score::class);
+        // The page and the course created: one task for the course, not one per change.
+        $this->assertCount(1, $tasks());
+        $task = current($tasks());
+        $this->assertSame((int) $course->id, (int) $task->get_custom_data()->courseid);
+        $this->assertGreaterThan(time(), $task->get_next_run_time());
+
+        accessibility_scores::compute();
+        $before = (int) $DB->get_field(accessibility_scores::TABLE, 'score', ['courseid' => $course->id]);
+        // The mistake corrected (the image described), the course changed: its score is computed again.
+        $DB->set_field('page', 'content', '<p>Rules</p><img src="https://example.com/a.png" alt="Gloves on">',
+            ['course' => $course->id]);
+        course_accessibility::forget((int) $course->id);
+        $this->assertCount(1, $tasks());
+        ob_start();
+        current($tasks())->execute();
+        ob_end_clean();
+        $this->assertSame(1, $DB->count_records(accessibility_scores::TABLE, ['courseid' => $course->id]));
+        $this->assertGreaterThan($before, (int) $DB->get_field(accessibility_scores::TABLE, 'score', ['courseid' => $course->id]));
+
+        // A course deleted meanwhile: nothing.
+        $DB->delete_records('task_adhoc');
+        delete_course($course->id, false);
+        $task = new task\refresh_accessibility_score();
+        $task->set_custom_data(['courseid' => $course->id]);
+        $task->execute();
+        $this->assertSame(0, $DB->count_records(accessibility_scores::TABLE, ['courseid' => $course->id]));
+
+        // The guide off: no task.
+        set_config('courseaccessibility', '0', 'theme_epure');
+        $other = $this->getDataGenerator()->create_course();
+        course_accessibility::forget((int) $other->id);
+        $this->assertCount(0, $tasks());
     }
 
     /**
@@ -178,6 +225,17 @@ final class accessibility_scores_test extends \advanced_testcase {
         ob_end_clean();
         $this->assertSame(0, $DB->count_records(accessibility_scores::TABLE));
         $this->assertNull(management::export(time())['accessibility']);
+        $this->assertFalse(accessibility_scores::active());
+
+        // The site off, an IOMAD company that turned the guide on for itself: the scores are computed, its dashboard
+        // shows them, and so does the one of the platform.
+        set_config('companystyle_5', json_encode(['courseaccessibility' => 'show']), 'theme_epure');
+        $this->assertTrue(accessibility_scores::active());
+        $this->assertTrue(accessibility_scores::shown(5));
+        $this->assertTrue(accessibility_scores::shown(0));
+        $this->assertFalse(accessibility_scores::shown(6));
+        unset_config('companystyle_5', 'theme_epure');
+        $this->assertFalse(accessibility_scores::active());
 
         set_config('courseaccessibility', '1', 'theme_epure');
         ob_start();

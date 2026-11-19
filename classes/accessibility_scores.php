@@ -21,9 +21,10 @@ namespace theme_epure;
  * dashboard: the score of the whole platform, of a category or of an IOMAD company, the courses to look at first, and
  * how the score goes over the weeks.
  *
- * A scheduled task reads each course at night, as its guide does (from its cache when the course did not change), and
- * keeps one row per course and per week: its score, and its mistakes by severity. A course read again in the same week
- * replaces its row. Reading every course at each display would be too slow on a large platform.
+ * A course changed is read again by an ad hoc task, a few minutes after its last change; a scheduled task reads at night
+ * the courses not read this week. Each keeps one row per course and per week: its score, and its mistakes by severity;
+ * a course read again in the same week replaces its row. Reading every course at each display would be too slow on a
+ * large platform.
  *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
@@ -41,6 +42,9 @@ class accessibility_scores {
 
     /** @var int Courses and categories listed, the lowest scores first. */
     public const TOP = 5;
+
+    /** @var int Seconds after the last change of a course before its score is computed again. */
+    public const DELAY = 300;
 
     /** @var int Seconds a run of the task reads courses for at most; the others wait for the next night. */
     public const TIMELIMIT = 600;
@@ -86,17 +90,84 @@ class accessibility_scores {
             if ($read && microtime(true) - $start > $timelimit) {
                 break;
             }
-            $scoreid = $course->scoreid;
             unset($course->scoreid);
-            $record = self::read($course) + ['weekstart' => $week, 'timecomputed' => $now];
-            if ($scoreid) {
-                $DB->update_record(self::TABLE, (object) (['id' => $scoreid] + $record));
-            } else {
-                $DB->insert_record(self::TABLE, (object) $record);
-            }
+            self::store($course, $now);
             $read++;
         }
         return $read;
+    }
+
+    /**
+     * Reads a course and keeps its score of the week, in place of the one already kept this week.
+     *
+     * @param \stdClass $course Course.
+     * @param int $now Time of reference.
+     */
+    public static function store(\stdClass $course, int $now): void {
+        global $DB;
+        $week = self::week($now);
+        $record = self::read($course) + ['weekstart' => $week, 'timecomputed' => $now];
+        $id = $DB->get_field(self::TABLE, 'id', ['courseid' => $course->id, 'weekstart' => $week]);
+        if ($id) {
+            $DB->update_record(self::TABLE, (object) (['id' => $id] + $record));
+        } else {
+            $DB->insert_record(self::TABLE, (object) $record);
+        }
+    }
+
+    /**
+     * Whether the scores are computed: the guide « Accessibility of the course » is on for the site, or for an IOMAD
+     * company that turned it on for itself (the site leaving it off, as by default).
+     *
+     * @return bool
+     */
+    public static function active(): bool {
+        if (get_config('theme_epure', 'courseaccessibility') === '1') {
+            return true;
+        }
+        foreach ((array) get_config('theme_epure') as $name => $value) {
+            if (str_starts_with((string) $name, 'companystyle_')) {
+                $settings = json_decode((string) $value, true);
+                if (is_array($settings) && ($settings['courseaccessibility'] ?? '') === 'show') {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Whether the dashboard shows the scores: of the whole platform when they are computed, of an IOMAD company when its
+     * guide is on (its own choice, else the one of the site).
+     *
+     * @param int $companyid IOMAD company, 0 for the whole platform.
+     * @return bool
+     */
+    public static function shown(int $companyid): bool {
+        if (!$companyid) {
+            return self::active();
+        }
+        $own = (string) (company_style::settings($companyid)['courseaccessibility'] ?? '');
+        return $own !== '' ? $own === 'show' : get_config('theme_epure', 'courseaccessibility') === '1';
+    }
+
+    /**
+     * Asks for the score of a course to be computed again by an ad hoc task, a few minutes after its last change: the
+     * changes made one after the other are read once, by the cron, and the teacher does not wait. Nothing when the guide
+     * is off everywhere ({@see self::active()}).
+     *
+     * @param int $courseid Course changed.
+     */
+    public static function queue(int $courseid): void {
+        if ($courseid <= SITEID || !self::active()) {
+            return;
+        }
+        $task = new task\refresh_accessibility_score();
+        $task->set_custom_data(['courseid' => $courseid]);
+        // The end of the next slot of five minutes: the changes and the activities of the learners within one slot
+        // find the task already at that time, and do not write it again.
+        $task->set_next_run_time((intdiv(time(), self::DELAY) + 2) * self::DELAY);
+        \core\task\manager::reschedule_or_queue_adhoc_task($task);
     }
 
     /**
