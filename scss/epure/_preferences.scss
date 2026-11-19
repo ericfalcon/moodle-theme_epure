@@ -508,6 +508,19 @@ html.epure-a11y-scheme-cream {
     }
 }
 
+// The page leaves room under it for the bar (its height, set by read_aloud.js): the end of the page (the button to the
+// next activity, the footer) scrolls out from under it, and a field reached with the keyboard is kept clear of it
+// (WCAG 2.4.11).
+html:has(.epure-a11y-speechbar),
+body:has(.epure-a11y-speechbar) #page.drawers {
+    // stylelint-disable-next-line length-zero-no-unit
+    scroll-padding-bottom: calc(var(--epure-speechbar-room, 5rem) + var(--epure-mobilenav-height, 0px));
+}
+
+body:has(.epure-a11y-speechbar) #page-footer {
+    padding-bottom: var(--epure-speechbar-room, 5rem);
+}
+
 // What the bar says: a passage without a voice of the device for its language, a reading that failed.
 .epure-a11y-speechstatus {
     flex-basis: 100%;

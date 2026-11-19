@@ -249,6 +249,16 @@
     }
 }
 
+// From Moodle 5.0, the file manager is shown at once, marked as updating while its files are asked for: its path
+// (« Files ») comes with them, and the bar above the files grew by a line under the buttons to save of the getting
+// started, which moved away from the click. The line of the path is kept while it is filled.
+.filemanager.fm-loading,
+.filemanager.fm-updating {
+    .fp-pathbar {
+        min-height: 1.875rem;
+    }
+}
+
 // Area to drop files: a soft dashed frame, in the colour of the brand when a file is over it.
 .filemanager.fm-noitems .fm-empty-container,
 .filepicker-filelist .dndupload-target,

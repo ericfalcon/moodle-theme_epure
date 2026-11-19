@@ -35,7 +35,7 @@ const addPill = (cm) => {
             return;
         }
         const link = document.createElement('a');
-        link.className = 'epure-a11y-pill';
+        link.className = 'epure-a11y-pill' + (cm.level ? ` epure-a11y-pill-${cm.level}` : '');
         link.href = cm.url;
         const icon = document.createElement('i');
         icon.className = 'fa fa-universal-access';

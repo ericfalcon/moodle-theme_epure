@@ -47,6 +47,22 @@ class course_accessibility {
         'pdf', 'pdfscanned', 'pdflang', 'docimages', 'docnoheadings', 'docheadings', 'doctables', 'doccontrast', 'slidetitles',
         'sheetnames', 'doctitle', 'h5pimages', 'emptyheadings', 'moving', 'tabindex', 'duplicateids', 'name', 'duplicate'];
 
+    /** @var string[] Severity of each mistake: blocking (some learners cannot use the content at all), serious (they
+     * use it with difficulty) or minor (it is less clear, for all). */
+    public const SEVERITIES = [
+        'images' => 'blocking', 'imagelinks' => 'blocking', 'frames' => 'blocking', 'videos' => 'blocking',
+        'pdfscanned' => 'blocking', 'moving' => 'blocking', 'docimages' => 'blocking', 'h5pimages' => 'blocking',
+        'links' => 'serious', 'tables' => 'serious', 'contrast' => 'serious', 'headings' => 'serious',
+        'noheadings' => 'serious', 'emptyheadings' => 'serious', 'tabindex' => 'serious', 'pdf' => 'serious',
+        'pdflang' => 'serious', 'docnoheadings' => 'serious', 'docheadings' => 'serious', 'doctables' => 'serious',
+        'doccontrast' => 'serious', 'slidetitles' => 'serious',
+        'doctitle' => 'minor', 'sheetnames' => 'minor', 'duplicateids' => 'minor', 'name' => 'minor', 'duplicate' => 'minor',
+    ];
+
+    /** @var int[] What each severity takes off the score of a part (out of 100), once whatever the number of mistakes
+     * of a kind. */
+    public const WEIGHTS = ['blocking' => 40, 'serious' => 15, 'minor' => 5];
+
     /** @var string|null Language of the course being read, for the passages in another language. */
     protected static ?string $language = null;
 
@@ -933,7 +949,9 @@ class course_accessibility {
      * @return array issues, toconfirm, done, total, cms (by id: issues, toconfirm).
      */
     public static function figures(array $parts, array $confirmations): array {
-        $figures = ['issues' => 0, 'toconfirm' => 0, 'done' => 0, 'total' => 0, 'cms' => []];
+        $figures = ['issues' => 0, 'toconfirm' => 0, 'done' => 0, 'total' => 0, 'cms' => [],
+            'levels' => array_fill_keys(array_keys(self::WEIGHTS), 0), 'score' => 100];
+        $scores = [];
         foreach ($parts as $part) {
             $issues = array_sum($part['issues']);
             $toconfirm = 0;
@@ -950,11 +968,58 @@ class course_accessibility {
             $figures['toconfirm'] += $toconfirm;
             $figures['total']++;
             $figures['done'] += ($issues + $toconfirm) ? 0 : 1;
+            foreach (array_filter($part['issues']) as $issue => $count) {
+                $figures['levels'][self::severity($issue)] += $count;
+            }
+            $scores[] = self::score($part);
             if ($part['type'] === 'cm') {
-                $figures['cms'][(int) $part['id']] = ['issues' => $issues, 'toconfirm' => $toconfirm];
+                $figures['cms'][(int) $part['id']] = ['issues' => $issues, 'toconfirm' => $toconfirm,
+                    'level' => self::level($part)];
             }
         }
+        // The score of the course: the average of its parts, as each learner meets them one by one.
+        $figures['score'] = $scores ? (int) round(array_sum($scores) / count($scores)) : 100;
         return $figures;
+    }
+
+    /**
+     * The severity of a mistake.
+     *
+     * @param string $issue Mistake, of self::ISSUES.
+     * @return string blocking, serious or minor.
+     */
+    public static function severity(string $issue): string {
+        return self::SEVERITIES[$issue] ?? 'serious';
+    }
+
+    /**
+     * The worst severity of the mistakes of a part.
+     *
+     * @param array $part Part.
+     * @return string blocking, serious, minor, or empty without mistakes.
+     */
+    public static function level(array $part): string {
+        $levels = array_map([self::class, 'severity'], array_keys(array_filter($part['issues'])));
+        foreach (array_keys(self::WEIGHTS) as $level) {
+            if (in_array($level, $levels, true)) {
+                return $level;
+            }
+        }
+        return '';
+    }
+
+    /**
+     * The score of a part, out of 100: each kind of mistake takes off the weight of its severity, once.
+     *
+     * @param array $part Part.
+     * @return int
+     */
+    public static function score(array $part): int {
+        $score = 100;
+        foreach (array_keys(array_filter($part['issues'])) as $issue) {
+            $score -= self::WEIGHTS[self::severity($issue)];
+        }
+        return max(0, $score);
     }
 
     /**
@@ -1070,10 +1135,30 @@ class course_accessibility {
         }
         $sections = array_values(array_filter($sections, fn($section) => $section['parts']));
         $hasimages = false;
+        // To fix first: the parts with a mistake that blocks some learners, those corrected on this page before those
+        // to change elsewhere.
+        $first = [];
         foreach ($sections as $section) {
             foreach ($section['parts'] as $exported) {
-                $hasimages = $hasimages || $exported['hasaltimages'] || $exported['hasfixes'] || !empty($exported['hasrename']);
+                $here = $exported['hasaltimages'] || $exported['hasfixes'] || !empty($exported['hasrename']);
+                $hasimages = $hasimages || $here;
+                if ($exported['level'] === 'blocking') {
+                    $first[] = ['name' => $exported['name'], 'section' => $section['name'], 'url' => '#' . $exported['id'],
+                        'here' => $here];
+                }
             }
+        }
+        usort($first, fn($a, $b) => $b['here'] <=> $a['here']);
+        // The filter of the page: all the parts, those with a mistake of a severity, or with points to confirm.
+        $filters = [];
+        foreach (['', 'blocking', 'serious', 'minor', 'toconfirm'] as $value) {
+            $filters[] = ['value' => $value, 'checked' => $value === '',
+                'label' => get_string('courseaccessibility_filter_' . ($value ?: 'all'), 'theme_epure')];
+        }
+        $levels = [];
+        foreach ($figures['levels'] as $level => $count) {
+            $levels[] = ['level' => $level, 'count' => $count,
+                'text' => get_string('courseaccessibility_levelcount_' . $level, 'theme_epure', $count)];
         }
 
         return [
@@ -1096,6 +1181,15 @@ class course_accessibility {
             'done' => get_string('courseaccessibility_done', 'theme_epure', (object) ['done' => $figures['done'],
                 'total' => $figures['total']]),
             'percent' => $figures['total'] ? (int) round(100 * $figures['done'] / $figures['total']) : 100,
+            'score' => $figures['score'],
+            'scoretext' => get_string('courseaccessibility_score', 'theme_epure', $figures['score']),
+            'levels' => $levels,
+            'first' => array_slice($first, 0, 10),
+            'hasfirst' => (bool) $first,
+            'morefirst' => count($first) > 10,
+            'hasfilter' => (bool) $sections,
+            'filters' => $filters,
+            'filtershown' => get_string('courseaccessibility_filter_shown', 'theme_epure', '{$a}'),
             'hastoconfirm' => $figures['toconfirm'] > 0 || array_filter($confirmations),
             'sections' => $sections,
             // The button to save: points to confirm, images, frames, links or tables to correct, activities to rename here.
@@ -1134,7 +1228,10 @@ class course_accessibility {
                     'part' => $part['name'],
                     'type' => $part['type'],
                     'state' => $part['state']['text'],
-                    'tofix' => implode("\n", array_column($part['issues'], 'text')),
+                    'tofix' => implode("\n", array_map(
+                        fn($issue) => '[' . $issue['levellabel'] . '] ' . $issue['text'],
+                        $part['issues']
+                    )),
                     'places' => implode("\n", $places),
                     'toconfirm' => implode("\n", $toconfirm),
                     'confirmed' => implode("\n", $confirmed),
@@ -1335,7 +1432,9 @@ class course_accessibility {
                 $text = get_string('courseaccessibility_issue_' . $issue, 'theme_epure', $part['issues'][$issue]);
                 // The first sentence says what is wrong, the rest how to fix it: the cause stands out.
                 $sentences = preg_split('/(?<=[^.]\.)\s+/u', $text, 2);
-                $issues[] = ['text' => $text, 'cause' => $sentences[0], 'advice' => $sentences[1] ?? ''];
+                $level = self::severity($issue);
+                $issues[] = ['text' => $text, 'cause' => $sentences[0], 'advice' => $sentences[1] ?? '', 'level' => $level,
+                    'levellabel' => get_string('courseaccessibility_level_' . $level, 'theme_epure')];
             }
         }
         // Where they are, in an activity of several texts: each chapter, page or question with its mistakes, and a link
@@ -1413,6 +1512,12 @@ class course_accessibility {
         }
         return [
             'id' => $part['type'] === 'cm' ? 'epure-a11y-cm-' . $part['id'] : 'epure-a11y-' . $part['type'] . '-' . $part['id'],
+            // For the filter of the page: the severities of its mistakes, and whether points are to confirm.
+            'levels' => implode(' ', array_merge(
+                array_unique(array_map([self::class, 'severity'], array_keys(array_filter($part['issues'])))),
+                $toconfirm ? ['toconfirm'] : []
+            )),
+            'level' => self::level($part),
             'name' => $name,
             'icon' => $icon,
             'type' => $type,
@@ -1479,6 +1584,8 @@ class course_accessibility {
             if ($count) {
                 $cms[] = [
                     'cmid' => $cmid,
+                    // The worst severity of its mistakes, its colour; points to confirm only, none.
+                    'level' => $cm['level'],
                     'text' => get_string('courseaccessibility_points' . ($count > 1 ? 'n' : '1'), 'theme_epure', $count),
                     'url' => self::url((int) $course->id, $cmid)->out(false),
                 ];
