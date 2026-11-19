@@ -111,12 +111,12 @@ class summary_pdf {
 
             /**
              * The decorations of a page: the band of the brand at the top, the code and the number of the page at the
-             * bottom.
+             * bottom. The library names this method, in camel case.
              *
              * @param int $pid Page, the current one by default.
              * @return string
              */
-            public function defaultPageContent(int $pid = -1): string {
+            public function defaultPageContent(int $pid = -1): string { // phpcs:ignore moodle.NamingConventions
                 if ($pid < 0) {
                     $pid = $this->page->getPageId();
                 }
