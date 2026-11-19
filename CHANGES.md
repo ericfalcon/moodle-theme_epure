@@ -8,6 +8,8 @@
 - A filter of the parts: all, blocking, serious, minor or to confirm; the number of parts shown is told.
 - In edit mode, the pill of an activity with mistakes in the colour of the worst one.
 - Getting started, step 2 (login page), from Moodle 5.0: the file manager of the login image grew by a line once its files were listed (its path, « Files »), and « Save and continue » moved away from a quick click, which then did nothing. The line is kept while the files are asked for: nothing moves.
+- Reading aloud: the page leaves room under the bar, its height (several lines with a large text): the end of the page (the button to the next activity, the footer) scrolls out from under it, and a field reached with the keyboard is kept clear of it. The utterance being said is kept: Chrome could let it go and never tell its end, which stopped the reading in the middle of the page.
+- README: the cookie of the visitors (`theme_epure_a11y`), to name in the cookie notice of the site; exempt from consent, as a cookie of a service the user asked for.
 - Tests: PHPUnit (every mistake has a severity; the score of a part and of the course; to fix first; the filter). Behat: the getting started clicks « Save and continue » without waiting for the file manager, as an administrator.
 
 ## 1.36.0 — reading aloud, « Aa » for the visitors, more checks of the accessibility of the course

@@ -38,6 +38,13 @@ let bar = null;
 let queue = [];
 /** @type {HTMLElement|null} Block being read. */
 let current = null;
+/**
+ * What is being said: kept, since Chrome can let an utterance go while it is said, and then never tells its end, which
+ * stopped the reading in the middle of the page.
+ *
+ * @type {SpeechSynthesisUtterance|null}
+ */
+let utterance = null;
 /** @type {number} Speed. */
 let rate = 1;
 /** @type {boolean} Whether the reading goes on to the next block. */
@@ -162,7 +169,7 @@ const say = (text, lang, next) => {
         next();
         return;
     }
-    const utterance = new window.SpeechSynthesisUtterance(text);
+    utterance = new window.SpeechSynthesisUtterance(text);
     utterance.lang = chosen.lang;
     utterance.voice = chosen;
     utterance.rate = rate;
@@ -219,6 +226,7 @@ const blocks = () => {
 const stop = () => {
     reading = false;
     queue = [];
+    utterance = null;
     window.speechSynthesis.cancel();
     mark(null);
     update();
@@ -316,6 +324,12 @@ const create = async() => {
         rate = Number(e.target.value);
     });
     document.body.append(bar);
+    // The room of the bar under the page (_preferences.scss): its height, that of several lines with a large text.
+    const room = () => document.documentElement.style.setProperty('--epure-speechbar-room', `${bar.offsetHeight + 16}px`);
+    room();
+    if (window.ResizeObserver) {
+        new window.ResizeObserver(room).observe(bar);
+    }
     update();
 };
 
@@ -336,6 +350,7 @@ export const set = (on) => {
         stop();
         bar.remove();
         bar = null;
+        document.documentElement.style.removeProperty('--epure-speechbar-room');
     }
 };
 
