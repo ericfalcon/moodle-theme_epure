@@ -115,8 +115,8 @@ final class accessibility_scores_test extends \advanced_testcase {
         accessibility_scores::compute();
         $before = (int) $DB->get_field(accessibility_scores::TABLE, 'score', ['courseid' => $course->id]);
         // The mistake corrected (the image described), the course changed: its score is computed again.
-        $DB->set_field('page', 'content', '<p>Rules</p><img src="https://example.com/a.png" alt="Gloves on">',
-            ['course' => $course->id]);
+        $content = '<p>Rules</p><img src="https://example.com/a.png" alt="Gloves on">';
+        $DB->set_field('page', 'content', $content, ['course' => $course->id]);
         course_accessibility::forget((int) $course->id);
         $this->assertCount(1, $tasks());
         ob_start();
