@@ -93,14 +93,15 @@ class summary_pdf {
         }
 
         // The band of the brand and the footer of each page, as decorations.
-        $pdf = new class (
-            unit: \Com\Tecnick\Pdf\Page\Unit::Millimeter,
-            isunicode: true,
-            subsetfont: true,
-            compress: true,
-            mode: \Com\Tecnick\Pdf\PdfConformance::Pdfua1,
-            fileOptions: ['allowedPaths' => [$dir]],
-        ) extends \Com\Tecnick\Pdf\Tcpdf {
+        $options = [
+            'unit' => \Com\Tecnick\Pdf\Page\Unit::Millimeter,
+            'isunicode' => true,
+            'subsetfont' => true,
+            'compress' => true,
+            'mode' => \Com\Tecnick\Pdf\PdfConformance::Pdfua1,
+            'fileOptions' => ['allowedPaths' => [$dir]],
+        ];
+        $pdf = new class (...$options) extends \Com\Tecnick\Pdf\Tcpdf {
             /** @var string Code of verification, in the footer. */
             public string $epurefooter = '';
             /** @var string Colour of the band. */
@@ -147,12 +148,12 @@ class summary_pdf {
         // at the top right, described.
         $top = 12;
         if ($logo) {
-            $pdf->addHTMLCell('<img src="' . $logo . '" alt="" width="' . round($document['logowidth'] * 3.78)
-                . '" height="' . round($document['logoheight'] * 3.78) . '" />', 18, 10, 120);
+            $size = 'width="' . round($document['logowidth'] * 3.78) . '" height="' . round($document['logoheight'] * 3.78) . '"';
+            $pdf->addHTMLCell('<img src="' . $logo . '" alt="" ' . $size . ' />', 18, 10, 120);
             $top = 10 + (float) $document['logoheight'] + 4;
         }
-        $pdf->addHTMLCell('<img src="' . $dir . '/qr.png" alt="' . s($document['qralt']) . '" width="94" height="94" />',
-            167, 10, 25);
+        $qrimage = '<img src="' . $dir . '/qr.png" alt="' . s($document['qralt']) . '" width="94" height="94" />';
+        $pdf->addHTMLCell($qrimage, 167, 10, 25);
         $pdf->addHTMLCell((string) $document['html'], 18, max($top, 38), 174);
         return $pdf->getOutPDFString();
     }
