@@ -186,7 +186,12 @@ jobs:
           mkdir -p "$RUNNER_TEMP/verapdf"
           cd "$RUNNER_TEMP/verapdf"
           printf '%s' '<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion><groupId>local</groupId><artifactId>verapdf</artifactId><version>1</version><dependencies><dependency><groupId>org.verapdf.apps</groupId><artifactId>greenfield-apps</artifactId><version>1.28.2</version></dependency></dependencies></project>' > pom.xml
-          mvn -q dependency:copy-dependencies -DoutputDirectory=lib
+          # The plugin named in full, and three tries: Maven Central does not always answer at once.
+          for try in 1 2 3; do
+            mvn -q org.apache.maven.plugins:maven-dependency-plugin:3.8.1:copy-dependencies -DoutputDirectory=lib && break
+            [ "$try" = 3 ] && exit 1
+            sleep 20
+          done
           printf '#!/bin/sh\nexec java -cp "%s/lib/*" org.verapdf.apps.GreenfieldCliWrapper "$@"\n' "$RUNNER_TEMP/verapdf" > verapdf
           chmod +x verapdf
           ./verapdf --version
