@@ -56,5 +56,6 @@ if (has_capability('moodle/site:config', $context)) {
 }
 
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template('theme_epure/management', management::export(null, $companyid, management::choices(), $categoryid));
+$data = management::export(null, $companyid, management::choices(), $categoryid);
+echo $OUTPUT->render_from_template('theme_epure/management', $data);
 echo $OUTPUT->footer();
