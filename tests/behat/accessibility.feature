@@ -423,10 +423,10 @@ Feature: Accessibility of the Épure theme
       | Audit course | audit     | 2           |
     And I am on "Audit course" course homepage
     And "nav#courseindex[aria-label='Course index']" "css_element" should exist
-    And the "aria-expanded" attribute of "a.icons-collapse-expand[href$='collapseid1']" "css_element" should contain "true"
-    And I set the focus on the "a.icons-collapse-expand[href$='collapseid1']" "css_element"
+    And the "aria-expanded" attribute of "li#section-1 a.icons-collapse-expand" "css_element" should contain "true"
+    And I set the focus on the "li#section-1 a.icons-collapse-expand" "css_element"
     And I press the space key
-    And the "aria-expanded" attribute of "a.icons-collapse-expand[href$='collapseid1']" "css_element" should contain "false"
+    And the "aria-expanded" attribute of "li#section-1 a.icons-collapse-expand" "css_element" should contain "false"
     And the page should meet accessibility standards
     # The participants: the letters that filter by first name and by last name, the choice of the page.
     And I navigate to course participants

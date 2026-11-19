@@ -160,9 +160,9 @@ body .tox {
 }
 
 // The mark of a required field, in the text of its label (RGAA 11.10), added by theme_epure/aria_repair: the icon of
-// Moodle stays beside it, for the eye.
+// Moodle stays beside it, for the eye. In the colour of the label, legible in every display (dark, yellow on black…).
 .epure-required {
-    color: var(--bs-danger, #b42318);
+    color: inherit;
     font-size: .875em;
     font-weight: 400;
     white-space: nowrap;
