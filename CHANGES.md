@@ -1,5 +1,12 @@
 # Changes
 
+## 1.42.0 — « Aa » says when the display is yours, and a guide to choose a profile
+
+- The button « Aa » of the header says when the display is the one the user (or the visitor) chose, not the one of the site: a dot in its corner, in the colour of its letters, and « (customised) » in its name, for the screen readers and on hovering. For whoever no longer finds the usual colours of the site, and for whoever helps them. A choice equal to the display by default of the site is not counted; the dot follows the changes made in the panel at once.
+- A guide « Which profile to choose? » (`/theme/epure/profiles.php`, open without logging in, to print or to give): how to open the preferences, then each profile (Dyslexia, Low vision, Concentration, No flashing) with whom it is for, what it changes one by one and how to adjust it; the preferences to choose on their own (size of the text, colours yellow on black and cream, reading aloud, no motion); what is kept from one visit to the next. Linked from the panel « Aa » and from the accessibility statement. For the learners and the disability advisers.
+- No new setting.
+- Tests: PHPUnit (customised or not, the display by default of the site, the button off; the guide). Behat: the guide in the pre-audit of the visitors, in every display.
+
 ## 1.41.0 — « My summary », a PDF tagged for the screen readers (PDF/UA)
 
 - The PDF of « My summary » is tagged for the screen readers (PDF/UA-1, ISO 14289-1): its titles, paragraphs, tables and links are in its structure, in the language of the page; the QR code is an image with its text (the address of the page of verification); the logo, the band of the brand and the footer of each page (the code of verification, the number of the page) are decorations, which the screen readers skip; the fonts are embedded (DejaVu Sans, for the letters of almost every language). The page « My summary » says so.

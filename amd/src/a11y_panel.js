@@ -161,6 +161,29 @@ const typing = (target) => target instanceof HTMLElement
     && !(target.tagName === 'INPUT' && ['checkbox', 'radio', 'button', 'submit'].includes(target.type));
 
 /**
+ * Says on the button « Aa » whether the display is the one the user chose, not the one of the site: a dot, and
+ * « (customised) » in its name, for whoever no longer finds the usual colours of the site.
+ *
+ * @param {HTMLElement} region The button and its panel.
+ * @param {Object} choices Choices of the panel, as {@see read}.
+ */
+const mark = (region, choices) => {
+    let site;
+    try {
+        site = JSON.parse(region.dataset.siteDisplay || '{}');
+    } catch (e) {
+        return;
+    }
+    const customised = ['text', 'font', 'scheme', 'guide'].some((name) => String(choices[name]) !== String(site[name] ?? ''))
+        || Object.keys(choices.switches).some((name) => choices.switches[name] !== !!(site.switches || {})[name]);
+    const toggle = region.querySelector('[data-action="toggle"]');
+    const label = customised ? region.dataset.labelCustomised : region.dataset.label;
+    toggle.classList.toggle('epure-a11y-customised', customised);
+    toggle.title = `${label} (Alt+A)`;
+    toggle.querySelector('[data-region="epure-a11y-name"]').textContent = label;
+};
+
+/**
  * Starts the panel.
  */
 export const init = () => {
@@ -221,6 +244,7 @@ export const init = () => {
     const changed = () => {
         const choices = read(panel);
         applyToPage(choices, defaultScheme);
+        mark(region, choices);
         return queue(choices);
     };
     panel.addEventListener('change', changed);

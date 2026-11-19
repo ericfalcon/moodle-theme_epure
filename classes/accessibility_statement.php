@@ -296,6 +296,8 @@ class accessibility_statement {
             'derogations' => $texts['derogations'],
             'disproportionate' => $texts['disproportionate'],
             'contact' => $texts['contact'] ?: self::default_contact(),
+            // The guide of the profiles of the display preferences, where the button « Aa » is on.
+            'profilesguideurl' => a11y::panel_enabled() ? a11y::profiles_guide_url()->out(false) : '',
             'measures' => array_map(
                 fn($i) => get_string(sprintf('a11ystatement_measure_%02d', $i), 'theme_epure'),
                 range(1, self::MEASURES)
