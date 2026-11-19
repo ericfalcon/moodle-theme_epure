@@ -253,4 +253,43 @@ final class mycourses_test extends \advanced_testcase {
         $this->assertTrue($section['tableview']);
         $this->assertFalse($section['cardsview']);
     }
+
+    /**
+     * The column « Accessibility » of the table of the courses taught: the score kept of each course and its blocking
+     * mistakes, linked to its guide; « not read yet » before the task; none where the guide is off; in the download.
+     */
+    public function test_accessibility_column(): void {
+        global $DB, $PAGE;
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $read = $generator->create_course(['fullname' => 'Read']);
+        $notread = $generator->create_course(['fullname' => 'Not read']);
+        $teacher = $generator->create_user();
+        $generator->enrol_user($teacher->id, $read->id, 'editingteacher');
+        $generator->enrol_user($teacher->id, $notread->id, 'editingteacher');
+        $DB->insert_record(accessibility_scores::TABLE, ['courseid' => $read->id,
+            'weekstart' => accessibility_scores::week(time()), 'score' => 78, 'blocking' => 2, 'timecomputed' => time()]);
+        $this->setUser($teacher);
+        $output = $PAGE->get_renderer('core');
+
+        // The guide off, as by default: no column.
+        set_config('courseaccessibility', '0', 'theme_epure');
+        $section = mycourses::export($output)['sections'][0];
+        $this->assertFalse($section['hasa11ycolumn']);
+        $this->assertSame('', mycourses::teaching_rows((int) $teacher->id)[0]['accessibility']);
+
+        set_config('courseaccessibility', '1', 'theme_epure');
+        $section = mycourses::export($output)['sections'][0];
+        $this->assertTrue($section['hasa11ycolumn']);
+        $cards = array_column($section['courses'], null, 'name');
+        $this->assertSame(78, $cards['Read']['a11yscore']);
+        $this->assertTrue($cards['Read']['hasa11yblocking']);
+        $this->assertStringContainsString('courseaccessibility.php', $cards['Read']['a11yurl']);
+        $this->assertNull($cards['Not read']['a11yscore']);
+        $this->assertSame(-1, $cards['Not read']['a11ysort']);
+        $rows = array_column(mycourses::teaching_rows((int) $teacher->id), 'accessibility', 'course');
+        $expected = get_string('mycourses_a11y_score', 'theme_epure', (object) ['score' => 78, 'blocking' => 2]);
+        $this->assertSame($expected, $rows['Read']);
+        $this->assertSame(get_string('mycourses_a11y_none', 'theme_epure'), $rows['Not read']);
+    }
 }

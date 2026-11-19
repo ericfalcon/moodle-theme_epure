@@ -376,18 +376,21 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         $this->assertTrue($DB->record_exists(course_accessibility::TABLE, ['checkkey' => 'deadlines']));
         $this->assertFalse($DB->record_exists(course_accessibility::TABLE, ['checkkey' => 'colour']));
 
+        // The bar of the edit mode: what is left, with the score of the course, as on the guide.
         $editmode = course_accessibility::edit_mode($course);
-        $this->assertSame(
-            get_string('courseaccessibility_issuesn', 'theme_epure', 7) . ', '
-                . get_string('courseaccessibility_toconfirmn', 'theme_epure', 3),
-            $editmode['text']
-        );
+        $data = course_accessibility::export($course, $GLOBALS['PAGE']->get_renderer('core'));
+        $summary = get_string('courseaccessibility_issuesn', 'theme_epure', 7) . ', '
+            . get_string('courseaccessibility_toconfirmn', 'theme_epure', 3);
+        $this->assertSame($summary, $data['summary']);
+        $expected = get_string('courseaccessibility_editbar_score', 'theme_epure', (object) [
+            'text' => $summary,
+            'score' => $data['score'],
+        ]);
+        $this->assertSame($expected, $editmode['text']);
         $cms = array_column($editmode['cms'], null, 'cmid');
         $this->assertArrayNotHasKey($quiz->cmid, $cms);
         $this->assertSame(get_string('courseaccessibility_pointsn', 'theme_epure', 4), $cms[$page->cmid]['text']);
 
-        $data = course_accessibility::export($course, $GLOBALS['PAGE']->get_renderer('core'));
-        $this->assertSame($editmode['text'], $data['summary']);
         $this->assertNotEmpty($data['sections']);
 
         // Off for the site: no guide.

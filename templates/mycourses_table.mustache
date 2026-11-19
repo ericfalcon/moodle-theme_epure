@@ -18,7 +18,8 @@
     @template theme_epure/mycourses_table
 
     The courses a user teaches, as a table on the « My courses » page: learners, active this week, to follow up
-    (without opening the course for two weeks), completion, to grade and the next deadline. Each column sorts with
+    (without opening the course for two weeks), completion, to grade, the next deadline and, where the teacher can open
+    its guide, the score of accessibility of the course and its blocking mistakes (read in the background). Each column sorts with
     its button in the header (theme_epure/mycourses); on phones, each row reads as a card (theme_epure/table_cards).
 
     Example context (json):
@@ -29,8 +30,9 @@
             "status": "inprogress", "hidden": false, "participants": 24, "active": 10, "followup": 3, "hasfollowup": true,
             "followupurl": "#", "hascompletion": true, "completionrate": 40, "tograde": 2, "hastograde": true,
             "gradeurl": "#", "deadline": {"name": "Risk assessment", "url": "#", "date": "18/11/26", "time": 1795000000},
-            "deadlinetime": 1795000000
-        }]
+            "deadlinetime": 1795000000, "a11yguide": true, "hasa11yscore": true, "a11yscore": 78, "a11yblocking": 2,
+            "hasa11yblocking": true, "a11yurl": "#", "a11ysort": 78
+        }], "hasa11ycolumn": true
     }
 }}
 <div class="epure-mycourses-tablewrap" data-region="table" {{^tableview}}hidden{{/tableview}}>
@@ -47,6 +49,9 @@
                 {{/hascompletioncolumn}}
                 <th scope="col" aria-sort="none" class="epure-mycourses-number"><button type="button" class="epure-mycourses-sort" data-sort="tograde" data-numeric="1">{{#str}}mycourses_tograde, theme_epure{{/str}}<span class="epure-mycourses-sort-icon" aria-hidden="true"></span></button></th>
                 <th scope="col" aria-sort="none"><button type="button" class="epure-mycourses-sort" data-sort="deadline" data-numeric="1">{{#str}}mycourses_deadline, theme_epure{{/str}}<span class="epure-mycourses-sort-icon" aria-hidden="true"></span></button></th>
+                {{#hasa11ycolumn}}
+                    <th scope="col" aria-sort="none" class="epure-mycourses-number"><button type="button" class="epure-mycourses-sort" data-sort="a11y" data-numeric="1">{{#str}}mycourses_column_accessibility, theme_epure{{/str}}<span class="epure-mycourses-sort-icon" aria-hidden="true"></span></button></th>
+                {{/hasa11ycolumn}}
             </tr>
         </thead>
         <tbody>
@@ -54,7 +59,7 @@
                 <tr data-status="{{status}}" data-name="{{sortname}} {{category}}" data-sort-name="{{sortname}}"
                     data-sort-learners="{{participants}}" data-sort-active="{{active}}" data-sort-followup="{{followup}}"
                     data-sort-completion="{{#hascompletion}}{{completionrate}}{{/hascompletion}}{{^hascompletion}}-1{{/hascompletion}}"
-                    data-sort-tograde="{{tograde}}" data-sort-deadline="{{deadlinetime}}">
+                    data-sort-tograde="{{tograde}}" data-sort-deadline="{{deadlinetime}}" data-sort-a11y="{{a11ysort}}">
                     <th scope="row">
                         <a href="{{url}}">{{name}}</a>
                         {{#category}}<span class="epure-mycourses-table-category">{{category}}</span>{{/category}}
@@ -80,6 +85,18 @@
                         {{#deadline}}{{#url}}<a href="{{url}}">{{name}}</a>{{/url}}{{^url}}{{name}}{{/url}} <span class="epure-mycourses-table-date">{{date}}</span>{{/deadline}}
                         {{^deadline}}<span aria-hidden="true">–</span><span class="sr-only visually-hidden">{{#str}}mycourses_nodeadline, theme_epure{{/str}}</span>{{/deadline}}
                     </td>
+                    {{#hasa11ycolumn}}
+                        <td class="epure-mycourses-number">
+                            {{#hasa11yscore}}
+                                <a href="{{a11yurl}}">{{a11yscore}} %<span class="sr-only visually-hidden"> – {{#str}}courseaccessibility, theme_epure{{/str}}, {{name}}</span></a>
+                                {{#hasa11yblocking}}<span class="epure-mycourses-a11y-blocking">{{#str}}mycourses_a11y_blocking, theme_epure, {{a11yblocking}}{{/str}}</span>{{/hasa11yblocking}}
+                            {{/hasa11yscore}}
+                            {{^hasa11yscore}}
+                                {{#a11yguide}}<span aria-hidden="true">–</span><span class="sr-only visually-hidden">{{#str}}mycourses_a11y_none, theme_epure{{/str}}</span>{{/a11yguide}}
+                                {{^a11yguide}}<span aria-hidden="true">–</span><span class="sr-only visually-hidden">{{#str}}mycourses_a11y_noguide, theme_epure{{/str}}</span>{{/a11yguide}}
+                            {{/hasa11yscore}}
+                        </td>
+                    {{/hasa11ycolumn}}
                 </tr>
             {{/courses}}
         </tbody>

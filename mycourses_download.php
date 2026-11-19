@@ -35,10 +35,16 @@ $PAGE->set_context(context_user::instance($USER->id));
 $PAGE->set_url(new moodle_url('/theme/epure/mycourses_download.php'));
 
 $columns = [];
-foreach (['course', 'category', 'learners', 'active', 'followup', 'completion', 'tograde', 'deadline'] as $column) {
+$names = ['course', 'category', 'learners', 'active', 'followup', 'completion', 'tograde', 'deadline', 'accessibility'];
+foreach ($names as $column) {
     $columns[$column] = get_string('mycourses_column_' . $column, 'theme_epure');
 }
 $rows = theme_epure\mycourses::teaching_rows((int) $USER->id);
+// The column of the accessibility only where the user can open the guide of a course.
+if (!array_filter(array_column($rows, 'accessibility'))) {
+    unset($columns['accessibility']);
+    $rows = array_map(fn($row) => array_diff_key($row, ['accessibility' => true]), $rows);
+}
 \core\dataformat::download_data(
     clean_filename(get_string('mycourses_downloadname', 'theme_epure') . '-' . userdate(time(), '%Y-%m-%d')),
     $dataformat,

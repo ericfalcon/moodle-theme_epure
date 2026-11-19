@@ -402,11 +402,17 @@
 }
 
 .epure-mycourses-table-category,
-.epure-mycourses-table-date {
+// Under the next deadline its date; under the score of accessibility its blocking mistakes, in the red of the theme.
+.epure-mycourses-table-date,
+.epure-mycourses-a11y-blocking {
     display: block;
     color: var(--epure-ink-muted);
     font-size: .8125rem;
     font-weight: 400;
+}
+
+.epure-mycourses-a11y-blocking {
+    color: var(--epure-state-late);
 }
 
 .epure-mycourses-alert a {

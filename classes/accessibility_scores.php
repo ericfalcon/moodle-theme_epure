@@ -239,6 +239,27 @@ class accessibility_scores {
     }
 
     /**
+     * The last score known of some courses, for the table of the courses a teacher teaches.
+     *
+     * @param int[] $courseids Courses.
+     * @return \stdClass[] By course: courseid, score, blocking, serious, minor, timecomputed; none for a course not read.
+     */
+    public static function of_courses(array $courseids): array {
+        global $DB;
+        if (!$courseids) {
+            return [];
+        }
+        [$in, $params] = $DB->get_in_or_equal(array_map('intval', $courseids), SQL_PARAMS_NAMED);
+        return $DB->get_records_sql(
+            "SELECT s.courseid, s.score, s.blocking, s.serious, s.minor, s.timecomputed
+               FROM {" . self::TABLE . "} s
+              WHERE s.courseid {$in}
+                AND s.weekstart = (SELECT MAX(w.weekstart) FROM {" . self::TABLE . "} w WHERE w.courseid = s.courseid)",
+            $params
+        );
+    }
+
+    /**
      * The average score of the courses of a scope, week by week, the last weeks first.
      *
      * @param int $now Time of reference.
