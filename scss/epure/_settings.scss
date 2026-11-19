@@ -129,3 +129,10 @@
     color: var(--epure-ink);
     font-size: .875rem;
 }
+
+// What the model of the login page did (« The tagline, the text and the catalogue follow the model »): its line is kept
+// before it is said, so that the fields and the buttons below do not move down as the model is chosen, under the
+// pointer about to click on them (« Save and continue » of the getting started).
+[data-region="epure-loginmodel-status"] {
+    min-height: 1.5em;
+}
