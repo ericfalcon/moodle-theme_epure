@@ -312,7 +312,8 @@ p.epure-learner-more {
 
 .epure-achievements-badges {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
+    // stylelint-disable-next-line csstree/validator -- min() in minmax(), valid CSS that the validator does not know.
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 5rem), 1fr));
     gap: .75rem;
     margin: 0;
     padding: 0;

@@ -4,7 +4,7 @@ Feature: Pre-audit of accessibility of the Épure theme on IOMAD
   As a learner, a manager of a company or an administrator of IOMAD
   I need the pages of IOMAD to meet the WCAG 2.2 A and AA in light, in dark and on phones
 
-  # The pages of IOMAD, in addition to the 40 pages of the pre-audit of the theme, each in the four displays, on
+  # The pages of IOMAD, in addition to the 40 pages of the pre-audit of the theme, each in every display, on
   # every version of IOMAD of the continuous integration.
 
   Background:
@@ -35,9 +35,9 @@ Feature: Pre-audit of accessibility of the Épure theme on IOMAD
       | learner1 | tilleuls |         |
       | manager1 | tilleuls | 1       |
 
-  Scenario: The pages of a learner of a company meet accessibility standards in the four displays
+  Scenario: The pages of a learner of a company meet accessibility standards in every display
     Given I log in as "learner1"
-    Then the following pages should meet accessibility standards in the four displays:
+    Then the following pages should meet accessibility standards in every display:
       | path                              |
       | /my/                              |
       | /my/courses.php                   |
@@ -47,9 +47,9 @@ Feature: Pre-audit of accessibility of the Épure theme on IOMAD
       | /user/preferences.php             |
       | /theme/epure/summary.php          |
 
-  Scenario: The pages of a manager of a company meet accessibility standards in the four displays
+  Scenario: The pages of a manager of a company meet accessibility standards in every display
     Given I log in as "manager1"
-    Then the following pages should meet accessibility standards in the four displays:
+    Then the following pages should meet accessibility standards in every display:
       | path                                                      | except     |
       | /my/                                                      |            |
       | /blocks/iomad_company_admin/index.php                     |            |
@@ -62,9 +62,9 @@ Feature: Pre-audit of accessibility of the Épure theme on IOMAD
       | /local/report_user_logins/index.php                       |            |
       | /local/report_completion_overview/index.php               | wide table |
 
-  Scenario: The pages of IOMAD of an administrator meet accessibility standards in the four displays
+  Scenario: The pages of IOMAD of an administrator meet accessibility standards in every display
     Given I log in as "admin"
-    Then the following pages should meet accessibility standards in the four displays:
+    Then the following pages should meet accessibility standards in every display:
       | path                                                  |
       | /blocks/iomad_company_admin/index.php                 |
       | /blocks/iomad_company_admin/editcompanies.php         |

@@ -25,6 +25,8 @@ Feature: Getting started with Épure
     And I set the field "id_s_theme_epure_brandcolor" to "#2559A8"
     And I press "Save and continue"
     And I should see "Step 2 of 4: Login page"
+    # The file manager of the login image lists its files after the page: once it has, nothing moves under the buttons.
+    And I wait until ".filemanager.fm-loaded" "css_element" exists
     And I set the field "Model" to "Company: training of the employees"
     And I press "Save and continue"
     And I should see "Step 3 of 4: Footer"

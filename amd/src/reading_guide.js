@@ -29,6 +29,8 @@ let mode = '';
 let parts = [];
 /** @type {number|null} Height of the page where the guide is, from the top of the screen. */
 let line = null;
+/** @type {boolean} Whether the guide is to be moved at the next frame of the screen. */
+let pending = false;
 
 /**
  * The height of a line of text of the page, in pixels.
@@ -58,6 +60,20 @@ const place = () => {
 };
 
 /**
+ * Moves the guide at the next frame of the screen: the pointer moves many times between two frames, the guide only
+ * once per frame.
+ */
+const later = () => {
+    if (!pending) {
+        pending = true;
+        window.requestAnimationFrame(() => {
+            pending = false;
+            place();
+        });
+    }
+};
+
+/**
  * Follows the pointer (a mouse or a pen: a finger covers what it reads).
  *
  * @param {PointerEvent} e Event.
@@ -65,7 +81,7 @@ const place = () => {
 const pointer = (e) => {
     if (e.pointerType !== 'touch') {
         line = e.clientY;
-        place();
+        later();
     }
 };
 
@@ -78,7 +94,7 @@ const focus = (e) => {
     if (e.target instanceof Element && e.target.matches(':focus-visible')) {
         const rect = e.target.getBoundingClientRect();
         line = rect.top + Math.min(rect.height, lineHeight()) / 2;
-        place();
+        later();
     }
 };
 
@@ -112,13 +128,13 @@ export const set = (next) => {
     if (!mode) {
         document.removeEventListener('pointermove', pointer);
         document.removeEventListener('focusin', focus);
-        window.removeEventListener('resize', place);
+        window.removeEventListener('resize', later);
         return;
     }
     parts = mode === 'ruler' ? [part('ruler')] : [part('top'), part('bottom')];
     document.addEventListener('pointermove', pointer, {passive: true});
     document.addEventListener('focusin', focus);
-    window.addEventListener('resize', place);
+    window.addEventListener('resize', later);
     place();
 };
 

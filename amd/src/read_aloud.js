@@ -42,6 +42,12 @@ let current = null;
 let rate = 1;
 /** @type {boolean} Whether the reading goes on to the next block. */
 let reading = false;
+/**
+ * The last text selected: on a phone, touching the button clears the selection before the button is pressed.
+ *
+ * @type {{text: string, node: Node, time: number}|null}
+ */
+let selected = null;
 
 /**
  * Whether the browser can read aloud.
@@ -51,17 +57,56 @@ let reading = false;
 export const supported = () => 'speechSynthesis' in window && typeof window.SpeechSynthesisUtterance === 'function';
 
 /**
- * The voice of the device for a language: one installed on the device first (it does not depend on the network).
+ * The voices installed on the device: those of a service on the network (localService false) would send it the text,
+ * and are never used.
+ *
+ * @returns {SpeechSynthesisVoice[]}
+ */
+const localVoices = () => window.speechSynthesis.getVoices().filter((v) => v.localService);
+
+/**
+ * Whether the device has voices of its own, once the browser has listed them (it does so after the page, at its pace).
+ *
+ * @returns {Promise<boolean>}
+ */
+export const available = () => new Promise((resolve) => {
+    if (!supported()) {
+        resolve(false);
+        return;
+    }
+    if (window.speechSynthesis.getVoices().length) {
+        resolve(localVoices().length > 0);
+        return;
+    }
+    const done = () => resolve(localVoices().length > 0);
+    window.speechSynthesis.addEventListener('voiceschanged', done, {once: true});
+    window.setTimeout(done, 2000);
+});
+
+/**
+ * The voice of the device for a language: of that very language and country first, else of that language. Never one
+ * of a service on the network, nor one of another language, which would read it wrong.
  *
  * @param {string} lang Language, as « fr » or « en-GB ».
  * @returns {SpeechSynthesisVoice|null}
  */
 const voice = (lang) => {
-    const voices = window.speechSynthesis.getVoices();
     const base = lang.toLowerCase().split('-')[0];
-    const matching = voices.filter((v) => v.lang.toLowerCase().replace('_', '-').startsWith(base));
-    return matching.find((v) => v.localService && v.lang.toLowerCase() === lang.toLowerCase())
-        || matching.find((v) => v.localService) || matching[0] || null;
+    const matching = localVoices().filter((v) => v.lang.toLowerCase().replace('_', '-').split('-')[0] === base);
+    return matching.find((v) => v.lang.toLowerCase().replace('_', '-') === lang.toLowerCase()) || matching[0] || null;
+};
+
+/**
+ * Says something in the bar, to the screen readers too.
+ *
+ * @param {string} text Message, or empty.
+ */
+const tell = (text) => {
+    const status = bar?.querySelector('[data-region="status"]');
+    if (status) {
+        status.textContent = text;
+        status.hidden = !text;
+    }
 };
 
 /**
@@ -103,19 +148,33 @@ const mark = (block) => {
 };
 
 /**
- * Says a text, then calls back.
+ * Says a text, then calls back once it is said. Without a voice of the device for its language, it is not said: the
+ * bar tells it, and the reading goes on. When the device fails to say it, the reading stops and the bar tells it.
  *
  * @param {string} text Text.
  * @param {string} lang Its language.
  * @param {Function} next Called once it is said.
  */
 const say = (text, lang, next) => {
+    const chosen = voice(lang);
+    if (!chosen) {
+        tell(bar.dataset.novoice.replace('{$a}', lang));
+        next();
+        return;
+    }
     const utterance = new window.SpeechSynthesisUtterance(text);
-    utterance.lang = lang;
-    utterance.voice = voice(lang);
+    utterance.lang = chosen.lang;
+    utterance.voice = chosen;
     utterance.rate = rate;
     utterance.onend = next;
-    utterance.onerror = next;
+    utterance.onerror = (e) => {
+        // Stopped or replaced by the bar itself: not a failure.
+        if (e.error === 'interrupted' || e.error === 'canceled') {
+            return;
+        }
+        stop();
+        tell(bar.dataset.failed);
+    };
     window.speechSynthesis.speak(utterance);
 };
 
@@ -170,12 +229,17 @@ const stop = () => {
  */
 const start = () => {
     window.speechSynthesis.cancel();
-    const selection = window.getSelection();
-    const selected = selection ? selection.toString().replace(/\s+/g, ' ').trim() : '';
+    tell('');
+    // The text selected now, else the one selected just before the button was touched.
+    const now = window.getSelection();
+    const text = now ? now.toString().replace(/\s+/g, ' ').trim() : '';
+    const recent = selected && Date.now() - selected.time < 10000 ? selected : null;
+    const chosen = text ? {text, node: now.anchorNode} : recent;
+    selected = null;
     reading = true;
-    if (selected) {
+    if (chosen) {
         queue = [];
-        say(selected, language(selection.anchorNode), stop);
+        say(chosen.text, language(chosen.node), stop);
     } else {
         queue = blocks();
         next();
@@ -192,7 +256,10 @@ const update = () => {
     }
     const synth = window.speechSynthesis;
     const play = bar.querySelector('[data-action="play"]');
-    const label = reading ? (synth.paused ? bar.dataset.resume : bar.dataset.pause) : bar.dataset.play;
+    let label = bar.dataset.play;
+    if (reading) {
+        label = synth.paused ? bar.dataset.resume : bar.dataset.pause;
+    }
     play.querySelector('span').textContent = label;
     play.querySelector('i').className = `fa ${reading && !synth.paused ? 'fa-pause' : 'fa-play'}`;
     bar.querySelector('[data-action="stop"]').disabled = !reading;
@@ -202,13 +269,15 @@ const update = () => {
  * Creates the bar of the reading.
  */
 const create = async() => {
-    const [title, play, pause, resume, stopLabel, rateLabel] = await getStrings([
+    const [title, play, pause, resume, stopLabel, rateLabel, novoice, failed] = await getStrings([
         {key: 'a11yspeech', component: 'theme_epure'},
         {key: 'a11yspeech_play', component: 'theme_epure'},
         {key: 'a11yspeech_pause', component: 'theme_epure'},
         {key: 'a11yspeech_resume', component: 'theme_epure'},
         {key: 'a11yspeech_stop', component: 'theme_epure'},
         {key: 'a11yspeech_rate', component: 'theme_epure'},
+        {key: 'a11yspeech_novoice', component: 'theme_epure', param: '{$a}'},
+        {key: 'a11yspeech_failed', component: 'theme_epure'},
     ]);
     if (bar) {
         return;
@@ -217,7 +286,7 @@ const create = async() => {
     bar.className = 'epure-a11y-speechbar d-print-none';
     bar.setAttribute('role', 'region');
     bar.setAttribute('aria-label', title);
-    Object.assign(bar.dataset, {play, pause, resume});
+    Object.assign(bar.dataset, {play, pause, resume, novoice, failed});
     const options = RATES.map((value) => `<option value="${value}"${value === rate ? ' selected' : ''}>`
         + `${String(value).replace('.', document.documentElement.lang.startsWith('en') ? '.' : ',')} ×</option>`).join('');
     bar.innerHTML = `<button type="button" class="btn btn-primary" data-action="play">`
@@ -225,7 +294,8 @@ const create = async() => {
         + `<button type="button" class="btn btn-secondary" data-action="stop"><i class="fa fa-stop" aria-hidden="true"></i> `
         + `<span></span></button>`
         + `<label class="epure-a11y-speechrate"><span></span> `
-        + `<select class="form-select custom-select">${options}</select></label>`;
+        + `<select class="form-select custom-select">${options}</select></label>`
+        + `<p class="epure-a11y-speechstatus" role="status" data-region="status" hidden></p>`;
     bar.querySelector('[data-action="stop"] span').textContent = stopLabel;
     bar.querySelector('.epure-a11y-speechrate span').textContent = rateLabel;
     // The selection is read once the button is pressed: a click on it must not clear it.
@@ -274,6 +344,14 @@ export const set = (on) => {
  */
 export const init = () => {
     set(document.documentElement.classList.contains('epure-a11y-speech'));
+    // The last text selected out of the bar, kept a moment: on a phone, touching the button clears it first.
+    document.addEventListener('selectionchange', () => {
+        const selection = window.getSelection();
+        const text = selection ? selection.toString().replace(/\s+/g, ' ').trim() : '';
+        if (text && !bar?.contains(selection.anchorNode)) {
+            selected = {text, node: selection.anchorNode, time: Date.now()};
+        }
+    });
     // Leaving the page stops the voice.
     window.addEventListener('pagehide', () => supported() && window.speechSynthesis.cancel());
 };

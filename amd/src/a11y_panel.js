@@ -82,10 +82,11 @@ const applyToPage = (choices, defaultScheme) => {
 };
 
 /**
- * Saves the choices in the profile of the user.
+ * Saves the choices in the profile of the user, or in the cookie of a visitor, and says whether it was saved.
  *
  * @param {HTMLElement} panel The panel.
  * @param {{text: number, font: string, switches: Object<string, boolean>}} choices Choices.
+ * @return {Promise<boolean>} Whether the choices are saved.
  */
 const save = async(panel, choices) => {
     const preferences = [
@@ -104,13 +105,19 @@ const save = async(panel, choices) => {
             const secure = window.location.protocol === 'https:' ? '; Secure' : '';
             const value = encodeURIComponent(JSON.stringify(values));
             document.cookie = `${cookie}=${value}; path=/; max-age=31536000; SameSite=Lax${secure}`;
+            // A browser that refuses the cookies keeps nothing: read back.
+            if (!document.cookie.split('; ').includes(`${cookie}=${value}`)) {
+                throw new Error('cookie refused');
+            }
             status.textContent = await getString('a11ysaved_visitor', 'theme_epure');
-            return;
+            return true;
         }
         await Ajax.call([{methodname: 'core_user_update_user_preferences', args: {preferences}}])[0];
         status.textContent = await getString('a11ysaved', 'theme_epure');
+        return true;
     } catch (error) {
         status.textContent = await getString('a11ynotsaved', 'theme_epure');
+        return false;
     }
 };
 
@@ -119,7 +126,8 @@ const save = async(panel, choices) => {
  * earlier state that is saved last would replace the last choice.
  *
  * @param {HTMLElement} panel The panel.
- * @return {function(Object): Promise} Saves the choices once the previous save has ended; only the last waits.
+ * @return {function(Object): Promise<boolean>} Saves the choices once the previous save has ended; only the last waits.
+ *     Its promise says whether the last choices were saved.
  */
 const saver = (panel) => {
     let running = null;
@@ -128,12 +136,14 @@ const saver = (panel) => {
         waiting = choices;
         if (!running) {
             running = (async() => {
+                let saved = true;
                 while (waiting) {
                     const next = waiting;
                     waiting = null;
-                    await save(panel, next);
+                    saved = await save(panel, next);
                 }
                 running = null;
+                return saved;
             })();
         }
         return running;
@@ -248,14 +258,21 @@ export const init = () => {
         profile.switches.forEach((name) => {
             panel.querySelector(`[name="epure-a11y-${name}"]`).checked = true;
         });
-        await changed();
-        panel.querySelector('[data-region="status"]').textContent = await getString('a11yprofile_applied', 'theme_epure',
-            button.textContent.trim());
+        // Applied to the page in any case; said applied only once saved, else that it will be lost.
+        const saved = await changed();
+        panel.querySelector('[data-region="status"]').textContent = await getString(
+            saved ? 'a11yprofile_applied' : 'a11yprofile_notsaved',
+            'theme_epure',
+            button.textContent.trim()
+        );
     }));
     Guide.init();
     ReadAloud.init();
-    // Without voices in the browser, no reading aloud to offer.
-    if (!ReadAloud.supported()) {
-        panel.querySelector('[name="epure-a11y-speech"]')?.closest('.epure-a11y-switch')?.remove();
-    }
+    // Without voices of the device, no reading aloud to offer: the voices of a service on the network are not used.
+    ReadAloud.available().then((available) => {
+        if (!available) {
+            panel.querySelector('[name="epure-a11y-speech"]')?.closest('.epure-a11y-switch')?.remove();
+        }
+        return available;
+    }).catch(() => null);
 };

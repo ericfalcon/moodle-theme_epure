@@ -175,3 +175,12 @@
         box-shadow: var(--epure-shadow);
     }
 }
+
+// The red of the assignment (what is late, what is not graded), written by Moodle in its styles (#ca3120, 5.3:1 on
+// white): the red of the theme, which keeps 4.5:1 under the cream overlay of « Aa » too.
+.path-mod-assign .overdue,
+.path-mod-assign .overduesubmission,
+.path-mod-assign [data-region="grade-panel"] td.submissionnotgraded,
+.path-mod-assign [data-region="grade-panel"] div.submissionnotgraded {
+    color: var(--epure-state-late);
+}

@@ -42,7 +42,7 @@ Feature: The courses a teacher teaches as a table on « My courses »
     And the "aria-sort" attribute of "//th[button[@data-sort='learners']]" "xpath_element" should contain "descending"
     And I reload the page
     And ".epure-mycourses-table" "css_element" should be visible
-    And the following pages should meet accessibility standards in the four displays:
+    And the following pages should meet accessibility standards in every display:
       | path             |
       | /my/courses.php  |
     And I press "Cards"

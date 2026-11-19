@@ -144,6 +144,29 @@ body:has(.epure-longform-actions) #page.drawers {
         position: relative;
     }
 
+    // What Moodle keeps on one line, past the edge with a large text: the dates of an activity in its header (Moodle
+    // 5.x), the buttons of the filters of the participants, the maximum grade of a quiz and the marks of its questions.
+    #page .header-extras-container,
+    #page .header-extra {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    #page .activity-dates {
+        grid-template-columns: minmax(0, 1fr);
+
+        .date-item {
+            flex-wrap: wrap;
+            white-space: normal;
+        }
+    }
+
+    #page .main-inner .filter-group .d-flex,
+    #page .main-inner .quizsavegradesform fieldset,
+    body#page-mod-quiz-edit ul.slots li.section li.activity .mod-indent-outer {
+        flex-wrap: wrap;
+    }
+
     // Lists of choices in a box as wide as their longest option (IOMAD's choice of template, Moodle's defaults).
     #page .main-inner .singleselect,
     #page .main-inner .singleselect form,

@@ -49,6 +49,15 @@ class palette {
     /** @var float WCAG AA ratio for large text and user interface components. */
     public const AA_UI = 3.0;
 
+    /** @var string Colour of the cream overlay of « Aa », multiplied over the whole page (_preferences.scss). */
+    public const CREAM = '#F6E9C9';
+
+    /** @var bool Whether the contrasts are measured under the cream overlay, while cream() computes its palette. */
+    private static bool $undercream = false;
+
+    /** @var string|null The text on the fills kept from the light mode, while cream() computes its palette. */
+    private static ?string $keepon = null;
+
     /**
      * Normalises a colour to the #RRGGBB form.
      *
@@ -136,6 +145,10 @@ class palette {
      * @return float Between 1 and 21.
      */
     public static function contrast(string $a, string $b): float {
+        if (self::$undercream) {
+            $a = self::under_cream($a);
+            $b = self::under_cream($b);
+        }
         $la = self::luminance($a);
         $lb = self::luminance($b);
         return (max($la, $lb) + 0.05) / (min($la, $lb) + 0.05);
@@ -169,7 +182,7 @@ class palette {
      */
     public static function on_stops(array $stops): array {
         $best = ['on' => self::INK, 'contrast' => 0.0];
-        foreach ([self::SURFACE_LIGHT, self::INK] as $on) {
+        foreach (self::$keepon !== null ? [self::$keepon] : [self::SURFACE_LIGHT, self::INK] as $on) {
             $contrast = min(array_map(fn(string $stop) => self::contrast($on, $stop), $stops));
             if ($contrast > $best['contrast']) {
                 $best = ['on' => $on, 'contrast' => round($contrast, 2)];
@@ -247,6 +260,9 @@ class palette {
      * @return string
      */
     public static function on_colour(string $fill): string {
+        if (self::$keepon !== null) {
+            return self::$keepon;
+        }
         return self::contrast(self::SURFACE_LIGHT, $fill) >= self::contrast(self::INK, $fill) ? self::SURFACE_LIGHT : self::INK;
     }
 
@@ -342,6 +358,66 @@ class palette {
             'overlayalpha' => $overlay,
             'oncontrast' => round(self::contrast($on, $fill), 2),
             'textcontrast' => round(self::contrast($text, $surface), 2),
+        ];
+    }
+
+    /**
+     * A colour as it is seen under the cream overlay of « Aa »: multiplied by the cream, channel by channel.
+     *
+     * @param string $hex Normalised colour.
+     * @return string
+     */
+    public static function under_cream(string $hex): string {
+        $cream = self::to_rgb(self::CREAM);
+        return self::to_hex(array_map(fn(int $channel, int $i) => $channel * $cream[$i] / 255, self::to_rgb($hex), [0, 1, 2]));
+    }
+
+    /**
+     * The colours of the brand, of the accent and of the header under the cream overlay of « Aa », which darkens the white
+     * more than the colours and takes up to a tenth off their contrast: computed as in light mode, with each contrast
+     * measured under the overlay, so that they keep 4.5:1 there, and the text of the light mode on each fill (white on
+     * the buttons stays white): the fill moves instead. Custom properties, which the cream scheme puts in place of those
+     * of the light mode.
+     *
+     * @param string|null $brand Brand colour.
+     * @param string|null $accent Accent colour; the brand colour when none.
+     * @param string $headerstyle Style of the header: light, brand or gradient.
+     * @return array<string, string> Name of each custom property, without its dashes, and its value.
+     */
+    public static function cream(?string $brand, ?string $accent, string $headerstyle): array {
+        $accent = self::normalise($accent) ?? $brand;
+        $on = [
+            'brand' => self::derive($brand)['on'],
+            'accent' => self::derive($accent)['on'],
+            'header' => self::header_gradient($brand, $accent)['on'],
+        ];
+        self::$undercream = true;
+        try {
+            self::$keepon = $on['brand'];
+            $p = self::derive($brand);
+            self::$keepon = $on['accent'];
+            $a = self::derive($accent);
+            self::$keepon = $on['header'];
+            $header = $headerstyle === 'gradient' ? self::header_gradient($brand, $accent)
+                : ['start' => $p['fill'], 'end' => $p['fill'], 'on' => $p['on']];
+        } finally {
+            self::$undercream = false;
+            self::$keepon = null;
+        }
+        $light = $header['on'] === self::SURFACE_LIGHT;
+        return [
+            'epure-cream-brand' => $p['fill'],
+            'epure-cream-brand-hover' => $p['hover'],
+            'epure-cream-on-brand' => $p['on'],
+            'epure-cream-brand-text' => $p['text'],
+            'epure-cream-accent' => $a['fill'],
+            'epure-cream-on-accent' => $a['on'],
+            'epure-cream-header-bg' => $header['start'],
+            'epure-cream-header-end' => $header['end'],
+            'epure-cream-header-on' => $header['on'],
+            'epure-cream-header-hover' => $light ? 'rgba(0, 0, 0, .18)' : 'rgba(255, 255, 255, .3)',
+            'epure-cream-header-toggler-filter' => $light ? 'brightness(0) invert(1)' : 'none',
+            'epure-cream-header-divider' => $light ? 'rgba(255, 255, 255, .35)' : 'rgba(0, 0, 0, .2)',
         ];
     }
 }

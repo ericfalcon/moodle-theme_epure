@@ -493,11 +493,11 @@ Feature: Accessibility of the Épure theme
       | activity          | course | name        | idnumber | template                              |
       | coursecertificate | PRAP   | Certificate | cert1    | Certificate — Acceptance test site |
     When I log in as "learner1"
-    Then the following pages should meet accessibility standards in the four displays:
+    Then the following pages should meet accessibility standards in every display:
       | path                                            |
       | /mod/coursecertificate/view.php?id={cm cert1}   |
     And I log out
     And I log in as "teacher1"
-    And the following pages should meet accessibility standards in the four displays:
+    And the following pages should meet accessibility standards in every display:
       | path                                            | except     |
       | /mod/coursecertificate/view.php?id={cm cert1}   | wide table |

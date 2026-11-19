@@ -357,8 +357,8 @@ final class a11y_test extends \advanced_testcase {
         $_COOKIE[a11y::COOKIE] = json_encode(['text' => '150', 'font' => 'nonsense', 'guide' => 'ruler', 'speech' => '1',
             'motion' => '1', 'evil' => '<script>']);
         $this->assertTrue(a11y::visitor());
-        $this->assertSame('epure-a11y-text-150 epure-a11y-motion epure-a11y-guide-ruler epure-a11y-speech',
-            a11y::html_classes());
+        $expected = 'epure-a11y-text-150 epure-a11y-motion epure-a11y-guide-ruler epure-a11y-speech';
+        $this->assertSame($expected, a11y::html_classes());
         $this->assertTrue(a11y::panel_context()['visitor']);
 
         $this->setUser($this->getDataGenerator()->create_user());
@@ -366,6 +366,12 @@ final class a11y_test extends \advanced_testcase {
         set_user_preference('theme_epure_a11y_text', 100);
         set_user_preference('theme_epure_a11y_speech', 0);
         $this->assertSame('epure-a11y-motion epure-a11y-guide-ruler', a11y::html_classes());
+
+        // A switch is 0 or 1, nothing else; a size, a font, a colour, a guide one of theirs.
+        $this->setUser();
+        $_COOKIE[a11y::COOKIE] = json_encode(['motion' => 'yes', 'contrast' => 2, 'underline' => '1', 'speech' => [1],
+            'text' => '400', 'scheme' => 'yellow', 'guide' => 'telescope']);
+        $this->assertSame('epure-a11y-underline epure-dark epure-a11y-scheme-yellow', a11y::html_classes());
 
         $_COOKIE[a11y::COOKIE] = 'not json';
         $this->assertSame('', a11y::html_classes());

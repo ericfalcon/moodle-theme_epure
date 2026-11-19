@@ -463,7 +463,8 @@ body.epure-review-mistakes .que.correct {
 
 .epure-quiz-summary-items {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+    // stylelint-disable-next-line csstree/validator -- min() in minmax(), valid CSS that the validator does not know.
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
     gap: .5rem;
     margin: 0;
 }
