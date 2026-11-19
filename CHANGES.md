@@ -7,7 +7,8 @@
 - « To fix first »: the parts with a blocking mistake, linked, those corrected on the page itself first.
 - A filter of the parts: all, blocking, serious, minor or to confirm; the number of parts shown is told.
 - In edit mode, the pill of an activity with mistakes in the colour of the worst one.
-- Tests: PHPUnit (every mistake has a severity; the score of a part and of the course; to fix first; the filter).
+- Getting started, step 2 (login page), from Moodle 5.0: the file manager of the login image grew by a line once its files were listed (its path, « Files »), and « Save and continue » moved away from a quick click, which then did nothing. The line is kept while the files are asked for: nothing moves.
+- Tests: PHPUnit (every mistake has a severity; the score of a part and of the course; to fix first; the filter). Behat: the getting started clicks « Save and continue » without waiting for the file manager, as an administrator.
 
 ## 1.36.0 — reading aloud, « Aa » for the visitors, more checks of the accessibility of the course
 
