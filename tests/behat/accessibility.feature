@@ -460,7 +460,8 @@ Feature: Accessibility of the Épure theme
       | quiz     | HYG    | Final quiz | quiz1    | 1800      |
     When I am on the "Hygiene" course page logged in as admin
     And I turn editing mode on
-    Then I should see "Accessibility: 2 points to fix, 3 to confirm."
+    # What is left, with the score of the course.
+    Then I should see "Accessibility: 2 points to fix, 3 to confirm (score "
     And I should see "2 points of accessibility" in the "Document 2" "activity"
     And I click on "2 points of accessibility" "link" in the "Document 2" "activity"
     And I should see "Images without a text alternative: 1."
