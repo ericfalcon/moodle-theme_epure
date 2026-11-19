@@ -382,7 +382,49 @@ class accessibility_scores {
             'change' => $change,
             'computed' => $last ? get_string('a11yscores_computed', 'theme_epure', userdate($last)) : '',
             'categorychoices' => self::category_choices($categoryid),
+            'download' => $count ? self::download_selector($categoryid, $companyid) : '',
         ];
+    }
+
+    /**
+     * A course of the download of the section, in the order of its columns: course, category, score, blocking, serious,
+     * minor mistakes, and when it was read.
+     *
+     * @param \stdClass|null $record Course with its score ({@see self::latest()}); null for the names of the columns.
+     * @return array
+     */
+    public static function download_row(?\stdClass $record): array {
+        $keys = ['course', 'category', 'score', 'blocking', 'serious', 'minor', 'read'];
+        if (!$record) {
+            return array_fill_keys($keys, '');
+        }
+        $category = \core_course_category::get((int) $record->category, IGNORE_MISSING, true);
+        return array_combine($keys, [
+            format_string($record->fullname, true, ['context' => \context_course::instance($record->courseid)]),
+            $category ? $category->get_nested_name(false) : '',
+            (int) $record->score,
+            (int) $record->blocking,
+            (int) $record->serious,
+            (int) $record->minor,
+            userdate((int) $record->timecomputed, get_string('strftimedatetimeshort', 'core_langconfig')),
+        ]);
+    }
+
+    /**
+     * The choice of the format of the download of the section, for its scope.
+     *
+     * @param int $categoryid Category, 0 for all.
+     * @param int $companyid IOMAD company, 0 for the whole platform.
+     * @return string HTML.
+     */
+    protected static function download_selector(int $categoryid, int $companyid): string {
+        global $PAGE;
+        return $PAGE->get_renderer('core')->download_dataformat_selector(
+            get_string('a11yscores_download', 'theme_epure'),
+            new \moodle_url('/theme/epure/a11yscores_download.php'),
+            'dataformat',
+            array_filter(['categoryid' => $categoryid, 'companyid' => $companyid])
+        );
     }
 
     /**
