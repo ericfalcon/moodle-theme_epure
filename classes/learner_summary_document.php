@@ -22,9 +22,10 @@ namespace theme_epure;
  * Each document issued keeps, in the table theme_epure_summary, what it showed on the day it was drawn up (a snapshot of
  * the summary), its date and a code. The code, printed on the document with a QR code, opens the page of verification
  * of the platform, which shows the same data: whoever receives the document can check that the platform issued it, on
- * that date, with that content. The PDF is made with the PDF library of Moodle (TCPDF).
+ * that date, with that content. The PDF is tagged for the screen readers (PDF/UA-1, {@see summary_pdf}) with PHP 8.2 and
+ * later; with an older PHP, it is made with the PDF library of Moodle (TCPDF), not tagged.
  *
- * The PDF is not tagged for the screen readers: the page « My summary » stays the accessible version, and says so.
+ * Not tagged (an older PHP), the page « My summary » stays the accessible version, and says so.
  *
  * The learner keeps control of what they issued: they choose how long a document can be verified (three months, a year
  * or without limit), and they can revoke a document or delete it. A document revoked or expired keeps only its code and
@@ -264,6 +265,8 @@ class learner_summary_document {
             'validity' => $validity,
             'documents' => $documents,
             'hasdocuments' => !empty($documents),
+            // Whether the PDF is tagged for the screen readers, which the page says.
+            'pdftagged' => summary_pdf::available(),
         ];
     }
 
@@ -385,13 +388,33 @@ class learner_summary_document {
      */
     public static function pdf(\stdClass $record): string {
         global $CFG;
-        require_once($CFG->libdir . '/pdflib.php');
         $data = self::export($record);
         $code = $data['code'];
         $url = self::verify_url($record->code)->out(false);
         $footer = get_string('mysummary_pdf_footer', 'theme_epure', $code);
 
+        // Tagged for the screen readers (PDF/UA-1) where the library of the theme runs (PHP 8.2 and later).
+        if (summary_pdf::available()) {
+            $logo = certificate_template::logo();
+            [$w, $h] = $logo ? certificate_template::fit($logo->get_imageinfo() ?: [], 50, 16) : [0, 0];
+            return summary_pdf::render([
+                'title' => get_string('mysummary', 'theme_epure') . ' — ' . ($data['fullname'] ?? ''),
+                'author' => $data['platform'] ?? '',
+                'creator' => format_string(get_site()->fullname),
+                'lang' => current_language(),
+                'brand' => $data['brand'] ?? '#1C6E73',
+                'footer' => $footer,
+                'html' => self::pdf_html($data, $url),
+                'qrurl' => $url,
+                'qralt' => get_string('mysummary_pdf_qr', 'theme_epure', $url),
+                'logo' => $logo ? $logo->get_content() : '',
+                'logowidth' => $w,
+                'logoheight' => $h,
+            ]);
+        }
+
         // The code on every page, at the bottom, with the number of the page.
+        require_once($CFG->libdir . '/pdflib.php');
         $pdf = new class ('P', 'mm', 'A4') extends \pdf {
             /** @var string Text of the footer. */
             public $epurefooter = '';

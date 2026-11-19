@@ -1,5 +1,13 @@
 # Changes
 
+## 1.41.0 — « My summary », a PDF tagged for the screen readers (PDF/UA)
+
+- The PDF of « My summary » is tagged for the screen readers (PDF/UA-1, ISO 14289-1): its titles, paragraphs, tables and links are in its structure, in the language of the page; the QR code is an image with its text (the address of the page of verification); the logo, the band of the brand and the footer of each page (the code of verification, the number of the page) are decorations, which the screen readers skip; the fonts are embedded (DejaVu Sans, for the letters of almost every language). The page « My summary » says so.
+- Made with tc-lib-pdf 8.84, the successor of TCPDF by the same author (LGPL 3.0, bundled in `thirdparty/tclib` with its packages and the font DejaVu Sans; 3.3 MB compressed), which needs PHP 8.2. With PHP 8.1 (Moodle 4.5), the PDF is made as before with the TCPDF of Moodle, not tagged, and the page stays the accessible version.
+- Checked with veraPDF 1.28, the validator of the PDF/UA, on every version of Moodle and IOMAD with PHP 8.2 and later, in the continuous integration.
+- No new setting.
+- Tests: PHPUnit (the structure, the language, the title shown and the profile PDF/UA of the PDF; checked by veraPDF where it is given).
+
 ## 1.40.0 — an accessibility statement for each IOMAD company
 
 - With IOMAD, a company responsible for its own service can publish its own accessibility statement, instead of the one of the platform: who publishes it, the audit, the status, the contents not accessible, the contact. Filled step by step with the guided form of the platform, from the company profile (Appearance › Footer, « Fill it step by step »), by those who change the appearance of the company. Kept apart from the statement of the platform, which does not change.
