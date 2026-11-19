@@ -51,7 +51,7 @@ $string['a11ylines_help'] = 'Long texts at 70 characters per line at most, easie
 $string['a11ymention'] = 'Accessibility: {$a}';
 $string['a11ymodel_eu'] = 'Model of the statement: European Union (standard EN 301 549, WCAG 2.1 level AA, directive (EU) 2016/2102), from the default country of the site: {$a->country} (<a href="{$a->url}">location settings</a>).';
 $string['a11ymodel_fr'] = 'Model of the statement: France (RGAA, law no. 2005-102, Défenseur des droits), from the default country of the site: {$a->country} (<a href="{$a->url}">location settings</a>).';
-$string['a11ymodel_iomad'] = 'With IOMAD, the statement covers the whole platform, all companies together: a company responsible for its own service publishes its own.';
+$string['a11ymodel_iomad'] = 'With IOMAD, this statement covers the whole platform. A company responsible for its own service can publish its own (company profile › Appearance › Footer): its users, its login page and its address then show it instead.';
 $string['a11ymodel_legal'] = 'The country of the site does not tell on its own which law applies to the organisation: check that this model suits it.';
 $string['a11ymodel_nocountry'] = 'not set';
 $string['a11ymodel_world'] = 'Model of the statement: WCAG 2.1 level AA, from the default country of the site: {$a->country} (<a href="{$a->url}">location settings</a>). Give in the contact the law and the remedies of your country, if there are any.';
@@ -206,6 +206,8 @@ $string['a11ywizard_audit_intro'] = 'The RGAA, like the WCAG 2.1 AA it takes up,
 $string['a11ywizard_audit_intro_eu'] = 'The standard EN 301 549 asks for an audit of a sample of pages of the platform against the criteria of the WCAG 2.1 AA, by the organisation or by an auditor. Enter its results here. Without an audit yet, leave these fields empty: the platform is then declared non compliant, and the statement says so.';
 $string['a11ywizard_audit_intro_world'] = 'The compliance status rests on an audit of a sample of pages of the platform against the criteria of the WCAG 2.1 AA, by the organisation or by an auditor. Enter its results here. Without an audit yet, leave these fields empty: the platform is then declared non compliant, and the statement says so.';
 $string['a11ywizard_back'] = 'Previous step';
+$string['a11ywizard_company'] = 'Accessibility statement of {$a}';
+$string['a11ywizard_company_note'] = 'The own statement of the company: once published, its users, its login page and its address show it, and its footer links to it; until then, they show the statement of the platform. Leave the status « Not published » to keep the one of the platform.';
 $string['a11ywizard_contact'] = 'Feedback and contact';
 $string['a11ywizard_contact_intro'] = 'A user who cannot reach a content or a service must be able to tell you, and get it in another form. Give how to contact you. Without a contact, the statement shows the support e-mail of the site.';
 $string['a11ywizard_contents'] = 'Contents not accessible';
@@ -342,6 +344,8 @@ $string['checklist_theme_texts'] = 'Texts';
 $string['checklist_time'] = 'The timed quizzes and the assignments with a deadline can give extra time (overrides).';
 $string['checklist_transcript'] = 'Each audio has a transcript.';
 $string['choosereadme'] = 'Épure is a modern, accessible theme built on Boost. A single brand colour drives an accessible palette, and fonts are served by your own site.';
+$string['companya11ystatement'] = 'Accessibility statement of the company: {$a}.';
+$string['companya11ystatement_edit'] = 'Fill it step by step';
 $string['companyaccentcolor_help'] = 'Progress bars and completed sections. Empty: the brand colour of the company, else the accent colour of the site.';
 $string['companyactivityicons_help'] = 'Icons of the activities and resources on the course pages, the dashboard and the activity pages. Hidden, they stay in the activity chooser.';
 $string['companyappearance_desc'] = 'Organised as the settings of the theme: follow the steps in order. Leave a field empty, or on “As the site”, to use the setting of the site.';

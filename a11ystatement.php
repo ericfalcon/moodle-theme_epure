@@ -16,7 +16,8 @@
 
 /**
  * Accessibility statement, filled step by step: who publishes it, the audit, the compliance status, the contents not
- * accessible and the contact. The settings are those of the Accessibility tab of the theme.
+ * accessible and the contact. The settings are those of the Accessibility tab of the theme; with companyid, the own
+ * statement of an IOMAD company, for those who change its appearance.
  *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
@@ -28,27 +29,56 @@ require_once($CFG->libdir . '/adminlib.php');
 
 use theme_epure\accessibility_statement;
 use theme_epure\form\a11y_statement_form;
+use theme_epure\iomad;
 
-admin_externalpage_setup('theme_epure_a11ystatement');
+$companyid = optional_param('companyid', 0, PARAM_INT);
+if ($companyid) {
+    // The own statement of an IOMAD company.
+    require_login();
+    if (!accessibility_statement::can_edit($companyid)) {
+        throw new required_capability_exception(
+            iomad::company_context($companyid),
+            'block/iomad_company_admin:company_edit_appearance',
+            'nopermissions',
+            ''
+        );
+    }
+    $PAGE->set_context(context_system::instance());
+    $PAGE->set_url(accessibility_statement::edit_url(1, $companyid));
+    $PAGE->set_pagelayout('admin');
+    $PAGE->set_title(get_string('a11ywizard_company', 'theme_epure', format_string(iomad::company($companyid)->name)));
+    $PAGE->set_heading(format_string($SITE->fullname));
+} else {
+    admin_externalpage_setup('theme_epure_a11ystatement');
+}
 
 $keys = array_keys(accessibility_statement::STEPS);
 $total = count($keys);
 $step = min(max(optional_param('step', 1, PARAM_INT), 1), $total);
-$form = new a11y_statement_form(accessibility_statement::edit_url($step), ['step' => $step]);
+$form = new a11y_statement_form(
+    accessibility_statement::edit_url($step, $companyid),
+    ['step' => $step, 'companyid' => $companyid]
+);
 
 if ($data = $form->get_data()) {
-    foreach (a11y_statement_form::values_from($data) as $name => $value) {
-        set_config($name, $value, 'theme_epure');
+    $values = a11y_statement_form::values_from($data);
+    if ($companyid) {
+        accessibility_statement::save_company($companyid, $values);
+    } else {
+        foreach ($values as $name => $value) {
+            set_config($name, $value, 'theme_epure');
+        }
     }
     if (!empty($data->back)) {
-        redirect(accessibility_statement::edit_url($step - 1));
+        redirect(accessibility_statement::edit_url($step - 1, $companyid));
     }
     if ($step < $total) {
-        redirect(accessibility_statement::edit_url($step + 1));
+        redirect(accessibility_statement::edit_url($step + 1, $companyid));
     }
+    $published = accessibility_statement::status($companyid) !== null;
     redirect(
-        accessibility_statement::url(),
-        get_string(accessibility_statement::enabled() ? 'a11ywizard_saved' : 'a11ywizard_unpublished', 'theme_epure'),
+        accessibility_statement::url($published ? $companyid : 0),
+        get_string($published ? 'a11ywizard_saved' : 'a11ywizard_unpublished', 'theme_epure'),
         null,
         \core\output\notification::NOTIFY_SUCCESS
     );
@@ -60,14 +90,20 @@ foreach ($keys as $i => $key) {
     $title = get_string('a11ywizard_' . $key, 'theme_epure');
     $items .= html_writer::tag('li', $i + 1 === $step
         ? html_writer::span($title, '', ['aria-current' => 'step'])
-        : html_writer::link(accessibility_statement::edit_url($i + 1), $title));
+        : html_writer::link(accessibility_statement::edit_url($i + 1, $companyid), $title));
 }
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('a11ywizard', 'theme_epure'));
+$heading = $companyid ? get_string('a11ywizard_company', 'theme_epure', format_string(iomad::company($companyid)->name))
+    : get_string('a11ywizard', 'theme_epure');
+echo $OUTPUT->heading($heading);
 echo html_writer::tag('ol', $items, ['class' => 'epure-a11ywizard-steps']);
 // The model of the statement, from the country of the site.
 echo html_writer::tag('p', accessibility_statement::model_note(), ['class' => 'epure-a11ywizard-model']);
+if ($companyid) {
+    // Until it is published, the users of the company see the statement of the platform.
+    echo html_writer::tag('p', get_string('a11ywizard_company_note', 'theme_epure'), ['class' => 'epure-a11ywizard-model']);
+}
 echo $OUTPUT->heading(get_string('a11ywizard_step', 'theme_epure', (object) [
     'step' => $step,
     'total' => $total,
@@ -75,7 +111,10 @@ echo $OUTPUT->heading(get_string('a11ywizard_step', 'theme_epure', (object) [
 ]), 3);
 $form->display();
 echo html_writer::div(
-    html_writer::link(accessibility_statement::url(), get_string('a11ywizard_view', 'theme_epure')),
+    html_writer::link(
+        accessibility_statement::url(accessibility_statement::status($companyid) !== null ? $companyid : 0),
+        get_string('a11ywizard_view', 'theme_epure')
+    ),
     'epure-a11ywizard-view'
 );
 echo $OUTPUT->footer();

@@ -33,6 +33,7 @@
     * fontname, fontfiles - name and files (name, label, html, draftid) of the font uploaded for the company
     * logintexts - texts of the login page: name, label, value, multiline, placeholder (value of the site)
     * footer - footer fields of the company: name, label, value, multiline, placeholder (value of the site)
+    * a11ystatement - the own accessibility statement of an existing company: url of its guided form, status
     * logocolours - context of theme_epure/logo_colours
     * guided, setupfield - the form opened as the getting started of the company, and the field that says so
 
@@ -305,6 +306,12 @@
                 </div>
             </div>
         {{/footer}}
+        {{#a11ystatement}}
+            <p class="epure-company-a11ystatement">
+                {{#str}}companya11ystatement, theme_epure, {{status}}{{/str}}
+                <a href="{{url}}">{{#str}}companya11ystatement_edit, theme_epure{{/str}}</a>
+            </p>
+        {{/a11ystatement}}
     </section>
     <section class="epure-company-section" data-epure-company-section="vocabulary" aria-labelledby="epure-company-section-vocabulary">
         <h3 class="epure-company-section-title" id="epure-company-section-vocabulary">{{#str}}companyformvocabulary, theme_epure{{/str}}</h3>
