@@ -259,9 +259,9 @@ class accessibility_statement {
     public static function export(int $companyid = 0): array {
         $config = self::values($companyid);
         $company = $companyid ? iomad::company($companyid) : null;
-        $name = $company ? format_string($company->name, true, ['context' => \context_system::instance()])
+        $owner = $company ? format_string($company->name, true, ['context' => \context_system::instance()])
             : format_string(get_site()->fullname);
-        $entity = $config->a11yentity ?: $name;
+        $entity = $config->a11yentity ?: $owner;
         $status = self::status($companyid);
         $texts = [];
         foreach (self::TEXTS as $name) {
@@ -278,7 +278,7 @@ class accessibility_statement {
             'entity' => $entity,
             'site' => format_string(get_site()->fullname),
             // The own statement of an IOMAD company: for its users, and on its pages.
-            'company' => $company ? $name : '',
+            'company' => $company ? $owner : '',
             'siteurl' => (new \moodle_url('/'))->out(false),
             'status' => $status ? get_string('a11ystatus_' . $status, 'theme_epure') : '',
             'statusphrase' => $status ? self::string('a11ystatement_status_' . $status) : '',
