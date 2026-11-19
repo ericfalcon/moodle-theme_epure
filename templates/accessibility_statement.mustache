@@ -29,7 +29,7 @@
         "statementdate": "4 October 2026", "intro": "Clinique des Tilleuls is committed to making its online services accessible.",
         "ratetext": "The audit shows that 75 % of the criteria are met.", "france": true, "remedies": "If you reported a defect…", "noncompliant": "<p>Some PDF documents</p>",
         "derogations": "", "disproportionate": "", "contact": "support@example.com",
-        "measures": ["Every function can be used with the keyboard."], "editurl": ""
+        "measures": ["Every function can be used with the keyboard."], "editurl": "", "profilesguideurl": "#"
     }
 }}
 <article class="epure-a11y-statement">
@@ -66,6 +66,7 @@
         <ul>
             {{#measures}}<li>{{.}}</li>{{/measures}}
         </ul>
+        {{#profilesguideurl}}<p><a href="{{profilesguideurl}}">{{#str}}profilesguide_link, theme_epure{{/str}}</a></p>{{/profilesguideurl}}
 
         {{#noncompliant}}
             <h3>{{#str}}a11ystatement_inaccessible, theme_epure{{/str}}</h3>

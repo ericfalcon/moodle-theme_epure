@@ -195,6 +195,87 @@ class a11y {
     }
 
     /**
+     * The display of the site as the preferences give it, for a user who chose nothing: the settings « Display by
+     * default », the colours of the site, no guide, no reading aloud.
+     *
+     * @return array As {@see self::preferences()}.
+     */
+    public static function site_display(): array {
+        return ['scheme' => '', 'guide' => ''] + self::site_defaults() + ['speech' => false];
+    }
+
+    /**
+     * Whether the display of the page is the one the user (or the visitor) chose, not the one of the site: a size, a font,
+     * colours, a guide or a switch of theirs, or a profile. Said by the button « Aa », for whoever no longer finds the
+     * usual colours of the site.
+     *
+     * @return bool
+     */
+    public static function customised(): bool {
+        if (!self::panel_enabled()) {
+            return false;
+        }
+        $site = self::site_display();
+        foreach (self::preferences() as $name => $value) {
+            if (array_key_exists($name, $site) && $site[$name] !== $value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Context of the template theme_epure/profiles_guide, the guide « Which profile to choose? »: for each profile of the
+     * panel « Aa », whom it is for, what it changes, one by one, and how to adjust it; then the preferences to choose
+     * on their own.
+     *
+     * @return array
+     */
+    public static function profiles_guide(): array {
+        $profiles = [];
+        foreach (self::PROFILES as $profile => $choices) {
+            $changes = [];
+            if ((int) $choices['text'] !== 100) {
+                $changes[] = get_string('profilesguide_text', 'theme_epure', (int) $choices['text']);
+            }
+            if ($choices['font'] !== '') {
+                $changes[] = get_string('profilesguide_font', 'theme_epure', fonts::get($choices['font'])['family']);
+            }
+            if ($choices['guide'] !== '') {
+                $changes[] = get_string('a11yguide_' . $choices['guide'], 'theme_epure');
+            }
+            foreach ($choices['switches'] as $switch) {
+                $changes[] = get_string('a11y' . $switch, 'theme_epure');
+            }
+            $profiles[] = [
+                'name' => $profile,
+                'label' => get_string('a11yprofile_' . $profile, 'theme_epure'),
+                'who' => get_string('profilesguide_' . $profile . '_who', 'theme_epure'),
+                'changes' => $changes,
+                'adjust' => get_string('profilesguide_' . $profile . '_adjust', 'theme_epure'),
+            ];
+        }
+        $alone = [];
+        foreach (['text', 'yellow', 'cream', 'speech', 'motion'] as $name) {
+            $alone[] = get_string('profilesguide_alone_' . $name, 'theme_epure');
+        }
+        return [
+            'profiles' => $profiles,
+            'alone' => $alone,
+            'enabled' => self::panel_enabled(),
+        ];
+    }
+
+    /**
+     * Address of the guide « Which profile to choose? ».
+     *
+     * @return \moodle_url
+     */
+    public static function profiles_guide_url(): \moodle_url {
+        return new \moodle_url('/theme/epure/profiles.php');
+    }
+
+    /**
      * Whether the users get the button « Aa » of the display preferences.
      *
      * @return bool
@@ -323,7 +404,13 @@ class a11y {
             $switches[] = ['name' => $switch, 'label' => get_string('a11y' . $switch, 'theme_epure'),
                 'help' => get_string('a11y' . $switch . '_help', 'theme_epure'), 'checked' => $preferences[$switch]];
         }
+        // The display of the site, for the panel to tell whether the choices of the user differ from it.
+        $site = self::site_display();
+        $sitedisplay = ['text' => $site['text'], 'font' => $site['font'], 'scheme' => '', 'guide' => '',
+            'switches' => array_intersect_key($site, array_flip(array_merge(self::SWITCHES, ['speech'])))];
         return ['visitor' => self::visitor(), 'cookie' => self::COOKIE,
+            'customised' => self::customised(), 'sitedisplay' => json_encode($sitedisplay),
+            'guideurl' => self::profiles_guide_url()->out(false),
             'sizes' => $sizes, 'fonts' => $fonts, 'schemes' => $schemes, 'guides' => $guides, 'switches' => $switches,
             'profiles' => $profiles, 'defaultscheme' => self::default_scheme()];
     }

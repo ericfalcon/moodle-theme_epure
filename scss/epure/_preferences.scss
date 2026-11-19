@@ -548,3 +548,47 @@ body:has(.epure-a11y-speechbar) #page-footer {
     outline-offset: 2px;
     background-color: var(--epure-brand-soft);
 }
+
+// The button « Aa » when the display is the one the user chose: a dot in its corner, in the colour of its letters, which
+// reads on the header in every colour; its name says so too (« Display preferences (customised) »).
+.epure-a11y-toggle {
+    position: relative;
+}
+
+.epure-a11y-customised::after {
+    position: absolute;
+    top: .25rem;
+    right: .125rem;
+    width: .5rem;
+    height: .5rem;
+    content: "";
+    background-color: currentcolor;
+    border-radius: 50%;
+}
+
+// The guide « Which profile to choose? » (profiles.php): each profile in a card, which a page break does not cut.
+.epure-profilesguide {
+    max-width: 48rem;
+}
+
+.epure-profilesguide-profile {
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    break-inside: avoid;
+
+    h3 {
+        margin-top: 0;
+    }
+}
+
+.epure-profilesguide-label {
+    margin-bottom: .25rem;
+    font-weight: 600;
+}
+
+.epure-profilesguide-note {
+    color: var(--epure-ink-muted);
+}

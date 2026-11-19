@@ -377,4 +377,50 @@ final class a11y_test extends \advanced_testcase {
         $this->assertSame('', a11y::html_classes());
         unset($_COOKIE[a11y::COOKIE]);
     }
+
+    /**
+     * The button « Aa » says when the display is the one the user chose: not with the display of the site (its own
+     * defaults included), as soon as a preference differs from it; never without the button.
+     */
+    public function test_customised(): void {
+        $this->resetAfterTest();
+        $this->setUser($this->getDataGenerator()->create_user());
+        $this->assertFalse(a11y::customised());
+        $this->assertFalse(a11y::panel_context()['customised']);
+
+        // The site shows its text at 115 %: a user who chose 115 % sees the display of the site.
+        set_config('preftext', 115, 'theme_epure');
+        set_user_preference('theme_epure_a11y_text', 115);
+        $this->assertFalse(a11y::customised());
+        set_user_preference('theme_epure_a11y_text', 150);
+        $this->assertTrue(a11y::customised());
+        $this->assertTrue(a11y::panel_context()['customised']);
+        set_user_preference('theme_epure_a11y_text', 115);
+        set_user_preference('theme_epure_a11y_scheme', 'cream');
+        $this->assertTrue(a11y::customised());
+        $site = json_decode(a11y::panel_context()['sitedisplay'], true);
+        $this->assertSame(115, $site['text']);
+        $this->assertFalse($site['switches']['speech']);
+
+        // Without the button, the display of the site: nothing to say.
+        set_config('prefpanel', '0', 'theme_epure');
+        $this->assertFalse(a11y::customised());
+    }
+
+    /**
+     * The guide « Which profile to choose? »: each profile with whom it is for and what it changes, one by one.
+     */
+    public function test_profiles_guide(): void {
+        $this->resetAfterTest();
+        $guide = a11y::profiles_guide();
+        $this->assertTrue($guide['enabled']);
+        $this->assertSame(array_keys(a11y::PROFILES), array_column($guide['profiles'], 'name'));
+        $dyslexia = $guide['profiles'][0];
+        $this->assertContains(get_string('profilesguide_text', 'theme_epure', 115), $dyslexia['changes']);
+        $this->assertContains(get_string('a11yguide_ruler', 'theme_epure'), $dyslexia['changes']);
+        $this->assertContains(get_string('a11yspacing', 'theme_epure'), $dyslexia['changes']);
+        $this->assertNotEmpty($dyslexia['who']);
+        $this->assertCount(5, $guide['alone']);
+        $this->assertStringContainsString('profiles.php', a11y::profiles_guide_url()->out(false));
+    }
 }

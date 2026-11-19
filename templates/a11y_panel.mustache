@@ -18,11 +18,14 @@
     @template theme_epure/a11y_panel
 
     Button « Aa » of the header and its panel of display preferences, saved in the profile of the user: profiles that
-    set several of them in one click, the size of the text, the font, the colours, a reading guide, the switches.
+    set several of them in one click, the size of the text, the font, the colours, a reading guide, the switches. When the
+    display is the one the user chose, not the one of the site, the button says so: a dot, and « (customised) » in its
+    name.
 
     Example context (json):
     {
-        "visitor": false, "cookie": "theme_epure_a11y",
+        "visitor": false, "cookie": "theme_epure_a11y", "customised": true, "guideurl": "#",
+        "sitedisplay": "[]",
         "sizes": [{"value": 100, "label": "Normal", "checked": true}],
         "fonts": [{"value": "", "label": "Font of the site", "checked": true}],
         "schemes": [{"value": "", "label": "As the site (Light)", "checked": true}], "defaultscheme": "light",
@@ -31,11 +34,14 @@
         "switches": [{"name": "spacing", "label": "More text spacing", "help": "Lines, words and letters further apart.", "checked": false}]
     }
 }}
-<div class="epure-a11y" data-region="epure-a11y" data-default-scheme="{{defaultscheme}}"{{#visitor}} data-cookie="{{cookie}}"{{/visitor}}>
-    <button type="button" class="btn nav-link epure-a11y-toggle" data-action="toggle" aria-expanded="false"
-        aria-controls="epure-a11y-panel" title="{{#str}}a11ypanel, theme_epure{{/str}} (Alt+A)">
+<div class="epure-a11y" data-region="epure-a11y" data-default-scheme="{{defaultscheme}}"{{#visitor}} data-cookie="{{cookie}}"{{/visitor}}
+    data-site-display="{{sitedisplay}}" data-label="{{#str}}a11ypanel, theme_epure{{/str}}"
+    data-label-customised="{{#str}}a11ypanel_customised, theme_epure{{/str}}">
+    <button type="button" class="btn nav-link epure-a11y-toggle{{#customised}} epure-a11y-customised{{/customised}}" data-action="toggle"
+        aria-expanded="false" aria-controls="epure-a11y-panel"
+        title="{{#customised}}{{#str}}a11ypanel_customised, theme_epure{{/str}}{{/customised}}{{^customised}}{{#str}}a11ypanel, theme_epure{{/str}}{{/customised}} (Alt+A)">
         <span aria-hidden="true">Aa</span>
-        <span class="sr-only visually-hidden">{{#str}}a11ypanel, theme_epure{{/str}}</span>
+        <span class="sr-only visually-hidden" data-region="epure-a11y-name">{{#customised}}{{#str}}a11ypanel_customised, theme_epure{{/str}}{{/customised}}{{^customised}}{{#str}}a11ypanel, theme_epure{{/str}}{{/customised}}</span>
     </button>
     <div class="epure-a11y-panel" id="epure-a11y-panel" role="dialog" aria-labelledby="epure-a11y-title" hidden>
         <div class="epure-a11y-head">
@@ -116,6 +122,7 @@
         <div class="epure-a11y-foot">
             <button type="button" class="btn btn-secondary" data-action="reset">{{#str}}a11yreset, theme_epure{{/str}}</button>
             <button type="button" class="btn btn-link epure-shortcuts-link" data-action="epure-shortcuts" aria-keyshortcuts="?">{{#str}}shortcuts, theme_epure{{/str}}</button>
+            <a class="btn btn-link epure-a11y-guidelink" href="{{guideurl}}">{{#str}}profilesguide, theme_epure{{/str}}</a>
             <p class="epure-a11y-status" data-region="status" aria-live="polite"></p>
         </div>
     </div>

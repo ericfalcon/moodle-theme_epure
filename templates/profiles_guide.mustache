@@ -1,0 +1,55 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/profiles_guide
+
+    Guide « Which profile to choose? »: how to open the display preferences, then each profile with whom it is for,
+    what it changes and how to adjust it, then the preferences to choose on their own. To read or to print.
+
+    Example context (json):
+    {
+        "enabled": true,
+        "profiles": [{"name": "dyslexia", "label": "Dyslexia", "who": "For whoever reads slowly or mixes the letters.",
+            "changes": ["Text at 115 %", "Font Lexend"], "adjust": "Too big? Choose a smaller text."}],
+        "alone": ["Text larger, up to 200 %, without the other changes."]
+    }
+}}
+<div class="epure-profilesguide">
+    <p class="epure-profilesguide-intro">{{#str}}profilesguide_intro, theme_epure{{/str}}</p>
+    {{^enabled}}<p class="alert alert-info">{{#str}}profilesguide_off, theme_epure{{/str}}</p>{{/enabled}}
+    <h2>{{#str}}profilesguide_open, theme_epure{{/str}}</h2>
+    <p>{{#str}}profilesguide_open_text, theme_epure{{/str}}</p>
+    <h2>{{#str}}a11yprofiles, theme_epure{{/str}}</h2>
+    {{#profiles}}
+        <section class="epure-profilesguide-profile" aria-labelledby="epure-profilesguide-{{name}}">
+            <h3 id="epure-profilesguide-{{name}}">{{label}}</h3>
+            <p>{{who}}</p>
+            <p class="epure-profilesguide-label">{{#str}}profilesguide_changes, theme_epure{{/str}}</p>
+            <ul>
+                {{#changes}}<li>{{.}}</li>{{/changes}}
+            </ul>
+            <p>{{adjust}}</p>
+        </section>
+    {{/profiles}}
+    <h2>{{#str}}profilesguide_alone, theme_epure{{/str}}</h2>
+    <ul>
+        {{#alone}}<li>{{.}}</li>{{/alone}}
+    </ul>
+    <h2>{{#str}}profilesguide_kept, theme_epure{{/str}}</h2>
+    <p>{{#str}}profilesguide_kept_text, theme_epure{{/str}}</p>
+    <p class="epure-profilesguide-note">{{#str}}profilesguide_note, theme_epure{{/str}}</p>
+</div>
