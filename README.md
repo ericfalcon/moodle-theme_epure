@@ -123,6 +123,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.43.0**: no new setting; upgrade the site. Defects of Moodle found by an RGAA audit repaired in the page: the calendar month table has a caption and column headers; Space presses the links made buttons; a required field says « (required) » in its label; the unnamed navigations get a name; the search of « My courses » has a visible label.
 - **1.42.0**: no new setting; upgrade the site. « Aa » says when the display is the one the user chose (a dot, « customised » in its name); a guide « Which profile to choose? » to print or to give (`/theme/epure/profiles.php`).
 - **1.41.0**: no new setting; upgrade the site. The PDF of « My summary » is tagged for the screen readers (PDF/UA-1), with PHP 8.2 and later (a bundled library, tc-lib-pdf); with PHP 8.1, as before.
 - **1.40.0**: no new setting; upgrade the site. With IOMAD, each company can publish its own accessibility statement (company profile › Appearance › Footer); its users, its login page and its address show it.

@@ -158,3 +158,12 @@ body .tox {
         padding-left: 1.25rem;
     }
 }
+
+// The mark of a required field, in the text of its label (RGAA 11.10), added by theme_epure/aria_repair: the icon of
+// Moodle stays beside it, for the eye.
+.epure-required {
+    color: var(--bs-danger, #b42318);
+    font-size: .875em;
+    font-weight: 400;
+    white-space: nowrap;
+}

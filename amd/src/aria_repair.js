@@ -31,6 +31,15 @@
  * Moodle 5.0 (TinyMCE 7.7): it gets the role separator and its value, the height of the editor, as the later
  * versions of TinyMCE give it (WCAG 4.1.2).
  *
+ * Found by an audit RGAA of a Moodle platform, defects of Moodle that the theme repairs in the page:
+ * - the table of the month of the calendar has no title, and its headers do not say they head columns (RGAA 5.4,
+ *   5.7): it gets the month as its caption, hidden, and its headers the scope col;
+ * - the links made buttons (role="button") only obey the key Enter, a button obeys Space too (RGAA 7.3);
+ * - a required field is only marked by an icon hidden from the screen readers, after its label (RGAA 11.10): its
+ *   label gets the text « (required) », visible, and the note that explains the mark is read;
+ * - some navigations have no name, which tells them apart from the others (RGAA 12.6): the letters that filter the
+ *   people by their name, the choice of the page, the pages of a list, the course index.
+ *
  * @module     theme_epure/aria_repair
  * @copyright  2026 Eric Falcon
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -126,12 +135,102 @@ const resizeHandles = () => document.querySelectorAll('.tox-statusbar__resize-ha
 });
 
 /**
- * The repairs of what Moodle draws after the page: now, and each time something is added to the page.
+ * Gives the tables of the calendar their caption, the name of the month, and their headers their scope.
  */
-const later = () => {
+const calendars = () => document.querySelectorAll('table.calendartable').forEach((table) => {
+    table.querySelectorAll('thead th:not([scope])').forEach((header) => header.setAttribute('scope', 'col'));
+    if (table.caption) {
+        return;
+    }
+    const month = table.closest('.calendarwrapper')?.querySelector('.calendar-controls .current, h2.current');
+    const text = month?.textContent.trim();
+    if (text) {
+        table.createCaption().className = 'sr-only visually-hidden';
+        table.caption.textContent = text;
+    }
+});
+
+/**
+ * Marks the required fields of the forms of Moodle in the text of their label, and lets the note that explains the
+ * mark be read.
+ *
+ * @param {string} text The mark, « (required) ».
+ */
+const requiredFields = (text) => {
+    if (!text) {
+        return;
+    }
+    document.querySelectorAll('.fitem .form-label-addon > .text-danger').forEach((icon) => {
+        const item = icon.closest('.fitem');
+        const label = item.querySelector('.col-form-label label, .col-form-label .d-inline-block, .col-form-label p');
+        if (!label || label.querySelector('.epure-required')) {
+            return;
+        }
+        const mark = document.createElement('span');
+        mark.className = 'epure-required';
+        mark.textContent = ' ' + text;
+        label.append(mark);
+    });
+    document.querySelectorAll('.fdescription.required[aria-hidden="true"]').forEach((note) => {
+        note.removeAttribute('aria-hidden');
+    });
+};
+
+/**
+ * Names the navigations of Moodle that have none.
+ *
+ * @param {Object<string, string>} texts Names: paging (the pages of a list), choice (the choice of the page),
+ *     courseindex.
+ */
+const nameNavigations = (texts) => {
+    document.querySelectorAll('nav:not([aria-label]):not([aria-labelledby])').forEach((nav) => {
+        let name = '';
+        if (nav.classList.contains('initialbargroups')) {
+            name = nav.closest('.initialbar')?.querySelector('.initialbarlabel')?.textContent.trim();
+        } else if (nav.matches('[data-region="paging-bar"], .pagination')) {
+            name = texts.paging;
+        } else if (nav.classList.contains('tertiary-navigation-selector')) {
+            name = texts.choice;
+        } else if (nav.id === 'courseindex') {
+            name = texts.courseindex;
+        }
+        if (name) {
+            nav.setAttribute('aria-label', name);
+        }
+    });
+};
+
+/**
+ * Lets the key Space press the links made buttons, as it presses the buttons. The handlers of the page come first
+ * (this one listens on the window): a link they have already pressed, or which they gave the « activate » event of
+ * Moodle, is left alone.
+ *
+ * @param {KeyboardEvent} event The key pressed.
+ */
+const spaceKey = (event) => {
+    if (event.key !== ' ' || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey
+        || Object.keys(event).some((key) => key.startsWith('triggeredCustom_'))) {
+        return;
+    }
+    const link = event.target.closest?.('a[role="button"]');
+    if (link && link === event.target) {
+        event.preventDefault();
+        link.click();
+    }
+};
+
+/**
+ * The repairs of what Moodle draws after the page: now, and each time something is added to the page.
+ *
+ * @param {Object<string, string>} texts The mark of the required fields, the names of the navigations.
+ */
+const later = (texts) => {
     const run = () => {
         emptySelections();
         resizeHandles();
+        calendars();
+        requiredFields(texts.required);
+        nameNavigations(texts);
     };
     run();
     new MutationObserver((mutations) => {
@@ -146,12 +245,15 @@ const later = () => {
  *
  * @param {Object<string, string>} names Names of the fields of IOMAD with an empty label, by their name.
  * @param {{site: string, page: string}} menus Names of the menu of the site and of the menu of the page.
+ * @param {Object<string, string>} texts The mark of the required fields (required), the names of the navigations
+ *     (paging, choice, courseindex).
  */
-export const init = (names = {}, menus = {site: '', page: ''}) => {
+export const init = (names = {}, menus = {site: '', page: ''}, texts = {}) => {
     repair(document, names);
     nameMenus(menus);
     clearChoices();
-    later();
+    later(texts);
+    window.addEventListener('keydown', spaceKey);
     window.addEventListener('load', () => {
         repair(document, names);
         nameMenus(menus);

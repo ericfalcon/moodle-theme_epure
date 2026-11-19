@@ -203,7 +203,14 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $names = \theme_epure\iomad::installed()
             ? ['deptid' => get_string('department', 'block_iomad_company_admin')] : [];
         $menus = ['site' => get_string('menusite', 'theme_epure'), 'page' => get_string('menupage', 'theme_epure')];
-        $this->page->requires->js_call_amd('theme_epure/aria_repair', 'init', [$names, $menus]);
+        // The mark of the required fields, the names of the navigations of Moodle that have none.
+        $texts = [
+            'required' => get_string('requiredmark', 'theme_epure'),
+            'paging' => get_string('navpaging', 'theme_epure'),
+            'choice' => get_string('navchoice', 'theme_epure'),
+            'courseindex' => get_string('courseindex', 'courseformat'),
+        ];
+        $this->page->requires->js_call_amd('theme_epure/aria_repair', 'init', [$names, $menus, $texts]);
         // The course index scrolls the page back to itself when its drawer does not scroll on its own (styles turned off).
         $this->page->requires->js_call_amd('theme_epure/courseindex_scroll', 'init');
         // Moodle 5.0 nests the tree items of the subsections in the course index; Moodle 5.1 corrected it.

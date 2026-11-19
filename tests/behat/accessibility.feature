@@ -407,6 +407,28 @@ Feature: Accessibility of the Épure theme
     When I visit "/admin/settings.php?section=htmlsettings"
     Then the page should meet accessibility standards
 
+  Scenario: The defects of Moodle found by an audit RGAA are repaired in the page
+    Given I log in as "admin"
+    # The month of the calendar: its caption, its headers of columns.
+    When I visit "/calendar/view.php?view=month"
+    Then "table.calendarmonth caption" "css_element" should exist
+    And "table.calendarmonth thead th[scope='col']" "css_element" should exist
+    # A required field says so in its label.
+    And I visit "/course/edit.php?category=1"
+    And I should see "(required)" in the "label[for='id_fullname']" "css_element"
+    And the "aria-hidden" attribute of ".fdescription.required" "css_element" should not be set
+    # The course index has a name; the key Space presses a link made button.
+    And the following "courses" exist:
+      | fullname     | shortname | numsections |
+      | Audit course | audit     | 2           |
+    And I am on "Audit course" course homepage
+    And "nav#courseindex[aria-label='Course index']" "css_element" should exist
+    And the "aria-expanded" attribute of "a.icons-collapse-expand[href$='collapseid1']" "css_element" should contain "true"
+    And I set the focus on the "a.icons-collapse-expand[href$='collapseid1']" "css_element"
+    And I press the space key
+    And the "aria-expanded" attribute of "a.icons-collapse-expand[href$='collapseid1']" "css_element" should contain "false"
+    And the page should meet accessibility standards
+
   Scenario: Before saving, the content checker warns of a link alone that says nothing, never of what is right
     Given the following config values are set as admin:
       | courseaccessibility | 1 | theme_epure |

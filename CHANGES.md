@@ -1,5 +1,18 @@
 # Changes
 
+## 1.43.0 — defects of Moodle found by an RGAA audit, repaired by the theme
+
+An RGAA audit of a Moodle platform (not one with Épure) found defects of Moodle itself, which a theme can repair in the page. Épure now does:
+
+- The month of the calendar (the page and its blocks): its table gets the month as its caption, hidden from the eye, and its day headers say they head columns (RGAA 5.4, 5.7). Again on each change of month.
+- The links that Moodle makes buttons (role="button": the sections to fold, the notifications, the menus…) obey the key Space, as the buttons do, not only Enter (RGAA 7.3). The handlers of Moodle that already answer Space keep doing so, once.
+- A required field says so in the text of its label, « (required) », in red, after its name, for the eye and the screen readers; Moodle only marked it with an icon hidden from the screen readers. The note « Required » at the bottom of the form, which explains the icon, is no longer hidden from them (RGAA 11.10). In the forms opened in a window too.
+- The navigations of Moodle without a name get one, which tells them apart (RGAA 12.6): the letters that filter the people by their name (« First name », « Last name »), the pages of a list (« Pages »), the choice of the page (« Choice of the page »), the course index.
+- « My courses »: the label of the search is visible above its field, not only given to the screen readers (RGAA 11.2); the field no longer repeats it as a placeholder.
+- Already done: the links of the footer are in lists (RGAA 9.3).
+- No new setting.
+- Tests: Behat (the caption and the headers of the calendar, the mark of a required field and its note, the name of the course index, the key Space on a section to fold, the page checked by axe).
+
 ## 1.42.0 — « Aa » says when the display is yours, and a guide to choose a profile
 
 - The button « Aa » of the header says when the display is the one the user (or the visitor) chose, not the one of the site: a dot in its corner, in the colour of its letters, and « (customised) » in its name, for the screen readers and on hovering. For whoever no longer finds the usual colours of the site, and for whoever helps them. A choice equal to the display by default of the site is not counted; the dot follows the changes made in the panel at once.
