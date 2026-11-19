@@ -1,5 +1,12 @@
 # Changes
 
+## 1.40.0 — an accessibility statement for each IOMAD company
+
+- With IOMAD, a company responsible for its own service can publish its own accessibility statement, instead of the one of the platform: who publishes it, the audit, the status, the contents not accessible, the contact. Filled step by step with the guided form of the platform, from the company profile (Appearance › Footer, « Fill it step by step »), by those who change the appearance of the company. Kept apart from the statement of the platform, which does not change.
+- Once published, the users of the company, its login page and its address show it, with the name of the company by default; the mention of the footer (« Accessibility: partially compliant ») gives its status and links to it. Until then, and for the companies without one, the statement of the platform.
+- No new setting.
+- Tests: PHPUnit (the statement of the platform, the own statement of a company kept apart, saved step by step, forgotten once emptied; with IOMAD, its name and its form).
+
 ## 1.39.0 — the score of accessibility in « My courses », in the edit mode and in a file
 
 - « My courses », the table of the courses taught: a column « Accessibility », the score of each course and its blocking mistakes, linked to its guide, sortable with the keyboard like the other columns; « not read yet » before its first reading. Only where the teacher can open the guide of the course; in the download of the table (CSV, Excel, PDF…) too. The scores are those the management dashboard keeps, read in the background: the page computes nothing.
