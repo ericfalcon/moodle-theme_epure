@@ -115,6 +115,7 @@ class mycourses {
         $companynames = [];
 
         $sections = [self::TEACHING => [], self::LEARNING => []];
+        $a11ycourses = [];
         foreach ($courses as $course) {
             // Courses the user hid from « My courses » stay hidden.
             if (
@@ -130,6 +131,10 @@ class mycourses {
             }
             $teaching = self::is_teaching($context, $userid);
             $card = self::card($course, $context, $output, $user, $teaching);
+            // The courses whose guide « Accessibility of the course » the user can open: their score in the table.
+            if ($teaching && course_accessibility::can_use($context)) {
+                $a11ycourses[] = (int) $course->id;
+            }
             $card['favourite'] = isset($favourites[$course->id]);
             $card['lastaccess'] = (int) ($lastaccess[$course->id] ?? 0);
             if (isset($othercompanies[$course->id])) {
@@ -138,6 +143,13 @@ class mycourses {
                 $card['company'] = $companynames[$other];
             }
             $sections[$teaching ? self::TEACHING : self::LEARNING][] = $card;
+        }
+
+        // The scores of accessibility of the courses taught, as the management dashboard keeps them: read in the
+        // background ({@see accessibility_scores}), never at the display of the page.
+        $scores = accessibility_scores::of_courses($a11ycourses);
+        foreach ($sections[self::TEACHING] as $i => $card) {
+            $sections[self::TEACHING][$i] += self::accessibility($card, $scores, in_array((int) $card['id'], $a11ycourses, true));
         }
 
         // Starred courses first, then the most recently visited, then by name.
@@ -164,6 +176,7 @@ class mycourses {
                     'tableview' => $table,
                     'cardsview' => !$table,
                     'hascompletioncolumn' => (bool) array_filter(array_column($sections[$role], 'hascompletion')),
+                    'hasa11ycolumn' => (bool) array_filter(array_column($sections[$role], 'a11yguide')),
                     'downloadselector' => $output->download_dataformat_selector(
                         get_string('mycourses_download', 'theme_epure'),
                         new \moodle_url('/theme/epure/mycourses_download.php')
@@ -210,6 +223,36 @@ class mycourses {
                 ['value' => 'future', 'label' => get_string('future', 'block_myoverview'), 'selected' => false],
                 ['value' => 'past', 'label' => get_string('past', 'block_myoverview'), 'selected' => false],
             ],
+        ];
+    }
+
+    /**
+     * The score of accessibility of a course taught, for its column in the table: its percentage and its blocking
+     * mistakes, linked to its guide; not read yet, said so.
+     *
+     * @param array $card Card of the course.
+     * @param \stdClass[] $scores Scores by course ({@see accessibility_scores::of_courses()}).
+     * @param bool $guide Whether the user can open its guide.
+     * @return array a11yguide, a11yscore (null when not read), a11yblocking, a11ytext, a11yurl, a11ysort.
+     */
+    protected static function accessibility(array $card, array $scores, bool $guide): array {
+        $score = $scores[(int) $card['id']] ?? null;
+        $text = '';
+        if ($guide) {
+            $text = $score ? get_string('mycourses_a11y_score', 'theme_epure', (object) [
+                'score' => (int) $score->score,
+                'blocking' => (int) $score->blocking,
+            ]) : get_string('mycourses_a11y_none', 'theme_epure');
+        }
+        return [
+            'a11yguide' => $guide,
+            'a11yscore' => $score ? (int) $score->score : null,
+            'hasa11yscore' => $guide && $score,
+            'a11yblocking' => $score ? (int) $score->blocking : 0,
+            'hasa11yblocking' => $score && (int) $score->blocking > 0,
+            'a11ytext' => $text,
+            'a11yurl' => $guide ? course_accessibility::url((int) $card['id'])->out(false) : '',
+            'a11ysort' => $score ? (int) $score->score : -1,
         ];
     }
 
@@ -428,7 +471,8 @@ class mycourses {
 
     /**
      * The courses a user teaches, as rows of the table of « My courses », for its download: name, short name,
-     * category, learners, active this week, to follow up, completion, to grade, next deadline.
+     * category, learners, active this week, to follow up, completion, to grade, next deadline, accessibility (empty
+     * where the user cannot open the guide).
      *
      * @param int $userid User.
      * @return array[]
@@ -451,6 +495,7 @@ class mycourses {
                     'completion' => $course['completionrate'] === null ? '' : $course['completionrate'] . ' %',
                     'tograde' => $course['tograde'],
                     'deadline' => $course['deadline'] ? $course['deadline']['name'] . ' – ' . $course['deadline']['date'] : '',
+                    'accessibility' => $course['a11ytext'],
                 ];
             }
         }

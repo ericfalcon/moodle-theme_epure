@@ -1,5 +1,13 @@
 # Changes
 
+## 1.39.0 — the score of accessibility in « My courses », in the edit mode and in a file
+
+- « My courses », the table of the courses taught: a column « Accessibility », the score of each course and its blocking mistakes, linked to its guide, sortable with the keyboard like the other columns; « not read yet » before its first reading. Only where the teacher can open the guide of the course; in the download of the table (CSV, Excel, PDF…) too. The scores are those the management dashboard keeps, read in the background: the page computes nothing.
+- The bar of the edit mode of a course: what is left to fix and to confirm, with the score of the course, as on its guide.
+- Management dashboard, « Accessibility of the courses »: a download of every course of the platform, of the category chosen or of the IOMAD company (CSV, Excel, ODS, PDF…), each with its category, its score, its mistakes by severity and when it was read: for the files of a quality process or an annual audit.
+- No new setting.
+- Tests: PHPUnit (the column, before and after the reading, the guide off; the bar of the edit mode; the download of the section).
+
 ## 1.38.0 — the accessibility of all the courses on the management dashboard
 
 - Management dashboard, a section « Accessibility of the courses »: the average score of the courses (as their guides compute it), how many courses have a blocking mistake, their mistakes by severity, the courses with the lowest scores (each linked to its guide), the categories with the lowest averages, and the score week by week over the last 12 weeks, written and repeated by a bar, with the points gained or lost. A list narrows it to a category and its subcategories; with IOMAD, the dashboard of a company to its courses.

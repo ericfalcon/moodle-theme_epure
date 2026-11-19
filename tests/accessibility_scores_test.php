@@ -179,6 +179,14 @@ final class accessibility_scores_test extends \advanced_testcase {
         $this->assertTrue($export['hascategories']);
         // One week only: no trend yet.
         $this->assertFalse($export['hasweeks']);
+        // The download of the section: each course, the lowest score first, with its category and its mistakes.
+        $this->assertStringContainsString('a11yscores_download.php', $export['download']);
+        $rows = array_map([accessibility_scores::class, 'download_row'], array_values(accessibility_scores::latest()));
+        $this->assertSame(['course', 'category', 'score', 'blocking', 'serious', 'minor', 'read'], array_keys($rows[0]));
+        $this->assertSame('With a mistake', $rows[0]['course']);
+        $this->assertSame('Health', $rows[0]['category']);
+        $this->assertSame($score, $rows[0]['score']);
+        $this->assertSame(1, $rows[0]['blocking']);
 
         // The category only.
         $export = accessibility_scores::export($now, (int) $health->id);
@@ -217,6 +225,7 @@ final class accessibility_scores_test extends \advanced_testcase {
         $this->setAdminUser();
         $this->getDataGenerator()->create_course();
         $this->assertFalse(accessibility_scores::export(time())['hasdata']);
+        $this->assertSame('', accessibility_scores::export(time())['download']);
 
         set_config('courseaccessibility', '0', 'theme_epure');
         $task = new task\compute_accessibility_scores();

@@ -52,7 +52,7 @@
             "categories": [{"name": "Health", "courses": 5, "score": 70, "blocking": 2}],
             "hasweeks": true, "change": "4 points more in 2 weeks",
             "weeks": [{"date": "16/11/26", "score": 78, "courses": 12}, {"date": "02/11/26", "score": 74, "courses": 12}],
-            "computed": "Last read: Thursday, 19 November 2026, 2:14 AM",
+            "computed": "Last read: Thursday, 19 November 2026, 2:14 AM", "download": "",
             "categorychoices": [{"value": 0, "name": "All the categories", "selected": true},
                 {"value": 2, "name": "Health", "selected": false}]
         }
@@ -232,6 +232,7 @@
         </div>
         {{/hasweeks}}
         <p class="epure-management-note">{{computed}} {{#str}}a11yscores_how, theme_epure{{/str}}</p>
+        {{#download}}<div class="epure-a11yscores-download">{{{download}}}</div>{{/download}}
         {{/hasdata}}
         {{^hasdata}}<p>{{#str}}a11yscores_none, theme_epure{{/str}}</p>{{/hasdata}}
     </section>

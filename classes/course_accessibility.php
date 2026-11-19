@@ -1594,7 +1594,11 @@ class course_accessibility {
             }
         }
         return [
-            'text' => self::summary_text($figures),
+            // What is left, with the score of the course, as on the guide.
+            'text' => get_string('courseaccessibility_editbar_score', 'theme_epure', (object) [
+                'text' => self::summary_text($figures),
+                'score' => $figures['score'],
+            ]),
             'clean' => !$figures['issues'] && !$figures['toconfirm'],
             'url' => self::url((int) $course->id)->out(false),
             'cms' => $cms,
