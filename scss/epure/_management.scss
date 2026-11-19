@@ -142,3 +142,45 @@
     height: .875rem;
     border-radius: calc(var(--epure-radius) / 2);
 }
+
+// Accessibility of the courses: the average score, written then repeated by a bar; the figures side by side; the
+// score week by week, each with its bar.
+.epure-a11yscores-score {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.epure-a11yscores-fill {
+    background-color: var(--epure-accent);
+}
+
+.epure-a11yscores-figures {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 1.25rem;
+    align-items: center;
+    padding: 0;
+    margin: 0 0 .75rem;
+    list-style: none;
+}
+
+.epure-a11yscores-change {
+    font-weight: 500;
+}
+
+.epure-a11yscores-weekbar {
+    display: inline-flex;
+    width: 8rem;
+    max-width: 40%;
+    height: .5rem;
+    margin-right: .5rem;
+    overflow: hidden;
+    vertical-align: middle;
+    background-color: var(--epure-border);
+    border-radius: 999px;
+
+    span {
+        background-color: var(--epure-accent);
+    }
+}

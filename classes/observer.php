@@ -137,13 +137,14 @@ class observer {
     }
 
     /**
-     * Deletes the confirmations of a course deleted, in the guide « Accessibility of the course ».
+     * Deletes the confirmations of a course deleted, in the guide « Accessibility of the course », and its scores.
      *
      * @param \core\event\course_deleted $event Event.
      */
     public static function course_deleted(\core\event\course_deleted $event): void {
         global $DB;
         $DB->delete_records(course_accessibility::TABLE, ['courseid' => $event->objectid]);
+        $DB->delete_records(accessibility_scores::TABLE, ['courseid' => $event->objectid]);
         course_accessibility::forget((int) $event->objectid);
     }
 }

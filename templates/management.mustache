@@ -20,7 +20,8 @@
     Management dashboard of the platform: the indicators of the period compared with the period before, the courses
     most followed, how far the learners are in the courses that track their completion; of the whole platform or of an
     IOMAD company, with the list of the companies for those who see them all. The words say every figure;
-    the bars repeat them for the eyes.
+    the bars repeat them for the eyes. Then the accessibility of the courses, as their guides read it at night: the
+    average score, the courses and the categories with the lowest scores, and the score week by week.
 
     Example context (json):
     {
@@ -38,7 +39,23 @@
             {"key": "completed", "text": "Completed: 5 (25 %)", "percent": 25},
             {"key": "progress", "text": "In progress: 10 (50 %)", "percent": 50},
             {"key": "notstarted", "text": "Not started: 5 (25 %)", "percent": 25}]},
-        "nolog": false
+        "nolog": false,
+        "companyid": 0,
+        "accessibility": {
+            "hasdata": true, "score": 78, "scoretext": "Average score: 78 %",
+            "coursestext": "12 courses read", "blockingtext": "Courses with a blocking mistake: 3",
+            "levels": [{"level": "blocking", "text": "Blocking: 4"}, {"level": "serious", "text": "Serious: 9"},
+                {"level": "minor", "text": "Minor: 2"}],
+            "hascourses": true,
+            "courses": [{"name": "Safety at work", "url": "#", "score": 45, "blocking": 2}],
+            "hascategories": true,
+            "categories": [{"name": "Health", "courses": 5, "score": 70, "blocking": 2}],
+            "hasweeks": true, "change": "4 points more in 2 weeks",
+            "weeks": [{"date": "16/11/26", "score": 78, "courses": 12}, {"date": "02/11/26", "score": 74, "courses": 12}],
+            "computed": "Last read: Thursday, 19 November 2026, 2:14 AM",
+            "categorychoices": [{"value": 0, "name": "All the categories", "selected": true},
+                {"value": 2, "name": "Health", "selected": false}]
+        }
     }
 }}
 <div class="epure-management">
@@ -115,4 +132,108 @@
         {{/completion.hasdata}}
         {{^completion.hasdata}}<p>{{#str}}management_completion_none, theme_epure{{/str}}</p>{{/completion.hasdata}}
     </section>
+    {{#accessibility}}
+    <section class="epure-management-section epure-a11yscores" aria-labelledby="epure-management-a11y">
+        <h3 id="epure-management-a11y">{{#str}}a11yscores, theme_epure{{/str}}</h3>
+        <form class="epure-management-choose" method="get" action="{{url}}">
+            {{#companyid}}<input type="hidden" name="companyid" value="{{companyid}}">{{/companyid}}
+            <label for="epure-a11yscores-categoryid">{{#str}}a11yscores_category, theme_epure{{/str}}</label>
+            <select class="form-select custom-select" id="epure-a11yscores-categoryid" name="categoryid">
+                {{#categorychoices}}<option value="{{value}}"{{#selected}} selected{{/selected}}>{{name}}</option>{{/categorychoices}}
+            </select>
+            <button type="submit" class="btn btn-secondary">{{#str}}management_go, theme_epure{{/str}}</button>
+        </form>
+        {{#hasdata}}
+        <div class="epure-a11yscores-summary">
+            <p class="epure-a11yscores-score">{{scoretext}}</p>
+            <div class="epure-management-bar" aria-hidden="true"><span class="epure-a11yscores-fill" style="width: {{score}}%"></span></div>
+            <ul class="epure-a11yscores-figures">
+                <li>{{coursestext}}</li>
+                <li>{{blockingtext}}</li>
+                {{#levels}}<li><span class="epure-a11y-pill epure-a11y-pill-{{level}}">{{text}}</span></li>{{/levels}}
+            </ul>
+            {{#change}}<p class="epure-a11yscores-change">{{change}}</p>{{/change}}
+        </div>
+        {{#hascourses}}
+        <h4>{{#str}}a11yscores_lowest, theme_epure{{/str}}</h4>
+        <div class="table-responsive">
+            <table class="table generaltable epure-management-table">
+                <caption class="sr-only visually-hidden">{{#str}}a11yscores_lowest, theme_epure{{/str}}</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">{{#str}}course{{/str}}</th>
+                        <th scope="col" class="text-end">{{#str}}a11yscores_scorecol, theme_epure{{/str}}</th>
+                        <th scope="col" class="text-end">{{#str}}courseaccessibility_level_blocking, theme_epure{{/str}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#courses}}
+                    <tr>
+                        <th scope="row"><a href="{{url}}">{{name}}</a></th>
+                        <td class="text-end">{{score}} %</td>
+                        <td class="text-end">{{blocking}}</td>
+                    </tr>
+                    {{/courses}}
+                </tbody>
+            </table>
+        </div>
+        {{/hascourses}}
+        {{#hascategories}}
+        <h4>{{#str}}a11yscores_categories, theme_epure{{/str}}</h4>
+        <div class="table-responsive">
+            <table class="table generaltable epure-management-table">
+                <caption class="sr-only visually-hidden">{{#str}}a11yscores_categories, theme_epure{{/str}}</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">{{#str}}category{{/str}}</th>
+                        <th scope="col" class="text-end">{{#str}}courses{{/str}}</th>
+                        <th scope="col" class="text-end">{{#str}}a11yscores_scorecol, theme_epure{{/str}}</th>
+                        <th scope="col" class="text-end">{{#str}}a11yscores_blockingcol, theme_epure{{/str}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#categories}}
+                    <tr>
+                        <th scope="row">{{name}}</th>
+                        <td class="text-end">{{courses}}</td>
+                        <td class="text-end">{{score}} %</td>
+                        <td class="text-end">{{blocking}}</td>
+                    </tr>
+                    {{/categories}}
+                </tbody>
+            </table>
+        </div>
+        {{/hascategories}}
+        {{#hasweeks}}
+        <h4>{{#str}}a11yscores_weeks, theme_epure{{/str}}</h4>
+        <div class="table-responsive">
+            <table class="table generaltable epure-management-table epure-a11yscores-weeks">
+                <caption class="sr-only visually-hidden">{{#str}}a11yscores_weeks, theme_epure{{/str}}</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">{{#str}}a11yscores_week, theme_epure{{/str}}</th>
+                        <th scope="col">{{#str}}a11yscores_scorecol, theme_epure{{/str}}</th>
+                        <th scope="col" class="text-end">{{#str}}a11yscores_coursescol, theme_epure{{/str}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#weeks}}
+                    <tr>
+                        <th scope="row">{{date}}</th>
+                        <td>
+                            <span class="epure-a11yscores-weekbar" aria-hidden="true"><span style="width: {{score}}%"></span></span>
+                            {{score}} %
+                        </td>
+                        <td class="text-end">{{courses}}</td>
+                    </tr>
+                    {{/weeks}}
+                </tbody>
+            </table>
+        </div>
+        {{/hasweeks}}
+        <p class="epure-management-note">{{computed}} {{#str}}a11yscores_how, theme_epure{{/str}}</p>
+        {{/hasdata}}
+        {{^hasdata}}<p>{{#str}}a11yscores_none, theme_epure{{/str}}</p>{{/hasdata}}
+    </section>
+    {{/accessibility}}
 </div>

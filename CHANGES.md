@@ -1,5 +1,12 @@
 # Changes
 
+## 1.38.0 — the accessibility of all the courses on the management dashboard
+
+- Management dashboard, a section « Accessibility of the courses »: the average score of the courses (as their guides compute it), how many courses have a blocking mistake, their mistakes by severity, the courses with the lowest scores (each linked to its guide), the categories with the lowest averages, and the score week by week over the last 12 weeks, written and repeated by a bar, with the points gained or lost. A list narrows it to a category and its subcategories; with IOMAD, the dashboard of a company to its courses.
+- A scheduled task, each night (« Accessibility scores of the courses »): it reads the courses whose score of the week is not known, or which changed (their revision), as their guide does and from its cache, 10 minutes per night at most, the others the next night. One score per course and per week, kept a year; the scores of a course deleted with it. Nothing when the guide is off; the section is then not shown.
+- No new setting. A new table (theme_epure_a11yscore), without data about the users.
+- Tests: PHPUnit (the week, the task once a week and again on a change, its time limit, the year kept, a course deleted, the dashboard, a category, the trend, the guide off).
+
 ## 1.37.0 — the severity of the mistakes and a score in the accessibility of the course
 
 - Accessibility of the course, the severity of each mistake, said in words and repeated by its colour: blocking (some learners cannot use the content: images, links of images, frames without a title, videos without subtitles, scanned PDF, moving texts…), serious (they use it with difficulty: tables, titles, contrast, untagged PDF, order of the key Tab, vague links…) or minor (shared or vague names, documents without a title, ids used twice…). Each mistake shows its severity; the report in a file too.
