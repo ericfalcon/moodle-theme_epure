@@ -188,6 +188,8 @@ class company_form {
         };
         $siteaccent = \theme_epure\palette::normalise(get_config('theme_epure', 'accentcolor'));
 
+        // The status of the own accessibility statement of the company.
+        $a11ystatus = \theme_epure\accessibility_statement::status($companyid) ?? 'unpublished';
         return [
             'accentcolor' => $accent,
             'siteaccentcolor' => $siteaccent ?? ($brand ?: $sitebrand),
@@ -236,8 +238,7 @@ class company_form {
             // The own accessibility statement of the company, filled step by step on its page (an existing company).
             'a11ystatement' => $companyid ? [
                 'url' => \theme_epure\accessibility_statement::edit_url(1, $companyid)->out(false),
-                'status' => get_string('a11ystatus_' . (\theme_epure\accessibility_statement::status($companyid)
-                    ?? 'unpublished'), 'theme_epure'),
+                'status' => get_string('a11ystatus_' . $a11ystatus, 'theme_epure'),
             ] : null,
             'logocolours' => [
                 'id' => 'epure-company-logocolours',
