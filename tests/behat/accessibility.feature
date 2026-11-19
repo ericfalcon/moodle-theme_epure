@@ -428,6 +428,12 @@ Feature: Accessibility of the Épure theme
     And I press the space key
     And the "aria-expanded" attribute of "a.icons-collapse-expand[href$='collapseid1']" "css_element" should contain "false"
     And the page should meet accessibility standards
+    # The participants: the letters that filter by first name and by last name, the choice of the page.
+    And I navigate to course participants
+    And "nav.initialbargroups[aria-label='First name']" "css_element" should exist
+    And "nav.initialbargroups[aria-label='Last name']" "css_element" should exist
+    And "nav.tertiary-navigation-selector[aria-label='Choice of the page']" "css_element" should exist
+    And the page should meet accessibility standards
 
   Scenario: Before saving, the content checker warns of a link alone that says nothing, never of what is right
     Given the following config values are set as admin:
