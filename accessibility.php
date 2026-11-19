@@ -26,16 +26,28 @@
 // phpcs:ignore moodle.Files.RequireLogin.Missing
 require(__DIR__ . '/../../config.php');
 
+use theme_epure\accessibility_statement;
+
+// The statement of an IOMAD company that published its own (its users, its login page, its address); else, and for
+// a company without one, the statement of the platform.
+$companyid = optional_param('companyid', -1, PARAM_INT);
+if ($companyid < 0) {
+    $companyid = accessibility_statement::company();
+}
+if ($companyid && (!accessibility_statement::company_exists($companyid) || accessibility_statement::status($companyid) === null)) {
+    $companyid = 0;
+}
+
 $PAGE->set_context(context_system::instance());
-$PAGE->set_url(\theme_epure\accessibility_statement::url());
+$PAGE->set_url(accessibility_statement::url($companyid));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('a11ystatement', 'theme_epure'));
 $PAGE->set_heading(format_string($SITE->fullname));
 
 echo $OUTPUT->header();
-$data = \theme_epure\accessibility_statement::export();
-// The administrators find the guided form from the statement.
-$data['editurl'] = has_capability('moodle/site:config', context_system::instance())
-    ? \theme_epure\accessibility_statement::edit_url()->out(false) : '';
+$data = accessibility_statement::export($companyid);
+// Who can change it finds the guided form from the statement.
+$data['editurl'] = accessibility_statement::can_edit($companyid)
+    ? accessibility_statement::edit_url(1, $companyid)->out(false) : '';
 echo $OUTPUT->render_from_template('theme_epure/accessibility_statement', $data);
 echo $OUTPUT->footer();

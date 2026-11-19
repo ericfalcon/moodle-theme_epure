@@ -26,7 +26,7 @@ use theme_epure\accessibility_statement;
  * One step of the accessibility statement, filled step by step: the settings of the step (the same as in the
  * Accessibility tab of the theme), with what the RGAA asks for above them.
  *
- * Custom data: step (from 1).
+ * Custom data: step (from 1), companyid (an IOMAD company whose own statement it is, 0 for the platform).
  *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
@@ -41,10 +41,14 @@ class a11y_statement_form extends \moodleform {
         $step = (int) $this->_customdata['step'];
         $keys = array_keys(accessibility_statement::STEPS);
         $key = $keys[$step - 1];
-        $config = get_config('theme_epure');
+        // The settings of the platform, or the own statement of an IOMAD company.
+        $companyid = (int) ($this->_customdata['companyid'] ?? 0);
+        $config = accessibility_statement::values($companyid);
 
         $mform->addElement('hidden', 'step', $step);
         $mform->setType('step', PARAM_INT);
+        $mform->addElement('hidden', 'companyid', $companyid);
+        $mform->setType('companyid', PARAM_INT);
         $mform->addElement('html', \html_writer::div(
             accessibility_statement::string('a11ywizard_' . $key . '_intro'),
             'epure-a11ywizard-intro'

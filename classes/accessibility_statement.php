@@ -101,17 +101,97 @@ class accessibility_statement {
     }
 
     /**
-     * The compliance status chosen by the administrator.
+     * The names of the settings of a statement, in the order of its steps.
      *
+     * @return string[]
+     */
+    public static function names(): array {
+        return array_merge(...array_values(self::STEPS));
+    }
+
+    /**
+     * Name of the setting holding the own statement of an IOMAD company, in JSON.
+     *
+     * @param int $companyid Company.
+     * @return string
+     */
+    public static function company_setting(int $companyid): string {
+        return 'companya11y_' . $companyid;
+    }
+
+    /**
+     * The settings of a statement: those of the platform (0), or the own statement of an IOMAD company (empty values
+     * when it has none).
+     *
+     * @param int $companyid Company, 0 for the platform.
+     * @return \stdClass The settings by name ({@see self::names()}).
+     */
+    public static function values(int $companyid = 0): \stdClass {
+        $values = [];
+        if ($companyid) {
+            $json = get_config('theme_epure', self::company_setting($companyid));
+            $own = $json ? json_decode($json, true) : [];
+            foreach (self::names() as $name) {
+                $values[$name] = is_array($own) ? trim((string) ($own[$name] ?? '')) : '';
+            }
+        } else {
+            $config = get_config('theme_epure');
+            foreach (self::names() as $name) {
+                $values[$name] = trim((string) ($config->$name ?? ''));
+            }
+        }
+        return (object) $values;
+    }
+
+    /**
+     * Saves settings of the own statement of an IOMAD company; the others it holds stay.
+     *
+     * @param int $companyid Company.
+     * @param array $values Settings by name ({@see self::names()}).
+     */
+    public static function save_company(int $companyid, array $values): void {
+        $own = array_intersect_key($values, array_flip(self::names())) + (array) self::values($companyid);
+        if (array_filter($own, fn($value) => $value !== '')) {
+            set_config(self::company_setting($companyid), json_encode($own), 'theme_epure');
+        } else {
+            unset_config(self::company_setting($companyid), 'theme_epure');
+        }
+    }
+
+    /**
+     * The IOMAD company whose own statement applies on the page: the company of the user, or of the login page opened,
+     * when it published one; else 0, the statement of the platform.
+     *
+     * @return int
+     */
+    public static function company(): int {
+        $company = company_style::current_company();
+        return $company && self::status((int) $company->id) !== null ? (int) $company->id : 0;
+    }
+
+    /**
+     * Whether an IOMAD company can have a statement of its own: IOMAD installed and the company existing.
+     *
+     * @param int $companyid Company.
+     * @return bool
+     */
+    public static function company_exists(int $companyid): bool {
+        return $companyid > 0 && iomad::installed() && iomad::company($companyid) !== null;
+    }
+
+    /**
+     * The compliance status of a statement.
+     *
+     * @param int|null $companyid IOMAD company, 0 for the platform; null for the statement that applies on the page.
      * @return string|null One of {@see self::STATUSES}, or null when the statement is not published.
      */
-    public static function status(): ?string {
-        $status = (string) get_config('theme_epure', 'a11ystatus');
+    public static function status(?int $companyid = null): ?string {
+        $status = self::values($companyid ?? self::company())->a11ystatus;
         return in_array($status, self::STATUSES, true) ? $status : null;
     }
 
     /**
-     * Whether the statement is published.
+     * Whether the statement that applies on the page is published: the one of the company, else the one of the platform.
      *
      * @return bool
      */
@@ -123,19 +203,39 @@ class accessibility_statement {
      * Address of the guided form, at a step.
      *
      * @param int $step Step, from 1.
+     * @param int $companyid IOMAD company, 0 for the platform.
      * @return \moodle_url
      */
-    public static function edit_url(int $step = 1): \moodle_url {
-        return new \moodle_url('/theme/epure/a11ystatement.php', ['step' => $step]);
+    public static function edit_url(int $step = 1, int $companyid = 0): \moodle_url {
+        return new \moodle_url('/theme/epure/a11ystatement.php', array_filter(['step' => $step, 'companyid' => $companyid]));
     }
 
     /**
      * Address of the statement.
      *
+     * @param int|null $companyid IOMAD company, 0 for the platform; null for the statement that applies on the page.
      * @return \moodle_url
      */
-    public static function url(): \moodle_url {
-        return new \moodle_url('/theme/epure/accessibility.php');
+    public static function url(?int $companyid = null): \moodle_url {
+        $companyid = $companyid ?? self::company();
+        return new \moodle_url('/theme/epure/accessibility.php', $companyid ? ['companyid' => $companyid] : []);
+    }
+
+    /**
+     * Whether a user can change the statement of the platform (0, the administrators) or the own statement of an IOMAD
+     * company (those who change its appearance).
+     *
+     * @param int $companyid Company, 0 for the platform.
+     * @return bool
+     */
+    public static function can_edit(int $companyid): bool {
+        if (!$companyid) {
+            return has_capability('moodle/site:config', \context_system::instance());
+        }
+        return self::company_exists($companyid) && iomad::has_capability(
+            'block/iomad_company_admin:company_edit_appearance',
+            iomad::company_context($companyid)
+        );
     }
 
     /**
@@ -153,12 +253,16 @@ class accessibility_statement {
     /**
      * Context of the template theme_epure/accessibility_statement.
      *
+     * @param int $companyid IOMAD company whose own statement it is, 0 for the platform.
      * @return array
      */
-    public static function export(): array {
-        $config = get_config('theme_epure');
-        $entity = trim((string) ($config->a11yentity ?? '')) ?: format_string(get_site()->fullname);
-        $status = self::status();
+    public static function export(int $companyid = 0): array {
+        $config = self::values($companyid);
+        $company = $companyid ? iomad::company($companyid) : null;
+        $name = $company ? format_string($company->name, true, ['context' => \context_system::instance()])
+            : format_string(get_site()->fullname);
+        $entity = $config->a11yentity ?: $name;
+        $status = self::status($companyid);
         $texts = [];
         foreach (self::TEXTS as $name) {
             $value = trim((string) ($config->{'a11y' . $name} ?? ''));
@@ -173,6 +277,8 @@ class accessibility_statement {
             'published' => $status !== null,
             'entity' => $entity,
             'site' => format_string(get_site()->fullname),
+            // The own statement of an IOMAD company: for its users, and on its pages.
+            'company' => $company ? $name : '',
             'siteurl' => (new \moodle_url('/'))->out(false),
             'status' => $status ? get_string('a11ystatus_' . $status, 'theme_epure') : '',
             'statusphrase' => $status ? self::string('a11ystatement_status_' . $status) : '',

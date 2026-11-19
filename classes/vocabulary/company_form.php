@@ -233,6 +233,12 @@ class company_form {
                 // The value of the site, used while the company has none.
                 'placeholder' => trim((string) get_config('theme_epure', $name)),
             ], \theme_epure\company_style::FOOTER_FIELDS),
+            // The own accessibility statement of the company, filled step by step on its page (an existing company).
+            'a11ystatement' => $companyid ? [
+                'url' => \theme_epure\accessibility_statement::edit_url(1, $companyid)->out(false),
+                'status' => get_string('a11ystatus_' . (\theme_epure\accessibility_statement::status($companyid)
+                    ?? 'unpublished'), 'theme_epure'),
+            ] : null,
             'logocolours' => [
                 'id' => 'epure-company-logocolours',
                 'inputid' => 'id_epure_brandcolor',

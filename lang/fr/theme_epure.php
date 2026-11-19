@@ -51,7 +51,7 @@ $string['a11ylines_help'] = 'Les textes longs à 70 caractères par ligne au plu
 $string['a11ymention'] = 'Accessibilité : {$a}';
 $string['a11ymodel_eu'] = 'Modèle de la déclaration : Union européenne (norme EN 301 549, WCAG 2.1 niveau AA, directive (UE) 2016/2102), d’après le pays par défaut du site : {$a->country} (<a href="{$a->url}">paramètres de localisation</a>).';
 $string['a11ymodel_fr'] = 'Modèle de la déclaration : France (RGAA, loi n° 2005-102, Défenseur des droits), d’après le pays par défaut du site : {$a->country} (<a href="{$a->url}">paramètres de localisation</a>).';
-$string['a11ymodel_iomad'] = 'Avec IOMAD, la déclaration vaut pour toute la plateforme, toutes entreprises confondues : une entreprise responsable de son propre service publie la sienne.';
+$string['a11ymodel_iomad'] = 'Avec IOMAD, cette déclaration vaut pour toute la plateforme. Une entreprise responsable de son propre service peut publier la sienne (profil de l’entreprise › Apparence › Pied de page) : ses utilisateurs, sa page de connexion et son adresse l’affichent alors à la place.';
 $string['a11ymodel_legal'] = 'Le pays du site n’indique pas à lui seul le droit qui s’applique à l’organisme : vérifiez que ce modèle lui convient.';
 $string['a11ymodel_nocountry'] = 'non renseigné';
 $string['a11ymodel_world'] = 'Modèle de la déclaration : WCAG 2.1 niveau AA, d’après le pays par défaut du site : {$a->country} (<a href="{$a->url}">paramètres de localisation</a>). Indiquez dans le contact la loi et les voies de recours de votre pays, s’il y en a.';
@@ -206,6 +206,8 @@ $string['a11ywizard_audit_intro'] = 'Le RGAA, comme les WCAG 2.1 AA qu’il repr
 $string['a11ywizard_audit_intro_eu'] = 'La norme EN 301 549 demande un audit d’un échantillon de pages de la plateforme selon les critères des WCAG 2.1 AA, par l’organisme ou par un auditeur. Saisissez-en ici les résultats. Sans audit pour l’instant, laissez ces champs vides : la plateforme est alors déclarée non conforme, et la déclaration l’indique.';
 $string['a11ywizard_audit_intro_world'] = 'L’état de conformité repose sur un audit d’un échantillon de pages de la plateforme selon les critères des WCAG 2.1 AA, par l’organisme ou par un auditeur. Saisissez-en ici les résultats. Sans audit pour l’instant, laissez ces champs vides : la plateforme est alors déclarée non conforme, et la déclaration l’indique.';
 $string['a11ywizard_back'] = 'Étape précédente';
+$string['a11ywizard_company'] = 'Déclaration d’accessibilité de {$a}';
+$string['a11ywizard_company_note'] = 'La déclaration propre de l’entreprise : une fois publiée, ses utilisateurs, sa page de connexion et son adresse l’affichent, et son pied de page y mène ; d’ici là, ils affichent la déclaration de la plateforme. Laissez l’état « Non publiée » pour garder celle de la plateforme.';
 $string['a11ywizard_contact'] = 'Retour et contact';
 $string['a11ywizard_contact_intro'] = 'Un utilisateur qui ne peut pas accéder à un contenu ou à un service doit pouvoir vous le signaler et l’obtenir sous une autre forme. Indiquez comment vous joindre. Sans contact, la déclaration affiche le courriel du support du site.';
 $string['a11ywizard_contents'] = 'Les contenus non accessibles';
@@ -342,6 +344,8 @@ $string['checklist_theme_texts'] = 'Textes';
 $string['checklist_time'] = 'Les tests chronométrés et les devoirs avec échéance peuvent accorder un temps supplémentaire (dérogations).';
 $string['checklist_transcript'] = 'Chaque audio a une transcription.';
 $string['choosereadme'] = 'Épure est un thème moderne et accessible basé sur Boost. Une seule couleur de marque produit une palette accessible, et les polices sont servies par votre propre site.';
+$string['companya11ystatement'] = 'Déclaration d’accessibilité de l’entreprise : {$a}.';
+$string['companya11ystatement_edit'] = 'La remplir étape par étape';
 $string['companyaccentcolor_help'] = 'Barres de progression et sections terminées. Vide : la couleur de marque de l\'entreprise, sinon la couleur d\'accent du site.';
 $string['companyactivityicons_help'] = 'Icônes des activités et ressources sur les pages de cours, le tableau de bord et les pages d’activité. Masquées, elles restent dans le sélecteur d’activités.';
 $string['companyappearance_desc'] = 'Organisée comme les réglages du thème : suivez les étapes dans l’ordre. Laissez un champ vide, ou sur « Comme le site », pour utiliser le réglage du site.';
