@@ -160,4 +160,19 @@
     <licenseversion>4.0</licenseversion>
     <repository>https://github.com/FortAwesome/Font-Awesome</repository>
   </library>
+  <library>
+    <location>thirdparty/tclib</location>
+    <name>tc-lib-pdf (with its tc-lib packages, for the tagged PDF of « My summary »)</name>
+    <version>8.84.3</version>
+    <license>LGPL</license>
+    <licenseversion>3.0+</licenseversion>
+    <repository>https://github.com/tecnickcom/tc-lib-pdf</repository>
+  </library>
+  <library>
+    <location>thirdparty/tclib/vendor/tecnickcom/tc-lib-pdf-font/target/fonts</location>
+    <name>DejaVu Sans (converted for tc-lib-pdf)</name>
+    <version>2.37</version>
+    <license>Bitstream Vera / DejaVu (free)</license>
+    <repository>https://github.com/dejavu-fonts/dejavu-fonts</repository>
+  </library>
 </libraries>

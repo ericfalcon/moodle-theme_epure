@@ -84,6 +84,39 @@ final class learner_summary_document_test extends \core_privacy\tests\provider_t
     }
 
     /**
+     * The PDF is tagged for the screen readers (PDF/UA-1) with PHP 8.2 and later: its structure, its language, its
+     * title shown, its fonts embedded; checked by veraPDF when the tests are given it (EPURE_VERAPDF, its command, in
+     * the continuous integration). With an older PHP, the PDF of TCPDF, not tagged.
+     */
+    public function test_tagged_pdf(): void {
+        global $PAGE;
+        $user = $this->learner();
+        $document = learner_summary_document::issue($PAGE->get_renderer('core'), (int) $user->id);
+        $pdf = learner_summary_document::pdf($document);
+        $this->assertStringStartsWith('%PDF-', $pdf);
+        if (!summary_pdf::available()) {
+            $this->assertSame(PHP_VERSION_ID < 80200, true);
+            $this->assertStringNotContainsString('/StructTreeRoot', $pdf);
+            return;
+        }
+        $this->assertSame('fr-CA', summary_pdf::language('fr_ca'));
+        $this->assertSame('en', summary_pdf::language('en'));
+        foreach (['/StructTreeRoot', '/MarkInfo', '/Lang', '/DisplayDocTitle true', 'pdfuaid'] as $mark) {
+            $this->assertStringContainsString($mark, $pdf);
+        }
+
+        $verapdf = getenv('EPURE_VERAPDF');
+        if ($verapdf) {
+            $file = make_request_directory() . '/summary.pdf';
+            file_put_contents($file, $pdf);
+            $output = [];
+            exec(escapeshellcmd($verapdf) . ' -f ua1 --format text ' . escapeshellarg($file) . ' 2>&1', $output);
+            $result = implode("\n", $output);
+            $this->assertMatchesRegularExpression('/^PASS /m', $result, $result);
+        }
+    }
+
+    /**
      * A code is found whatever its case, its spaces and hyphens; an unknown or malformed code finds nothing.
      */
     public function test_find(): void {

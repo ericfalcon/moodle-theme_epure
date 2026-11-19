@@ -178,6 +178,20 @@ jobs:
         if: ${{ !cancelled() && !matrix.include-moodle.repo }}
         run: moodle-plugin-ci grunt --max-lint-warnings 0
 
+      # veraPDF, the validator of the PDF/UA, from Maven Central: the PDF of « My summary » is checked against PDF/UA-1 by
+      # the PHPUnit tests (EPURE_VERAPDF), where it is tagged (PHP 8.2 and later).
+      - name: veraPDF
+        if: ${{ !cancelled() && matrix.include-moodle.php != '8.1' }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/verapdf"
+          cd "$RUNNER_TEMP/verapdf"
+          printf '%s' '<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion><groupId>local</groupId><artifactId>verapdf</artifactId><version>1</version><dependencies><dependency><groupId>org.verapdf.apps</groupId><artifactId>greenfield-apps</artifactId><version>1.28.2</version></dependency></dependencies></project>' > pom.xml
+          mvn -q dependency:copy-dependencies -DoutputDirectory=lib
+          printf '#!/bin/sh\nexec java -cp "%s/lib/*" org.verapdf.apps.GreenfieldCliWrapper "$@"\n' "$RUNNER_TEMP/verapdf" > verapdf
+          chmod +x verapdf
+          ./verapdf --version
+          echo "EPURE_VERAPDF=$RUNNER_TEMP/verapdf/verapdf" >> "$GITHUB_ENV"
+
       - name: PHPUnit tests
         if: ${{ !cancelled() }}
         run: moodle-plugin-ci phpunit --fail-on-warning

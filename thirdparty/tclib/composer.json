@@ -1,0 +1,13 @@
+{
+    "name": "theme_epure/tclib",
+    "description": "tc-lib-pdf, for the tagged PDF (PDF/UA-1) of « My summary » in the theme Épure.",
+    "license": "LGPL-3.0-or-later",
+    "require": {
+        "php": ">=8.2",
+        "tecnickcom/tc-lib-pdf": "^8.84"
+    },
+    "config": {
+        "platform": {"php": "8.2.0"},
+        "optimize-autoloader": true
+    }
+}

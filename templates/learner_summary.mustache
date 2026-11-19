@@ -38,7 +38,7 @@
         "validity": [{"value": 90, "label": "3 months", "checked": false, "id": "v90"},
             {"value": 365, "label": "1 year", "checked": true, "id": "v365"},
             {"value": 0, "label": "Without limit", "checked": false, "id": "v0"}],
-        "hasdocuments": true, "documents": [
+        "pdftagged": true, "hasdocuments": true, "documents": [
             {"id": 1, "code": "ABCD-EFGH-JKMN", "issued": "30/10/26, 10:12", "until": "30 October 2027",
                 "state": "Valid", "statekey": "valid", "canrevoke": true, "verifyurl": "#", "revokeurl": "#",
                 "deleteurl": "#"}
@@ -60,7 +60,7 @@
             </button>
         </div>
     </div>
-    <p class="epure-summary-pdfnote d-print-none">{{#str}}mysummary_pdf_note, theme_epure{{/str}}</p>
+    <p class="epure-summary-pdfnote d-print-none">{{#pdftagged}}{{#str}}mysummary_pdf_note_tagged, theme_epure{{/str}}{{/pdftagged}}{{^pdftagged}}{{#str}}mysummary_pdf_note, theme_epure{{/str}}{{/pdftagged}}</p>
 
     <dl class="epure-summary-figures">
         <div><dt>{{#str}}mysummary_taken, theme_epure{{/str}}</dt><dd>{{taken}}</dd></div>
