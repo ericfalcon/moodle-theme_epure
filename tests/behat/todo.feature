@@ -38,6 +38,6 @@ Feature: The page « To do » of a learner
     And I should see "1 activity to do"
     And I should see "Final essay"
     And I should not see "Risk report"
-    And the following pages should meet accessibility standards in the four displays:
+    And the following pages should meet accessibility standards in every display:
       | path                    |
       | /theme/epure/todo.php   |

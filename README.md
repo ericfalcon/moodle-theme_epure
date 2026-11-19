@@ -123,6 +123,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.36.0**: no new setting; upgrade the site. « Aa »: reading aloud with the voices of the device, and for the visitors too (kept in their browser, on the login page too). Accessibility of the course: empty titles, moving texts, own order of the key Tab, ids used twice.
 - **1.35.0**: no new setting; upgrade the site. « Aa »: profiles (dyslexia, low vision, concentration, no flashing), text up to 200 %, a reading ruler or mask, colours yellow on black and cream, the font Lexend; the setting « Button Aa » warns when local_accessibility, local_a11y or local_accessibilitywidget is installed.
 - **1.34.2**: no new setting; upgrade the site. The circle of « Moodle is working » turns in Chrome while the next page is awaited; with less motion asked, it moves a quarter of a turn each second.
 - **1.34.1**: no new setting; upgrade the site. The number of the version in the form of a date, as the Moodle plugins directory asks.

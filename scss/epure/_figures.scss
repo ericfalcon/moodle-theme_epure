@@ -8,7 +8,8 @@
 
 .epure-iomad-figures {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    // stylelint-disable-next-line csstree/validator -- min() in minmax(), valid CSS that the validator does not know.
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
     gap: 1rem;
     margin: 0 0 1.5rem;
     padding: 0;

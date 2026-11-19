@@ -27,9 +27,10 @@
 import Ajax from 'core/ajax';
 import {getString} from 'core/str';
 import * as Guide from 'theme_epure/reading_guide';
+import * as ReadAloud from 'theme_epure/read_aloud';
 
 /** Preferences that are on or off. */
-const SWITCHES = ['spacing', 'lines', 'contrast', 'underline', 'motion', 'stillimages', 'scrollbars'];
+const SWITCHES = ['spacing', 'lines', 'contrast', 'underline', 'motion', 'stillimages', 'scrollbars', 'speech'];
 
 /**
  * Current choices of the panel.
@@ -42,7 +43,7 @@ const read = (panel) => ({
     font: panel.querySelector('[name="epure-a11y-font"]:checked')?.value || '',
     scheme: panel.querySelector('[name="epure-a11y-scheme"]:checked')?.value || '',
     guide: panel.querySelector('[name="epure-a11y-guide"]:checked')?.value || '',
-    switches: Object.fromEntries(SWITCHES.map((name) => [name, panel.querySelector(`[name="epure-a11y-${name}"]`).checked])),
+    switches: Object.fromEntries(SWITCHES.map((name) => [name, !!panel.querySelector(`[name="epure-a11y-${name}"]`)?.checked])),
 });
 
 /**
@@ -68,6 +69,7 @@ const applyToPage = (choices, defaultScheme) => {
         html.classList.add(`epure-a11y-guide-${choices.guide}`);
     }
     Guide.set(choices.guide);
+    ReadAloud.set(choices.switches.speech);
     if (choices.text !== 100) {
         html.classList.add(`epure-a11y-text-${choices.text}`);
     }
@@ -80,10 +82,11 @@ const applyToPage = (choices, defaultScheme) => {
 };
 
 /**
- * Saves the choices in the profile of the user.
+ * Saves the choices in the profile of the user, or in the cookie of a visitor, and says whether it was saved.
  *
  * @param {HTMLElement} panel The panel.
  * @param {{text: number, font: string, switches: Object<string, boolean>}} choices Choices.
+ * @return {Promise<boolean>} Whether the choices are saved.
  */
 const save = async(panel, choices) => {
     const preferences = [
@@ -94,11 +97,27 @@ const save = async(panel, choices) => {
         ...SWITCHES.map((name) => ({type: `theme_epure_a11y_${name}`, value: choices.switches[name] ? '1' : '0'})),
     ];
     const status = panel.querySelector('[data-region="status"]');
+    const cookie = panel.closest('[data-region="epure-a11y"]').dataset.cookie;
     try {
+        if (cookie) {
+            // A visitor: in a cookie of the browser, read by the server for the next pages, kept a year.
+            const values = Object.fromEntries(preferences.map(({type, value}) => [type.replace('theme_epure_a11y_', ''), value]));
+            const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+            const value = encodeURIComponent(JSON.stringify(values));
+            document.cookie = `${cookie}=${value}; path=/; max-age=31536000; SameSite=Lax${secure}`;
+            // A browser that refuses the cookies keeps nothing: read back.
+            if (!document.cookie.split('; ').includes(`${cookie}=${value}`)) {
+                throw new Error('cookie refused');
+            }
+            status.textContent = await getString('a11ysaved_visitor', 'theme_epure');
+            return true;
+        }
         await Ajax.call([{methodname: 'core_user_update_user_preferences', args: {preferences}}])[0];
         status.textContent = await getString('a11ysaved', 'theme_epure');
+        return true;
     } catch (error) {
         status.textContent = await getString('a11ynotsaved', 'theme_epure');
+        return false;
     }
 };
 
@@ -107,7 +126,8 @@ const save = async(panel, choices) => {
  * earlier state that is saved last would replace the last choice.
  *
  * @param {HTMLElement} panel The panel.
- * @return {function(Object): Promise} Saves the choices once the previous save has ended; only the last waits.
+ * @return {function(Object): Promise<boolean>} Saves the choices once the previous save has ended; only the last waits.
+ *     Its promise says whether the last choices were saved.
  */
 const saver = (panel) => {
     let running = null;
@@ -116,12 +136,14 @@ const saver = (panel) => {
         waiting = choices;
         if (!running) {
             running = (async() => {
+                let saved = true;
                 while (waiting) {
                     const next = waiting;
                     waiting = null;
-                    await save(panel, next);
+                    saved = await save(panel, next);
                 }
                 running = null;
+                return saved;
             })();
         }
         return running;
@@ -209,12 +231,16 @@ export const init = () => {
             input.checked = true;
         }
     };
-    const defaults = () => {
+    // The reading aloud is kept by a profile, as the colours.
+    const defaults = (keep = []) => {
         check('text', 100);
         check('font', '');
         check('guide', '');
-        SWITCHES.forEach((name) => {
-            panel.querySelector(`[name="epure-a11y-${name}"]`).checked = false;
+        SWITCHES.filter((name) => !keep.includes(name)).forEach((name) => {
+            const input = panel.querySelector(`[name="epure-a11y-${name}"]`);
+            if (input) {
+                input.checked = false;
+            }
         });
     };
     region.querySelector('[data-action="reset"]').addEventListener('click', () => {
@@ -225,16 +251,28 @@ export const init = () => {
     // A profile replaces the preferences: what it does not set goes back to its default, the colours kept.
     panel.querySelectorAll('[data-action="profile"]').forEach((button) => button.addEventListener('click', async() => {
         const profile = JSON.parse(button.dataset.choices);
-        defaults();
+        defaults(['speech']);
         check('text', profile.text);
         check('font', profile.font);
         check('guide', profile.guide);
         profile.switches.forEach((name) => {
             panel.querySelector(`[name="epure-a11y-${name}"]`).checked = true;
         });
-        await changed();
-        panel.querySelector('[data-region="status"]').textContent = await getString('a11yprofile_applied', 'theme_epure',
-            button.textContent.trim());
+        // Applied to the page in any case; said applied only once saved, else that it will be lost.
+        const saved = await changed();
+        panel.querySelector('[data-region="status"]').textContent = await getString(
+            saved ? 'a11yprofile_applied' : 'a11yprofile_notsaved',
+            'theme_epure',
+            button.textContent.trim()
+        );
     }));
     Guide.init();
+    ReadAloud.init();
+    // Without voices of the device, no reading aloud to offer: the voices of a service on the network are not used.
+    ReadAloud.available().then((available) => {
+        if (!available) {
+            panel.querySelector('[name="epure-a11y-speech"]')?.closest('.epure-a11y-switch')?.remove();
+        }
+        return available;
+    }).catch(() => null);
 };

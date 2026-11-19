@@ -72,6 +72,9 @@ class a11y {
                 'choices' => array_merge([''], self::SCHEMES), 'permissioncallback' => $own],
             'theme_epure_a11y_guide' => ['type' => PARAM_ALPHA, 'null' => NULL_NOT_ALLOWED, 'default' => '',
                 'choices' => array_merge([''], self::GUIDES), 'permissioncallback' => $own],
+            // The bar of the reading aloud, with the voices of the device: for each user, not a display of the site.
+            'theme_epure_a11y_speech' => ['type' => PARAM_INT, 'null' => NULL_NOT_ALLOWED, 'default' => 0,
+                'choices' => [0, 1], 'permissioncallback' => $own],
         ];
         foreach (self::SWITCHES as $switch) {
             $definitions['theme_epure_a11y_' . $switch] = ['type' => PARAM_INT, 'null' => NULL_NOT_ALLOWED,
@@ -104,10 +107,15 @@ class a11y {
     public static function preferences(): array {
         // Without the button « Aa » (turned off by the administrator, for another panel for instance), the users can no
         // longer change their preferences: the display of the site.
-        $enabled = isloggedin() && !isguestuser() && self::panel_enabled();
+        $enabled = self::panel_enabled();
         $defaults = self::site_defaults();
+        // The visitors keep their choices in a cookie of their browser; a user logged in in their profile, and, for what
+        // they never chose there, the choices they made in this browser before logging in.
+        $cookie = $enabled ? self::cookie() : [];
+        $user = $enabled && !self::visitor();
         // A preference the user never chose is the one of the site.
-        $preference = fn(string $name) => $enabled ? get_user_preferences('theme_epure_a11y_' . $name, null) : null;
+        $preference = fn(string $name) => ($user ? get_user_preferences('theme_epure_a11y_' . $name, null) : null)
+            ?? $cookie[$name] ?? null;
         $text = (int) ($preference('text') ?? $defaults['text']);
         $font = (string) ($preference('font') ?? $defaults['font']);
         $scheme = (string) ($preference('scheme') ?? '');
@@ -121,7 +129,48 @@ class a11y {
         foreach (self::SWITCHES as $switch) {
             $preferences[$switch] = (bool) ($preference($switch) ?? $defaults[$switch]);
         }
+        $preferences['speech'] = (bool) ($preference('speech') ?? false);
         return $preferences;
+    }
+
+    /**
+     * Whether the current user is a visitor, not logged in or logged in as a guest: their choices are kept in a cookie
+     * of their browser, not in a profile.
+     *
+     * @return bool
+     */
+    public static function visitor(): bool {
+        return !isloggedin() || isguestuser();
+    }
+
+    /**
+     * The choices kept in the cookie of the browser (a11y_panel.js): each name with its value, as text; what is not
+     * a known preference, or not one of its values, is left out.
+     *
+     * @return string[]
+     */
+    protected static function cookie(): array {
+        $raw = $_COOKIE[self::COOKIE] ?? '';
+        $values = is_string($raw) && strlen($raw) < 1000 ? json_decode($raw, true) : null;
+        if (!is_array($values)) {
+            return [];
+        }
+        // Each value among the choices of its preference, as Moodle checks those of a profile
+        // (self::definitions()): the switches 0 or 1 only, the sizes, fonts, colours and guides known.
+        $choices = [];
+        foreach (self::definitions() as $name => $definition) {
+            if (str_starts_with($name, 'theme_epure_a11y_') && isset($definition['choices'])) {
+                $choices[substr($name, strlen('theme_epure_a11y_'))] = array_map('strval', $definition['choices']);
+            }
+        }
+        $valid = [];
+        foreach ($values as $name => $value) {
+            $scalar = is_string($value) || is_int($value);
+            if (isset($choices[$name]) && $scalar && in_array((string) $value, $choices[$name], true)) {
+                $valid[$name] = (string) $value;
+            }
+        }
+        return $valid;
     }
 
     /**
@@ -153,6 +202,9 @@ class a11y {
     public static function panel_enabled(): bool {
         return get_config('theme_epure', 'prefpanel') !== '0';
     }
+
+    /** @var string Cookie of the choices of the visitors (not logged in, or guests), in their browser. */
+    public const COOKIE = 'theme_epure_a11y';
 
     /** @var string[] Plugins that give every page a panel of display preferences of their own. */
     public const OTHER_PANELS = ['local_accessibility', 'local_a11y', 'local_accessibilitywidget'];
@@ -194,6 +246,9 @@ class a11y {
         }
         if ($preferences['guide'] !== '') {
             $classes[] = 'epure-a11y-guide-' . $preferences['guide'];
+        }
+        if ($preferences['speech']) {
+            $classes[] = 'epure-a11y-speech';
         }
         if ($class = self::scheme_class($preferences['scheme'] ?: self::default_scheme())) {
             $classes[] = $class;
@@ -264,11 +319,12 @@ class a11y {
                 'choices' => json_encode($choices)];
         }
         $switches = [];
-        foreach (self::SWITCHES as $switch) {
+        foreach (array_merge(self::SWITCHES, ['speech']) as $switch) {
             $switches[] = ['name' => $switch, 'label' => get_string('a11y' . $switch, 'theme_epure'),
                 'help' => get_string('a11y' . $switch . '_help', 'theme_epure'), 'checked' => $preferences[$switch]];
         }
-        return ['sizes' => $sizes, 'fonts' => $fonts, 'schemes' => $schemes, 'guides' => $guides, 'switches' => $switches,
+        return ['visitor' => self::visitor(), 'cookie' => self::COOKIE,
+            'sizes' => $sizes, 'fonts' => $fonts, 'schemes' => $schemes, 'guides' => $guides, 'switches' => $switches,
             'profiles' => $profiles, 'defaultscheme' => self::default_scheme()];
     }
 }

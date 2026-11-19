@@ -50,7 +50,7 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         );
         $this->assertSame(
             ['images' => 1, 'imagelinks' => 0, 'links' => 2, 'tables' => 1, 'contrast' => 0, 'headings' => 1, 'noheadings' => 0,
-                'frames' => 1, 'videos' => 1],
+                'frames' => 1, 'videos' => 1, 'emptyheadings' => 0, 'moving' => 0, 'tabindex' => 0, 'duplicateids' => 0],
             $found['issues']
         );
         $this->assertEqualsCanonicalizing(['captions', 'captions', 'transcript'], array_column($found['checks'], 'kind'));
@@ -60,6 +60,23 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         $clean = course_accessibility::check_html('<h2>Titre</h2><h3>Sous-titre</h3><p>Texte <a href="#">du règlement</a>.</p>');
         $this->assertSame(0, array_sum($clean['issues']));
         $this->assertSame([], $clean['checks']);
+    }
+
+    /**
+     * A title without text, a text that scrolls or blinks, an order of the key Tab of its own, an id used twice; not a
+     * title with a described image, a tabindex of 0 or -1, ids each once.
+     */
+    public function test_check_html_structure(): void {
+        $found = course_accessibility::check_html(
+            '<h2>Plan</h2><h3> </h3><h3><img src="a.png" alt="Logo"></h3>'
+            . '<marquee>Info</marquee><blink>!</blink>'
+            . '<a href="#a" tabindex="2">A</a><button tabindex="0">B</button><span tabindex="-1">C</span>'
+            . '<p id="x">1</p><p id="x">2</p><p id="y">3</p>'
+        )['issues'];
+        $this->assertSame(1, $found['emptyheadings']);
+        $this->assertSame(2, $found['moving']);
+        $this->assertSame(1, $found['tabindex']);
+        $this->assertSame(1, $found['duplicateids']);
     }
 
     /**

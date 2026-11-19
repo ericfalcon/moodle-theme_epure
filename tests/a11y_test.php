@@ -43,7 +43,7 @@ final class a11y_test extends \advanced_testcase {
         $this->assertSame('', a11y::html_classes());
         $this->assertSame(['text' => 100, 'font' => '', 'scheme' => '', 'guide' => '',
             'spacing' => false, 'lines' => false, 'contrast' => false, 'underline' => false,
-            'motion' => false, 'stillimages' => false, 'scrollbars' => false], a11y::preferences());
+            'motion' => false, 'stillimages' => false, 'scrollbars' => false, 'speech' => false], a11y::preferences());
     }
 
     /**
@@ -346,5 +346,35 @@ final class a11y_test extends \advanced_testcase {
         // Without the button « Aa », the choices of the user no longer apply: the display of the site.
         set_config('prefpanel', 0, 'theme_epure');
         $this->assertSame('', a11y::html_classes());
+    }
+
+    /**
+     * The visitors: their choices in the cookie of their browser, checked as those of a profile; a user logged in gets
+     * them for what they never chose; the reading aloud, a preference of each.
+     */
+    public function test_visitor_cookie(): void {
+        $this->resetAfterTest();
+        $_COOKIE[a11y::COOKIE] = json_encode(['text' => '150', 'font' => 'nonsense', 'guide' => 'ruler', 'speech' => '1',
+            'motion' => '1', 'evil' => '<script>']);
+        $this->assertTrue(a11y::visitor());
+        $expected = 'epure-a11y-text-150 epure-a11y-motion epure-a11y-guide-ruler epure-a11y-speech';
+        $this->assertSame($expected, a11y::html_classes());
+        $this->assertTrue(a11y::panel_context()['visitor']);
+
+        $this->setUser($this->getDataGenerator()->create_user());
+        $this->assertFalse(a11y::visitor());
+        set_user_preference('theme_epure_a11y_text', 100);
+        set_user_preference('theme_epure_a11y_speech', 0);
+        $this->assertSame('epure-a11y-motion epure-a11y-guide-ruler', a11y::html_classes());
+
+        // A switch is 0 or 1, nothing else; a size, a font, a colour, a guide one of theirs.
+        $this->setUser();
+        $_COOKIE[a11y::COOKIE] = json_encode(['motion' => 'yes', 'contrast' => 2, 'underline' => '1', 'speech' => [1],
+            'text' => '400', 'scheme' => 'yellow', 'guide' => 'telescope']);
+        $this->assertSame('epure-a11y-underline epure-dark epure-a11y-scheme-yellow', a11y::html_classes());
+
+        $_COOKIE[a11y::COOKIE] = 'not json';
+        $this->assertSame('', a11y::html_classes());
+        unset($_COOKIE[a11y::COOKIE]);
     }
 }

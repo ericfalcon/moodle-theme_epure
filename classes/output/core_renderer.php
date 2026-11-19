@@ -389,8 +389,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if (!during_initial_install()) {
             $this->page->requires->js_call_amd('theme_epure/still_images', 'init');
         }
-        // The preferences are saved in the profile: guests and visitors who are not logged in do not get them.
-        if (isloggedin() && !isguestuser() && !during_initial_install() && \theme_epure\a11y::panel_enabled()) {
+        // The preferences are saved in the profile, or in a cookie of the browser for the visitors.
+        if (!during_initial_install() && \theme_epure\a11y::panel_enabled()) {
             $this->page->requires->js_call_amd('theme_epure/a11y_panel', 'init');
             $output = $this->render_from_template('theme_epure/a11y_panel', \theme_epure\a11y::panel_context()) . $output;
         }
@@ -498,6 +498,20 @@ class core_renderer extends \theme_boost\output\core_renderer {
             return $this->render_from_template('theme_epure/a11y_mention', \theme_epure\accessibility_statement::mention());
         }
         return '';
+    }
+
+    /**
+     * The button « Aa » on the login page, which has no header: the visitors choose their display before logging in,
+     * kept in their browser.
+     *
+     * @return string HTML, empty without the button.
+     */
+    public function epure_login_a11y(): string {
+        if (during_initial_install() || !\theme_epure\a11y::panel_enabled()) {
+            return '';
+        }
+        $this->page->requires->js_call_amd('theme_epure/a11y_panel', 'init');
+        return $this->render_from_template('theme_epure/a11y_panel', \theme_epure\a11y::panel_context());
     }
 
     /**

@@ -456,6 +456,10 @@ class company_style {
         if ($brand = self::brand_colour($company)) {
             $p = palette::derive($brand);
             $d = palette::derive($brand, true);
+            // Under the cream overlay, with the accent and the header of the company, as below.
+            $own = self::settings((int) ($company->id ?? 0));
+            $headerstyle = $own['headerstyle'] ?: (string) get_config('theme_epure', 'headerstyle');
+            $cream = palette::cream($brand, $own['accentcolor'] ?: $brand, $headerstyle);
             $light = $p['on'] === palette::SURFACE_LIGHT;
             $rgb = implode(', ', palette::to_rgb($p['fill']));
             $css .= ':root{' .
@@ -476,6 +480,8 @@ class company_style {
                 "--epure-dark-brand-text:{$d['text']};" .
                 "--epure-dark-brand-soft:{$d['soft']};" .
                 "--epure-dark-brand-soft-2:{$d['soft2']};" .
+                // Under the cream overlay of « Aa »: the colours that keep 4.5:1 there.
+                implode('', array_map(fn($name, $value) => "--{$name}:{$value};", array_keys($cream), $cream)) .
                 // The accent colour of the site gives way to the colour of the company (or to its accent, below).
                 "--epure-login-overlay:rgba({$rgb}, {$p['overlayalpha']});" .
                 '--epure-header-hover:' . ($light ? 'rgba(0, 0, 0, .18)' : 'rgba(255, 255, 255, .3)') . ';' .

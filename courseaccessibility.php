@@ -69,6 +69,9 @@ if (data_submitted() && confirm_sesskey()) {
         'links' => optional_param_array('linktext', [], PARAM_TEXT),
         'headings' => optional_param_array('headings', [], PARAM_BOOL),
         'contrast' => optional_param_array('uncolour', [], PARAM_BOOL),
+        'emptyheadings' => optional_param_array('emptyheadings', [], PARAM_BOOL),
+        'moving' => optional_param_array('unmove', [], PARAM_BOOL),
+        'tabindex' => optional_param_array('taborder', [], PARAM_BOOL),
     ]);
     // The names changed in the guide, into their activities.
     $renamed = course_accessibility::rename($course, optional_param_array('rename', [], PARAM_TEXT));

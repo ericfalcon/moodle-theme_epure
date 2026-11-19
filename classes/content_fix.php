@@ -32,8 +32,12 @@ class content_fix {
     /** @var int Characters of a title or of a text alternative at most. */
     public const MAX_LENGTH = 250;
 
+    /** @var string An attribute tabindex above 0, in a tag. */
+    protected const TABINDEX = '~(<[a-z][a-z0-9]*\b[^>]*\s)tabindex\s*=\s*(["\']?)\s*0*[1-9]\d*\s*\2~i';
+
     /** @var string[] What the guide corrects, in their order on the page. */
-    public const KINDS = ['frames', 'imagelinks', 'tables', 'links', 'headings', 'contrast'];
+    public const KINDS = ['frames', 'imagelinks', 'tables', 'links', 'headings', 'contrast', 'emptyheadings', 'moving',
+        'tabindex'];
 
     /**
      * The frames without a title of a text: each with its tag, its offset and its address.
@@ -185,6 +189,53 @@ class content_fix {
     }
 
     /**
+     * The titles without text of a text: the whole text, and how many.
+     *
+     * @param string $html Text.
+     * @return array[] None, or one: tag (the whole text), offset, src, count.
+     */
+    public static function emptyheadings(string $html): array {
+        $count = count(self::empty_titles($html));
+        return $count ? [['tag' => $html, 'offset' => 0, 'src' => 'emptyheadings' . $count, 'count' => $count]] : [];
+    }
+
+    /**
+     * The texts that scroll or blink by themselves (marquee, blink) of a text: the whole text, and how many.
+     *
+     * @param string $html Text.
+     * @return array[] None, or one: tag (the whole text), offset, src, count.
+     */
+    public static function moving(string $html): array {
+        $count = count(self::all('~<(?:marquee|blink)\b[^>]*>~i', $html));
+        return $count ? [['tag' => $html, 'offset' => 0, 'src' => 'moving' . $count, 'count' => $count]] : [];
+    }
+
+    /**
+     * The elements of a text with an order of the key Tab of their own (tabindex above 0): the whole text, and how many.
+     *
+     * @param string $html Text.
+     * @return array[] None, or one: tag (the whole text), offset, src, count.
+     */
+    public static function tabindex(string $html): array {
+        $count = count(self::all(self::TABINDEX, $html));
+        return $count ? [['tag' => $html, 'offset' => 0, 'src' => 'tabindex' . $count, 'count' => $count]] : [];
+    }
+
+    /**
+     * The titles without text of a text, in their order: each with its offset and its whole tag.
+     *
+     * @param string $html Text.
+     * @return array[] Each: the title, its offset.
+     */
+    protected static function empty_titles(string $html): array {
+        return array_values(array_filter(
+            self::all('~<h([1-6])\b[^>]*>(.*?)</h\1\s*>~is', $html),
+            fn($title) => self::text($title[0]) === ''
+                && !array_filter(self::all('~<img\b[^>]*>~i', $title[0]), fn($img) => trim(self::attribute($img[0], 'alt')) !== '')
+        ));
+    }
+
+    /**
      * Levels of titles put back in order: none more than one deeper than the one before, the first as it is.
      *
      * @param int[] $levels Levels.
@@ -287,6 +338,25 @@ class content_fix {
      * @return string|null
      */
     protected static function correct(string $kind, array $item, $value): ?string {
+        if (in_array($kind, ['emptyheadings', 'moving', 'tabindex'], true) && empty($value)) {
+            return null;
+        }
+        if ($kind === 'emptyheadings') {
+            // The titles without text taken away, from the last to the first.
+            $html = $item['tag'];
+            foreach (array_reverse(self::empty_titles($html)) as [$title, $offset]) {
+                $html = substr_replace($html, '', $offset, strlen($title));
+            }
+            return $html;
+        }
+        if ($kind === 'moving') {
+            // The text stays, still.
+            return preg_replace('~</?(?:marquee|blink)\b[^>]*>~i', '', $item['tag']);
+        }
+        if ($kind === 'tabindex') {
+            // In the order of the page, still reached with the key Tab.
+            return preg_replace(self::TABINDEX, '${1}tabindex="0"', $item['tag']);
+        }
         if ($kind === 'headings') {
             if (empty($value)) {
                 return null;

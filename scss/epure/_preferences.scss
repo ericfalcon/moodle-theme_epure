@@ -312,7 +312,8 @@ html.epure-a11y-scrollbars {
 // The profiles: buttons that set several preferences in one click, two by row.
 .epure-a11y-profiles {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    // stylelint-disable-next-line csstree/validator -- min() in minmax(), valid CSS that the validator does not know.
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
     gap: .4rem;
     margin-top: .4rem;
 
@@ -334,13 +335,13 @@ html.epure-a11y-scrollbars {
         --epure-surface-muted: #0b0b0b;
         --epure-surface-raised: #141414;
         --epure-border: #b8b800;
-        --epure-contrast-border: #ffff00;
-        --epure-ink: #ffff00;
+        --epure-contrast-border: #ff0;
+        --epure-ink: #ff0;
         --epure-ink-muted: #ffff8a;
         --epure-brand-text: #8fd9ff;
         --epure-focus: #fff;
-        --bs-emphasis-color: #ffff00;
-        --mds-text-emphasis: #ffff00;
+        --bs-emphasis-color: #ff0;
+        --mds-text-emphasis: #ff0;
 
         a:not(.btn) {
             color: var(--epure-brand-text);
@@ -360,19 +361,75 @@ html.epure-a11y-scheme-cream body::after {
     mix-blend-mode: multiply;
 }
 
+// Under the overlay, the colours of the brand that keep 4.5:1 there (palette::cream()): those of the light mode reach it
+// on white, and the overlay takes up to a tenth off their contrast. Over the colours of an IOMAD company too.
+html.epure-a11y-scheme-cream {
+    --epure-brand: var(--epure-cream-brand);
+    --epure-brand-hover: var(--epure-cream-brand-hover);
+    --epure-on-brand: var(--epure-cream-on-brand);
+    --epure-brand-text: var(--epure-cream-brand-text);
+    --epure-light-brand-text: var(--epure-cream-brand-text);
+    --epure-focus: var(--epure-cream-brand-text);
+    --epure-accent: var(--epure-cream-accent);
+    --epure-on-accent: var(--epure-cream-on-accent);
+    --epure-header-bg: var(--epure-cream-header-bg);
+    --epure-header-end: var(--epure-cream-header-end);
+    --epure-header-on: var(--epure-cream-header-on);
+    --epure-header-hover: var(--epure-cream-header-hover);
+    --epure-header-toggler-filter: var(--epure-cream-header-toggler-filter);
+    --epure-header-divider: var(--epure-cream-header-divider);
+    --bs-primary: var(--epure-cream-brand);
+    --bs-link-color: var(--epure-cream-brand-text);
+    --bs-link-hover-color: var(--epure-cream-brand-text);
+}
+
+// In the rules of Bootstrap written at build time; as light as them, so that the colours given to some links (the
+// course index, the menus) stay.
+:where(html.epure-a11y-scheme-cream) {
+    a,
+    .btn-link {
+        color: var(--epure-brand-text);
+    }
+
+    .text-primary {
+        color: var(--epure-brand-text) !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .bg-primary,
+    .badge-primary {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand) !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .btn-primary {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand);
+        border-color: var(--epure-brand);
+
+        &:hover,
+        &:focus {
+            color: var(--epure-on-brand);
+            background-color: var(--epure-brand-hover);
+            border-color: var(--epure-brand-hover);
+        }
+    }
+}
+
 @media print {
     html.epure-a11y-scheme-cream body::after {
         display: none;
     }
 }
 
-// Reading guide (a11y_panel.js): a ruler under the line read, or a mask that darkens all but a few lines around it.
-// It follows the pointer, or the field reached with the keyboard; nothing under it changes, every click goes through.
+// Reading guide (reading_guide.js): a ruler under the line read, or a mask that darkens all but a few lines around
+// it. It follows the pointer, or the field reached with the keyboard; nothing under it changes, every click goes
+// through. Over the page and its fixed bars (header, drawers, bars at the bottom), under the windows that open over the
+// page: the dialogs and their backdrop, the popovers, the tooltips, the panel « Aa », the messages.
 .epure-a11y-reader {
     position: fixed;
     right: 0;
     left: 0;
-    z-index: 2147483001;
+    z-index: $zindex-fixed + 5;
     pointer-events: none;
 
     &[hidden] {
@@ -425,4 +482,56 @@ html.epure-a11y-scheme-cream body::after {
 .epure-a11y-status {
     font-size: .85rem;
     margin: 0;
+}
+
+// Reading aloud (read_aloud.js): its bar at the bottom of the screen, above the navigation bar of the phones, and the
+// block being read, marked.
+.epure-a11y-speechbar {
+    position: fixed;
+    bottom: calc(1rem + var(--epure-mobilenav-height, 0px)); // stylelint-disable-line length-zero-no-unit
+    left: 1rem;
+    z-index: $zindex-fixed;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    align-items: center;
+    max-width: calc(100vw - 2rem);
+    padding: .5rem .75rem;
+    color: var(--epure-ink);
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    box-shadow: var(--epure-shadow-hover);
+
+    .btn {
+        white-space: nowrap;
+    }
+}
+
+// What the bar says: a passage without a voice of the device for its language, a reading that failed.
+.epure-a11y-speechstatus {
+    flex-basis: 100%;
+    margin: 0;
+    font-size: .875rem;
+
+    &[hidden] {
+        display: none;
+    }
+}
+
+.epure-a11y-speechrate {
+    display: flex;
+    gap: .375rem;
+    align-items: center;
+    margin: 0;
+
+    .form-select {
+        width: auto;
+    }
+}
+
+.epure-a11y-speaking {
+    outline: 3px solid var(--epure-brand-text);
+    outline-offset: 2px;
+    background-color: var(--epure-brand-soft);
 }
