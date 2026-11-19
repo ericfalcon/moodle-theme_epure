@@ -14,7 +14,7 @@ Choose a brand colour (or click a colour of your logo), and optionally an accent
 
 ### Accessibility built in
 
-- Display preferences for every user (button « Aa », Alt + A): text size, Atkinson Hyperlegible or OpenDyslexic, text spacing, shorter lines, high contrast, underlined links, reduced motion, light or dark mode. Kept in the user's profile.
+- Display preferences for every user, visitors included (button « Aa », Alt + A): text up to 200 %, Atkinson Hyperlegible, OpenDyslexic or Lexend, text spacing, shorter lines, high contrast, underlined links, reduced motion, still images, a reading ruler or mask, reading aloud with the voices of the device, light, dark, yellow on black or cream. Profiles in one click (Dyslexia, Low vision, Concentration, No flashing), with a guide « Which profile to choose? » to print. Kept in the user's profile; the button shows when the display is the user's own.
 
   ![The panel « Aa » of display preferences, in light mode](screenshots/display-preferences-light.webp)
   ![The same page in dark mode](screenshots/display-preferences-dark.webp)
@@ -22,21 +22,23 @@ Choose a brand colour (or click a colour of your logo), and optionally an accent
 
 - Pages that reflow on phones down to 320 px, focus always visible and never hidden under fixed bars, 24 px targets, one duration for every micro-interaction and none when motion is reduced.
 - Keyboard shortcuts listed in a help opened with « ? », which each user can turn off.
-- An accessibility statement filled in step by step, on the model of the country of the site (France: RGAA; European Union: EN 301 549; elsewhere: WCAG 2.1 AA), with a mention on every page.
+- An accessibility statement filled in step by step, on the model of the country of the site (France: RGAA; European Union: EN 301 549; elsewhere: WCAG 2.1 AA), with a mention on every page; with IOMAD, each company can publish its own.
 - A content checker for teachers: as they write, a line under each editor points out images without a text alternative, images used as links, links that say nothing, tables without headers, skipped heading levels and long texts without titles, with a button to show each one; before saving, it lists them again. Nothing is ever blocked. It comes with the guide « Accessibility of the course », off by default.
 - A guide « Accessibility of the course » for teachers (off by default, for the organisations that must meet the WCAG 2.1 AA: RGAA in France, EN 301 549 in Europe):
   - every activity and resource of Moodle is read, in HTML or Markdown: pages, assignments, quizzes, books, lessons, workshops, glossaries, feedbacks, databases, H5P contents…;
   - the 47 activity modules of other plugins most installed are known (Questionnaire, Unilabel, Content Pages, Interactive Video, Booking, Lightbox Gallery, Learning map…), and any plugin can give its content to the guide through one function;
   - the documents given in the course are checked (Word, PowerPoint, Excel, LibreOffice, PDF: images without a text alternative, documents without titles or language, scanned PDF…);
   - texts whose colour does not stand out enough from their background, and passages in another language without their language marked, in the texts and in the documents of Word, PowerPoint and LibreOffice Writer;
-  - what to fix, each mistake with the link to its place, in red, what to confirm (videos, packages, external tools), in orange; the images described in place, from the guide; the report printed or downloaded (CSV, Excel, PDF…); updated as soon as an activity changes.
+  - what to fix, each mistake with the link to its place and its severity (blocking, serious, minor), what to confirm (videos, packages, external tools); a score of the course out of 100 % and what to fix first; the images described and many mistakes corrected in place, from the guide; the report printed or downloaded (CSV, Excel, PDF…); updated as soon as an activity changes;
+  - the scores of all the courses on the management dashboard (by category, week by week, in a file), in the table of « My courses » of the teachers and in the bar of the edit mode.
+- Defects of Moodle itself repaired in the page, where a theme can: the month of the calendar with its caption and its column headers, the key Space on the links made buttons, « (required) » in the label of a required field, a name for each navigation, the hidden choice of the quiz kept out of the keyboard… (found by an RGAA audit of a Moodle platform, among others).
 - Tested on every change: an automated pre-audit (axe-core, WCAG 2.2 A and AA) of 40 Moodle pages and 24 IOMAD pages, each in light, dark and on two phone widths, plus a matrix crossing brand colours, display preferences, keyboard use and IOMAD company colours.
 
 ### For learners
 
 - A dashboard that shows where to resume, what is due this week and what is completed.
 - « My courses » by role, a course catalogue with course presentation pages, progress per section, previous and next activity on every activity page, previous and next section on the page of a section, a reading mode.
-- « My summary »: a printable page of their courses, progress, completed activities, grades and certificates, or a PDF with a code of verification that the recipient checks on the platform. The learner sees what the recipient will see, chooses how long the document can be verified, and can revoke or delete it.
+- « My summary »: a printable page of their courses, progress, completed activities, grades and certificates, or a PDF tagged for the screen readers (PDF/UA, with PHP 8.2 and later) with a code of verification that the recipient checks on the platform. The learner sees what the recipient will see, chooses how long the document can be verified, and can revoke or delete it.
 - A navigation bar at the bottom of the screen on phones, and an installable web app.
 
 ![« My courses »: the courses in progress with their progress and the next activity to do](screenshots/my-courses.webp)
@@ -58,6 +60,7 @@ Choose a brand colour (or click a colour of your logo), and optionally an accent
 - Quick search (Ctrl+K / ⌘K) across menus, courses, activities and administration pages, the best matches first, with a page of all the results; for visitors, across the catalogue, the categories and the public pages.
 - A getting started offered to the administrator: name and logo, colours, login page from a model by sector, footer, then the accessibility statement.
 - Settings grouped in tabs, a clearer administration home, long forms with their sections listed, the save buttons always in view and whether the changes are saved.
+- A management dashboard (Site administration › Reports, and for each IOMAD company): the activity of the last 30 days, the courses most followed, their completion, the accessibility of the courses.
 - A course header for teachers: participants, active this week, to grade, with shortcuts, and the edit mode at hand on phones.
 - Branded e-mails, a certificate template in the brand colours for the plugin Certificate (tool_certificate), usable with the activity Course certificate.
 
@@ -532,8 +535,10 @@ Each point says what to do, with a link to change the activity. The guide prints
 
 **Display preferences.** The **Aa** button in the header (shortcut Alt + A; it is ignored while typing in a field or the text editor, where this combination can write a character depending on the system and the keyboard layout: « å » with Option + A on a Mac, « æ » or « á » with AltGr + A on some layouts) opens a panel in which each logged-in user chooses:
 
-- the text size: small, normal, large or very large (90, 100, 115 or 130%);
-- a reading font: the site's font, Atkinson Hyperlegible or OpenDyslexic;
+- the text size, from 90 to 200 % (90, 100, 115, 130, 150, 175 or 200 %), the page reflowing without scrolling across down to 320 pixels;
+- a reading font: the site's font, Atkinson Hyperlegible, OpenDyslexic or Lexend;
+- the colours: light, dark, as the device, yellow on black or cream; still images, scroll bars always shown, a reading ruler or mask; reading aloud of the selection or of the page, with the voices of the device only (nothing leaves the browser);
+- a profile in one click (Dyslexia, Low vision, Concentration, No flashing), each choice then changed at will;
 - more text spacing (the values from WCAG success criterion 1.4.12), shorter lines, enhanced contrast, underlined links, reduced motion;
 - **shorter lines**: the long texts of the courses (pages, books, lessons, descriptions and instructions of the activities, summaries of the sections, posts of the forums) at 70 characters per line at most (WCAG 1.4.8). The width follows the size of the text: with a zoom of 200 % or a larger text, a line keeps at most 70 characters and fits the screen, without scrolling across.
 
@@ -551,6 +556,8 @@ The country of the site does not tell on its own which law applies to the organi
 **Keyboard shortcuts.** The key **?** opens a window that lists the shortcuts of the page: « ? » itself, Ctrl + K (quick search), Alt + A (display preferences), Tab (skip link), Esc, the keys of the quick search and of the text editor (Alt + F10, Alt + 0); on a Mac, ⌘ and ⌥. The key is ignored while typing, and each user can turn it off in the window (WCAG 2.1.4); the help also opens from « Keyboard shortcuts (?) » in the window « ? » of the footer and from the panel « Aa ».
 
 **Nothing fixed over the content.** On phones, tablets and with a zoom of 200 %, the floating buttons of Moodle take a place of their own: below 1200 pixels, the contents of the help button « ? » show at the end of the page; below 992 pixels, the buttons of the drawers (index of the course, blocks) go at the top of the content. An element reached with the keyboard is never hidden, even in part, under the bars fixed at the top and the bottom of the screen: the page scrolls it into the clear.
+
+**Defects of Moodle repaired in the page.** Some defects are in Moodle itself, whatever the theme; an RGAA audit of a Moodle platform found several. Where a theme can, Épure repairs them in the page, on every version of Moodle and IOMAD, again when Moodle draws something new: the month of the calendar gets the month as the caption of its table and its day headers head their columns (RGAA 5.4, 5.7); the links that Moodle makes buttons (sections to fold, notifications, menus) obey the key Space as well as Enter (7.3); a required field says « (required) » in the text of its label, and the note that explains the mark is read (11.10); the navigations without a name get one (the letters of the participants, « First name » and « Last name », the choice of the page, the course index; 12.6); the two menus of Moodle, the site and the page, are told apart; the hidden choice « Clear my choice » of the quiz is kept out of the keyboard. What a theme cannot repair is listed in the accessibility statement and reported to Moodle.
 
 A theme alone cannot make a platform compliant: course content matters too, and a manual audit is still required before declaring compliance.
 

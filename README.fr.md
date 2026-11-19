@@ -14,7 +14,7 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo), et 
 
 ### L'accessibilité intégrée
 
-- Des préférences d'affichage pour chaque utilisateur (bouton « Aa », Alt + A) : taille du texte, Atkinson Hyperlegible ou OpenDyslexic, espacement du texte, lignes plus courtes, contraste renforcé, liens soulignés, animations réduites, mode clair ou sombre. Gardées dans le profil.
+- Des préférences d'affichage pour chaque utilisateur, visiteurs compris (bouton « Aa », Alt + A) : texte jusqu'à 200 %, Atkinson Hyperlegible, OpenDyslexic ou Lexend, espacement du texte, lignes plus courtes, contraste renforcé, liens soulignés, animations réduites, images figées, une règle ou un masque de lecture, la lecture à voix haute avec les voix de l'appareil, affichage clair, sombre, jaune sur noir ou crème. Des profils en un clic (Dyslexie, Basse vision, Concentration, Sans clignotement), avec une fiche « Quel profil choisir ? » à imprimer. Gardées dans le profil ; le bouton indique quand l'affichage est celui de l'utilisateur.
 
   ![Le panneau « Aa » des préférences d'affichage, en mode clair](screenshots/display-preferences-light.webp)
   ![La même page en mode sombre](screenshots/display-preferences-dark.webp)
@@ -22,21 +22,23 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo), et 
 
 - Des pages qui s'adaptent aux téléphones jusqu'à 320 px, un focus toujours visible et jamais caché sous une barre fixe, des cibles de 24 px, une même durée pour toutes les micro-interactions, et aucune quand les animations sont réduites.
 - Des raccourcis clavier listés dans une aide ouverte par « ? », que chacun peut désactiver.
-- Une déclaration d'accessibilité remplie pas à pas, sur le modèle du pays du site (France : RGAA ; Union européenne : EN 301 549 ; ailleurs : WCAG 2.1 AA), mentionnée sur chaque page.
+- Une déclaration d'accessibilité remplie pas à pas, sur le modèle du pays du site (France : RGAA ; Union européenne : EN 301 549 ; ailleurs : WCAG 2.1 AA), mentionnée sur chaque page ; avec IOMAD, chaque entreprise peut publier la sienne.
 - Un vérificateur de contenu pour les formateurs : pendant la saisie, une ligne sous chaque éditeur signale les images sans alternative, les images servant de lien, les liens qui ne disent rien, les tableaux sans en-têtes, les niveaux de titres sautés et les textes longs sans titre, avec un bouton pour montrer chacun ; avant l'enregistrement, il les liste de nouveau. Rien n'est jamais bloqué. Il accompagne le guide « Accessibilité du cours », désactivé par défaut.
 - Un guide « Accessibilité du cours » pour les formateurs (désactivé par défaut, pour les organismes tenus aux WCAG 2.1 AA : RGAA en France, EN 301 549 en Europe) :
   - toutes les activités et ressources de Moodle sont lues, en HTML ou en Markdown : pages, devoirs, tests, livres, leçons, ateliers, glossaires, feedbacks, bases de données, contenus H5P… ;
   - les 47 modules d'activité d'autres plugins les plus installés sont connus (Questionnaire, Unilabel, Content Pages, Interactive Video, Booking, Lightbox Gallery, Learning map…), et tout plugin peut donner son contenu au guide par une seule fonction ;
   - les documents déposés dans le cours sont vérifiés (Word, PowerPoint, Excel, LibreOffice, PDF : images sans texte alternatif, documents sans titre ou sans langue, PDF numérisés…) ;
   - les textes dont la couleur ne ressort pas assez sur leur fond, et les passages dans une autre langue sans leur langue indiquée, dans les textes comme dans les documents Word, PowerPoint et LibreOffice Writer ;
-  - ce qu'il faut corriger, chaque erreur avec le lien vers son emplacement, en rouge, ce qu'il faut confirmer (vidéos, paquets, outils externes), en orange ; les images décrites sur place, depuis le guide ; le bilan imprimé ou téléchargé (CSV, Excel, PDF…) ; mis à jour dès qu'une activité change.
+  - ce qu'il faut corriger, chaque erreur avec le lien vers son emplacement et sa gravité (bloquante, sérieuse, mineure), ce qu'il faut confirmer (vidéos, paquets, outils externes) ; un score du cours sur 100 % et ce qu'il faut corriger d'abord ; les images décrites et bien des erreurs corrigées sur place, depuis le guide ; le bilan imprimé ou téléchargé (CSV, Excel, PDF…) ; mis à jour dès qu'une activité change ;
+  - les scores de tous les cours sur le tableau de bord de gestion (par catégorie, semaine après semaine, dans un fichier), dans le tableau « Mes cours » des formateurs et dans la barre du mode édition.
+- Des défauts de Moodle lui-même réparés dans la page, là où un thème le peut : le mois du calendrier avec son titre et ses en-têtes de colonnes, la touche Espace sur les liens faits boutons, « (obligatoire) » dans le libellé d'un champ obligatoire, un nom pour chaque navigation, le choix caché du test tenu hors du clavier… (relevés entre autres par un audit RGAA d'une plateforme Moodle).
 - Testé à chaque modification : un pré-audit automatisé (axe-core, WCAG 2.2 A et AA) de 40 pages de Moodle et 24 pages d'IOMAD, chacune en clair, en sombre et sur deux largeurs de téléphone, et une matrice qui croise couleurs de marque, préférences d'affichage, usage au clavier et couleurs des entreprises IOMAD.
 
 ### Pour les apprenants
 
 - Un tableau de bord qui montre où reprendre, ce qui est à faire cette semaine et ce qui est terminé.
 - « Mes cours » par rôle, un catalogue avec une page de présentation des cours, la progression par section, l'activité précédente et suivante sur chaque activité, section précédente et suivante sur la page d'une section, un mode lecture.
-- « Ma synthèse » : une page imprimable de leurs cours, progression, activités terminées, notes et attestations, ou un PDF avec un code de vérification que le destinataire contrôle sur la plateforme. L'apprenant voit ce que verra le destinataire, choisit combien de temps le document est vérifiable, et peut le révoquer ou le supprimer.
+- « Ma synthèse » : une page imprimable de leurs cours, progression, activités terminées, notes et attestations, ou un PDF balisé pour les lecteurs d'écran (PDF/UA, avec PHP 8.2 et plus) avec un code de vérification que le destinataire contrôle sur la plateforme. L'apprenant voit ce que verra le destinataire, choisit combien de temps le document est vérifiable, et peut le révoquer ou le supprimer.
 - Une barre de navigation en bas de l'écran sur téléphone, et une application web installable.
 
 ![« Mes cours » : les formations en cours avec leur progression et la prochaine activité à faire](screenshots/my-courses.webp)
@@ -58,6 +60,7 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo), et 
 - Une recherche rapide (Ctrl+K / ⌘K) dans les menus, les cours, les activités et les pages d'administration, les résultats les plus pertinents d'abord, avec une page de tous les résultats ; pour les visiteurs, dans le catalogue, les catégories et les pages publiques.
 - Une mise en route proposée à l'administrateur : nom et logo, couleurs, page de connexion à partir d'un modèle par secteur, pied de page, puis déclaration d'accessibilité.
 - Des réglages rangés en onglets, un accueil de l'administration plus clair, des formulaires longs avec la liste de leurs sections, les boutons d'enregistrement toujours visibles et l'état de l'enregistrement.
+- Un tableau de bord de gestion (Administration du site › Rapports, et pour chaque entreprise IOMAD) : l'activité des 30 derniers jours, les cours les plus suivis, leur achèvement, l'accessibilité des cours.
 - Un en-tête de cours pour les formateurs : participants, actifs cette semaine, à corriger, avec des raccourcis, et le mode édition à portée de main sur téléphone.
 - Des e-mails aux couleurs de la marque, un modèle d'attestation aux couleurs de la marque pour le plugin Certificate (tool_certificate), utilisable avec l'activité Attestation de formation.
 
@@ -123,6 +126,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.43.0** : aucun nouveau réglage ; mettez le site à jour. Des défauts de Moodle relevés par un audit RGAA réparés dans la page : le tableau du mois du calendrier a un titre et des en-têtes de colonnes ; la touche Espace actionne les liens faits boutons ; un champ obligatoire dit « (obligatoire) » dans son libellé ; les navigations sans nom en reçoivent un ; la recherche de « Mes cours » a un libellé visible.
 - **1.42.0** : aucun nouveau réglage ; mettez le site à jour. « Aa » indique quand l’affichage est celui que l’utilisateur a choisi (un point, « personnalisées » dans son nom) ; une fiche « Quel profil choisir ? » à imprimer ou à donner (`/theme/epure/profiles.php`).
 - **1.41.0** : aucun nouveau réglage ; mettez le site à jour. Le PDF de « Ma synthèse » est balisé pour les lecteurs d’écran (PDF/UA-1), avec PHP 8.2 et plus (une bibliothèque fournie, tc-lib-pdf) ; avec PHP 8.1, comme avant.
 - **1.40.0** : aucun nouveau réglage ; mettez le site à jour. Avec IOMAD, chaque entreprise peut publier sa propre déclaration d’accessibilité (profil de l’entreprise › Apparence › Pied de page) ; ses utilisateurs, sa page de connexion et son adresse l’affichent.
@@ -526,8 +530,10 @@ Chaque point dit quoi faire, avec un lien pour modifier l'activité. Le guide s'
 
 **Préférences d'affichage.** Le bouton **Aa** de l'en-tête (raccourci Alt + A ; il est ignoré pendant la saisie dans un champ ou l'éditeur de texte, où cette combinaison peut écrire un caractère selon le système et la disposition du clavier : « å » avec Option + A sur Mac, « æ » ou « á » avec AltGr + A sur certaines dispositions) ouvre un panneau où chaque utilisateur connecté choisit :
 
-- la taille du texte : petite, normale, grande ou très grande (90, 100, 115 ou 130 %) ;
-- une police de lecture : celle du site, Atkinson Hyperlegible ou OpenDyslexic ;
+- la taille du texte, de 90 à 200 % (90, 100, 115, 130, 150, 175 ou 200 %), la page se réorganisant sans défilement horizontal jusqu'à 320 pixels ;
+- une police de lecture : celle du site, Atkinson Hyperlegible, OpenDyslexic ou Lexend ;
+- les couleurs : clair, sombre, comme l'appareil, jaune sur noir ou crème ; images figées, barres de défilement toujours visibles, une règle ou un masque de lecture ; la lecture à voix haute de la sélection ou de la page, avec les seules voix de l'appareil (rien ne quitte le navigateur) ;
+- un profil en un clic (Dyslexie, Basse vision, Concentration, Sans clignotement), chaque choix se changeant ensuite à volonté ;
 - un texte plus espacé (valeurs du critère WCAG 1.4.12), des lignes courtes, un contraste renforcé, des liens soulignés, des animations réduites ;
 - **lignes courtes** : les textes longs des cours (pages, livres, leçons, descriptions et consignes des activités, résumés des sections, messages des forums) à 70 caractères par ligne au plus (WCAG 1.4.8). La largeur suit la taille du texte : avec un zoom à 200 % ou un texte agrandi, une ligne garde au plus 70 caractères et tient dans l'écran, sans défilement horizontal.
 
@@ -543,6 +549,8 @@ Le changement est immédiat, puis enregistré dans les préférences de son prof
 Le pays du site n'indique pas à lui seul le droit qui s'applique à l'organisme : vérifiez que le modèle lui convient. **Avec IOMAD**, la déclaration du site vaut pour toute la plateforme, toutes entreprises confondues. Une entreprise responsable de son propre service publie la sienne : depuis le profil de l’entreprise (Apparence › Pied de page, « La remplir étape par étape »), avec le même formulaire guidé, par ceux qui modifient l’apparence de l’entreprise. Une fois publiée, ses utilisateurs, sa page de connexion et son adresse l’affichent, au nom de l’entreprise par défaut, et la mention du pied de page y mène ; d’ici là, la déclaration de la plateforme.
 
 **Pas à pas.** Les mêmes réglages se remplissent dans un formulaire guidé (Administration du site › Présentation › Thèmes › « Déclaration d'accessibilité, pas à pas », aussi lié depuis l'onglet Accessibilité et, pour les administrateurs, depuis la déclaration elle-même) : qui publie la déclaration, l'audit, l'état de conformité, les contenus non accessibles, le contact. Chaque étape dit ce que demande le modèle du pays, et le modèle lui-même avec un lien vers les paramètres de localisation ; l'étape de l'état rappelle le taux saisi et la règle du modèle (RGAA : totalement conforme à 100 %, partiellement à partir de 50 %, non conforme en dessous ou sans audit ; ailleurs : totalement si tous les critères sont respectés, partiellement si la plupart le sont, non conforme sinon ou sans audit), mais le thème ne calcule jamais l'état : l'audit le donne. La déclaration a un bouton pour l'imprimer, ou l'enregistrer en PDF.
+
+**Défauts de Moodle réparés dans la page.** Certains défauts sont dans Moodle lui-même, quel que soit le thème ; un audit RGAA d'une plateforme Moodle en a relevé plusieurs. Là où un thème le peut, Épure les répare dans la page, sur toutes les versions de Moodle et d'IOMAD, et de nouveau quand Moodle affiche quelque chose de nouveau : le mois du calendrier reçoit le mois comme titre de son tableau et ses en-têtes de jours titrent leurs colonnes (RGAA 5.4, 5.7) ; les liens que Moodle fait boutons (sections à replier, notifications, menus) obéissent à la touche Espace comme à Entrée (7.3) ; un champ obligatoire dit « (obligatoire) » dans le texte de son libellé, et la note qui explique la marque est lue (11.10) ; les navigations sans nom en reçoivent un (les lettres des participants, « Prénom » et « Nom », le choix de la page, l'index du cours ; 12.6) ; les deux menus de Moodle, celui du site et celui de la page, se distinguent ; le choix caché « Effacer mon choix » du test est tenu hors du clavier. Ce qu'un thème ne peut pas réparer est listé dans la déclaration d'accessibilité et signalé à Moodle.
 
 Un thème ne rend pas une plateforme conforme à lui seul : les contenus des cours comptent aussi, et un audit manuel reste nécessaire avant de déclarer la conformité.
 
