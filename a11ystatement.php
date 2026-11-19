@@ -94,9 +94,9 @@ foreach ($keys as $i => $key) {
 }
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading($companyid
-    ? get_string('a11ywizard_company', 'theme_epure', format_string(iomad::company($companyid)->name))
-    : get_string('a11ywizard', 'theme_epure'));
+$heading = $companyid ? get_string('a11ywizard_company', 'theme_epure', format_string(iomad::company($companyid)->name))
+    : get_string('a11ywizard', 'theme_epure');
+echo $OUTPUT->heading($heading);
 echo html_writer::tag('ol', $items, ['class' => 'epure-a11ywizard-steps']);
 // The model of the statement, from the country of the site.
 echo html_writer::tag('p', accessibility_statement::model_note(), ['class' => 'epure-a11ywizard-model']);
