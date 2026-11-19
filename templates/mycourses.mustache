@@ -40,10 +40,11 @@
     {{#hascourses}}
         <div class="epure-mycourses-toolbar">
             <div class="epure-mycourses-search">
-                <label class="sr-only visually-hidden" for="epure-mycourses-search">{{#str}}mycourses_search, theme_epure{{/str}}</label>
-                <span class="epure-mycourses-search-icon" aria-hidden="true"><i class="fa fa-search"></i></span>
-                <input type="search" class="form-control" id="epure-mycourses-search" data-action="search"
-                    placeholder="{{#str}}mycourses_search, theme_epure{{/str}}" autocomplete="off">
+                <label class="form-label" for="epure-mycourses-search">{{#str}}mycourses_search, theme_epure{{/str}}</label>
+                <div class="epure-mycourses-search-field">
+                    <span class="epure-mycourses-search-icon" aria-hidden="true"><i class="fa fa-search"></i></span>
+                    <input type="search" class="form-control" id="epure-mycourses-search" data-action="search" autocomplete="off">
+                </div>
             </div>
             {{#downloadcerts}}
                 <a class="btn btn-secondary epure-mycourses-certificates" href="{{downloadcerts}}">
