@@ -24,6 +24,8 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+import Pending from 'core/pending';
+
 /** @var {string} Bars fixed at the bottom of the screen. */
 const BOTTOM = '.epure-mobilenav, .epure-course-continue-sticky, .epure-longform-actions, .epure-a11yguide-save';
 
@@ -63,11 +65,13 @@ const scroller = () => {
  *
  * @param {HTMLElement} target Element that got the focus.
  * @param {number} tries Checks left.
+ * @param {Function} done Called once the page no longer moves.
  */
-const clear = (target, tries = 3) => {
+const clear = (target, tries = 3, done = () => undefined) => {
     const rect = target.getBoundingClientRect();
     // An element fixed on the screen itself (the link « Skip to main content » once focused) is never under them.
     if (!rect.height || floating(target)) {
+        done();
         return;
     }
     let bottom = window.innerHeight;
@@ -96,9 +100,23 @@ const clear = (target, tries = 3) => {
     if (delta && document.activeElement === target) {
         scroller().scrollBy({top: delta, behavior: 'instant'});
         if (tries > 1) {
-            window.requestAnimationFrame(() => clear(target, tries - 1));
+            window.requestAnimationFrame(() => clear(target, tries - 1, done));
+            return;
         }
     }
+    done();
+};
+
+/**
+ * Checks the element a moment after it got the focus, once the browser has scrolled it into view, if it did: it does so
+ * after the event. Moodle is told that the page may still move meanwhile (core/pending), so that what waits for the
+ * page (the acceptance tests) does not click on a place that scrolls away.
+ *
+ * @param {HTMLElement} target Element that got the focus.
+ */
+const later = (target) => {
+    const pending = new Pending('theme_epure/focus_clear');
+    window.setTimeout(() => clear(target, 3, () => pending.resolve()), 50);
 };
 
 let started = false;
@@ -113,8 +131,7 @@ export const init = () => {
     started = true;
     document.addEventListener('focusin', (event) => {
         if (event.target instanceof HTMLElement && event.target !== document.body) {
-            // After the browser has scrolled the element into view, if it did: it does so after the event.
-            window.setTimeout(() => clear(event.target), 50);
+            later(event.target);
         }
     });
     // The focus going into a frame (the text editor) leaves the page without a focusin: the frame is then active.
@@ -122,7 +139,7 @@ export const init = () => {
         window.setTimeout(() => {
             const frame = document.activeElement;
             if (frame instanceof HTMLIFrameElement) {
-                clear(frame);
+                later(frame);
             }
         }, 50);
     });

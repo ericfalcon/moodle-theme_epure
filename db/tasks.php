@@ -35,4 +35,14 @@ $tasks = [
         'month' => '*',
         'dayofweek' => '*',
     ],
+    // Each night: the scores of accessibility of the courses, for the management dashboard.
+    [
+        'classname' => '\theme_epure\task\compute_accessibility_scores',
+        'blocking' => 0,
+        'minute' => 'R',
+        'hour' => '2',
+        'day' => '*',
+        'month' => '*',
+        'dayofweek' => '*',
+    ],
 ];

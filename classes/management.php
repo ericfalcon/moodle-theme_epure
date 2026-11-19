@@ -314,9 +314,10 @@ class management {
      * @param int|null $now Time of reference, now by default.
      * @param int $companyid IOMAD company, 0 for the whole platform.
      * @param array $choices Companies to choose from, by id ({@see self::choices()}), none to hide the list.
+     * @param int $categoryid Category of the scores of accessibility of the courses, 0 for all.
      * @return array
      */
-    public static function export(?int $now = null, int $companyid = 0, array $choices = []): array {
+    public static function export(?int $now = null, int $companyid = 0, array $choices = [], int $categoryid = 0): array {
         $now = $now ?? time();
         $courses = self::courses($now, $companyid);
         $company = $companyid ? iomad::company($companyid) : null;
@@ -335,6 +336,10 @@ class management {
             'hascourses' => !empty($courses),
             'completion' => self::completion($companyid),
             'nolog' => !self::has_log(),
+            // The accessibility of the courses, where its guide is on.
+            'accessibility' => accessibility_scores::shown($companyid)
+                ? accessibility_scores::export($now, $categoryid, $companyid) : null,
+            'companyid' => $companyid,
         ];
     }
 }

@@ -57,5 +57,27 @@
         <INDEX NAME="coursecmcheck" UNIQUE="true" FIELDS="courseid, cmid, checkkey"/>
       </INDEXES>
     </TABLE>
+    <TABLE NAME="theme_epure_a11yscore" COMMENT="Score of accessibility of each course, week by week (guide « Accessibility of the course »), for the management dashboard">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course"/>
+        <FIELD NAME="weekstart" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Start of the week of the score: Monday at midnight UTC"/>
+        <FIELD NAME="cacherev" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Revision of the course when it was read: read again when it changes"/>
+        <FIELD NAME="score" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="100" SEQUENCE="false" COMMENT="Score of the course, out of 100"/>
+        <FIELD NAME="parts" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Parts of the course read"/>
+        <FIELD NAME="blocking" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Blocking mistakes"/>
+        <FIELD NAME="serious" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Serious mistakes"/>
+        <FIELD NAME="minor" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Minor mistakes"/>
+        <FIELD NAME="timecomputed" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Time the course was read"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="courseid" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="courseweek" UNIQUE="true" FIELDS="courseid, weekstart"/>
+        <INDEX NAME="weekstart" UNIQUE="false" FIELDS="weekstart"/>
+      </INDEXES>
+    </TABLE>
   </TABLES>
 </XMLDB>

@@ -227,13 +227,15 @@ class course_accessibility {
     }
 
     /**
-     * Forgets what was read of a course, which changed.
+     * Forgets what was read of a course, which changed; its score is computed again a moment later.
      *
      * @param int $courseid Course.
      */
     public static function forget(int $courseid): void {
         if ($courseid > 0) {
             \cache::make('theme_epure', 'courseaccessibility')->delete($courseid);
+            // Its score on the management dashboard is computed again a moment later.
+            accessibility_scores::queue($courseid);
         }
     }
 

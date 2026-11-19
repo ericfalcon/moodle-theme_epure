@@ -1,5 +1,15 @@
 # Changes
 
+## 1.38.0 — the accessibility of all the courses on the management dashboard
+
+- Management dashboard, a section « Accessibility of the courses »: the average score of the courses (as their guides compute it), how many courses have a blocking mistake, their mistakes by severity, the courses with the lowest scores (each linked to its guide), the categories with the lowest averages, and the score week by week over the last 12 weeks, written and repeated by a bar, with the points gained or lost. A list narrows it to a category and its subcategories; with IOMAD, the dashboard of a company to its courses.
+- The scores are computed in the background, by the cron, never while a page is shown. A course changed (an activity, a section, a file, a correction from its guide) is read again by an ad hoc task (« Accessibility score of a course changed ») at the end of the next slot of five minutes: the changes made one after the other are read once, and the activity of the learners within a slot writes nothing more. Each night, a scheduled task (« Accessibility scores of the courses ») reads the courses not read this week, as their guide does and from its cache, 10 minutes at most, the others the next night. One score per course and per week, kept a year; the scores of a course deleted with it.
+- Where the guide is on: for the site, or for the IOMAD companies that turned it on for themselves (the site leaving it off, as by default); the dashboard of a company shows the section when its guide is on. Off everywhere, no task reads anything and the section is not shown.
+- No new setting. A new table (theme_epure_a11yscore), without data about the users.
+- The focus kept clear of the fixed bars (theme_epure/focus_clear) tells Moodle that the page may still scroll, the moment it checks: the acceptance tests waited for it no longer, and clicked a button that scrolled away (the scenario of the getting started failed now and then at its first run, at one step or another).
+- Getting started, step 2: the line that says what the model of the login page did is kept before it is said; choosing a model moved « Save and continue » down by a line, under a quick click (the scenario of the getting started failed now and then, at its first run).
+- Tests: PHPUnit (the week, the task once a week and again on a change, its time limit, the year kept, a course deleted, the ad hoc task after a change, once for several, the dashboard, a category, the trend, the guide off, on for a company only).
+
 ## 1.37.0 — the severity of the mistakes and a score in the accessibility of the course
 
 - Accessibility of the course, the severity of each mistake, said in words and repeated by its colour: blocking (some learners cannot use the content: images, links of images, frames without a title, videos without subtitles, scanned PDF, moving texts…), serious (they use it with difficulty: tables, titles, contrast, untagged PDF, order of the key Tab, vague links…) or minor (shared or vague names, documents without a title, ids used twice…). Each mistake shows its severity; the report in a file too.

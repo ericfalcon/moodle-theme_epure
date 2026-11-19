@@ -40,6 +40,8 @@ if (!management::visible_to($companyid, (int) $USER->id)) {
     throw new required_capability_exception($context, management::CAPABILITY, 'nopermissions', '');
 }
 $params = $companyid ? ['companyid' => $companyid] : [];
+// The category of the scores of accessibility of the courses, 0 for all.
+$categoryid = optional_param('categoryid', 0, PARAM_INT);
 if (has_capability('moodle/site:config', $context)) {
     // In the administration, under the reports.
     admin_externalpage_setup('theme_epure_management', '', $params);
@@ -54,5 +56,6 @@ if (has_capability('moodle/site:config', $context)) {
 }
 
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template('theme_epure/management', management::export(null, $companyid, management::choices()));
+$data = management::export(null, $companyid, management::choices(), $categoryid);
+echo $OUTPUT->render_from_template('theme_epure/management', $data);
 echo $OUTPUT->footer();
