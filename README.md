@@ -123,7 +123,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
-- **1.38.0**: no new setting; upgrade the site (a new table and a new scheduled task, each night). The management dashboard: the accessibility of all the courses, by category, week by week.
+- **1.38.0**: no new setting; upgrade the site. The management dashboard: the accessibility of all the courses, by category, week by week, read each night by a new scheduled task (and kept in a new table).
 - **1.37.0**: no new setting; upgrade the site. Accessibility of the course: the severity of each mistake (blocking, serious, minor), a score of the course, « To fix first » and a filter.
 - **1.36.0**: no new setting; upgrade the site. « Aa »: reading aloud with the voices of the device, and for the visitors too (kept in their browser, on the login page too). Accessibility of the course: empty titles, moving texts, own order of the key Tab, ids used twice.
 - **1.35.0**: no new setting; upgrade the site. « Aa »: profiles (dyslexia, low vision, concentration, no flashing), text up to 200 %, a reading ruler or mask, colours yellow on black and cream, the font Lexend; the setting « Button Aa » warns when local_accessibility, local_a11y or local_accessibilitywidget is installed.

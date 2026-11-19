@@ -123,7 +123,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
-- **1.38.0** : aucun nouveau réglage ; mettez le site à jour (une nouvelle table et une nouvelle tâche planifiée, chaque nuit). Le tableau de bord de gestion : l’accessibilité de tous les cours, par catégorie, semaine après semaine.
+- **1.38.0** : aucun nouveau réglage ; mettez le site à jour. Le tableau de bord de gestion : l’accessibilité de tous les cours, par catégorie, semaine après semaine, lue chaque nuit par une nouvelle tâche planifiée (et gardée dans une nouvelle table).
 - **1.37.0** : aucun nouveau réglage ; mettez le site à jour. Accessibilité du cours : la gravité de chaque problème (bloquant, gênant, mineur), un score du cours, « À corriger en premier » et un filtre.
 - **1.36.0** : aucun nouveau réglage ; mettez le site à jour. « Aa » : lecture à voix haute avec les voix de l’appareil, et pour les visiteurs aussi (gardé dans leur navigateur, page de connexion comprise). Accessibilité du cours : titres vides, textes qui bougent, ordre de la touche Tab à part, identifiants en double.
 - **1.35.0** : aucun nouveau réglage ; mettez le site à jour. « Aa » : profils (dyslexie, basse vision, concentration, sans clignotement), texte jusqu’à 200 %, règle ou masque de lecture, couleurs jaune sur noir et crème, police Lexend ; le réglage « Bouton Aa » prévient quand local_accessibility, local_a11y ou local_accessibilitywidget est installé.
