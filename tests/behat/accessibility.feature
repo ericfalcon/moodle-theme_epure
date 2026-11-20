@@ -498,7 +498,7 @@ Feature: Accessibility of the Épure theme
     And I bring "Learners who need more time can get it" "field" to the middle of the screen
     And I set the field "Learners who need more time can get it" to "1"
     And I press "Save changes"
-    And I should see "The changes are saved."
+    And I should see "The confirmations are saved."
     And I should see "Confirmed by Admin User"
     And I should see "2 points to fix, 2 to confirm"
     And I follow "The reminder to print"

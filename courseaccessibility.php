@@ -75,9 +75,11 @@ if (data_submitted() && confirm_sesskey()) {
     ]);
     // The names changed in the guide, into their activities.
     $renamed = course_accessibility::rename($course, optional_param_array('rename', [], PARAM_TEXT));
+    // The changes saved, or only the points confirmed.
+    $changed = $described || array_filter($fixed) || $renamed;
     redirect(
         course_accessibility::url((int) $course->id),
-        get_string('courseaccessibility_saved', 'theme_epure')
+        get_string($changed ? 'courseaccessibility_saved' : 'courseaccessibility_savedconfirmations', 'theme_epure')
             . ($described ? ' ' . get_string('courseaccessibility_alt_saved', 'theme_epure', $described) : '')
             . implode('', array_map(
                 fn($kind) => $fixed[$kind]

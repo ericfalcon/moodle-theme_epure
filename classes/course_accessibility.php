@@ -1196,6 +1196,9 @@ class course_accessibility {
             'sections' => $sections,
             // The button to save: points to confirm, images, frames, links or tables to correct, activities to rename here.
             'hasform' => $figures['toconfirm'] > 0 || array_filter($confirmations) || $hasimages,
+            // « Save changes » when the page corrects something, « Save the confirmations » when it only confirms.
+            'savelabel' => get_string($hasimages ? 'courseaccessibility_save' : 'courseaccessibility_saveconfirmations',
+                'theme_epure'),
         ];
     }
 

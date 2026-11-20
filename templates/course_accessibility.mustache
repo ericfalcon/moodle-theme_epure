@@ -29,7 +29,7 @@
         "levels": [{"level": "blocking", "count": 1, "text": "Blocking: 1"}], "hasfirst": true,
         "first": [{"name": "Risks", "section": "Week 1", "url": "#epure-a11y-cm-4", "here": true}], "hasfilter": true,
         "filtershown": "Parts shown: {$a}", "filters": [{"value": "", "label": "All", "checked": true}], "done": "5 parts out of 8 have nothing left", "percent": 62,
-        "hastoconfirm": true, "hasform": true,
+        "hastoconfirm": true, "hasform": true, "savelabel": "Save the confirmations",
         "sections": [{"name": "Week 1", "id": "epure-a11y-section-1", "parts": [{
             "id": "epure-a11y-cm-4", "name": "Risks", "icon": "", "type": "Page",
             "state": {"class": "issues", "icon": "fa-triangle-exclamation", "text": "2 points to fix, 1 to confirm"},
@@ -293,7 +293,7 @@
         {{/sections}}
         {{#hasform}}
             <div class="epure-a11yguide-save d-print-none">
-                <button type="submit" class="btn btn-primary">{{#str}}courseaccessibility_save, theme_epure{{/str}}</button>
+                <button type="submit" class="btn btn-primary">{{savelabel}}</button>
                 <a class="btn btn-secondary" href="{{courseurl}}">{{#str}}cancel{{/str}}</a>
             </div>
         {{/hasform}}
