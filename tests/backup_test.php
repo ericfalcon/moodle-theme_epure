@@ -59,8 +59,9 @@ final class backup_test extends \advanced_testcase {
      */
     protected function backup_and_restore(int $courseid, bool $users): int {
         global $USER;
-        $controller = new \backup_controller(\backup::TYPE_1COURSE, $courseid, \backup::FORMAT_MOODLE,
-            \backup::INTERACTIVE_NO, \backup::MODE_GENERAL, $USER->id);
+        [$type, $format, $interactive, $mode] = [\backup::TYPE_1COURSE, \backup::FORMAT_MOODLE, \backup::INTERACTIVE_NO,
+            \backup::MODE_GENERAL];
+        $controller = new \backup_controller($type, $courseid, $format, $interactive, $mode, $USER->id);
         $controller->get_plan()->get_setting('users')->set_value($users);
         $controller->execute_plan();
         $file = $controller->get_results()['backup_destination'];
@@ -70,8 +71,8 @@ final class backup_test extends \advanced_testcase {
 
         $category = (int) $this->getDataGenerator()->create_category()->id;
         $newid = (int) \restore_dbops::create_new_course('Restored', 'restored-' . uniqid(), $category);
-        $controller = new \restore_controller($folder, $newid, \backup::INTERACTIVE_NO, \backup::MODE_GENERAL, $USER->id,
-            \backup::TARGET_NEW_COURSE);
+        $target = \backup::TARGET_NEW_COURSE;
+        $controller = new \restore_controller($folder, $newid, $interactive, $mode, $USER->id, $target);
         $controller->execute_precheck();
         $controller->execute_plan();
         $controller->destroy();
@@ -90,8 +91,8 @@ final class backup_test extends \advanced_testcase {
 
         $points = $DB->get_records(course_accessibility::TABLE, ['courseid' => $newid], 'checkkey');
         $this->assertCount(2, $points);
-        $newpage = $DB->get_field('course_modules', 'id', ['course' => $newid, 'module' => $DB->get_field('modules', 'id',
-            ['name' => 'page'])]);
+        $module = $DB->get_field('modules', 'id', ['name' => 'page']);
+        $newpage = $DB->get_field('course_modules', 'id', ['course' => $newid, 'module' => $module]);
         $bykey = array_column($points, null, 'checkkey');
         $this->assertEquals(0, $bykey['instructions']->cmid);
         $this->assertEquals($newpage, $bykey['video:0123456789abcdef']->cmid);
