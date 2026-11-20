@@ -21,12 +21,8 @@ Fonctionnement :
 - les mots restent en place quel que soit le thème utilisé par un cours ou un utilisateur ;
 - la première application prend une vingtaine de secondes par langue (Moodle charge le paquet de langue dans l'outil), les suivantes quelques secondes.
 
-Après chaque mise à jour de Moodle ou d'un paquet de langue, appliquez à nouveau le vocabulaire pour couvrir les nouvelles chaînes ; avec IOMAD, vérifiez aussi que `config.php` ne définit pas un autre gestionnaire de chaînes (`$CFG->customstringmanager`), qui couperait les mots des entreprises. Cette liste s'affiche sur la page du vocabulaire et dans l'onglet Identité des réglages du thème.
+Après chaque mise à jour de Moodle ou d'un paquet de langue, appliquez à nouveau le vocabulaire pour couvrir les nouvelles chaînes (voir [Mise à jour](Installation.md#mettre-à-jour)).
 
-## Langues
+**Langues.** Le vocabulaire s'applique en français et en anglais, dont le thème connaît la grammaire : en français, les articles, l'élision et les accords suivent le mot choisi ; en anglais, le singulier et le pluriel. Les autres langues installées gardent la formulation de Moodle. Le même mécanisme conviendrait à l'espagnol, à l'italien ou au portugais (genre et élision) ; l'allemand demanderait davantage (déclinaisons, mots composés). Chaque nouvelle langue demande un relecteur natif et des phrases de test (voir la feuille de route).
 
-Le vocabulaire s'applique en français et en anglais, dont le thème connaît la grammaire : en français, les articles, l'élision et les accords suivent le mot choisi ; en anglais, le singulier et le pluriel. Les autres langues installées gardent la formulation de Moodle.
-
-Le même mécanisme conviendrait à l'espagnol, à l'italien ou au portugais, qui demandent surtout le genre et, pour l'italien, l'élision. L'allemand demanderait davantage : déclinaisons (« der Kurs », « des Kurses ») et mots composés (« Kursübersicht »). Chaque nouvelle langue demande un relecteur natif et un jeu de phrases de test ; voir la [feuille de route](../ROADMAP.md).
-
-Avec IOMAD, la même page propose les mots « entreprise » et « département » pour toutes les entreprises ; chaque entreprise peut choisir les siens dans sa fiche, ainsi que ses mots pour « cours », « étudiant » et « enseignant » (voir la section IOMAD).
+Avec IOMAD, la même page propose les mots « entreprise » et « département » pour toutes les entreprises ; chaque entreprise peut choisir les siens dans sa fiche (voir la section IOMAD).
