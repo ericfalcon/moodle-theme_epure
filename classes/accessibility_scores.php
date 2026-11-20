@@ -365,6 +365,7 @@ class accessibility_scores {
             ]);
         }
         $last = $latest ? max(array_column($latest, 'timecomputed')) : 0;
+        $watch = !$companyid && has_capability('moodle/site:config', \context_system::instance());
 
         return [
             'hasdata' => $count > 0,
@@ -383,7 +384,58 @@ class accessibility_scores {
             'computed' => $last ? get_string('a11yscores_computed', 'theme_epure', userdate($last)) : '',
             'categorychoices' => self::category_choices($categoryid),
             'download' => $count ? self::download_selector($categoryid, $companyid) : '',
+            // How the computing goes: for the platform, to whoever configures it.
+            'health' => $watch ? self::health($now) : null,
         ];
+    }
+
+    /**
+     * How the computing of the scores goes, for whoever watches the platform: the courses read this week out of all,
+     * those changed and waiting to be read again, the last run of the reading of the night; and what to look at: the
+     * cron that no longer runs, the reading of the night turned off or failing, the courses whose reading fails. A task
+     * that fails is tried again later, up to a day later: a score may then stay old.
+     *
+     * @param int $now Time of reference.
+     * @return array lines (texts), alerts (texts), hasalerts.
+     */
+    public static function health(int $now): array {
+        global $DB;
+        $week = self::week($now);
+        $total = $DB->count_records_select('course', 'id <> :site', ['site' => SITEID]);
+        $read = $DB->count_records_sql(
+            "SELECT COUNT(1)
+               FROM {" . self::TABLE . "} s
+               JOIN {course} c ON c.id = s.courseid
+              WHERE s.weekstart = :week AND s.cacherev = c.cacherev",
+            ['week' => $week]
+        );
+        $refresh = '\\' . task\refresh_accessibility_score::class;
+        $waiting = $DB->count_records('task_adhoc', ['classname' => $refresh]);
+        $failing = $DB->count_records_select('task_adhoc', 'classname = :classname AND faildelay > 0', ['classname' => $refresh]);
+        $nightly = \core\task\manager::get_scheduled_task(task\compute_accessibility_scores::class);
+        $lastrun = $nightly ? (int) $nightly->get_last_run_time() : 0;
+        $cron = (int) get_config('tool_task', 'lastcronstart');
+
+        $lines = [
+            get_string('a11yhealth_read', 'theme_epure', (object) ['read' => $read, 'total' => $total]),
+            get_string('a11yhealth_waiting', 'theme_epure', $waiting),
+            $lastrun ? get_string('a11yhealth_lastrun', 'theme_epure', userdate($lastrun))
+                : get_string('a11yhealth_neverrun', 'theme_epure'),
+        ];
+        $alerts = [];
+        if (!$cron || $now - $cron > DAYSECS) {
+            $alerts[] = get_string('a11yhealth_cron', 'theme_epure', $cron ? userdate($cron) : get_string('never'));
+        }
+        if ($nightly && $nightly->get_disabled()) {
+            $alerts[] = get_string('a11yhealth_disabled', 'theme_epure');
+        } else if ($nightly && $nightly->get_fail_delay() > 0) {
+            $alerts[] = get_string('a11yhealth_nightlyfails', 'theme_epure');
+        }
+        if ($failing) {
+            $alerts[] = get_string('a11yhealth_failing', 'theme_epure', $failing);
+        }
+        return ['lines' => $lines, 'alerts' => $alerts, 'hasalerts' => (bool) $alerts,
+            'tasksurl' => (new \moodle_url('/admin/tool/task/scheduledtasks.php'))->out(false)];
     }
 
     /**

@@ -32,7 +32,7 @@ $id = required_param('id', PARAM_INT);
 $course = get_course($id);
 require_login($course, false);
 $context = context_course::instance($course->id);
-require_capability('moodle/course:update', $context);
+require_capability('theme/epure:useaccessibilityguide', $context);
 if ((int) $course->id === (int) SITEID || !course_accessibility::enabled()) {
     redirect(new moodle_url('/course/view.php', ['id' => $course->id]));
 }
@@ -47,12 +47,15 @@ if ($dataformat !== '') {
 
 // The confirmations of the form: each box checked, and those shown checked, that a teacher may uncheck.
 if (data_submitted() && confirm_sesskey()) {
-    course_accessibility::save(
-        $course,
-        (int) $USER->id,
-        optional_param_array('check', [], PARAM_RAW_TRIMMED),
-        optional_param_array('shown', [], PARAM_RAW_TRIMMED)
-    );
+    // The confirmations, for whoever may confirm (theme/epure:confirmaccessibility).
+    if (course_accessibility::can_confirm($context)) {
+        course_accessibility::save(
+            $course,
+            (int) $USER->id,
+            optional_param_array('check', [], PARAM_RAW_TRIMMED),
+            optional_param_array('shown', [], PARAM_RAW_TRIMMED)
+        );
+    }
     // The text alternatives written in the guide, into their images.
     $described = \theme_epure\content_alt::apply(
         $course,

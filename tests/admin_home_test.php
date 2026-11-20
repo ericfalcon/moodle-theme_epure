@@ -73,4 +73,41 @@ final class admin_home_test extends \advanced_testcase {
         $appearance = $cards[array_search(get_string('appearance', 'admin'), $names)];
         $this->assertStringContainsString('section=themesettingepure', $appearance['tasks'][0]['url']);
     }
+
+    /**
+     * The accessibility of the theme in the cards already there: its settings, its statement and what it covers with
+     * the settings of Épure, the accessibility of the courses with the reports once the guide is on; and in a category
+     * of its own of the reports.
+     */
+    public function test_accessibility_tasks(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $names = array_column(admin_home::export()['cards'], 'name');
+        $this->assertNotContains(get_string('a11yreports', 'theme_epure'), $names);
+        $tasks = array_column($this->card(get_string('appearance', 'admin'))['tasks'], 'url', 'name');
+        $settings = $tasks[get_string('a11ysettings_task', 'theme_epure')];
+        $this->assertStringEndsWith('section=themesettingepure#theme_epure_a11y', $settings);
+        $this->assertStringContainsString('/theme/epure/coverage.php', $tasks[get_string('coverage', 'theme_epure')]);
+        $reports = array_column($this->card(get_string('reports'))['tasks'], 'url', 'name');
+        $this->assertArrayNotHasKey(get_string('a11yscores', 'theme_epure'), $reports);
+
+        set_config('courseaccessibility', 1, 'theme_epure');
+        admin_get_root(true, false);
+        $reports = array_column($this->card(get_string('reports'))['tasks'], 'url', 'name');
+        $this->assertStringEndsWith('#epure-management-a11y', $reports[get_string('a11yscores', 'theme_epure')]);
+        $this->assertNotNull(admin_get_root()->locate('reports')->locate('theme_epure_a11yreports'));
+    }
+
+    /**
+     * The card of a name, on the home of the administration.
+     *
+     * @param string $name Name of the card.
+     * @return array
+     */
+    protected function card(string $name): array {
+        $cards = admin_home::export()['cards'];
+        $index = array_search($name, array_column($cards, 'name'));
+        $this->assertNotFalse($index);
+        return $cards[$index];
+    }
 }

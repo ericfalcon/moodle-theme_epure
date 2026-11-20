@@ -343,7 +343,11 @@ if ($ADMIN->fulltree) {
         . ' ' . get_string('a11ywizard_link', 'theme_epure', html_writer::link(
             new moodle_url('/theme/epure/a11ystatement.php'),
             get_string('a11ywizard', 'theme_epure')
-        )));
+        ))
+        . ' ' . html_writer::link(
+            theme_epure\accessibility_coverage::url(),
+            get_string('coverage_link', 'theme_epure')
+        ));
 
     $statuses = ['' => get_string('a11ystatus_unpublished', 'theme_epure')];
     foreach (theme_epure\accessibility_statement::STATUSES as $status) {
@@ -666,6 +670,31 @@ $ADMIN->add('reports', new admin_externalpage(
     new moodle_url('/theme/epure/management.php'),
     \theme_epure\management::CAPABILITY
 ));
+
+// The reports of accessibility of the theme in a category of their own of « Reports », apart from the others: the
+// accessibility of the courses (in the management dashboard), what the theme covers, the statement, the checklist of the
+// teachers and the guide of the profiles of the learners.
+$ADMIN->add('reports', new admin_category(
+    'theme_epure_a11yreports',
+    new lang_string('a11yreports', 'theme_epure')
+));
+$ADMIN->add('theme_epure_a11yreports', new admin_externalpage(
+    'theme_epure_a11ycourses',
+    new lang_string('a11yscores', 'theme_epure'),
+    new moodle_url('/theme/epure/management.php', [], 'epure-management-a11y'),
+    \theme_epure\management::CAPABILITY,
+    !\theme_epure\accessibility_scores::active()
+));
+$a11ypages = ['coverage' => 'coverage', 'accessibility' => 'a11ystatement', 'checklist' => 'checklist',
+    'profiles' => 'profilesguide'];
+foreach ($a11ypages as $file => $string) {
+    $ADMIN->add('theme_epure_a11yreports', new admin_externalpage(
+        'theme_epure_report_' . $file,
+        new lang_string($string, 'theme_epure'),
+        new moodle_url('/theme/epure/' . $file . '.php'),
+        \theme_epure\management::CAPABILITY
+    ));
+}
 
 // Vocabulary of the platform: a page of its own, as applying it rewrites the language strings.
 $ADMIN->add('themes', new admin_externalpage(

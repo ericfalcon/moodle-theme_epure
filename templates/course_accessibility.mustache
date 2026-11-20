@@ -282,8 +282,8 @@
                                 <legend class="epure-a11yguide-checks-title">{{#str}}courseaccessibility_checks, theme_epure{{/str}}</legend>
                                 {{#checks}}
                                     <div class="form-check epure-a11yguide-check">
-                                        <input type="checkbox" class="form-check-input" id="{{id}}" name="check[]" value="{{name}}" aria-describedby="{{id}}-help"{{#checked}} checked{{/checked}}>
-                                        {{#checked}}<input type="hidden" name="shown[]" value="{{name}}">{{/checked}}
+                                        <input type="checkbox" class="form-check-input" id="{{id}}" name="check[]" value="{{name}}" aria-describedby="{{id}}-help"{{#checked}} checked{{/checked}}{{^canconfirm}} disabled{{/canconfirm}}>
+                                        {{#canconfirm}}{{#checked}}<input type="hidden" name="shown[]" value="{{name}}">{{/checked}}{{/canconfirm}}
                                         <label class="form-check-label" for="{{id}}">{{label}}</label>
                                         <p class="epure-a11yguide-check-help" id="{{id}}-help">{{help}}{{#confirmed}} <span class="epure-a11yguide-confirmed">{{confirmed}}</span>{{/confirmed}}</p>
                                         {{#link}}<p class="epure-a11yguide-check-link d-print-none"><a href="{{link}}">{{linktext}}</a></p>{{/link}}

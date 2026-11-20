@@ -47,6 +47,7 @@ Feature: Pre-audit of accessibility of the Épure theme
       | /login/index.php               |
       | /theme/epure/accessibility.php |
       | /theme/epure/profiles.php      |
+      | /theme/epure/coverage.php      |
 
   Scenario: The pages of a learner meet accessibility standards in every display
     Given I log in as "learner1"

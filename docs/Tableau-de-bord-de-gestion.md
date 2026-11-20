@@ -17,6 +17,8 @@ Les scores sont calculés en arrière-plan par le cron, jamais pendant l'afficha
 - un cours modifié (une activité, une section, un fichier, une correction depuis son guide) est relu par une tâche ad hoc (« Score d’accessibilité d’un cours modifié, pour le tableau de bord de gestion ») à la fin du créneau de cinq minutes suivant : plusieurs modifications à la suite ne sont lues qu'une fois ;
 - chaque nuit, la tâche planifiée « Scores d’accessibilité des cours, pour le tableau de bord de gestion » lit les cours pas encore lus cette semaine, comme leur guide (depuis son cache quand le cours n'a pas changé), 10 minutes au plus par nuit, les autres la nuit suivante.
 
+**État du calcul.** Pour les administrateurs du site seulement (pas sur le tableau de bord d'une entreprise IOMAD), la partie « État du calcul » dit combien de cours ont un score à jour cette semaine, combien de calculs attendent le cron, et quand la tâche de nuit a tourné pour la dernière fois. Une alerte s'affiche quand le cron n'a pas tourné depuis plus d'un jour, quand la tâche de nuit est désactivée ou en échec, ou quand des calculs échouent, avec un lien vers les tâches planifiées.
+
 Un score par cours et par semaine est gardé un an (table `theme_epure_a11yscore`, sans donnée sur les utilisateurs) ; les scores d'un cours supprimé partent avec lui. Le guide désactivé partout, rien n'est lu et la partie n'est pas affichée. Le détail du guide et du score est dans [Accessibilité](Accessibilit%C3%A9.md#accessibilit%C3%A9-des-cours).
 
 ## Avec IOMAD
