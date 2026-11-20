@@ -26,6 +26,8 @@
 
 import {getStrings} from 'core/str';
 import Ajax from 'core/ajax';
+import Pending from 'core/pending';
+import Templates from 'core/templates';
 
 /** @var {Object[]} The files of the page, in the order of the course. */
 let files = [];
@@ -35,6 +37,9 @@ let strings = {};
 
 /** @var {HTMLDialogElement|null} The dialog, created at the first opening. */
 let dialog = null;
+
+/** @var {Promise<HTMLDialogElement>|null} The dialog being made, from its template. */
+let dialogready = null;
 
 /** @var {number} The file shown. */
 let current = -1;
@@ -182,58 +187,13 @@ const go = (step) => {
 };
 
 /**
- * A button of the dialog.
+ * The dialog, created once, from its template.
  *
- * @param {string} action Action.
- * @param {string} label Text.
- * @returns {HTMLButtonElement}
+ * @returns {Promise<HTMLDialogElement>}
  */
-const button = (action, label) => {
-    const element = document.createElement('button');
-    element.type = 'button';
-    element.className = `btn btn-secondary epure-preview-${action}`;
-    element.dataset.action = action;
-    const text = document.createElement('span');
-    text.textContent = label;
-    const other = document.createElement('span');
-    other.className = 'epure-preview-other';
-    element.append(text, other);
-    return element;
-};
-
-/**
- * The dialog, created once.
- *
- * @returns {HTMLDialogElement}
- */
-const createDialog = () => {
-    const element = document.createElement('dialog');
-    element.className = 'epure-preview';
-    element.setAttribute('aria-labelledby', 'epure-preview-title');
-    element.innerHTML = `
-        <div class="epure-preview-header">
-            <div>
-                <h2 class="epure-preview-title" id="epure-preview-title"></h2>
-                <p class="epure-preview-position"></p>
-            </div>
-            <button type="button" class="btn btn-secondary epure-preview-close" data-action="close">
-                <i class="fa fa-xmark fa-times" aria-hidden="true"></i><span class="sr-only visually-hidden"></span>
-            </button>
-        </div>
-        <div class="epure-preview-body"></div>
-        <div class="epure-preview-footer">
-            <div class="epure-preview-links">
-                <a class="btn btn-secondary" data-action="newtab" target="_blank" rel="noopener"></a>
-                <a class="btn btn-secondary" data-action="download"></a>
-            </div>
-        </div>
-        <p class="sr-only visually-hidden epure-preview-status" role="status"></p>`;
-    element.querySelector('.epure-preview-close span').textContent = strings.close;
-    element.querySelector('[data-action="newtab"]').textContent = strings.newtab;
-    element.querySelector('[data-action="download"]').textContent = strings.download;
-    const footer = element.querySelector('.epure-preview-footer');
-    footer.prepend(button('previous', strings.previous));
-    footer.append(button('next', strings.next));
+const createDialog = async() => {
+    const {html, js} = await Templates.renderForPromise('theme_epure/file_preview', {});
+    const element = Templates.appendNodeContents(document.body, html, js).find((node) => node.nodeName === 'DIALOG');
     element.addEventListener('click', (e) => {
         const action = e.target.closest('[data-action]')?.dataset.action;
         if (action === 'close') {
@@ -261,7 +221,6 @@ const createDialog = () => {
             opener.focus();
         }
     });
-    document.body.append(element);
     return element;
 };
 
@@ -271,13 +230,18 @@ const createDialog = () => {
  * @param {number} index File.
  * @param {HTMLElement} link The link that opened it.
  */
-const open = (index, link) => {
-    dialog = dialog || createDialog();
+const open = async(index, link) => {
+    const pending = new Pending('theme_epure/file_preview:open');
     opener = link;
+    dialogready = dialogready || createDialog();
+    dialog = await dialogready;
     show(index, false);
-    document.documentElement.classList.add('epure-preview-open');
-    dialog.showModal();
-    dialog.querySelector('[data-action="close"]').focus();
+    if (!dialog.open) {
+        document.documentElement.classList.add('epure-preview-open');
+        dialog.showModal();
+        dialog.querySelector('[data-action="close"]').focus();
+    }
+    pending.resolve();
 };
 
 /**
@@ -290,7 +254,7 @@ export const init = async() => {
     }
     document.documentElement.dataset.epurePreview = '1';
     files = JSON.parse(data.textContent).files || [];
-    const keys = ['close', 'download', 'loading', 'newtab', 'next', 'opened', 'position', 'previous', 'unreadable'];
+    const keys = ['loading', 'opened', 'position', 'unreadable'];
     const values = await getStrings(keys.map((key) => ({key: `preview_${key}`, component: 'theme_epure'})));
     keys.forEach((key, i) => {
         strings[key] = values[i];

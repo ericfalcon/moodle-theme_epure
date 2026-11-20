@@ -1,0 +1,51 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/file_preview
+
+    The window of the preview of the files of a course (theme_epure/file_preview): the title and the position of the
+    file, its view, the previous and the next file, the links to open it in a new tab and to download it. Filled by the
+    script for each file.
+
+    Context variables required for this template:
+    * none
+
+    Example context (json):
+    {
+    }
+}}
+<dialog class="epure-preview" aria-labelledby="epure-preview-title">
+    <div class="epure-preview-header">
+        <div>
+            <h2 class="epure-preview-title" id="epure-preview-title"></h2>
+            <p class="epure-preview-position"></p>
+        </div>
+        <button type="button" class="btn btn-secondary epure-preview-close" data-action="close">
+            <i class="fa fa-xmark fa-times" aria-hidden="true"></i><span class="sr-only visually-hidden">{{#str}}preview_close, theme_epure{{/str}}</span>
+        </button>
+    </div>
+    <div class="epure-preview-body"></div>
+    <div class="epure-preview-footer">
+        <button type="button" class="btn btn-secondary epure-preview-previous" data-action="previous"><span>{{#str}}preview_previous, theme_epure{{/str}}</span><span class="epure-preview-other"></span></button>
+        <div class="epure-preview-links">
+            <a class="btn btn-secondary" data-action="newtab" target="_blank" rel="noopener">{{#str}}preview_newtab, theme_epure{{/str}}</a>
+            <a class="btn btn-secondary" data-action="download">{{#str}}preview_download, theme_epure{{/str}}</a>
+        </div>
+        <button type="button" class="btn btn-secondary epure-preview-next" data-action="next"><span>{{#str}}preview_next, theme_epure{{/str}}</span><span class="epure-preview-other"></span></button>
+    </div>
+    <p class="sr-only visually-hidden epure-preview-status" role="status"></p>
+</dialog>

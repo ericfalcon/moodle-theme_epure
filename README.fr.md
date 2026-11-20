@@ -94,7 +94,7 @@ Chaque entreprise a ses couleurs, son logo, sa police et son vocabulaire (ici «
 
 - Moodle 4.5 à 5.3, IOMAD 4.5 à 5.2, PHP 8.1 à 8.4, PostgreSQL et MariaDB : tous testés en intégration continue (PHPUnit, Behat, contrôles du code).
 - Facultatif : tool_certificate et mod_coursecertificate pour les attestations.
-- Données personnelles : les préférences des utilisateurs, les documents « Ma synthèse » émis et les points d'accessibilité confirmés par les enseignants, exportés et supprimés par l'API de confidentialité (et à la suppression d'un utilisateur). Aucun service externe n'est appelé ; les polices sont fournies avec le thème (licence SIL Open Font). Un cookie : `theme_epure_a11y`, les préférences d'affichage « Aa » d'un visiteur non connecté (un an, dans son seul navigateur, rien sur le serveur) ; posé seulement quand le visiteur choisit une préférence, c'est un cookie d'un service qu'il a demandé, exempté de consentement (selon la CNIL), à citer dans la mention des cookies du site.
+- Données personnelles : les préférences des utilisateurs, les documents « Ma synthèse » émis et les points d'accessibilité confirmés par les enseignants, exportés et supprimés par l'API de confidentialité (et à la suppression d'un utilisateur) ; les points d'accessibilité confirmés dans un cours sont sauvegardés et restaurés avec lui. Aucun service externe n'est appelé ; les polices sont fournies avec le thème (licence SIL Open Font). Un cookie : `theme_epure_a11y`, les préférences d'affichage « Aa » d'un visiteur non connecté (un an, dans son seul navigateur, rien sur le serveur) ; posé seulement quand le visiteur choisit une préférence, c'est un cookie d'un service qu'il a demandé, exempté de consentement (selon la CNIL), à citer dans la mention des cookies du site.
 
 ### À savoir
 
@@ -126,6 +126,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.44.0** : aucun nouveau réglage ; mettez le site à jour. Les points d’accessibilité confirmés dans le guide d’un cours sont sauvegardés et restaurés avec le cours (qui les a confirmés, avec les utilisateurs).
 - **1.43.0** : aucun nouveau réglage ; mettez le site à jour. Des défauts de Moodle relevés par un audit RGAA réparés dans la page : le tableau du mois du calendrier a un titre et des en-têtes de colonnes ; la touche Espace actionne les liens faits boutons ; un champ obligatoire dit « (obligatoire) » dans son libellé ; les navigations sans nom en reçoivent un ; la recherche de « Mes cours » a un libellé visible.
 - **1.42.0** : aucun nouveau réglage ; mettez le site à jour. « Aa » indique quand l’affichage est celui que l’utilisateur a choisi (un point, « personnalisées » dans son nom) ; une fiche « Quel profil choisir ? » à imprimer ou à donner (`/theme/epure/profiles.php`).
 - **1.41.0** : aucun nouveau réglage ; mettez le site à jour. Le PDF de « Ma synthèse » est balisé pour les lecteurs d’écran (PDF/UA-1), avec PHP 8.2 et plus (une bibliothèque fournie, tc-lib-pdf) ; avec PHP 8.1, comme avant.

@@ -13,13 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-/*
+/**
  * « Moodle is working » indicator of the install and upgrade pages of Épure.
  *
  * Once a form is sent or a button link followed, the page waits, sometimes for minutes, for the
  * answer of the server. After a short delay, an overlay tells it, keeps people from sending
  * twice, and is read by screen readers. Inline and without dependency: it must work while
  * Moodle is being upgraded.
+ *
+ * @copyright  2026 Eric Falcon
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 (function() {
     var overlay = document.getElementById('epure-busy');

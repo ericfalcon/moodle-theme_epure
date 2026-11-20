@@ -1,0 +1,50 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/read_aloud_bar
+
+    The bar of the reading aloud (theme_epure/read_aloud), at the bottom of the screen: read (or pause, resume), stop,
+    the speed, and the status said to the screen readers. The script changes the button « Read » as the reading goes.
+
+    Context variables required for this template:
+    * title - Name of the bar.
+    * play - Text of the button that starts the reading.
+    * stop - Text of the button that stops it.
+    * rate - Label of the speed.
+    * rates - Speeds: value, label, selected.
+
+    Example context (json):
+    {
+        "title": "Reading aloud",
+        "play": "Read",
+        "stop": "Stop",
+        "rate": "Speed",
+        "rates": [{"value": 0.75, "label": "0.75"}, {"value": 1, "label": "1", "selected": true}]
+    }
+}}
+<div class="epure-a11y-speechbar d-print-none" role="region" aria-label="{{title}}">
+    <button type="button" class="btn btn-primary" data-action="play"><i class="fa fa-play" aria-hidden="true"></i> <span>{{play}}</span></button>
+    <button type="button" class="btn btn-secondary" data-action="stop"><i class="fa fa-stop" aria-hidden="true"></i> <span>{{stop}}</span></button>
+    <label class="epure-a11y-speechrate"><span>{{rate}}</span>
+        <select class="form-select custom-select">
+            {{#rates}}
+            <option value="{{value}}"{{#selected}} selected{{/selected}}>{{label}} ×</option>
+            {{/rates}}
+        </select>
+    </label>
+    <p class="epure-a11y-speechstatus" role="status" data-region="status" hidden></p>
+</div>

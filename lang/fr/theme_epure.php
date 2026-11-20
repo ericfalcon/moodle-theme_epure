@@ -992,6 +992,7 @@ $string['preview_truncated'] = 'La suite du document est dans le fichier.';
 $string['preview_unreadable'] = 'Ce document ne peut pas être lu ici : téléchargez-le.';
 $string['privacy:metadata:a11ycheck'] = 'Les points d\'accessibilité d\'un cours qu\'un enseignant a confirmés dans le guide « Accessibilité du cours ».';
 $string['privacy:metadata:a11ycheck:checkkey'] = 'Le point confirmé (sous-titres d\'une vidéo, document accessible…).';
+$string['privacy:metadata:a11ycheck:cmid'] = 'L\'activité que concerne le point, aucune pour le cours et ses sections.';
 $string['privacy:metadata:a11ycheck:courseid'] = 'Le cours.';
 $string['privacy:metadata:a11ycheck:timecreated'] = 'Quand le point a été confirmé.';
 $string['privacy:metadata:a11ycheck:userid'] = 'L\'enseignant qui a confirmé le point.';

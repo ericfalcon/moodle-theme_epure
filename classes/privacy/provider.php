@@ -62,6 +62,7 @@ class provider implements
         ], 'privacy:metadata:summary');
         $collection->add_database_table(course_accessibility::TABLE, [
             'courseid' => 'privacy:metadata:a11ycheck:courseid',
+            'cmid' => 'privacy:metadata:a11ycheck:cmid',
             'checkkey' => 'privacy:metadata:a11ycheck:checkkey',
             'userid' => 'privacy:metadata:a11ycheck:userid',
             'timecreated' => 'privacy:metadata:a11ycheck:timecreated',

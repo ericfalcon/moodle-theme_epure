@@ -25,6 +25,7 @@
  */
 
 import {getStrings} from 'core/str';
+import Templates from 'core/templates';
 
 /** @type {string} The blocks of text read one after the other. */
 const BLOCKS = 'h1, h2, h3, h4, h5, h6, p, li, dt, dd, td, th, figcaption, blockquote, caption, label, legend';
@@ -287,25 +288,19 @@ const create = async() => {
         {key: 'a11yspeech_novoice', component: 'theme_epure', param: '{$a}'},
         {key: 'a11yspeech_failed', component: 'theme_epure'},
     ]);
+    const decimal = document.documentElement.lang.startsWith('en') ? '.' : ',';
+    const {html, js} = await Templates.renderForPromise('theme_epure/read_aloud_bar', {
+        title,
+        play,
+        stop: stopLabel,
+        rate: rateLabel,
+        rates: RATES.map((value) => ({value, label: String(value).replace('.', decimal), selected: value === rate})),
+    });
     if (bar) {
         return;
     }
-    bar = document.createElement('div');
-    bar.className = 'epure-a11y-speechbar d-print-none';
-    bar.setAttribute('role', 'region');
-    bar.setAttribute('aria-label', title);
+    bar = Templates.appendNodeContents(document.body, html, js).find((node) => node.nodeType === Node.ELEMENT_NODE);
     Object.assign(bar.dataset, {play, pause, resume, novoice, failed});
-    const options = RATES.map((value) => `<option value="${value}"${value === rate ? ' selected' : ''}>`
-        + `${String(value).replace('.', document.documentElement.lang.startsWith('en') ? '.' : ',')} ×</option>`).join('');
-    bar.innerHTML = `<button type="button" class="btn btn-primary" data-action="play">`
-        + `<i class="fa fa-play" aria-hidden="true"></i> <span></span></button>`
-        + `<button type="button" class="btn btn-secondary" data-action="stop"><i class="fa fa-stop" aria-hidden="true"></i> `
-        + `<span></span></button>`
-        + `<label class="epure-a11y-speechrate"><span></span> `
-        + `<select class="form-select custom-select">${options}</select></label>`
-        + `<p class="epure-a11y-speechstatus" role="status" data-region="status" hidden></p>`;
-    bar.querySelector('[data-action="stop"] span').textContent = stopLabel;
-    bar.querySelector('.epure-a11y-speechrate span').textContent = rateLabel;
     // The selection is read once the button is pressed: a click on it must not clear it.
     bar.querySelector('[data-action="play"]').addEventListener('mousedown', (e) => e.preventDefault());
     bar.querySelector('[data-action="play"]').addEventListener('click', () => {
@@ -323,7 +318,6 @@ const create = async() => {
     bar.querySelector('select').addEventListener('change', (e) => {
         rate = Number(e.target.value);
     });
-    document.body.append(bar);
     // The room of the bar under the page (_preferences.scss): its height, that of several lines with a large text.
     const room = () => document.documentElement.style.setProperty('--epure-speechbar-room', `${bar.offsetHeight + 16}px`);
     room();
