@@ -1,0 +1,65 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/coverage
+
+    Page « What Épure covers in accessibility »: the referential shown and the others, then, by who answers them (the
+    theme, the guide, the authors, Moodle, beyond the referential), each point with its criteria.
+
+    Example context (json):
+    {
+        "referential": "RGAA 4.1.2 (France)",
+        "models": [{"label": "France: RGAA (referential of this site)", "url": "#", "current": true},
+            {"label": "Other countries: WCAG", "url": "#", "current": false}],
+        "levels": [{"level": "theme", "heading": "What the theme ensures on every page", "intro": "Nothing to do.",
+            "items": [{"key": "skiplinks", "title": "Skip links", "text": "The first links go to the content.",
+                "references": "RGAA 4.1.2: 12.7 (WCAG 2.4.1)"}]}],
+        "statementurl": "#"
+    }
+}}
+<div class="epure-coverage">
+    <p>{{#str}}coverage_intro, theme_epure{{/str}}</p>
+    <p><strong>{{#str}}coverage_referential, theme_epure, {{referential}}{{/str}}</strong></p>
+    <nav aria-labelledby="epure-coverage-models">
+        <h2 class="h6" id="epure-coverage-models">{{#str}}coverage_models, theme_epure{{/str}}</h2>
+        <ul class="epure-coverage-models">
+            {{#models}}
+                <li>
+                    {{#current}}<span aria-current="page">{{label}}</span>{{/current}}
+                    {{^current}}<a href="{{url}}">{{label}}</a>{{/current}}
+                </li>
+            {{/models}}
+        </ul>
+    </nav>
+    <p class="alert alert-info">{{#str}}coverage_disclaimer, theme_epure{{/str}}</p>
+    {{#levels}}
+        <section class="epure-coverage-level" aria-labelledby="epure-coverage-{{level}}">
+            <h2 id="epure-coverage-{{level}}">{{heading}}</h2>
+            <p>{{intro}}</p>
+            <ul class="epure-coverage-items">
+                {{#items}}
+                    <li>
+                        <h3 class="h5">{{title}}</h3>
+                        <p class="mb-1">{{text}}</p>
+                        <p class="epure-coverage-references">{{references}}</p>
+                    </li>
+                {{/items}}
+            </ul>
+        </section>
+    {{/levels}}
+    <p><a href="{{statementurl}}">{{#str}}coverage_statement_link, theme_epure{{/str}}</a></p>
+</div>

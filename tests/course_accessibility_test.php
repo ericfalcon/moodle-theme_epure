@@ -489,6 +489,38 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
     }
 
     /**
+     * The capabilities of the guide: by default for those who change the course; the confirmations can be kept to a
+     * role, and the guide opened to a role that does not change the course.
+     */
+    public function test_capabilities(): void {
+        global $DB;
+        [$course, $teacher] = $this->course();
+        $context = \context_course::instance($course->id);
+        $this->setUser($teacher);
+        $this->assertTrue(course_accessibility::can_use($context));
+        $this->assertTrue(course_accessibility::can_confirm($context));
+        $this->assertTrue(course_accessibility::export($course, $GLOBALS['PAGE']->get_renderer('core'))['canconfirm']);
+
+        // The confirmations kept to another role: the teacher still reads the guide, without its boxes.
+        $role = $DB->get_field('role', 'id', ['shortname' => 'editingteacher']);
+        assign_capability('theme/epure:confirmaccessibility', CAP_PROHIBIT, $role, $context->id, true);
+        accesslib_clear_all_caches_for_unit_testing();
+        $this->assertTrue(course_accessibility::can_use($context));
+        $this->assertFalse(course_accessibility::can_confirm($context));
+        $this->assertFalse(course_accessibility::export($course, $GLOBALS['PAGE']->get_renderer('core'))['canconfirm']);
+
+        // A non-editing teacher given the guide reads it.
+        $reader = $this->getDataGenerator()->create_and_enrol($course, 'teacher');
+        $this->setUser($reader);
+        $this->assertFalse(course_accessibility::can_use($context));
+        $teacherrole = $DB->get_field('role', 'id', ['shortname' => 'teacher']);
+        assign_capability('theme/epure:useaccessibilityguide', CAP_ALLOW, $teacherrole, $context->id, true);
+        accesslib_clear_all_caches_for_unit_testing();
+        $this->assertTrue(course_accessibility::can_use($context));
+        $this->assertFalse(course_accessibility::can_confirm($context));
+    }
+
+    /**
      * What is read is kept until the course changes.
      */
     public function test_cache(): void {

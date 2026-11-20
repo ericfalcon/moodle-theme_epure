@@ -590,3 +590,45 @@ html:has(.epure-a11yguide-save) {
 .epure-a11y-pill-serious {
     border-left: 3px solid var(--epure-state-soon);
 }
+
+// The page « What Épure covers » (coverage.php): the referentials side by side, then each point in a card, with its
+// criteria below, quieter; a page break does not cut a card.
+.epure-coverage {
+    max-width: 52rem;
+}
+
+.epure-coverage-models {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 1.5rem;
+    padding-left: 0;
+    list-style: none;
+
+    [aria-current] {
+        font-weight: 600;
+    }
+}
+
+.epure-coverage-items {
+    padding-left: 0;
+    list-style: none;
+
+    > li {
+        padding: .75rem 1rem;
+        margin-bottom: .75rem;
+        background-color: var(--epure-surface);
+        border: 1px solid var(--epure-border);
+        border-radius: var(--epure-radius-lg);
+        break-inside: avoid;
+    }
+
+    h3 {
+        margin-top: 0;
+    }
+}
+
+.epure-coverage-references {
+    margin-bottom: 0;
+    font-size: .875rem;
+    color: var(--epure-ink-muted);
+}

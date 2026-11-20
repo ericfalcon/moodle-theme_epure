@@ -253,4 +253,42 @@ final class accessibility_scores_test extends \advanced_testcase {
         $this->assertSame(1, $DB->count_records(accessibility_scores::TABLE));
         $this->assertTrue(management::export(time())['accessibility']['hasdata']);
     }
+
+    /**
+     * How the computing goes: the courses read this week, those waiting to be read again, the last reading of the night;
+     * the cron that no longer runs and the readings that fail, told; only to whoever configures the platform.
+     */
+    public function test_health(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        set_config('courseaccessibility', 1, 'theme_epure');
+        $now = time();
+        $course = $this->course_with_mistake((int) $this->getDataGenerator()->create_category()->id);
+        $this->getDataGenerator()->create_course();
+        accessibility_scores::compute($now);
+        set_config('lastcronstart', $now - 60, 'tool_task');
+
+        $health = accessibility_scores::health($now);
+        $this->assertContains(get_string('a11yhealth_read', 'theme_epure', (object) ['read' => 2, 'total' => 2]), $health['lines']);
+        $this->assertFalse($health['hasalerts']);
+
+        // A course changed, waiting; its reading failing; the cron stopped for two days.
+        $DB->delete_records('task_adhoc');
+        accessibility_scores::queue((int) $course->id);
+        $DB->set_field('task_adhoc', 'faildelay', 60, ['classname' => '\\' . task\refresh_accessibility_score::class]);
+        set_config('lastcronstart', $now - 2 * DAYSECS, 'tool_task');
+        $health = accessibility_scores::health($now);
+        $this->assertContains(get_string('a11yhealth_waiting', 'theme_epure', 1), $health['lines']);
+        $this->assertTrue($health['hasalerts']);
+        $this->assertContains(get_string('a11yhealth_failing', 'theme_epure', 1), $health['alerts']);
+        $this->assertCount(2, $health['alerts']);
+
+        // In the dashboard, for the administrator only.
+        $this->assertNotNull(accessibility_scores::export($now)['health']);
+        $manager = $this->getDataGenerator()->create_user();
+        $this->getDataGenerator()->role_assign($DB->get_field('role', 'id', ['shortname' => 'manager']), $manager->id);
+        $this->setUser($manager);
+        $this->assertNull(accessibility_scores::export($now)['health']);
+    }
 }

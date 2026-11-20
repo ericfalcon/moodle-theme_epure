@@ -343,7 +343,11 @@ if ($ADMIN->fulltree) {
         . ' ' . get_string('a11ywizard_link', 'theme_epure', html_writer::link(
             new moodle_url('/theme/epure/a11ystatement.php'),
             get_string('a11ywizard', 'theme_epure')
-        )));
+        ))
+        . ' ' . html_writer::link(
+            theme_epure\accessibility_coverage::url(),
+            get_string('coverage_link', 'theme_epure')
+        ));
 
     $statuses = ['' => get_string('a11ystatus_unpublished', 'theme_epure')];
     foreach (theme_epure\accessibility_statement::STATUSES as $status) {

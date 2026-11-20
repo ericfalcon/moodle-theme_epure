@@ -106,7 +106,18 @@ class course_accessibility {
      */
     public static function can_use(\context_course $context): bool {
         return self::enabled() && (int) $context->instanceid !== (int) SITEID
-            && has_capability('moodle/course:update', $context);
+            && has_capability('theme/epure:useaccessibilityguide', $context);
+    }
+
+    /**
+     * Whether the current user may confirm the points of the guide of a course: those who use the guide and have
+     * theme/epure:confirmaccessibility (by default, those who change the course).
+     *
+     * @param \context_course $context Context of the course.
+     * @return bool
+     */
+    public static function can_confirm(\context_course $context): bool {
+        return self::can_use($context) && has_capability('theme/epure:confirmaccessibility', $context);
     }
 
     /**
@@ -1092,6 +1103,7 @@ class course_accessibility {
      */
     public static function export(\stdClass $course, \renderer_base $output): array {
         global $DB;
+        $canconfirm = self::can_confirm(\context_course::instance($course->id));
         $parts = self::analyse($course);
         $confirmations = self::confirmations((int) $course->id);
         $figures = self::figures($parts, $confirmations);
@@ -1229,7 +1241,9 @@ class course_accessibility {
             'hastoconfirm' => $figures['toconfirm'] > 0 || array_filter($confirmations),
             'sections' => $sections,
             // The button to save: points to confirm, images, frames, links or tables to correct, activities to rename here.
-            'hasform' => $figures['toconfirm'] > 0 || array_filter($confirmations) || $hasimages,
+            'hasform' => ($canconfirm && ($figures['toconfirm'] > 0 || array_filter($confirmations))) || $hasimages,
+            // Who may not confirm sees the points to confirm, and who confirmed them, without the boxes.
+            'canconfirm' => $canconfirm,
             // The button says « Save changes » when the page corrects something, « Save the confirmations » else.
             'savelabel' => get_string('courseaccessibility_save' . ($hasimages ? '' : 'confirmations'), 'theme_epure'),
         ];

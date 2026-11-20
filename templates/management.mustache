@@ -154,6 +154,22 @@
             </ul>
             {{#change}}<p class="epure-a11yscores-change">{{change}}</p>{{/change}}
         </div>
+        {{/hasdata}}
+        {{#health}}
+        <div class="epure-a11yscores-health">
+            <h4>{{#str}}a11yhealth, theme_epure{{/str}}</h4>
+            <ul>
+                {{#lines}}<li>{{.}}</li>{{/lines}}
+            </ul>
+            {{#hasalerts}}
+            <div class="alert alert-warning">
+                <ul class="mb-0">{{#alerts}}<li>{{.}}</li>{{/alerts}}</ul>
+                <p class="mb-0"><a href="{{tasksurl}}">{{#str}}a11yhealth_tasks, theme_epure{{/str}}</a></p>
+            </div>
+            {{/hasalerts}}
+        </div>
+        {{/health}}
+        {{#hasdata}}
         {{#hascourses}}
         <h4>{{#str}}a11yscores_lowest, theme_epure{{/str}}</h4>
         <div class="table-responsive">
