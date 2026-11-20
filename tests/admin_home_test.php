@@ -75,25 +75,26 @@ final class admin_home_test extends \advanced_testcase {
     }
 
     /**
-     * The accessibility of the theme in a card of its own: the accessibility of the courses only once the guide is on,
-     * the tab of the settings opened by its anchor; and in a category of its own of the reports.
+     * The accessibility of the theme in the cards already there: its settings, its statement and what it covers with
+     * the settings of Épure, the accessibility of the courses with the reports once the guide is on; and in a category
+     * of its own of the reports.
      */
-    public function test_accessibility_card(): void {
+    public function test_accessibility_tasks(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        $name = get_string('a11yreports', 'theme_epure');
-        $card = $this->card($name);
-        $tasks = array_column($card['tasks'], 'url', 'name');
-        $this->assertArrayNotHasKey(get_string('a11yscores', 'theme_epure'), $tasks);
+        $names = array_column(admin_home::export()['cards'], 'name');
+        $this->assertNotContains(get_string('a11yreports', 'theme_epure'), $names);
+        $tasks = array_column($this->card(get_string('appearance', 'admin'))['tasks'], 'url', 'name');
         $settings = $tasks[get_string('a11ysettings_task', 'theme_epure')];
         $this->assertStringEndsWith('section=themesettingepure#theme_epure_a11y', $settings);
         $this->assertStringContainsString('/theme/epure/coverage.php', $tasks[get_string('coverage', 'theme_epure')]);
-        $this->assertStringContainsString('category=theme_epure_a11yreports', $card['url']);
+        $reports = array_column($this->card(get_string('reports'))['tasks'], 'url', 'name');
+        $this->assertArrayNotHasKey(get_string('a11yscores', 'theme_epure'), $reports);
 
         set_config('courseaccessibility', 1, 'theme_epure');
         admin_get_root(true, false);
-        $tasks = array_column($this->card($name)['tasks'], 'url', 'name');
-        $this->assertStringEndsWith('#epure-management-a11y', $tasks[get_string('a11yscores', 'theme_epure')]);
+        $reports = array_column($this->card(get_string('reports'))['tasks'], 'url', 'name');
+        $this->assertStringEndsWith('#epure-management-a11y', $reports[get_string('a11yscores', 'theme_epure')]);
         $this->assertNotNull(admin_get_root()->locate('reports')->locate('theme_epure_a11yreports'));
     }
 
