@@ -126,6 +126,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.48.0** : aucun nouveau réglage ; mettez le site à jour. La page publique « Épure et les données personnelles » (`/theme/epure/dataprotection.php`), pour le délégué à la protection des données, liée depuis Confidentialité et politiques.
 - **1.47.0** : aucun nouveau réglage ; mettez le site à jour. Deux capacités pour le guide « Accessibilité du cours » (clonées de « Modifier les paramètres du cours » : rien ne change tant qu’un rôle n’est pas modifié), l’état du calcul des scores dans le tableau de bord de gestion, la page publique « Ce que couvre Épure » (`/theme/epure/coverage.php`), et les pages d’accessibilité du thème dans une catégorie « Accessibilité (Épure) » des rapports et dans les tâches courantes de l’administration.
 - **1.46.0** : aucun nouveau réglage ; mettez le site à jour. Le texte d’un PDF dans l’aperçu des fichiers (« Afficher le texte ») et sous un PDF affiché dans la page d’une ressource, lu à voix haute par « Aa » ; lu par une bibliothèque fournie (smalot/pdfparser).
 - **1.45.0** : aucun nouveau réglage ; mettez le site à jour. La lecture à voix haute de « Aa » lit les encadrés de C4L (« Concept clé », « Astuce »…) et les autres textes écrits sans paragraphe, chaque encadré avec son nom, et le texte alternatif des images.

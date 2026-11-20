@@ -696,6 +696,15 @@ foreach ($a11ypages as $file => $string) {
     ));
 }
 
+// Épure and personal data, for the data protection officer: in « Privacy and policies », with the tools of Moodle.
+if ($ADMIN->locate('privacy')) {
+    $ADMIN->add('privacy', new admin_externalpage(
+        'theme_epure_dataprotection',
+        new lang_string('dataprot', 'theme_epure'),
+        \theme_epure\data_protection::url()
+    ));
+}
+
 // Vocabulary of the platform: a page of its own, as applying it rewrites the language strings.
 $ADMIN->add('themes', new admin_externalpage(
     'theme_epure_vocabulary',

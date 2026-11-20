@@ -632,3 +632,22 @@ html:has(.epure-a11yguide-save) {
     font-size: .875rem;
     color: var(--epure-ink-muted);
 }
+
+// The page « Épure and personal data » (dataprotection.php): as the page « What Épure covers », with the table of the
+// data and the extract for the record in a card, its terms in bold.
+.epure-dataprot-record {
+    padding: 1rem 1.25rem;
+    margin-top: 1.5rem;
+    background-color: var(--epure-surface);
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius-lg);
+    break-inside: avoid;
+
+    dt {
+        font-weight: 600;
+    }
+
+    dd {
+        margin-bottom: .75rem;
+    }
+}
