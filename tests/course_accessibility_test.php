@@ -431,8 +431,8 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         $parts = array_column(course_accessibility::analyse($course), null, 'id');
         $kinds = fn($cm) => array_column($parts[$cm->cmid]['checks'], 'kind');
 
-        $course = array_values(array_filter(course_accessibility::analyse(get_course($course->id)),
-            fn($part) => $part['type'] === 'course'))[0];
+        $all = course_accessibility::analyse(get_course($course->id));
+        $course = array_values(array_filter($all, fn($part) => $part['type'] === 'course'))[0];
         $this->assertSame([], $course['checks']);
         $this->assertNotContains('colour', $kinds($plain));
         $this->assertSame(['colour'], $kinds($coloured));

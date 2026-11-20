@@ -91,13 +91,11 @@ class content_colours {
      * @return bool
      */
     public static function uses_colour(\DOMXPath $xpath): bool {
-        if ($xpath->query('//mark | //*[@class][contains(@class, "text-") or contains(@class, "bg-")'
-                . ' or contains(@class, "highlight")]')->length) {
-            foreach ($xpath->query('//mark | //*[@class]') as $element) {
-                if ($element->nodeName === 'mark' || preg_match('/(?:^|\s)(?:text-(?:danger|success|warning|info|primary|'
-                        . 'secondary|muted)|bg-[a-z-]+|highlight)(?:\s|$)/', $element->getAttribute('class'))) {
-                    return true;
-                }
+        $classes = '/(?:^|\s)(?:text-(?:danger|success|warning|info|primary|secondary|muted)|bg-[a-z-]+|highlight)(?:\s|$)/';
+        foreach ($xpath->query('//mark | //*[@class]') as $element) {
+            $coloured = $element->nodeName === 'mark' || preg_match($classes, $element->getAttribute('class'));
+            if ($coloured) {
+                return true;
             }
         }
         foreach ($xpath->query('//*[@style] | //font[@color]') as $element) {

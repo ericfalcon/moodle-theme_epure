@@ -489,7 +489,7 @@ Feature: Accessibility of the Épure theme
     When I am on the "Hygiene" course page logged in as admin
     And I turn editing mode on
     # What is left, with the score of the course.
-    Then I should see "Accessibility: 2 points to fix, 3 to confirm (score "
+    Then I should see "Accessibility: 2 points to fix, 2 to confirm (score "
     And I should see "2 points of accessibility" in the "Document 2" "activity"
     And I click on "2 points of accessibility" "link" in the "Document 2" "activity"
     And I should see "Images without a text alternative: 1."
@@ -500,7 +500,7 @@ Feature: Accessibility of the Épure theme
     And I press "Save changes"
     And I should see "The confirmations are saved."
     And I should see "Confirmed by Admin User"
-    And I should see "2 points to fix, 2 to confirm"
+    And I should see "2 points to fix, 1 to confirm"
     And I follow "The reminder to print"
     And I should see "Making my courses accessible"
     And I should see "Back to the accessibility of « Hygiene »"
