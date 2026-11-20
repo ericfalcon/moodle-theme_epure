@@ -63,6 +63,10 @@ class course_accessibility {
      * of a kind. */
     public const WEIGHTS = ['blocking' => 40, 'serious' => 15, 'minor' => 5];
 
+    /** @var string[] The activities where the learners act on instructions: their instructions are to confirm. */
+    public const INSTRUCTED = ['assign', 'quiz', 'workshop', 'lesson', 'forum', 'data', 'glossary', 'feedback', 'choice',
+        'h5pactivity', 'scorm', 'lti', 'questionnaire', 'hvp'];
+
     /** @var string|null Language of the course being read, for the passages in another language. */
     protected static ?string $language = null;
 
@@ -250,11 +254,10 @@ class course_accessibility {
         $modinfo = get_fast_modinfo($course, -1);
         $coursecontext = \context_course::instance($course->id);
 
-        // The course, with what is to confirm for all of it.
+        // The course: its presentation. The colours and the instructions are confirmed where they are, in the texts that
+        // use colours and in the activities that give instructions.
         $parts = ['course' => self::part('course', 0, 0)];
         self::add_html($parts['course'], (string) $course->summary, (int) ($course->summaryformat ?? FORMAT_HTML));
-        $parts['course']['checks'][] = ['key' => 'instructions', 'kind' => 'instructions', 'label' => ''];
-        $parts['course']['checks'][] = ['key' => 'colour', 'kind' => 'colour', 'label' => ''];
 
         // The sections, each followed by its activities.
         $cms = [];
@@ -326,8 +329,13 @@ class course_accessibility {
         foreach ($found['issues'] as $issue => $count) {
             self::add_issue($part, $issue, $count);
         }
+        // Each point once in a part, however many of its texts call for it.
+        $keys = array_column($part['checks'], 'key');
         foreach ($found['checks'] as $check) {
-            $part['checks'][] = $check;
+            if (!in_array($check['key'], $keys, true)) {
+                $part['checks'][] = $check;
+                $keys[] = $check['key'];
+            }
         }
         // Where the mistakes are, in an activity of several texts (a chapter, a page of a lesson, a question).
         $issues = array_filter($found['issues']);
@@ -405,6 +413,11 @@ class course_accessibility {
         }
         // A text whose colour does not stand out enough from its background (WCAG 1.4.3, RGAA 3.2).
         $found['contrast'] = content_colours::low_contrast($xpath);
+        // A text with colours: whether one carries a meaning that is not also said, only a person can tell (WCAG 1.4.1,
+        // RGAA 3.1). Without colours, nothing to confirm.
+        if (content_colours::uses_colour($xpath)) {
+            $checks[] = ['key' => 'colour', 'kind' => 'colour', 'label' => ''];
+        }
         // A passage in another language than the course, without its language marked (WCAG 3.1.2, RGAA 8.7): guessed,
         // so to confirm.
         $checks = array_merge($checks, content_language::passages($xpath, $language ?? self::$language ?? $CFG->lang));
@@ -603,6 +616,13 @@ class course_accessibility {
                             ]);
                         }
                         break;
+                }
+                // The instructions of an activity where the learners act (hand in, answer, take part): whether they say
+                // what to do, how and by when, only a person can tell. Asked where the activity gives some.
+                $given = (string) ($record->intro ?? '') . ' ' . (string) ($record->activity ?? '');
+                $instructions = trim(html_to_text($given, 0, false));
+                if (in_array($modname, self::INSTRUCTED, true) && $instructions !== '') {
+                    $part['checks'][] = ['key' => 'instructions', 'kind' => 'instructions', 'label' => ''];
                 }
                 unset($part);
             }

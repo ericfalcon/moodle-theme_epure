@@ -83,6 +83,36 @@ class content_colours {
     }
 
     /**
+     * Whether a text puts colours on its words: a colour of text other than black, a background other than white, a
+     * highlight (mark), a colour of font, the classes of colour of Bootstrap. A colour may carry a meaning that only
+     * a person can tell (« in red, what is required »): without any, there is nothing to confirm (WCAG 1.4.1, RGAA 3.1).
+     *
+     * @param \DOMXPath $xpath Document of the text.
+     * @return bool
+     */
+    public static function uses_colour(\DOMXPath $xpath): bool {
+        if ($xpath->query('//mark | //*[@class][contains(@class, "text-") or contains(@class, "bg-")'
+                . ' or contains(@class, "highlight")]')->length) {
+            foreach ($xpath->query('//mark | //*[@class]') as $element) {
+                if ($element->nodeName === 'mark' || preg_match('/(?:^|\s)(?:text-(?:danger|success|warning|info|primary|'
+                        . 'secondary|muted)|bg-[a-z-]+|highlight)(?:\s|$)/', $element->getAttribute('class'))) {
+                    return true;
+                }
+            }
+        }
+        foreach ($xpath->query('//*[@style] | //font[@color]') as $element) {
+            $text = $element->nodeName === 'font' ? $element->getAttribute('color') : self::declared($element, 'color');
+            $fill = self::declared($element, 'background(?:-color)?');
+            $text = $text === null ? null : self::colour($text);
+            $fill = $fill === null ? null : self::colour($fill);
+            if (($text !== null && $text !== '#000000') || ($fill !== null && $fill !== '#ffffff')) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * The texts whose colour does not stand out enough from their background: counted once for each element whose
      * colour (of the text or of the background) makes them so.
      *
