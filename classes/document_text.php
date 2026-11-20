@@ -25,6 +25,9 @@ namespace theme_epure;
  * Read in the XML of the document, with the limits of {@see document_check}, and kept by content of file. Only text:
  * the HTML is written by the template theme_epure/document_text, which escapes all of it.
  *
+ * The text of a PDF too, page by page, read by smalot/pdfparser (thirdparty/pdfparser): its lines joined into
+ * paragraphs, its items of lists apart. A PDF without text (scanned images) says so; a protected one cannot be read.
+ *
  * @package    theme_epure
  * @copyright  2026 Eric Falcon
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -39,18 +42,30 @@ class document_text extends document_check {
     /** @var int Columns of a table, or of a sheet, at most. */
     public const MAX_COLUMNS = 30;
 
+    /** @var int Size of a PDF read at most, in bytes: the reading of a PDF takes much more memory than its size. */
+    public const MAX_PDF_SIZE = 10485760;
+
     /** @var int The level of the titles of the document under the title of the preview (h2): its title 1 is a h3. */
     protected const LEVEL_OFFSET = 2;
 
     /**
-     * Whether a type of file has a text version: the documents of an office suite that can be read (not the PDF).
+     * Whether a type of file has a text version: the documents of an office suite that can be read, and the PDF.
      *
      * @param string $mimetype Type of the file.
      * @return bool
      */
     public static function supported(string $mimetype): bool {
-        $kind = self::kind($mimetype);
-        return $kind !== null && $kind !== 'pdf';
+        return self::kind($mimetype) !== null;
+    }
+
+    /**
+     * The autoloader of smalot/pdfparser.
+     *
+     * @return string
+     */
+    protected static function pdfparser(): string {
+        global $CFG;
+        return $CFG->dirroot . '/theme/epure/thirdparty/pdfparser/vendor/autoload.php';
     }
 
     /**
@@ -61,7 +76,7 @@ class document_text extends document_check {
      */
     public static function read(\stored_file $file): ?array {
         $kind = self::kind((string) $file->get_mimetype());
-        if ($kind === null || $kind === 'pdf' || $file->get_filesize() > self::MAX_SIZE) {
+        if ($kind === null || $file->get_filesize() > ($kind === 'pdf' ? self::MAX_PDF_SIZE : self::MAX_SIZE)) {
             return null;
         }
         $cache = \cache::make('theme_epure', 'documenttext');
@@ -70,14 +85,15 @@ class document_text extends document_check {
             return $known === 'unreadable' ? null : $known;
         }
         try {
-            $blocks = static::read_package($file, fn(callable $read, array $names) => match ($kind) {
+            $reader = fn(callable $read, array $names) => match ($kind) {
                 'word' => self::word($read),
                 'slides' => self::slides($read),
                 'sheets' => self::sheets($read),
                 'odt' => self::odt($read),
                 'odp' => self::odp($read),
                 'ods' => self::ods($read),
-            });
+            };
+            $blocks = $kind === 'pdf' ? self::pdf($file->get_content()) : static::read_package($file, $reader);
         } catch (\Throwable $e) {
             // Expected: a damaged or protected file; it stays to download.
             $blocks = null;
@@ -85,6 +101,7 @@ class document_text extends document_check {
         $text = $blocks === null ? null : [
             'blocks' => array_slice($blocks, 0, self::MAX_BLOCKS),
             'truncated' => count($blocks) > self::MAX_BLOCKS,
+            'pdf' => $kind === 'pdf',
         ];
         $cache->set($file->get_contenthash(), $text ?? 'unreadable');
         return $text;
@@ -585,6 +602,78 @@ class document_text extends document_check {
     }
 
     /**
+     * The text of a PDF, page by page: the title of each page with text, then its paragraphs and items of lists. The
+     * lines of a paragraph are joined: a line ends a paragraph when it ends a sentence, or is short; a line that starts
+     * with a bullet or a number is an item of a list.
+     *
+     * @param string $pdf Content of the file.
+     * @return array|null Blocks; null when it cannot be read (damaged, protected).
+     */
+    public static function pdf(string $pdf): ?array {
+        if (!str_starts_with(ltrim(substr($pdf, 0, 1024)), '%PDF-')) {
+            return null;
+        }
+        require_once(self::pdfparser());
+        \core_php_time_limit::raise(60);
+        raise_memory_limit(MEMORY_EXTRA);
+        $config = new \Smalot\PdfParser\Config();
+        $config->setRetainImageContent(false);
+        $config->setDecodeMemoryLimit(self::MAX_STREAM);
+        $document = (new \Smalot\PdfParser\Parser([], $config))->parseContent($pdf);
+        $blocks = [];
+        foreach ($document->getPages() as $index => $page) {
+            $lines = array_values(array_filter(array_map(
+                fn($line) => trim(preg_replace('/[ \t\x{00A0}]+/u', ' ', $line)),
+                explode("\n", str_replace("\r", "\n", $page->getText()))
+            ), fn($line) => $line !== ''));
+            if (!$lines) {
+                continue;
+            }
+            $blocks[] = self::heading(1, get_string('preview_page', 'theme_epure', $index + 1));
+            array_push($blocks, ...self::pdf_paragraphs($lines));
+            if (count($blocks) > self::MAX_BLOCKS) {
+                break;
+            }
+        }
+        return $blocks;
+    }
+
+    /**
+     * The lines of a page of a PDF joined into paragraphs and items of lists.
+     *
+     * @param string[] $lines Lines, not empty.
+     * @return array Blocks.
+     */
+    protected static function pdf_paragraphs(array $lines): array {
+        $bullet = '/^(?:[\x{2022}\x{25CF}\x{25AA}\x{25E6}\x{2023}\x{2043}\x{2013}\x{2014}*-]|\d{1,3}[.)])\s+/u';
+        $lengths = array_map(fn($line) => \core_text::strlen($line), $lines);
+        // A line much shorter than the longest ones ends its paragraph.
+        rsort($lengths);
+        $full = $lengths[(int) floor(count($lengths) / 4)] ?? $lengths[0];
+        $blocks = [];
+        $current = null;
+        foreach ($lines as $line) {
+            $item = (bool) preg_match($bullet, $line);
+            if ($current !== null && !$item) {
+                $current['text'] .= (str_ends_with($current['text'], '-') ? '' : ' ') . $line;
+            } else {
+                if ($current !== null) {
+                    $blocks[] = $current;
+                }
+                $current = ['type' => $item ? 'item' : 'paragraph', 'text' => $item ? preg_replace($bullet, '', $line) : $line];
+            }
+            if (preg_match('/[.!?:;»"”)]$/u', $line) || \core_text::strlen($line) < 0.7 * $full) {
+                $blocks[] = $current;
+                $current = null;
+            }
+        }
+        if ($current !== null) {
+            $blocks[] = $current;
+        }
+        return $blocks;
+    }
+
+    /**
      * The context of the template theme_epure/document_text: the items of a list grouped in it.
      *
      * @param array $text {blocks, truncated} of {@see read()}.
@@ -613,6 +702,7 @@ class document_text extends document_check {
                     : get_string('preview_image', 'theme_epure', $block['alt']);
             }
         }
-        return ['blocks' => $blocks, 'truncated' => $text['truncated'], 'empty' => !$blocks];
+        return ['blocks' => $blocks, 'truncated' => $text['truncated'], 'empty' => !$blocks && empty($text['pdf']),
+            'nopdftext' => !$blocks && !empty($text['pdf'])];
     }
 }

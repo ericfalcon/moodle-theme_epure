@@ -238,11 +238,13 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
      * @return array Course, teacher and activities.
      */
     protected function course(): array {
+        global $DB;
         $this->resetAfterTest();
         $this->setAdminUser();
         set_config('courseaccessibility', 1, 'theme_epure');
         $generator = $this->getDataGenerator();
-        $course = $generator->create_course(['summary' => '<p>Bienvenue.</p>', 'summaryformat' => FORMAT_HTML]);
+        $course = $generator->create_course(['summary' => '<p>Bienvenue. <span style="color: #b42318">En rouge</span>, '
+            . 'les parties obligatoires.</p>', 'summaryformat' => FORMAT_HTML]);
         $teacher = $generator->create_and_enrol($course, 'editingteacher');
         $page = $generator->create_module('page', ['course' => $course->id, 'name' => 'Document 2',
             'content' => '<img src="a.png"><iframe src="https://www.youtube.com/embed/abc"></iframe>']);
@@ -251,6 +253,8 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
                 'content' => '<p>Bien.</p>']);
         }
         $quiz = $generator->create_module('quiz', ['course' => $course->id, 'name' => 'Évaluation finale', 'timelimit' => 1800]);
+        // Without instructions (the generator writes one).
+        $DB->set_field('quiz', 'intro', '', ['id' => $quiz->id]);
         $resource = $generator->create_module('resource', ['course' => $course->id, 'name' => 'Fiche de sécurité']);
         $fs = get_file_storage();
         $context = \context_module::instance($resource->cmid);
@@ -280,9 +284,9 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
 
         $figures = course_accessibility::figures(course_accessibility::analyse($course), []);
         // Images, frame, name, two duplicates, PDF untagged and without a language;
-        // the video, the time of the quiz, the instructions and the colours.
+        // the video, the time of the quiz and the colours of the presentation (the quiz gives no instructions).
         $this->assertSame(7, $figures['issues']);
-        $this->assertSame(4, $figures['toconfirm']);
+        $this->assertSame(3, $figures['toconfirm']);
         $this->assertSame(['issues' => 3, 'toconfirm' => 1, 'level' => 'blocking'], $figures['cms'][$page->cmid]);
         // Images and frame blocking, the name minor; the PDF serious; two duplicates, minor.
         $this->assertSame(['blocking' => 2, 'serious' => 2, 'minor' => 3], $figures['levels']);
@@ -380,7 +384,7 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         $editmode = course_accessibility::edit_mode($course);
         $data = course_accessibility::export($course, $GLOBALS['PAGE']->get_renderer('core'));
         $summary = get_string('courseaccessibility_issuesn', 'theme_epure', 7) . ', '
-            . get_string('courseaccessibility_toconfirmn', 'theme_epure', 3);
+            . get_string('courseaccessibility_toconfirmn', 'theme_epure', 2);
         $this->assertSame($summary, $data['summary']);
         $expected = get_string('courseaccessibility_editbar_score', 'theme_epure', (object) [
             'text' => $summary,
@@ -402,6 +406,86 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         set_config('courseaccessibility', 1, 'theme_epure');
         $this->setUser($this->getDataGenerator()->create_and_enrol($course, 'student'));
         $this->assertFalse(course_accessibility::can_use($context));
+    }
+
+    /**
+     * The colours and the instructions are to confirm where they are: a text that uses colours, an activity where the
+     * learners act and that gives instructions; a course without them has nothing of the kind to confirm.
+     */
+    public function test_confirm_where_needed(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        set_config('courseaccessibility', 1, 'theme_epure');
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course(['summary' => '', 'summaryformat' => FORMAT_HTML]);
+        $plain = $generator->create_module('page', ['course' => $course->id, 'name' => 'Règlement',
+            'content' => '<p>Texte en <strong>gras</strong>, <span style="color: #000000">noir</span>.</p>']);
+        $coloured = $generator->create_module('page', ['course' => $course->id, 'name' => 'Planning',
+            'content' => '<p><mark>Cette semaine</mark> : le module 2.</p>']);
+        $assign = $generator->create_module('assign', ['course' => $course->id, 'name' => 'Dossier final',
+            'intro' => '<p>Déposez votre dossier avant vendredi.</p>']);
+        $empty = $generator->create_module('assign', ['course' => $course->id, 'name' => 'Brouillon']);
+        $DB->set_field('assign', 'intro', '', ['id' => $empty->id]);
+        course_accessibility::forget((int) $course->id);
+        $parts = array_column(course_accessibility::analyse($course), null, 'id');
+        $kinds = fn($cm) => array_column($parts[$cm->cmid]['checks'], 'kind');
+
+        $all = course_accessibility::analyse(get_course($course->id));
+        $course = array_values(array_filter($all, fn($part) => $part['type'] === 'course'))[0];
+        $this->assertSame([], $course['checks']);
+        $this->assertNotContains('colour', $kinds($plain));
+        $this->assertSame(['colour'], $kinds($coloured));
+        $this->assertContains('instructions', $kinds($assign));
+        $this->assertNotContains('instructions', $kinds($empty));
+        $this->assertNotContains('instructions', $kinds($plain));
+        // An assignment without instructions: a mistake, not a point to confirm.
+        $this->assertSame(['noinstructions' => 1], $parts[$empty->cmid]['issues']);
+        $this->assertSame('serious', course_accessibility::SEVERITIES['noinstructions']);
+        $this->assertArrayNotHasKey('noinstructions', $parts[$assign->cmid]['issues']);
+    }
+
+    /**
+     * The instructions written in the guide go into the instructions of the activity that had none (an assignment, a
+     * workshop), as paragraphs; never over instructions written meanwhile, nor for whoever may not change it.
+     */
+    public function test_write_instructions(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        set_config('courseaccessibility', 1, 'theme_epure');
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course();
+        $assign = $generator->create_module('assign', ['course' => $course->id, 'name' => 'Dossier']);
+        $DB->set_field('assign', 'intro', '', ['id' => $assign->id]);
+        $workshop = $generator->create_module('workshop', ['course' => $course->id, 'name' => 'Relecture']);
+        $DB->set_field('workshop', 'intro', '', ['id' => $workshop->id]);
+        $DB->set_field('workshop', 'instructauthors', '', ['id' => $workshop->id]);
+        $written = $generator->create_module('assign', ['course' => $course->id, 'name' => 'Bilan',
+            'intro' => '<p>Déjà écrite.</p>']);
+        course_accessibility::forget((int) $course->id);
+        $parts = array_column(course_accessibility::analyse(get_course($course->id)), null, 'id');
+        $this->assertArrayHasKey('noinstructions', $parts[$workshop->cmid]['issues']);
+
+        $done = course_accessibility::write_instructions(get_course($course->id), [
+            $assign->cmid => "Déposez votre dossier <b>avant</b> vendredi.\nUn seul fichier PDF.\n\nIl est noté sur 20.",
+            $workshop->cmid => 'Relisez deux travaux.',
+            $written->cmid => 'Remplacée ?',
+            '999999' => 'Inconnue',
+        ]);
+        $this->assertSame(2, $done);
+        $expected = '<p>Déposez votre dossier avant vendredi.<br>Un seul fichier PDF.</p><p>Il est noté sur 20.</p>';
+        $this->assertSame($expected, $DB->get_field('assign', 'activity', ['id' => $assign->id]));
+        $this->assertSame('<p>Relisez deux travaux.</p>', $DB->get_field('workshop', 'instructauthors', ['id' => $workshop->id]));
+        $this->assertSame('', (string) $DB->get_field('assign', 'activity', ['id' => $written->id]));
+        $parts = array_column(course_accessibility::analyse(get_course($course->id)), null, 'id');
+        $this->assertArrayNotHasKey('noinstructions', $parts[$assign->cmid]['issues']);
+        $this->assertContains('instructions', array_column($parts[$assign->cmid]['checks'], 'kind'));
+
+        // A learner writes nothing.
+        $DB->set_field('assign', 'activity', '', ['id' => $assign->id]);
+        $this->setUser($generator->create_and_enrol($course, 'student'));
+        $this->assertSame(0, course_accessibility::write_instructions(get_course($course->id), [$assign->cmid => 'Non.']));
     }
 
     /**

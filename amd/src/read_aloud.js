@@ -19,6 +19,21 @@
  * the voices of the device only, in the language marked in the text: nothing leaves the browser. For the learners who
  * read with difficulty; the screen readers have their own voice.
  *
+ * Besides the blocks of text (paragraphs, titles, items of lists, cells…), a text written straight in another element
+ * is read too, without what that element holds in blocks of its own: the boxes of Components for Learning (C4L) and
+ * of other plugins of the editor put their text in a div, without a paragraph. A note named for the screen readers
+ * (role="note" and aria-label: « Key concept », « Tip »…) is said by its name before its text, as a screen reader
+ * does: its icon alone tells nothing to the ear. An image with a text alternative is said by it (« Image: plan of the
+ * exits »), in the order of the page; the decorative images (an empty alternative, role presentation) and the icons
+ * of Moodle are not.
+ *
+ * The reading starts at the place clicked or reached with the keyboard last (a card, a paragraph), when it is still
+ * on the screen; else at the block shown at the top of the screen.
+ *
+ * In a window that opens over the page (the preview of the files…), the bar goes into the window, which keeps the
+ * rest of the page out of reach, and reads the window, not the page behind. A PDF shown there is read in its text
+ * version: the bar presses the button that shows it (data-epure-textversion), and waits for the text.
+ *
  * @module     theme_epure/read_aloud
  * @copyright  2026 Eric Falcon
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -30,6 +45,10 @@ import Templates from 'core/templates';
 /** @type {string} The blocks of text read one after the other. */
 const BLOCKS = 'h1, h2, h3, h4, h5, h6, p, li, dt, dd, td, th, figcaption, blockquote, caption, label, legend';
 
+/** @type {string} What is never read: hidden from everyone, or a control rather than a text. */
+const SKIPPED = '[aria-hidden="true"], .sr-only, .visually-hidden, script, style, template, button, select, textarea, '
+    + '[role="button"], [role="menu"], .dropdown-menu, nav, .epure-a11y-speechbar';
+
 /** @type {number[]} Speeds offered. */
 const RATES = [0.75, 1, 1.25, 1.5];
 
@@ -39,6 +58,10 @@ let bar = null;
 let queue = [];
 /** @type {HTMLElement|null} Block being read. */
 let current = null;
+/** @type {WeakSet<HTMLElement>} Elements whose own text only is read: the blocks they hold are read on their own. */
+const partial = new WeakSet();
+/** @type {WeakSet<HTMLElement>} Notes whose name was said in this reading. */
+let named = new WeakSet();
 /**
  * What is being said: kept, since Chrome can let an utterance go while it is said, and then never tells its end, which
  * stopped the reading in the middle of the page.
@@ -134,7 +157,41 @@ const language = (node) => {
  * @param {HTMLElement} block Block.
  * @returns {string}
  */
-const textOf = (block) => block.innerText.replace(/\s+/g, ' ').trim();
+const textOf = (block) => {
+    if (block.tagName === 'IMG') {
+        const alt = block.getAttribute('alt').replace(/\s+/g, ' ').trim();
+        return alt ? bar.dataset.image.replace('{$a}', alt) : '';
+    }
+    return (partial.has(block) ? ownText(block) : block.innerText).replace(/\s+/g, ' ').trim();
+};
+
+/**
+ * Whether an element flows in the line of its parent (a link, a word in bold) rather than being a block of its own.
+ *
+ * @param {Element} element Element.
+ * @returns {boolean}
+ */
+const inline = (element) => {
+    const display = window.getComputedStyle(element).display;
+    return display.startsWith('inline') || display === 'contents';
+};
+
+/**
+ * The text written straight in an element, with its words in links or in bold, without the blocks it holds.
+ *
+ * @param {HTMLElement} element Element.
+ * @returns {string}
+ */
+const ownText = (element) => [...element.childNodes].map((node) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+        return node.nodeValue;
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE || node.matches(BLOCKS) || node.querySelector(BLOCKS) || node.matches(SKIPPED)
+            || !inline(node)) {
+        return ' ';
+    }
+    return node.innerText;
+}).join(' ');
 
 /**
  * Marks the block read, and keeps it on the screen.
@@ -204,6 +261,13 @@ const next = () => {
         return;
     }
     mark(block);
+    // The name of a note (a box of C4L…), before its first text.
+    const note = block.closest('[role="note"][aria-label]');
+    if (note && !named.has(note)) {
+        named.add(note);
+        say(`${note.getAttribute('aria-label').trim()}. ${text}`, language(block), next);
+        return;
+    }
     say(text, language(block), next);
 };
 
@@ -214,12 +278,139 @@ const next = () => {
  * @returns {HTMLElement[]}
  */
 const blocks = () => {
-    const main = document.querySelector('#region-main, [role="main"], main') || document.body;
-    const all = [...main.querySelectorAll(BLOCKS)].filter((block) => !block.querySelector(BLOCKS)
-        && block.getClientRects().length && !block.closest('[aria-hidden="true"], .sr-only, .visually-hidden, script'));
-    const first = all.findIndex((block) => block.getBoundingClientRect().bottom > 0);
+    const main = root();
+    const shown = (element) => element.getClientRects().length && !element.closest(SKIPPED);
+    const found = new Set([...main.querySelectorAll(BLOCKS)].filter((block) => !block.querySelector(BLOCKS) && shown(block)));
+    // The texts written straight in another element (a div of C4L…): the element that holds them, its own text read.
+    const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        const parent = node.parentElement;
+        if (!node.nodeValue.trim() || !parent || parent.closest(BLOCKS) || parent.closest(SKIPPED)) {
+            continue;
+        }
+        let holder = parent;
+        while (holder !== main && inline(holder)) {
+            holder = holder.parentElement;
+        }
+        if (holder !== main && !found.has(holder) && shown(holder)) {
+            partial.add(holder);
+            found.add(holder);
+        }
+    }
+    // The images with a text alternative, but the decorative ones and the icons of Moodle.
+    main.querySelectorAll('img[alt]').forEach((image) => {
+        if (image.getAttribute('alt').trim() && !image.matches('.icon, [role="presentation"], [role="none"]') && shown(image)) {
+            found.add(image);
+        }
+    });
+    // In the order of the page.
+    const after = [Node.DOCUMENT_POSITION_FOLLOWING, Node.DOCUMENT_POSITION_FOLLOWING + Node.DOCUMENT_POSITION_CONTAINED_BY];
+    const all = [...found].sort((a, b) => (after.includes(a.compareDocumentPosition(b)) ? -1 : 1));
+    // From the place clicked last (the block that holds it, or the first one after it), else from the top of the screen.
+    const from = onScreen(point) && main.contains(point) ? point : null;
+    const first = from
+        ? all.findIndex((block) => block.contains(from) || after.includes(from.compareDocumentPosition(block)))
+        : all.findIndex((block) => block.getBoundingClientRect().bottom > 0);
     return all.slice(Math.max(0, first));
 };
+
+/**
+ * What is read: the window open over the page, else the page from its header (its title, the cards of the
+ * administration…) to the end of its content, without its footer.
+ *
+ * @returns {HTMLElement}
+ */
+const root = () => [...document.querySelectorAll('dialog[open]')].find((dialog) => dialog.matches(':modal'))
+    || document.querySelector('#topofscroll, #region-main, [role="main"], main') || document.body;
+
+/**
+ * Shows the text of a PDF in the window, before reading it: presses the button of its text version, and waits for the
+ * text (5 seconds at most).
+ *
+ * @param {HTMLElement} where What is read.
+ * @returns {Promise}
+ */
+const textVersion = (where) => {
+    const toggle = where.querySelector('[data-epure-textversion][data-state="pdf"]:not([hidden])');
+    if (!toggle) {
+        return Promise.resolve();
+    }
+    // Pressed by the reading, not by the user: the place to start from stays.
+    const kept = point;
+    toggle.click();
+    point = kept;
+    return new Promise((resolve) => {
+        const started = Date.now();
+        const wait = () => {
+            if (!where.querySelector('[aria-busy="true"]') || Date.now() - started > 5000) {
+                resolve();
+            } else {
+                setTimeout(wait, 100);
+            }
+        };
+        wait();
+    });
+};
+
+/**
+ * Keeps the bar in the window open over the page, where it can be reached, and back in the page once it is closed.
+ */
+const followWindows = () => {
+    const place = () => {
+        if (!bar) {
+            return;
+        }
+        const modal = [...document.querySelectorAll('dialog[open]')].find((dialog) => dialog.matches(':modal'));
+        const home = modal || document.body;
+        if (bar.parentElement !== home) {
+            home.append(bar);
+        }
+    };
+    new MutationObserver((mutations) => {
+        if (mutations.some((mutation) => mutation.target.tagName === 'DIALOG')) {
+            place();
+        }
+    }).observe(document.body, {attributes: true, attributeFilter: ['open'], subtree: true});
+    return place;
+};
+
+/** @type {Element|null} The place clicked or reached with the keyboard last, out of the bar. */
+let point = null;
+/** @type {number} When a key was pressed last: a focus that follows it is the user's. */
+let keyed = 0;
+
+/**
+ * Keeps the place clicked or reached with the keyboard by the user: the reading starts there. A focus given by a
+ * script (a window that opens, the reading that shows the text of a PDF) is not the user's choice.
+ *
+ * @param {Event} e The click or the focus.
+ */
+const remember = (e) => {
+    if (!e.isTrusted || !(e.target instanceof Element) || bar?.contains(e.target)) {
+        return;
+    }
+    if (e.type === 'focusin' && Date.now() - keyed > 1000) {
+        return;
+    }
+    point = e.target;
+};
+
+/**
+ * Whether an element is still in the page and on the screen.
+ *
+ * @param {Element|null} element Element.
+ * @returns {boolean}
+ */
+const onScreen = (element) => {
+    if (!element || !document.contains(element) || !element.getClientRects().length) {
+        return false;
+    }
+    const rect = element.getBoundingClientRect();
+    return rect.bottom > 0 && rect.top < window.innerHeight - (bar?.offsetHeight || 0);
+};
+
+/** @type {Function|null} Puts the bar where it can be reached. */
+let placeBar = null;
 
 /**
  * Stops the reading.
@@ -231,6 +422,17 @@ const stop = () => {
     window.speechSynthesis.cancel();
     mark(null);
     update();
+};
+
+/**
+ * Reads the page, or the window open over it, once the text of a PDF shown there is.
+ */
+const readPage = async() => {
+    await textVersion(root());
+    if (reading) {
+        queue = blocks();
+        next();
+    }
 };
 
 /**
@@ -250,8 +452,8 @@ const start = () => {
         queue = [];
         say(chosen.text, language(chosen.node), stop);
     } else {
-        queue = blocks();
-        next();
+        named = new WeakSet();
+        readPage();
     }
     update();
 };
@@ -278,7 +480,7 @@ const update = () => {
  * Creates the bar of the reading.
  */
 const create = async() => {
-    const [title, play, pause, resume, stopLabel, rateLabel, novoice, failed] = await getStrings([
+    const [title, play, pause, resume, stopLabel, rateLabel, novoice, failed, image] = await getStrings([
         {key: 'a11yspeech', component: 'theme_epure'},
         {key: 'a11yspeech_play', component: 'theme_epure'},
         {key: 'a11yspeech_pause', component: 'theme_epure'},
@@ -287,6 +489,7 @@ const create = async() => {
         {key: 'a11yspeech_rate', component: 'theme_epure'},
         {key: 'a11yspeech_novoice', component: 'theme_epure', param: '{$a}'},
         {key: 'a11yspeech_failed', component: 'theme_epure'},
+        {key: 'a11yspeech_image', component: 'theme_epure', param: '{$a}'},
     ]);
     const decimal = document.documentElement.lang.startsWith('en') ? '.' : ',';
     const {html, js} = await Templates.renderForPromise('theme_epure/read_aloud_bar', {
@@ -300,7 +503,9 @@ const create = async() => {
         return;
     }
     bar = Templates.appendNodeContents(document.body, html, js).find((node) => node.nodeType === Node.ELEMENT_NODE);
-    Object.assign(bar.dataset, {play, pause, resume, novoice, failed});
+    placeBar = placeBar || followWindows();
+    placeBar();
+    Object.assign(bar.dataset, {play, pause, resume, novoice, failed, image});
     // The selection is read once the button is pressed: a click on it must not clear it.
     bar.querySelector('[data-action="play"]').addEventListener('mousedown', (e) => e.preventDefault());
     bar.querySelector('[data-action="play"]').addEventListener('click', () => {
@@ -352,6 +557,11 @@ export const set = (on) => {
  * Shows the bar when the user chose the reading aloud, read from the classes of the page.
  */
 export const init = () => {
+    document.addEventListener('pointerdown', remember, true);
+    document.addEventListener('focusin', remember, true);
+    document.addEventListener('keydown', () => {
+        keyed = Date.now();
+    }, true);
     set(document.documentElement.classList.contains('epure-a11y-speech'));
     // The last text selected out of the bar, kept a moment: on a phone, touching the button clears it first.
     document.addEventListener('selectionchange', () => {

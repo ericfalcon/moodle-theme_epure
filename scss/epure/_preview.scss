@@ -207,3 +207,27 @@ html.epure-preview-open {
     color: var(--epure-ink);
     font-weight: 600;
 }
+
+// The bar of the reading aloud, in the window while it is open (theme_epure/read_aloud): the window leaves room for it
+// at the bottom of the screen, its buttons in view.
+.epure-preview:has(> .epure-a11y-speechbar) {
+    height: calc(100vh - 3rem - var(--epure-speechbar-room, 5rem));
+    margin-bottom: calc(1.5rem + var(--epure-speechbar-room, 5rem));
+
+    @media (max-width: 575.98px) {
+        height: calc(100% - var(--epure-speechbar-room, 5rem));
+        margin-bottom: var(--epure-speechbar-room, 5rem);
+    }
+}
+
+// The text of the document of a resource, under the document shown in its page (theme_epure/resource_text).
+.epure-resource-text {
+    margin-top: 1rem;
+}
+
+.epure-resource-text-content {
+    margin-top: .75rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--epure-border);
+    border-radius: var(--epure-radius);
+}

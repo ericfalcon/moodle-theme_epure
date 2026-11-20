@@ -29,7 +29,7 @@
         "levels": [{"level": "blocking", "count": 1, "text": "Blocking: 1"}], "hasfirst": true,
         "first": [{"name": "Risks", "section": "Week 1", "url": "#epure-a11y-cm-4", "here": true}], "hasfilter": true,
         "filtershown": "Parts shown: {$a}", "filters": [{"value": "", "label": "All", "checked": true}], "done": "5 parts out of 8 have nothing left", "percent": 62,
-        "hastoconfirm": true, "hasform": true,
+        "hastoconfirm": true, "hasform": true, "savelabel": "Save the confirmations",
         "sections": [{"name": "Week 1", "id": "epure-a11y-section-1", "parts": [{
             "id": "epure-a11y-cm-4", "name": "Risks", "icon": "", "type": "Page",
             "state": {"class": "issues", "icon": "fa-triangle-exclamation", "text": "2 points to fix, 1 to confirm"},
@@ -134,6 +134,15 @@
                                 {{/rename}}
                             </div>
                         {{/hasrename}}
+                        {{#haswrite}}
+                            <div class="epure-a11yguide-rename epure-a11yguide-write d-print-none">
+                                {{#write}}
+                                    <label for="{{id}}">{{label}}</label>
+                                    <textarea class="form-control" id="{{id}}" name="instructions[{{cmid}}]" rows="5" aria-describedby="{{id}}-help"></textarea>
+                                    <p class="epure-a11yguide-check-help" id="{{id}}-help">{{#str}}courseaccessibility_write_help, theme_epure{{/str}}</p>
+                                {{/write}}
+                            </div>
+                        {{/haswrite}}
                         {{#hasaltimages}}
                             <fieldset class="epure-a11yguide-alts d-print-none">
                                 <legend class="epure-a11yguide-checks-title">{{#str}}courseaccessibility_alt_title, theme_epure{{/str}}</legend>
@@ -293,7 +302,7 @@
         {{/sections}}
         {{#hasform}}
             <div class="epure-a11yguide-save d-print-none">
-                <button type="submit" class="btn btn-primary">{{#str}}courseaccessibility_save, theme_epure{{/str}}</button>
+                <button type="submit" class="btn btn-primary">{{savelabel}}</button>
                 <a class="btn btn-secondary" href="{{courseurl}}">{{#str}}cancel{{/str}}</a>
             </div>
         {{/hasform}}

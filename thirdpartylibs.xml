@@ -175,4 +175,12 @@
     <license>Bitstream Vera / DejaVu (free)</license>
     <repository>https://github.com/dejavu-fonts/dejavu-fonts</repository>
   </library>
+  <library>
+    <location>thirdparty/pdfparser</location>
+    <name>smalot/pdfparser (with symfony/polyfill-mbstring, for the text of the PDF files)</name>
+    <version>2.13.1</version>
+    <license>LGPL</license>
+    <licenseversion>3.0</licenseversion>
+    <repository>https://github.com/smalot/pdfparser</repository>
+  </library>
 </libraries>

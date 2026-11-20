@@ -72,6 +72,52 @@ const cmidOf = (link) => {
 const fill = (text, values) => text.replace(/\{\$a->(\w+)\}/g, (match, key) => String(values[key] ?? ''));
 
 /**
+ * The text of a document, read by the theme: titles, paragraphs, lists, tables; a PDF page by page.
+ *
+ * @param {Object} file File.
+ * @returns {HTMLElement}
+ */
+const documentText = (file) => {
+    const element = document.createElement('div');
+    element.tabIndex = 0;
+    element.setAttribute('role', 'region');
+    element.setAttribute('aria-label', file.name);
+    element.setAttribute('aria-busy', 'true');
+    element.className = 'epure-preview-media epure-preview-document';
+    element.textContent = strings.loading;
+    Ajax.call([{methodname: 'theme_epure_document_text', args: {cmid: file.cmid}}])[0]
+        .then(({html}) => {
+            if (html) {
+                // Written by the template theme_epure/document_text, which escapes all the text of the document.
+                element.innerHTML = html;
+            } else {
+                element.textContent = strings.unreadable;
+            }
+            element.removeAttribute('aria-busy');
+            return html;
+        })
+        .catch(() => {
+            element.textContent = strings.unreadable;
+            element.removeAttribute('aria-busy');
+        });
+    return element;
+};
+
+/**
+ * Shows a PDF as it is, or its text: the button that switches between them says what it shows next. The reading aloud
+ * presses it to read the text (data-state « pdf »: the PDF is shown).
+ *
+ * @param {boolean} text Whether to show the text.
+ */
+const textVersion = (text) => {
+    const file = files[current];
+    const toggle = dialog.querySelector('[data-action="textversion"]');
+    toggle.dataset.state = text ? 'text' : 'pdf';
+    toggle.textContent = text ? strings.showpdf : strings.showtext;
+    dialog.querySelector('.epure-preview-body').replaceChildren(text ? documentText(file) : viewer(file));
+};
+
+/**
  * The viewer of a file: the reader of PDF of the browser, an image, the players of video and sound, the text in the page,
  * the text of a document of an office suite.
  *
@@ -110,30 +156,7 @@ const viewer = (file) => {
                 });
             return element;
         case 'document':
-            // The text of a document of an office suite, read by the theme: titles, paragraphs, lists, tables.
-            element = document.createElement('div');
-            element.tabIndex = 0;
-            element.setAttribute('role', 'region');
-            element.setAttribute('aria-label', file.name);
-            element.setAttribute('aria-busy', 'true');
-            element.className = 'epure-preview-media epure-preview-document';
-            element.textContent = strings.loading;
-            Ajax.call([{methodname: 'theme_epure_document_text', args: {cmid: file.cmid}}])[0]
-                .then(({html}) => {
-                    if (html) {
-                        // Written by the template theme_epure/document_text, which escapes all the text of the document.
-                        element.innerHTML = html;
-                    } else {
-                        element.textContent = strings.unreadable;
-                    }
-                    element.removeAttribute('aria-busy');
-                    return html;
-                })
-                .catch(() => {
-                    element.textContent = strings.unreadable;
-                    element.removeAttribute('aria-busy');
-                });
-            return element;
+            return documentText(file);
         default:
             // PDF, in the reader of the browser.
             element = document.createElement('iframe');
@@ -157,6 +180,11 @@ const show = (index, announce) => {
     dialog.querySelector('.epure-preview-title').textContent = file.name;
     dialog.querySelector('.epure-preview-position').textContent = fill(strings.position, values);
     dialog.querySelector('.epure-preview-body').replaceChildren(viewer(file));
+    // A PDF can be shown as text: for whoever reads it with difficulty, with a screen reader, or hears it read aloud.
+    const toggle = dialog.querySelector('[data-action="textversion"]');
+    toggle.hidden = file.kind !== 'pdf';
+    toggle.dataset.state = 'pdf';
+    toggle.textContent = strings.showtext;
     dialog.querySelector('[data-action="newtab"]').href = file.url;
     dialog.querySelector('[data-action="download"]').href = file.download;
     [['previous', index - 1], ['next', index + 1]].forEach(([action, other]) => {
@@ -198,6 +226,8 @@ const createDialog = async() => {
         const action = e.target.closest('[data-action]')?.dataset.action;
         if (action === 'close') {
             element.close();
+        } else if (action === 'textversion') {
+            textVersion(e.target.closest('[data-action]').dataset.state === 'pdf');
         } else if (action === 'previous' || action === 'next') {
             go(action === 'previous' ? -1 : 1);
         } else if (e.target === element) {
@@ -254,7 +284,7 @@ export const init = async() => {
     }
     document.documentElement.dataset.epurePreview = '1';
     files = JSON.parse(data.textContent).files || [];
-    const keys = ['loading', 'opened', 'position', 'unreadable'];
+    const keys = ['loading', 'opened', 'position', 'showpdf', 'showtext', 'unreadable'];
     const values = await getStrings(keys.map((key) => ({key: `preview_${key}`, component: 'theme_epure'})));
     keys.forEach((key, i) => {
         strings[key] = values[i];
