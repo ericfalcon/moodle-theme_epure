@@ -10,7 +10,7 @@ Ce guide s'adresse à l'administrateur qui installe Épure sur une plateforme en
 |---|---|
 | Moodle | 4.5 LTS, 5.0, 5.1, 5.2, 5.3 |
 | IOMAD | 4.5, 5.0, 5.1, 5.2 |
-| PHP | 8.1 à 8.4, selon la version de Moodle |
+| PHP | 8.1 à 8.4, selon la version de Moodle ; 8.2 et plus pour le PDF balisé (PDF/UA) de « Ma synthèse » |
 | Base de données | PostgreSQL, MariaDB |
 
 **Dépendances** : le thème Boost (fourni avec Moodle) et l'outil de personnalisation des langues `tool_customlang` (fourni avec Moodle), qui sert au vocabulaire.
@@ -27,8 +27,9 @@ Ce guide s'adresse à l'administrateur qui installe Épure sur une plateforme en
 6. **Purgez les caches** : Administration du site › Développement › Purger tous les caches, ou `php admin/cli/purge_caches.php`.
 7. **Réglez le thème** dans l'ordre ci-dessous, puis choisissez Épure comme thème du site (Présentation › Thèmes).
 8. **Appliquez de nouveau le vocabulaire**, si vous l'utilisez (Présentation › Thèmes › Épure : vocabulaire). Avec IOMAD, vérifiez que `config.php` ne définit pas d'autre gestionnaire de chaînes (`$CFG->customstringmanager`).
-9. **Vérifiez les parcours critiques** avec un compte de chaque rôle : connexion, tableau de bord, un cours, une activité, un devoir, un test, en clair et en sombre, sur ordinateur et sur téléphone.
-10. **Quittez le mode maintenance.**
+9. **Citez le cookie des visiteurs dans la mention des cookies** du site, si vous en avez une : `theme_epure_a11y` garde les préférences d'affichage « Aa » d'un visiteur non connecté (un an, dans son seul navigateur, rien sur le serveur). Posé seulement quand le visiteur choisit une préférence, c'est le cookie d'un service qu'il a demandé, exempté de consentement (selon la CNIL).
+10. **Vérifiez les parcours critiques** avec un compte de chaque rôle : connexion, tableau de bord, un cours, une activité, un devoir, un test, en clair et en sombre, sur ordinateur et sur téléphone.
+11. **Quittez le mode maintenance.**
 
 Lisez aussi les **notes de mise à jour** de chaque version entre la vôtre et la nouvelle, dans le [README](../README.md#upgrade-notes) ou le [CHANGES](../CHANGES.md). Certaines versions ajoutent un réglage désactivé par défaut, une table ou une page ouverte sans connexion.
 
@@ -95,4 +96,5 @@ Les formats de Moodle (Thématique, Hebdomadaire, Activité unique, Social), ave
 - **PHP** : activez **OPcache**, avec assez de mémoire pour tout le code de Moodle (`opcache.memory_consumption` de 256 Mo au moins).
 - **Feuille de style** : Moodle compile le SCSS du thème une fois, après chaque purge des caches ou modification de réglage. La première page qui suit est donc plus lente. Purgez les caches en dehors des heures d'affluence.
 - **Guide d'accessibilité** : il lit chaque cours à la première ouverture du guide ou du mode édition, puis garde le résultat. Les PDF et les documents bureautiques sont lus une seule fois par contenu, et ceux de plus de 30 Mo ne sont pas lus. Leur lecture est plafonnée : une archive de plus de 10 000 éléments n'est pas ouverte, 64 Mo de XML au plus sont lus par document, et les flux compressés d'un PDF ne sont décompressés qu'à 20 Mo au plus.
+- **Scores d'accessibilité des cours** : calculés par le cron, jamais pendant l'affichage d'une page ; la tâche de chaque nuit s'arrête au bout de 10 minutes et reprend la nuit suivante, et un cours modifié est relu une seule fois par créneau de cinq minutes. Voir [Tableau de bord de gestion](Tableau-de-bord-de-gestion.md).
 - **Vue d'ensemble de l'apprenant** : elle se désactive dans l'onglet Cours si le tableau de bord doit rester le plus léger possible.

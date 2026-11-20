@@ -3,9 +3,11 @@
 Un bouton **Rechercher** dans l'en-tête, ou **Ctrl+K** (**⌘K** sur Mac) depuis n'importe quelle page, ouvre une fenêtre de recherche. Elle trouve, sans tenir compte des majuscules ni des accents :
 
 - les **pages des menus** : navigation principale, menu utilisateur, onglets du cours ou de la page (donc le tableau de bord IOMAD, l'administration, le calendrier, les notes… selon les droits de chacun) ;
-- **mes cours** et les **activités** de mes cours ;
+- **mes cours** et les **activités** de mes cours, les plus pertinents d'abord (le nom lui-même, puis un nom qui commence par la recherche, puis un nom dont les mots commencent par elle), dans les 30 cours ouverts en dernier ; quand il reste d'autres résultats, un lien ouvre la page de tous les résultats dans mes cours (`/theme/epure/search.php`), qui les lit tous ;
 - les autres cours du **catalogue**, avec un lien vers la recherche complète ;
 - pour les administrateurs, les **pages de l'administration** dont le nom ou un réglage correspond, avec un lien vers la recherche de l'administration.
+
+Les visiteurs non connectés et les invités l'ont aussi, sur un site ouvert sans connexion : elle trouve les cours du **catalogue** (jamais un cours caché), les **catégories** qu'ils peuvent voir et les **pages publiques** (connexion, création de compte quand les inscriptions sont ouvertes, les cours, la déclaration d'accessibilité une fois publiée). Un service web public ne répond que ce qu'un visiteur voit ; rien n'est proposé quand le site impose la connexion (`forcelogin`, activé par défaut à partir de Moodle 5.2 et avec IOMAD). Avec IOMAD, où les cours et les catégories appartiennent aux entreprises, un visiteur ne cherche que dans les pages publiques.
 
 Les flèches ↑ ↓ choisissent un résultat, Entrée l'ouvre (Ctrl+Entrée dans un nouvel onglet), Échap ferme. La fenêtre est une boîte de dialogue accessible (liste de choix annoncée aux lecteurs d'écran, nombre de résultats). La recherche se désactive dans l'onglet Navigation du thème (« Recherche rapide »).
 
@@ -32,7 +34,7 @@ Dans l'onglet Mobile, les blocs restent dans leur tiroir, ouvert par un bouton s
 Avec le réglage « Application web installable » (onglet Mobile, désactivé par défaut), la plateforme peut être ajoutée à l'écran d'accueil des téléphones et des ordinateurs depuis le navigateur, comme une application : son icône, son nom, sa couleur, sans barre d'adresse. Sans passer par les magasins d'applications ni par l'application Moodle.
 
 - Le thème ajoute un manifeste d'application web (nom du site, nom court tiré du réglage « Nom de l'application web » ou du nom abrégé du site, couleur de marque, icônes de 192 et 512 pixels), une icône pour iOS et la couleur de la barre du navigateur. Avec IOMAD, la couleur est celle de l'entreprise de l'utilisateur.
-- L'icône est celle déposée (« Icône de l'application web », un PNG carré d'au moins 512 × 512 pixels, son contenu dans les 80 % du centre) ; sans elle, le thème dessine l'initiale du site sur la couleur de marque.
+- L'icône est celle déposée (« Icône de l'application web », un PNG carré d'au moins 512 × 512 pixels) ; sans elle, le thème dessine l'initiale du site sur la couleur de marque.
 - Un service worker, servi par `theme/epure/webapp/sw.php` pour tout le site, ne garde qu'une page « Vous êtes hors ligne », affichée quand une page ne peut pas se charger. Rien d'autre n'est mis en cache : les pages de Moodle viennent toujours du réseau.
 - Quand l'application web est désactivée, ou pour un utilisateur qui ne voit plus Épure, le service worker se retire avec son cache. Les pages d'Épure le retirent tout de suite quand le réglage est désactivé ; avec un autre thème, le navigateur reçoit un service worker qui se retire de lui-même à sa vérification suivante (au plus une heure d'utilisation, ou la vérification quotidienne du navigateur).
 
