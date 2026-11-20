@@ -37,6 +37,7 @@
 <div class="epure-doctext">
     <p class="epure-doctext-note">{{#str}}preview_textversion, theme_epure{{/str}}</p>
     {{#empty}}<p>{{#str}}preview_notext, theme_epure{{/str}}</p>{{/empty}}
+    {{#nopdftext}}<p>{{#str}}preview_pdfnotext, theme_epure{{/str}}</p>{{/nopdftext}}
     {{#blocks}}
         {{#isheading}}<{{tag}} class="epure-doctext-heading">{{text}}</{{tag}}>{{/isheading}}
         {{#isparagraph}}<p class="epure-doctext-paragraph">{{text}}</p>{{/isparagraph}}

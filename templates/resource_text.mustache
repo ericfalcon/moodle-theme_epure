@@ -1,0 +1,33 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/resource_text
+
+    The text of the document of a resource, under the document shown in its page (theme_epure/resource_text): a button
+    shows it or hides it; the text is written by the template theme_epure/document_text once asked for.
+
+    Context variables required for this template:
+    * none
+
+    Example context (json):
+    {
+    }
+}}
+<div class="epure-resource-text">
+    <button type="button" class="btn btn-secondary" data-epure-textversion="1" data-state="pdf" aria-expanded="false" aria-controls="epure-resource-text">{{#str}}resourcetext_show, theme_epure{{/str}}</button>
+    <div id="epure-resource-text" class="epure-resource-text-content" role="region" aria-label="{{#str}}resourcetext, theme_epure{{/str}}" hidden></div>
+</div>

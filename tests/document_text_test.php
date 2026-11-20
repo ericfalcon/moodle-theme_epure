@@ -241,6 +241,55 @@ final class document_text_test extends \advanced_testcase {
     }
 
     /**
+     * The text of a PDF (smalot/pdfparser): each page with its title, its lines joined into paragraphs; a PDF without
+     * text says so; a damaged one cannot be read.
+     */
+    public function test_pdf(): void {
+        global $CFG;
+        require_once($CFG->libdir . '/pdflib.php');
+        $this->resetAfterTest();
+        $pdf = new \pdf();
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->SetFont('helvetica', '', 11);
+        $pdf->AddPage();
+        $long = 'Lisez ces règles avant la formation. Elles s’appliquent à tous les stagiaires, dans tous les ateliers '
+            . 'du centre, sans exception, et le formateur vérifie qu’elles sont connues de chacun avant de commencer.';
+        $pdf->writeHTML('<p>' . $long . '</p><p>Fin de la page une.</p>');
+        $pdf->AddPage();
+        $pdf->writeHTML('<p>Deuxième page : le plan des sorties.</p>');
+        $blocks = document_text::pdf($pdf->Output('', 'S'));
+
+        $pages = array_values(array_filter($blocks, fn($block) => $block['type'] === 'heading'));
+        $this->assertCount(2, $pages);
+        $this->assertSame(get_string('preview_page', 'theme_epure', 2), $pages[1]['text']);
+        $texts = array_column(array_filter($blocks, fn($block) => $block['type'] === 'paragraph'), 'text');
+        // The lines of the long paragraph joined into one.
+        $this->assertContains($long, $texts);
+        $this->assertContains('Deuxième page : le plan des sorties.', $texts);
+
+        // A PDF without text: the template says so.
+        $export = document_text::export(['blocks' => [], 'truncated' => false, 'pdf' => true]);
+        $this->assertTrue($export['nopdftext']);
+        $this->assertFalse($export['empty']);
+        $html = $this->get_renderer()->render_from_template('theme_epure/document_text', $export);
+        $this->assertStringContainsString(get_string('preview_pdfnotext', 'theme_epure'), $html);
+
+        // The lines of a page: an item of a list apart, a short line ending its paragraph.
+        $this->assertSame([
+            ['type' => 'paragraph', 'text' => 'Une ligne longue qui continue sur la suivante sans point'
+                . ' et qui se termine ici.'],
+            ['type' => 'item', 'text' => 'Premier point'],
+            ['type' => 'paragraph', 'text' => 'Court'],
+        ], (new \ReflectionMethod(document_text::class, 'pdf_paragraphs'))->invoke(null, [
+            'Une ligne longue qui continue sur la suivante sans point',
+            'et qui se termine ici.',
+            '• Premier point',
+            'Court',
+        ]));
+    }
+
+    /**
      * The renderer of the pages.
      *
      * @return \renderer_base

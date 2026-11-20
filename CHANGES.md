@@ -1,5 +1,15 @@
 # Changes
 
+## 1.46.0 — the text of the PDF, to read and to hear
+
+- The preview of the files: a PDF can be shown as text, with « Show the text » (and back with « Show the PDF »): page by page, its lines joined into paragraphs, its items of lists apart, in the font, the size and the colours of « Aa », for whoever reads with difficulty or with a screen reader; its layout stays in the PDF. A PDF without text (scanned images) says so; a protected or damaged one cannot be read here, and stays to download.
+- The page of a resource that shows its PDF in the page (« Embed »), or a document of an office suite: « Show the text of the document » under it, the same text.
+- The reading aloud of « Aa » reads them: the PDF shown by the browser cannot be read by the page, so the reading shows its text first, then reads it. In the preview, the bar of the reading goes into the window (which keeps the rest of the page out of reach) and reads the window, not the page behind; the window leaves room for it at the bottom of the screen. Back in the page once the window is closed.
+- The reading aloud starts at the place clicked or reached with the keyboard last (a card of the administration, a paragraph), when it is still on the screen; else, as before, at the block shown at the top of the screen. It reads the whole page, from its header (its title, the cards of the home of the administration, which it skipped) to the end of its content, without its footer.
+- The text of a PDF is read on the server by smalot/pdfparser 2.13 (LGPL 3.0, bundled in `thirdparty/pdfparser`, 840 KB), a PDF of 10 MB at most, and kept by content of file, as the text of the documents of an office suite (1.21.0).
+- No new setting.
+- Tests: PHPUnit (the text of a PDF: its pages, a paragraph on several lines joined; a PDF without text; the lines into paragraphs and items). Checked in the browser: the preview of a PDF as text, the reading aloud in the preview and under a PDF embedded in the page of a resource.
+
 ## 1.45.0 — the reading aloud reads the boxes of C4L and the text alternatives of the images
 
 - « Aa », reading aloud: a text written straight in an element, without a paragraph, is read too. The boxes of Components for Learning (C4L: « Key concept », « Tip », « Reminder », « Attention »…) put their text in a div, and the reading skipped them; so did it with the names of the activities on the page of a course, and with the texts of other plugins of the editor or of activities written the same way. Only the own text of such an element is read, with its words in links or in bold: the paragraphs and lists it holds are read on their own, once. The buttons, the lists to choose from, the menus and the navigations are not read: they are controls, not texts.

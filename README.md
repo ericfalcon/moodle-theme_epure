@@ -126,6 +126,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.46.0**: no new setting; upgrade the site. The text of a PDF in the preview of the files (« Show the text ») and under a PDF shown in the page of a resource, read aloud by « Aa »; read by a bundled library (smalot/pdfparser).
 - **1.45.0**: no new setting; upgrade the site. The reading aloud of « Aa » reads the boxes of C4L (« Key concept », « Tip »…) and the other texts written without a paragraph, each box with its name, and the text alternatives of the images.
 - **1.44.0**: no new setting; upgrade the site. The points of accessibility confirmed in the guide of a course are backed up and restored with the course (who confirmed them, with the users).
 - **1.43.0**: no new setting; upgrade the site. Defects of Moodle found by an RGAA audit repaired in the page: the calendar month table has a caption and column headers; Space presses the links made buttons; a required field says « (required) » in its label; the unnamed navigations get a name; the search of « My courses » has a visible label.

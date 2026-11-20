@@ -232,6 +232,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if (\theme_epure\long_form::applies($this->page)) {
             $this->page->requires->js_call_amd('theme_epure/long_form', 'init');
         }
+        // The text of the document of a resource shown in its page (a PDF embedded…): to read, and to hear read aloud.
+        if ($this->page->pagetype === 'mod-resource-view' && $this->page->cm) {
+            $file = \theme_epure\file_preview::main_file($this->page->cm);
+            if ($file && \theme_epure\document_text::supported((string) $file->get_mimetype())) {
+                $this->page->requires->js_call_amd('theme_epure/resource_text', 'init', [(int) $this->page->cm->id]);
+            }
+        }
         if (\theme_epure\course_presentation::applies($this->page)) {
             return $this->render_from_template(
                 'theme_epure/course_presentation',

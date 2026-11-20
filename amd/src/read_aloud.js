@@ -27,6 +27,13 @@
  * exits »), in the order of the page; the decorative images (an empty alternative, role presentation) and the icons
  * of Moodle are not.
  *
+ * The reading starts at the place clicked or reached with the keyboard last (a card, a paragraph), when it is still
+ * on the screen; else at the block shown at the top of the screen.
+ *
+ * In a window that opens over the page (the preview of the files…), the bar goes into the window, which keeps the
+ * rest of the page out of reach, and reads the window, not the page behind. A PDF shown there is read in its text
+ * version: the bar presses the button that shows it (data-epure-textversion), and waits for the text.
+ *
  * @module     theme_epure/read_aloud
  * @copyright  2026 Eric Falcon
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -271,7 +278,7 @@ const next = () => {
  * @returns {HTMLElement[]}
  */
 const blocks = () => {
-    const main = document.querySelector('#region-main, [role="main"], main') || document.body;
+    const main = root();
     const shown = (element) => element.getClientRects().length && !element.closest(SKIPPED);
     const found = new Set([...main.querySelectorAll(BLOCKS)].filter((block) => !block.querySelector(BLOCKS) && shown(block)));
     // The texts written straight in another element (a div of C4L…): the element that holds them, its own text read.
@@ -299,9 +306,101 @@ const blocks = () => {
     // In the order of the page.
     const after = [Node.DOCUMENT_POSITION_FOLLOWING, Node.DOCUMENT_POSITION_FOLLOWING + Node.DOCUMENT_POSITION_CONTAINED_BY];
     const all = [...found].sort((a, b) => (after.includes(a.compareDocumentPosition(b)) ? -1 : 1));
-    const first = all.findIndex((block) => block.getBoundingClientRect().bottom > 0);
+    // From the place clicked last (the block that holds it, or the first one after it), else from the top of the screen.
+    const from = onScreen(point) && main.contains(point) ? point : null;
+    const first = from
+        ? all.findIndex((block) => block.contains(from) || after.includes(from.compareDocumentPosition(block)))
+        : all.findIndex((block) => block.getBoundingClientRect().bottom > 0);
     return all.slice(Math.max(0, first));
 };
+
+/**
+ * What is read: the window open over the page, else the page from its header (its title, the cards of the
+ * administration…) to the end of its content, without its footer.
+ *
+ * @returns {HTMLElement}
+ */
+const root = () => [...document.querySelectorAll('dialog[open]')].find((dialog) => dialog.matches(':modal'))
+    || document.querySelector('#topofscroll, #region-main, [role="main"], main') || document.body;
+
+/**
+ * Shows the text of a PDF in the window, before reading it: presses the button of its text version, and waits for the
+ * text (5 seconds at most).
+ *
+ * @param {HTMLElement} where What is read.
+ * @returns {Promise}
+ */
+const textVersion = (where) => {
+    const toggle = where.querySelector('[data-epure-textversion][data-state="pdf"]:not([hidden])');
+    if (!toggle) {
+        return Promise.resolve();
+    }
+    toggle.click();
+    return new Promise((resolve) => {
+        const started = Date.now();
+        const wait = () => {
+            if (!where.querySelector('[aria-busy="true"]') || Date.now() - started > 5000) {
+                resolve();
+            } else {
+                setTimeout(wait, 100);
+            }
+        };
+        wait();
+    });
+};
+
+/**
+ * Keeps the bar in the window open over the page, where it can be reached, and back in the page once it is closed.
+ */
+const followWindows = () => {
+    const place = () => {
+        if (!bar) {
+            return;
+        }
+        const modal = [...document.querySelectorAll('dialog[open]')].find((dialog) => dialog.matches(':modal'));
+        const home = modal || document.body;
+        if (bar.parentElement !== home) {
+            home.append(bar);
+        }
+    };
+    new MutationObserver((mutations) => {
+        if (mutations.some((mutation) => mutation.target.tagName === 'DIALOG')) {
+            place();
+        }
+    }).observe(document.body, {attributes: true, attributeFilter: ['open'], subtree: true});
+    return place;
+};
+
+/** @type {Element|null} The place clicked or reached with the keyboard last, out of the bar. */
+let point = null;
+
+/**
+ * Keeps the place clicked or reached with the keyboard: the reading starts there.
+ *
+ * @param {Event} e The click or the focus.
+ */
+const remember = (e) => {
+    if (e.target instanceof Element && !bar?.contains(e.target)) {
+        point = e.target;
+    }
+};
+
+/**
+ * Whether an element is still in the page and on the screen.
+ *
+ * @param {Element|null} element Element.
+ * @returns {boolean}
+ */
+const onScreen = (element) => {
+    if (!element || !document.contains(element) || !element.getClientRects().length) {
+        return false;
+    }
+    const rect = element.getBoundingClientRect();
+    return rect.bottom > 0 && rect.top < window.innerHeight - (bar?.offsetHeight || 0);
+};
+
+/** @type {Function|null} Puts the bar where it can be reached. */
+let placeBar = null;
 
 /**
  * Stops the reading.
@@ -333,8 +432,13 @@ const start = () => {
         say(chosen.text, language(chosen.node), stop);
     } else {
         named = new WeakSet();
-        queue = blocks();
-        next();
+        textVersion(root()).then(() => {
+            if (reading) {
+                queue = blocks();
+                next();
+            }
+            return null;
+        }).catch(() => null);
     }
     update();
 };
@@ -384,6 +488,8 @@ const create = async() => {
         return;
     }
     bar = Templates.appendNodeContents(document.body, html, js).find((node) => node.nodeType === Node.ELEMENT_NODE);
+    placeBar = placeBar || followWindows();
+    placeBar();
     Object.assign(bar.dataset, {play, pause, resume, novoice, failed, image});
     // The selection is read once the button is pressed: a click on it must not clear it.
     bar.querySelector('[data-action="play"]').addEventListener('mousedown', (e) => e.preventDefault());
@@ -436,6 +542,8 @@ export const set = (on) => {
  * Shows the bar when the user chose the reading aloud, read from the classes of the page.
  */
 export const init = () => {
+    document.addEventListener('pointerdown', remember, true);
+    document.addEventListener('focusin', remember, true);
     set(document.documentElement.classList.contains('epure-a11y-speech'));
     // The last text selected out of the bar, kept a moment: on a phone, touching the button clears it first.
     document.addEventListener('selectionchange', () => {
