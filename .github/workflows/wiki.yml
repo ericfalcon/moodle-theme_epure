@@ -1,0 +1,71 @@
+name: Wiki
+
+# The wiki of the repository is a copy of docs/ (in French): each merge on main that changes the documentation publishes
+# it there. docs/README.md becomes the home page; the summary of the home page is the sidebar; the links between the
+# pages lose their « .md » and those out of docs/ point to the repository. The pages of the wiki that are not in docs/
+# are left as they are. Run by hand (Actions > Wiki > Run workflow), it publishes docs/ of the branch chosen.
+on:
+  push:
+    branches: [main]
+    paths: ['docs/*.md', '.github/workflows/wiki.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wiki
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the documentation
+        uses: actions/checkout@v4
+
+      - name: Check out the wiki
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git clone --depth 1 "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.wiki.git" "$RUNNER_TEMP/wiki"
+
+      - name: Write the pages
+        run: |
+          python3 - "$RUNNER_TEMP/wiki" "https://github.com/${GITHUB_REPOSITORY}/blob/${GITHUB_REF_NAME}/" <<'PY'
+          import glob, os, re, sys
+          wiki, base = sys.argv[1], sys.argv[2]
+
+          def convert(text):
+              # Out of docs/: to the file in the repository.
+              text = re.sub(r'\]\(\.\./([^)]*)\)', lambda m: f']({base}{m.group(1)})', text)
+              # Between the pages: their name, without « .md ».
+              return re.sub(r'\]\((?!https?://|#|mailto:)([^)\s]+?)\.md(#[^)]*)?\)',
+                            lambda m: f']({m.group(1)}{m.group(2) or ""})', text)
+
+          for path in sorted(glob.glob('docs/*.md')):
+              name = os.path.basename(path)
+              page = 'Home.md' if name == 'README.md' else name
+              with open(path, encoding='utf-8') as source, open(os.path.join(wiki, page), 'w', encoding='utf-8') as target:
+                  target.write(convert(source.read()))
+
+          with open(os.path.join(wiki, 'Home.md'), encoding='utf-8') as home:
+              summary = re.search(r'## Sommaire\n\n(.*?)(?:\n\n|$)', home.read(), re.S)
+          with open(os.path.join(wiki, '_Sidebar.md'), 'w', encoding='utf-8') as sidebar:
+              sidebar.write('**[Épure](Home)**\n\n' + (summary.group(1) if summary else '') + '\n')
+          with open(os.path.join(wiki, '_Footer.md'), 'w', encoding='utf-8') as footer:
+              footer.write("Documentation d'[Épure](https://github.com/" + os.environ['GITHUB_REPOSITORY'] + "), tenue à jour "
+                           "dans le dossier `docs/` du dépôt : les modifications faites ici sont remplacées à la publication "
+                           "suivante. Documentation en anglais : [README](" + base + "README.md).\n")
+          PY
+
+      - name: Publish
+        working-directory: ${{ runner.temp }}/wiki
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "The wiki is already up to date."
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "Documentation from docs/ (${GITHUB_SHA::7})"
+          git push -q origin HEAD
