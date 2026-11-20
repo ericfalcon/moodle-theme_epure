@@ -47,7 +47,7 @@ const BLOCKS = 'h1, h2, h3, h4, h5, h6, p, li, dt, dd, td, th, figcaption, block
 
 /** @type {string} What is never read: hidden from everyone, or a control rather than a text. */
 const SKIPPED = '[aria-hidden="true"], .sr-only, .visually-hidden, script, style, template, button, select, textarea, '
-    + '[role="button"], [role="menu"], .dropdown-menu, nav';
+    + '[role="button"], [role="menu"], .dropdown-menu, nav, .epure-a11y-speechbar';
 
 /** @type {number[]} Speeds offered. */
 const RATES = [0.75, 1, 1.25, 1.5];
@@ -335,7 +335,10 @@ const textVersion = (where) => {
     if (!toggle) {
         return Promise.resolve();
     }
+    // Pressed by the reading, not by the user: the place to start from stays.
+    const kept = point;
     toggle.click();
+    point = kept;
     return new Promise((resolve) => {
         const started = Date.now();
         const wait = () => {
@@ -373,16 +376,23 @@ const followWindows = () => {
 
 /** @type {Element|null} The place clicked or reached with the keyboard last, out of the bar. */
 let point = null;
+/** @type {number} When a key was pressed last: a focus that follows it is the user's. */
+let keyed = 0;
 
 /**
- * Keeps the place clicked or reached with the keyboard: the reading starts there.
+ * Keeps the place clicked or reached with the keyboard by the user: the reading starts there. A focus given by a
+ * script (a window that opens, the reading that shows the text of a PDF) is not the user's choice.
  *
  * @param {Event} e The click or the focus.
  */
 const remember = (e) => {
-    if (e.target instanceof Element && !bar?.contains(e.target)) {
-        point = e.target;
+    if (!e.isTrusted || !(e.target instanceof Element) || bar?.contains(e.target)) {
+        return;
     }
+    if (e.type === 'focusin' && Date.now() - keyed > 1000) {
+        return;
+    }
+    point = e.target;
 };
 
 /**
@@ -549,6 +559,9 @@ export const set = (on) => {
 export const init = () => {
     document.addEventListener('pointerdown', remember, true);
     document.addEventListener('focusin', remember, true);
+    document.addEventListener('keydown', () => {
+        keyed = Date.now();
+    }, true);
     set(document.documentElement.classList.contains('epure-a11y-speech'));
     // The last text selected out of the bar, kept a moment: on a phone, touching the button clears it first.
     document.addEventListener('selectionchange', () => {
