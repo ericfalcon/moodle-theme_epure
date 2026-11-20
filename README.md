@@ -94,7 +94,7 @@ Each company has its own colours, logo, font and vocabulary (here « parcours »
 
 - Moodle 4.5 to 5.3, IOMAD 4.5 to 5.2, PHP 8.1 to 8.4, PostgreSQL and MariaDB: all tested in continuous integration (PHPUnit, Behat, code checks).
 - Optional: tool_certificate and mod_coursecertificate for certificates.
-- Privacy: user preferences, the « My summary » documents issued and the points of accessibility confirmed by the teachers, exported and deleted with the privacy API (and when a user is deleted). No external service is called; the fonts are bundled (SIL Open Font License). One cookie: `theme_epure_a11y`, the display preferences « Aa » of a visitor not logged in (a year, in their browser only, nothing on the server); set only when the visitor chooses a preference, it is a cookie of a service the user asked for, exempt from consent (as the CNIL counts it), to name in the cookie notice of the site.
+- Privacy: user preferences, the « My summary » documents issued and the points of accessibility confirmed by the teachers, exported and deleted with the privacy API (and when a user is deleted); the points of accessibility confirmed in a course are backed up and restored with it. No external service is called; the fonts are bundled (SIL Open Font License). One cookie: `theme_epure_a11y`, the display preferences « Aa » of a visitor not logged in (a year, in their browser only, nothing on the server); set only when the visitor chooses a preference, it is a cookie of a service the user asked for, exempt from consent (as the CNIL counts it), to name in the cookie notice of the site.
 
 ### Notes
 
@@ -126,6 +126,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.44.0**: no new setting; upgrade the site. The points of accessibility confirmed in the guide of a course are backed up and restored with the course (who confirmed them, with the users).
 - **1.43.0**: no new setting; upgrade the site. Defects of Moodle found by an RGAA audit repaired in the page: the calendar month table has a caption and column headers; Space presses the links made buttons; a required field says « (required) » in its label; the unnamed navigations get a name; the search of « My courses » has a visible label.
 - **1.42.0**: no new setting; upgrade the site. « Aa » says when the display is the one the user chose (a dot, « customised » in its name); a guide « Which profile to choose? » to print or to give (`/theme/epure/profiles.php`).
 - **1.41.0**: no new setting; upgrade the site. The PDF of « My summary » is tagged for the screen readers (PDF/UA-1), with PHP 8.2 and later (a bundled library, tc-lib-pdf); with PHP 8.1, as before.

@@ -1,5 +1,16 @@
 # Changes
 
+## 1.44.0 — the review of the plugins directory
+
+The review of Épure for the Moodle plugins directory recommended it for approval, with four points to fix in a later version. They are fixed:
+
+- Backup and restore (#73): the points of accessibility a teacher confirmed in the guide « Accessibility of the course » (subtitles of a video, accessible document…) are backed up with the course, and come back when it is restored, duplicated or imported, each with its activity in the new course; who confirmed each point, only when the users are backed up (else the guide says « Unknown user »). A point the course already has, in a restore into an existing course, is kept once. The scores of the course are not backed up: they are read again from the course restored.
+- Privacy (#76): the field of the activity of a point confirmed (cmid) is declared in the metadata of the privacy API, with the others.
+- Boilerplate (#74): the script of « Moodle is working » (javascript/busy.js) has its `@copyright` and `@license`, as every other file of PHP and JavaScript of the theme.
+- Templates (#75): the window of the preview of the files and the bar of the reading aloud are made from Mustache templates (theme_epure/file_preview, theme_epure/read_aloud_bar), no longer from HTML written in the scripts. Nothing changes for the users.
+- No new setting.
+- Tests: PHPUnit (a course backed up and restored, with and without the users: the points, their activity, their teacher).
+
 ## 1.43.0 — defects of Moodle found by an RGAA audit, repaired by the theme
 
 An RGAA audit of a Moodle platform (not one with Épure) found defects of Moodle itself, which a theme can repair in the page. Épure now does:
