@@ -45,7 +45,8 @@ class course_accessibility {
     /** @var string[] Mistakes found without a person, in their order on the page. */
     public const ISSUES = ['images', 'imagelinks', 'links', 'tables', 'contrast', 'headings', 'noheadings', 'frames', 'videos',
         'pdf', 'pdfscanned', 'pdflang', 'docimages', 'docnoheadings', 'docheadings', 'doctables', 'doccontrast', 'slidetitles',
-        'sheetnames', 'doctitle', 'h5pimages', 'emptyheadings', 'moving', 'tabindex', 'duplicateids', 'name', 'duplicate'];
+        'sheetnames', 'doctitle', 'h5pimages', 'emptyheadings', 'moving', 'tabindex', 'duplicateids', 'name', 'duplicate',
+        'noinstructions'];
 
     /** @var string[] Severity of each mistake: blocking (some learners cannot use the content at all), serious (they
      * use it with difficulty) or minor (it is less clear, for all). */
@@ -57,11 +58,15 @@ class course_accessibility {
         'pdflang' => 'serious', 'docnoheadings' => 'serious', 'docheadings' => 'serious', 'doctables' => 'serious',
         'doccontrast' => 'serious', 'slidetitles' => 'serious',
         'doctitle' => 'minor', 'sheetnames' => 'minor', 'duplicateids' => 'minor', 'name' => 'minor', 'duplicate' => 'minor',
+        'noinstructions' => 'serious',
     ];
 
     /** @var int[] What each severity takes off the score of a part (out of 100), once whatever the number of mistakes
      * of a kind. */
     public const WEIGHTS = ['blocking' => 40, 'serious' => 15, 'minor' => 5];
+
+    /** @var array<string, string> The field of the instructions of the activities that must give some, by module. */
+    public const INSTRUCTIONS_FIELDS = ['assign' => 'activity', 'workshop' => 'instructauthors'];
 
     /** @var string[] The activities where the learners act on instructions: their instructions are to confirm. */
     public const INSTRUCTED = ['assign', 'quiz', 'workshop', 'lesson', 'forum', 'data', 'glossary', 'feedback', 'choice',
@@ -618,10 +623,15 @@ class course_accessibility {
                         break;
                 }
                 // The instructions of an activity where the learners act (hand in, answer, take part): whether they say
-                // what to do, how and by when, only a person can tell. Asked where the activity gives some.
-                $given = (string) ($record->intro ?? '') . ' ' . (string) ($record->activity ?? '');
+                // what to do, how and by when, only a person can tell. Asked where the activity gives some. An
+                // assignment or a workshop without any (description, instructions of the activity or for the
+                // submissions, files given with them) does not say what to hand in: a mistake.
+                $field = self::INSTRUCTIONS_FIELDS[$modname] ?? null;
+                $given = (string) ($record->intro ?? '') . ' ' . ($field ? (string) ($record->$field ?? '') : '');
                 $instructions = trim(html_to_text($given, 0, false));
-                if (in_array($modname, self::INSTRUCTED, true) && $instructions !== '') {
+                if ($field && $instructions === '' && !self::instruction_files($cm)) {
+                    self::add_issue($part, 'noinstructions');
+                } else if (in_array($modname, self::INSTRUCTED, true) && ($instructions !== '' || $field)) {
                     $part['checks'][] = ['key' => 'instructions', 'kind' => 'instructions', 'label' => ''];
                 }
                 unset($part);
@@ -1143,7 +1153,7 @@ class course_accessibility {
             if (isset($content[$cm->modname])) {
                 $links[] = new \moodle_url($content[$cm->modname], [$cm->modname === 'quiz' ? 'cmid' : 'id' => $cm->id]);
             }
-            $sections[$current]['parts'][] = self::with_rename(self::with_fixes(self::with_images(self::export_part(
+            $exported = self::export_part(
                 $part,
                 $cm->get_formatted_name(),
                 $cm->get_icon_url()->out(false),
@@ -1153,7 +1163,10 @@ class course_accessibility {
                 $users,
                 $output,
                 $cm
-            ), $part, $course), $part, $course), $part, $cm, $sections[$current]['name']);
+            );
+            $exported = self::with_fixes(self::with_images($exported, $part, $course), $part, $course);
+            $exported = self::with_rename($exported, $part, $cm, $sections[$current]['name']);
+            $sections[$current]['parts'][] = self::with_instructions($exported, $part, $cm);
         }
         $sections = array_values(array_filter($sections, fn($section) => $section['parts']));
         $hasimages = false;
@@ -1162,7 +1175,8 @@ class course_accessibility {
         $first = [];
         foreach ($sections as $section) {
             foreach ($section['parts'] as $exported) {
-                $here = $exported['hasaltimages'] || $exported['hasfixes'] || !empty($exported['hasrename']);
+                $here = $exported['hasaltimages'] || $exported['hasfixes'] || !empty($exported['hasrename'])
+                    || !empty($exported['haswrite']);
                 $hasimages = $hasimages || $here;
                 if ($exported['level'] === 'blocking') {
                     $first[] = ['name' => $exported['name'], 'section' => $section['name'], 'url' => '#' . $exported['id'],
@@ -1394,6 +1408,82 @@ class course_accessibility {
             'label' => html_entity_decode(strip_tags(get_string('courseaccessibility_rename', 'theme_epure', (object) [
                 'name' => $data['name'], 'section' => $section])), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
         ]];
+    }
+
+    /**
+     * Whether files are given with the instructions of an activity (the files of the instructions of an assignment).
+     *
+     * @param \cm_info $cm Activity.
+     * @return bool
+     */
+    protected static function instruction_files(\cm_info $cm): bool {
+        if ($cm->modname !== 'assign') {
+            return false;
+        }
+        return !get_file_storage()->is_area_empty($cm->context->id, 'mod_assign', 'introattachment', 0, false);
+    }
+
+    /**
+     * An assignment or a workshop without instructions: a field to write them here, saved with the button at the
+     * bottom of the page into the instructions of the activity (of the assignment) or for the submissions (of the
+     * workshop), for those who may change the activity.
+     *
+     * @param array $data Context of the part.
+     * @param array $part Part.
+     * @param \cm_info $cm Activity.
+     * @return array
+     */
+    protected static function with_instructions(array $data, array $part, \cm_info $cm): array {
+        if (empty($part['issues']['noinstructions']) || !has_capability('moodle/course:manageactivities', $cm->context)) {
+            return $data + ['haswrite' => false];
+        }
+        return $data + ['haswrite' => true, 'write' => [
+            'id' => $data['id'] . '-instructions',
+            'cmid' => $cm->id,
+            // Escaped once, by the template.
+            'label' => html_entity_decode(strip_tags(get_string('courseaccessibility_write_' . $cm->modname, 'theme_epure',
+                $data['name'])), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+        ]];
+    }
+
+    /**
+     * Writes the instructions written in the guide into the activities that had none: each paragraph (lines apart by
+     * an empty line) a paragraph, each line kept. Never over instructions written meanwhile.
+     *
+     * @param \stdClass $course Course.
+     * @param array $texts Instructions, by id of activity, as plain text.
+     * @return int Activities given instructions.
+     */
+    public static function write_instructions(\stdClass $course, array $texts): int {
+        global $DB;
+        $modinfo = get_fast_modinfo($course);
+        $done = 0;
+        foreach ($texts as $cmid => $text) {
+            $cm = $modinfo->get_cms()[(int) $cmid] ?? null;
+            $text = trim(str_replace("\r", '', clean_param((string) $text, PARAM_TEXT)));
+            $field = $cm ? (self::INSTRUCTIONS_FIELDS[$cm->modname] ?? null) : null;
+            if (!$field || $text === '' || !has_capability('moodle/course:manageactivities', $cm->context)) {
+                continue;
+            }
+            $record = $DB->get_record($cm->modname, ['id' => $cm->instance], 'id, intro, ' . $field);
+            if (!$record || trim(html_to_text($record->intro . ' ' . $record->$field, 0, false)) !== '') {
+                continue;
+            }
+            $paragraphs = array_filter(array_map('trim', preg_split('/\n\s*\n/', $text)));
+            $html = implode('', array_map(
+                fn($paragraph) => '<p>' . implode('<br>', array_map('s', array_map('trim', explode("\n", $paragraph)))) . '</p>',
+                $paragraphs
+            ));
+            $DB->update_record($cm->modname, ['id' => $record->id, $field => $html, $field . 'format' => FORMAT_HTML,
+                'timemodified' => time()]);
+            \core\event\course_module_updated::create_from_cm($cm)->trigger();
+            $done++;
+        }
+        if ($done) {
+            rebuild_course_cache((int) $course->id, true);
+            self::forget((int) $course->id);
+        }
+        return $done;
     }
 
     /**

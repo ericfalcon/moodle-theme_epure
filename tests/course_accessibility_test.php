@@ -439,6 +439,53 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         $this->assertContains('instructions', $kinds($assign));
         $this->assertNotContains('instructions', $kinds($empty));
         $this->assertNotContains('instructions', $kinds($plain));
+        // An assignment without instructions: a mistake, not a point to confirm.
+        $this->assertSame(['noinstructions' => 1], $parts[$empty->cmid]['issues']);
+        $this->assertSame('serious', course_accessibility::SEVERITIES['noinstructions']);
+        $this->assertArrayNotHasKey('noinstructions', $parts[$assign->cmid]['issues']);
+    }
+
+    /**
+     * The instructions written in the guide go into the instructions of the activity that had none (an assignment, a
+     * workshop), as paragraphs; never over instructions written meanwhile, nor for whoever may not change it.
+     */
+    public function test_write_instructions(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        set_config('courseaccessibility', 1, 'theme_epure');
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course();
+        $assign = $generator->create_module('assign', ['course' => $course->id, 'name' => 'Dossier']);
+        $DB->set_field('assign', 'intro', '', ['id' => $assign->id]);
+        $workshop = $generator->create_module('workshop', ['course' => $course->id, 'name' => 'Relecture']);
+        $DB->set_field('workshop', 'intro', '', ['id' => $workshop->id]);
+        $DB->set_field('workshop', 'instructauthors', '', ['id' => $workshop->id]);
+        $written = $generator->create_module('assign', ['course' => $course->id, 'name' => 'Bilan',
+            'intro' => '<p>Déjà écrite.</p>']);
+        course_accessibility::forget((int) $course->id);
+        $parts = array_column(course_accessibility::analyse(get_course($course->id)), null, 'id');
+        $this->assertArrayHasKey('noinstructions', $parts[$workshop->cmid]['issues']);
+
+        $done = course_accessibility::write_instructions(get_course($course->id), [
+            $assign->cmid => "Déposez votre dossier <b>avant</b> vendredi.\nUn seul fichier PDF.\n\nIl est noté sur 20.",
+            $workshop->cmid => 'Relisez deux travaux.',
+            $written->cmid => 'Remplacée ?',
+            '999999' => 'Inconnue',
+        ]);
+        $this->assertSame(2, $done);
+        $this->assertSame('<p>Déposez votre dossier avant vendredi.<br>Un seul fichier PDF.</p><p>Il est noté sur 20.</p>',
+            $DB->get_field('assign', 'activity', ['id' => $assign->id]));
+        $this->assertSame('<p>Relisez deux travaux.</p>', $DB->get_field('workshop', 'instructauthors', ['id' => $workshop->id]));
+        $this->assertSame('', (string) $DB->get_field('assign', 'activity', ['id' => $written->id]));
+        $parts = array_column(course_accessibility::analyse(get_course($course->id)), null, 'id');
+        $this->assertArrayNotHasKey('noinstructions', $parts[$assign->cmid]['issues']);
+        $this->assertContains('instructions', array_column($parts[$assign->cmid]['checks'], 'kind'));
+
+        // A learner writes nothing.
+        $DB->set_field('assign', 'activity', '', ['id' => $assign->id]);
+        $this->setUser($generator->create_and_enrol($course, 'student'));
+        $this->assertSame(0, course_accessibility::write_instructions(get_course($course->id), [$assign->cmid => 'Non.']));
     }
 
     /**

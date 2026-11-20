@@ -134,6 +134,15 @@
                                 {{/rename}}
                             </div>
                         {{/hasrename}}
+                        {{#haswrite}}
+                            <div class="epure-a11yguide-rename epure-a11yguide-write d-print-none">
+                                {{#write}}
+                                    <label for="{{id}}">{{label}}</label>
+                                    <textarea class="form-control" id="{{id}}" name="instructions[{{cmid}}]" rows="5" aria-describedby="{{id}}-help"></textarea>
+                                    <p class="epure-a11yguide-check-help" id="{{id}}-help">{{#str}}courseaccessibility_write_help, theme_epure{{/str}}</p>
+                                {{/write}}
+                            </div>
+                        {{/haswrite}}
                         {{#hasaltimages}}
                             <fieldset class="epure-a11yguide-alts d-print-none">
                                 <legend class="epure-a11yguide-checks-title">{{#str}}courseaccessibility_alt_title, theme_epure{{/str}}</legend>
