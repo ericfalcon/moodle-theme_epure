@@ -62,7 +62,8 @@ class data_protection {
     ];
 
     /** @var string[] The fields of the extract for the record of processing activities, in their order. */
-    public const RECORD = ['name', 'purposes', 'people', 'categories', 'recipients', 'transfers', 'durations', 'measures'];
+    public const RECORD = ['name', 'purposes', 'people', 'categories', 'recipients', 'transfers', 'durations', 'measures',
+        'tocomplete'];
 
     /**
      * URL of the page.
