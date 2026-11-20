@@ -46,7 +46,7 @@ Les réglages propres à Épure :
 |---|---|
 | Couleur de marque | Code couleur libre, sélecteur de couleur, ou couleurs du logo de l'entreprise (pastilles et pipette, y compris pour un logo tout juste téléversé). Vide : la couleur du titre d'IOMAD, sinon celle du site. La palette accessible est recalculée. Elle remplace aussi la couleur d'accent du site. |
 | Couleur d'accent | Barres de progression et sections terminées. Vide : la couleur de marque de l'entreprise, sinon la couleur d'accent du site. |
-| Couleur de l'en-tête | Comme le site, blanc, ou couleur de marque. |
+| Couleur de l'en-tête | Comme le site, blanc, couleur de marque, ou dégradé de la couleur de marque vers la couleur d'accent. |
 | Arrondis | Comme le site, peu, moyennement ou très arrondis. Sur Moodle 4.5, les coins compilés dans Bootstrap 4 (champs, boutons de Moodle) gardent ceux du site ; ceux d'Épure et, à partir de Moodle 5.0, ceux de Bootstrap suivent l'entreprise. |
 | E-mails aux couleurs de la marque | Comme le site, activé ou désactivé, selon l'entreprise du destinataire. |
 | Bannière des cours | Comme le site, affichée ou masquée, pour les utilisateurs de l'entreprise. |
@@ -60,9 +60,15 @@ Les réglages propres à Épure :
 | Logo pour l'en-tête en couleur | Facultatif : une version du logo lisible sur la couleur de marque de l'entreprise, souvent blanche sur fond transparent. |
 | Police | Comme le site, l'une des 8 polices fournies, la police téléversée du site, ou une police téléversée pour l'entreprise (nom, fichiers normal et gras en woff2 ou woff ; vérifiez que sa licence autorise l'usage sur un site web). Sans fichier normal, la police du site est gardée. |
 
-Les champs natifs d'IOMAD (logos, CSS et menu personnalisés) sont rangés dans ces étapes ; Épure se déclare thème IOMAD pour qu'IOMAD les affiche. Les couleurs d'IOMAD (titre, principale, lien), qui ne servent qu'aux thèmes IOMAD, sont masquées tant que l'entreprise utilise Épure ; une couleur du titre déjà enregistrée est reprise comme couleur de marque. Enfin, la section **Vocabulaire** règle les mots de l'entreprise, en français et en anglais : ses mots pour « cours », « étudiant » et « enseignant » (« parcours » et « stagiaire » pour l'une, « module » et « collaborateur » pour une autre), et pour « entreprise » et « département » (« client » et « équipe », « agence » et « service »). Épure se déclare thème IOMAD pour qu'IOMAD affiche ces champs. Les mots de la plateforme se choisissent sur la page Épure : vocabulaire ; une entreprise sans mots propres utilise ceux-là.
+Les champs natifs d'IOMAD (logos, CSS et menu personnalisés) sont rangés dans ces étapes ; Épure se déclare thème IOMAD pour qu'IOMAD les affiche. Les couleurs d'IOMAD (titre, principale, lien), qui ne servent qu'aux thèmes IOMAD, sont masquées tant que l'entreprise utilise Épure ; une couleur du titre déjà enregistrée est reprise comme couleur de marque. Enfin, la section **Vocabulaire** règle les mots de l'entreprise, c'est-à-dire ses mots pour « entreprise » et « département », en français et en anglais (« client » et « équipe » pour l'une, « agence » et « service » pour une autre). Épure se déclare thème IOMAD pour qu'IOMAD affiche ces champs. Les mots pour toutes les entreprises se choisissent sur la page Épure : vocabulaire ; une entreprise sans mots propres utilise ceux-là.
 
 Les paquets de langue étant communs à tout le site, ces mots sont appliqués au chargement des chaînes par un gestionnaire de chaînes que le thème active à chaque page (le mécanisme `$CFG->customstringmanager` de Moodle), avec un cache par entreprise. **Aucune modification de `config.php` n'est nécessaire.** Il n'est activé que si des mots sont choisis ; si `config.php` définit déjà un autre gestionnaire de chaînes, celui-ci est conservé et la page Épure : vocabulaire l'indique.
+
+## Déclaration d'accessibilité et tableau de bord de gestion
+
+**Déclaration d'accessibilité de l'entreprise.** Une entreprise responsable de son propre service peut publier sa propre déclaration d'accessibilité, au lieu de celle de la plateforme : qui la publie, l'audit, l'état de conformité, les contenus non accessibles, le contact. Elle se remplit pas à pas depuis la fiche de l'entreprise (Apparence › Pied de page, « La remplir étape par étape »), par ceux qui modifient l'apparence de l'entreprise. Une fois publiée, les utilisateurs de l'entreprise, sa page de connexion et son adresse l'affichent, et la mention du pied de page donne son état. Sinon, c'est celle de la plateforme. Voir [Accessibilité](Accessibilit%C3%A9.md).
+
+**Tableau de bord de gestion de l'entreprise.** L'activité des utilisateurs de l'entreprise dans ses cours, ses cours les plus suivis, leur achèvement et l'accessibilité de ses cours, depuis un lien sous les chiffres clés du tableau de bord IOMAD et depuis son onglet « Rapports ». Voir [Tableau de bord de gestion](Tableau-de-bord-de-gestion.md).
 
 ## Chiffres clés
 

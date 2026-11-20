@@ -1,4 +1,4 @@
-Pré-audit d'Épure 0.56.2 (31 octobre 2026), étendu aux widgets de Moodle en 1.17.0 (12 novembre 2026). Il s'agit d'un **contrôle automatisé et de vérifications au clavier**, pas d'un audit RGAA complet : il prépare l'audit manuel, qui reste nécessaire avant de déclarer la conformité. Il remplace le pré-audit de la 0.21.0 (5 octobre 2026), qui ne valait plus pour la version courante.
+Pré-audit d'Épure 0.56.2 (31 octobre 2026), étendu aux widgets de Moodle en 1.17.0 (12 novembre 2026), aux couleurs jaune sur noir et crème et au texte à 200 % en 1.36.0, et complété par les défauts de Moodle relevés par un audit RGAA d'une plateforme Moodle en 1.43.0 (19 novembre 2026). Il s'agit d'un **contrôle automatisé et de vérifications au clavier**, pas d'un audit RGAA complet : il prépare l'audit manuel, qui reste nécessaire avant de déclarer la conformité. Il remplace le pré-audit de la 0.21.0 (5 octobre 2026), qui ne valait plus pour la version courante.
 
 ## Ce qui est contrôlé, et où
 
@@ -6,20 +6,20 @@ Le pré-audit fait partie des tests du thème : chaque modification le refait, �
 
 | | Moodle | IOMAD |
 |---|---|---|
-| Versions | 4.5, 5.0, 5.1, 5.2, 5.3 | 4.5, 5.1, 5.2 |
+| Versions | 4.5, 5.0, 5.1, 5.2, 5.3 | 4.5, 5.0, 5.1, 5.2 |
 | PHP | 8.1 (4.5), 8.3, 8.4 (5.3) | 8.3 |
 | Bases de données | PostgreSQL, et MariaDB pour 4.5 et 5.3 | PostgreSQL |
-| Pages | 52 | les 52 pages de Moodle et 24 pages d'IOMAD |
-| Contrôles par version | 208 | 464 |
+| Pages | 53 | les 53 pages de Moodle et 24 pages d'IOMAD |
+| Contrôles par version | 371 | 539 |
 
-Chaque page est contrôlée dans **quatre affichages** : clair et sombre sur ordinateur (1300 px), clair sur téléphone (390 et 320 px). Chaque contrôle :
+Chaque page est contrôlée dans **sept affichages** : clair, sombre, jaune sur noir et crème (les couleurs de « Aa ») sur ordinateur (1300 px), clair sur téléphone (390 et 320 px), et texte à 200 % sur le plus petit téléphone (320 px). Chaque contrôle :
 
-- passe l'audit **axe-core** de Moodle, règles WCAG 2.0, 2.1 et 2.2, niveaux A et AA ;
+- passe l'audit **axe-core** de Moodle, règles WCAG 2.0, 2.1 et 2.2, niveaux A et AA ; en crème, une surcouche qu'axe ne voit pas, le contraste de chaque texte est mesuré tel que la surcouche le dessine ;
 - sur téléphone, vérifie que la page **ne défile pas de côté** (WCAG 1.4.10). Seuls le carnet de notes et l'aperçu de l'achèvement d'IOMAD, des tableaux à deux dimensions, peuvent défiler de côté.
 
-**Pages de Moodle (52).**
+**Pages de Moodle (53).**
 
-- **Visiteur** : connexion, déclaration d'accessibilité.
+- **Visiteur** : connexion, déclaration d'accessibilité, fiche « Quel profil choisir ? ».
 - **Apprenant** :
   - accueil : tableau de bord, mes cours, catalogue, page d'inscription, recherche ;
   - le cours et ses activités : page de cours, page, devoir, forum, test, livre, leçon, glossaire ;
@@ -93,6 +93,18 @@ Pendant le pré-audit, chaque défaut trouvé a été corrigé dans le thème, p
 | Contenus hors des zones de la page | RGAA 12.6 | Bandeau des activités, bannière du cours, barre du mode édition d'Épure | Une navigation et des régions nommées |
 | Cibles de moins de 24 px | 2.5.8 | Écran de notation des devoirs : lien du devoir, case « Notifier l'étudiant » et son aide | 24 px |
 | Texte clair sur fond clair en mode sombre | 1.4.3 | Étiquettes à glisser, configuration du carnet de notes, modification et rapports des tests, relecture d'une tentative | Couleurs du mode sombre |
+
+### Défauts de Moodle relevés par un audit RGAA (1.43.0)
+
+Un audit RGAA d'une plateforme Moodle (sans Épure) a relevé des défauts de Moodle lui-même. Épure les répare dans la page (`amd/src/aria_repair.js`), de nouveau quand Moodle affiche quelque chose de nouveau.
+
+| Défaut | Critère | Où | Correction |
+|---|---|---|---|
+| Tableau du mois sans titre, en-têtes de jours sans portée | RGAA 5.4, 5.7 | Calendrier (page et blocs) | Le mois comme titre du tableau, masqué à l'écran ; en-têtes `scope="col"` |
+| Liens faits boutons (`role="button"`) qui n'obéissent qu'à Entrée | RGAA 7.3 | Sections à replier, notifications, menus | La touche Espace les actionne aussi, une seule fois |
+| Champ obligatoire signalé par une seule icône, masquée aux lecteurs d'écran | RGAA 11.10 | Formulaires de Moodle | « (obligatoire) » dans le texte du libellé, de la couleur du libellé ; la note qui explique la marque est lue |
+| Navigations sans nom | RGAA 12.6 | Lettres des participants, choix de la page, index du cours | « Prénom », « Nom », « Choix de la page », « Index du cours » |
+| Libellé de la recherche réservé aux lecteurs d'écran | RGAA 11.2 | « Mes cours » d'Épure | Libellé visible au-dessus du champ |
 
 ## Limites connues
 

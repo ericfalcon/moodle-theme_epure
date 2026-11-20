@@ -1,6 +1,8 @@
 Les réglages se trouvent dans Administration du site › Présentation › Thèmes › Épure.
 
-Les réglages sont rangés par sujet en onglets : Identité, Navigation, Cours, Accessibilité, Apparence, Mobile, Page de connexion, Pied de page et Réglages avancés. Les réglages gardent leur nom d'une version à l'autre ; quand l'un est déplacé ou renommé, les notes de mise à jour du [README](../README.fr.md#notes-de-mise-à-jour) l'indiquent.
+Administration du site › Apparence › Thèmes › Épure.
+
+Les réglages sont rangés par sujet en onglets : Identité, Navigation, Cours, Accessibilité, Apparence, Mobile, Page de connexion, Pied de page et Réglages avancés. Les réglages gardent leur nom d'une version à l'autre ; quand l'un est déplacé ou renommé, les [notes de mise à jour](../README.fr.md#notes-de-mise-à-jour) l'indiquent.
 
 ## Identité
 
@@ -18,7 +20,17 @@ Les logos viennent en premier : leurs couleurs sont ensuite proposées pour la c
 
 Sous la couleur de marque, le thème propose les **couleurs du logo**, y compris les couleurs d'accent qui occupent peu de place (lettrage fin, petit emblème), et celles d'un logo tout juste déposé plus haut, avant même l'enregistrement : cliquez sur une pastille, ou directement sur un point du logo (pipette), puis enregistrez. Seuls les codes hexadécimaux sont acceptés, car la palette accessible en est calculée.
 
-L'onglet se termine par les **e-mails** aux couleurs de la marque (voir [Mode sombre et e-mails](Mode-sombre-et-e-mails.md)) et un lien vers la page « Épure : vocabulaire ».
+L'onglet se termine par les **e-mails** aux couleurs de la marque (voir E-mails aux couleurs de la marque) et un lien vers la page « Épure : vocabulaire ».
+
+| Réglage | Effet |
+|---|---|
+| Logo | Affiché dans l'en-tête et sur la page de connexion. Les fonds transparents sont pris en charge (SVG, PNG, WebP). Sans logo, ceux d'Apparence › Logos sont utilisés. |
+| Logo pour l'en-tête en couleur | Facultatif : une version lisible sur la couleur de marque, souvent blanche sur fond transparent. |
+| Logo pour téléphone | Facultatif : une version petite ou carrée du logo, affichée dans l'en-tête des téléphones à côté du bouton de menu, là où Moodle n'affiche aucun logo. |
+| Favicon | Facultatif : l'icône du site dans les onglets des navigateurs et les favoris (ICO, PNG ou SVG). Sans elle, celle de Présentation › Logos. |
+| Couleur de marque | Toute la palette en est déduite : survols, fonds teintés, couleur des liens. Les couleurs sont ajustées automatiquement pour respecter les contrastes AA des WCAG 2.2, et le contraste obtenu est affiché sous le réglage. |
+| Couleur d'accent | Facultative : la couleur des barres de progression et des sections terminées, pour les distinguer de la couleur de marque. Vide : la couleur de marque. Avec IOMAD, une entreprise qui a sa propre couleur la garde partout. |
+| Couleur de l'en-tête | Blanc avec soulignement de la couleur de marque, rempli de la couleur de marque, ou dégradé de la couleur de marque vers la couleur d'accent. Les textes et icônes prennent la couleur la plus lisible ; sur un dégradé, celle qui se lit sur ses deux extrémités, ajustées au minimum pour atteindre 4,5:1. |
 
 ## Navigation
 
@@ -45,9 +57,17 @@ L'onglet se termine par les **e-mails** aux couleurs de la marque (voir [Mode so
 
 ## Accessibilité
 
-Les **préférences d'affichage** : le bouton « Aa » de l'en-tête peut être désactivé, et l'affichage par défaut du site se règle pour les visiteurs et pour les utilisateurs qui n'ont pas choisi le leur (voir [Accessibilité](Accessibilit%C3%A9.md)). Puis la **déclaration d'accessibilité**.
+Les **préférences d'affichage** : le bouton « Aa » de l'en-tête peut être désactivé, et l'affichage par défaut du site se règle pour les visiteurs et pour les utilisateurs qui n'ont pas choisi le leur (voir Accessibilité). Le guide **Accessibilité du cours** pour les enseignants, désactivé par défaut. Puis la **déclaration d'accessibilité**.
 
 ## Apparence
+
+| Réglage | Effet |
+|---|---|
+| Police | Polices fournies : IBM Plex Sans, Inter, Source Sans 3, Figtree, Lato, et pour la lisibilité Atkinson Hyperlegible, Lexend, OpenDyslexic. Ou votre propre police téléversée. |
+| Police téléversée | Nom de la police et fichiers `.woff2` ou `.woff` (normal obligatoire, gras facultatif). Vérifiez que la licence de la police autorise l'usage sur un site web. |
+| Arrondis | Peu arrondis (coins presque droits), moyennement arrondis (par défaut) ou très arrondis : cartes, boutons, champs, pastilles, et sections et activités des pages de cours, chaque niveau un peu moins arrondi que celui qui le contient (section, puis activités et sous-sections, puis activités d'une sous-section). Avec « Peu arrondis », les pastilles deviennent des rectangles aux coins adoucis. |
+| Densité | Confortable, ou compacte : moins d'espace autour et entre les éléments, pour plus de contenu à l'écran. |
+| Mode sombre | Jamais, automatique comme l'appareil, ou toujours. |
 
 | Réglage | Effet |
 |---|---|
@@ -77,9 +97,21 @@ Les cours que vous **animez** et ceux que vous **suivez** sont présentés en de
 |---|---|
 | Progression, prochaine activité à faire, prochaine échéance, bouton Commencer / Continuer / Revoir, mention Terminé | Bandeau et badge de rôle, participants, apprenants actifs cette semaine, devoirs à corriger, accès directs Participants, Notes, Paramètres |
 
+Les cours que vous animez s'affichent en **cartes** ou en **tableau** (bouton Cartes / Tableau, choix gardé dans vos préférences) : apprenants, actifs cette semaine, à relancer (sans accès au cours depuis 14 jours), achèvement des apprenants, à corriger, prochaine échéance. Chaque colonne se trie au clavier ; sur téléphone, chaque ligne devient une carte ; le tableau se télécharge (CSV, Excel, ODS, PDF…).
+
 Une recherche (insensible aux accents) et des filtres En cours, À venir, Passés complètent la page. Les cours favoris viennent en premier, puis les plus récemment consultés ; les cours que vous avez masqués restent masqués. Un enseignant est reconnu à sa capacité de voir toutes les notes du cours (`moodle/grade:viewall`). Avec IOMAD, qui remplace le bloc de Moodle par le sien (« Mes cours » avec les onglets disponibles, en cours, terminés), la même présentation s'applique, avec en plus une section « Formations disponibles » et le bouton de téléchargement des certificats d'IOMAD. Réglage « Mes cours par rôle » (onglet Cours) : décochez pour retrouver le bloc de Moodle ou d'IOMAD.
 
+| Carte d'un cours suivi | Carte d'un cours animé |
+|---|---|
+| Progression, prochaine activité à faire, prochaine échéance, bouton Commencer / Continuer / Revoir, mention Terminé | Bandeau et badge de rôle, participants, apprenants actifs cette semaine, devoirs à corriger, accès directs Participants, Notes, Paramètres |
+
 ## Page de connexion
+
+| Réglage | Effet |
+|---|---|
+| Disposition | Écran partagé : un visuel de la couleur de marque à côté du formulaire de Moodle (sur téléphone, seul le formulaire s'affiche). Ou formulaire centré. |
+| Accroche et texte d'accompagnement | Affichés sur le visuel. Sans accroche, une phrase par défaut est utilisée. |
+| Image de fond | Facultative. Un voile de la couleur de marque est posé dessus, avec l'opacité nécessaire pour que le texte reste lisible (contraste AA) quelle que soit l'image. |
 
 | Réglage | Effet |
 |---|---|

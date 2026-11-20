@@ -9,7 +9,8 @@
 - **Des outils de navigation** : recherche rapide Ctrl+K, barre de navigation mobile, application web installable.
 - **Le vocabulaire de votre organisation** (formation, stagiaire, formateur…) appliqué à tout Moodle.
 - **IOMAD** : apparence, vocabulaire, pied de page et options par entreprise, tableau de bord IOMAD réorganisé.
-- **L'accessibilité** : préférences d'affichage de chaque utilisateur et affichage par défaut du site, déclaration d'accessibilité (RGAA, WCAG 2.1 AA), tests axe-core automatiques.
+- **L'accessibilité** : préférences d'affichage de chaque utilisateur, visiteurs compris (texte jusqu'à 200 %, polices, couleurs, lecture à voix haute, profils), affichage par défaut du site, déclaration d'accessibilité (RGAA, WCAG 2.1 AA), guide « Accessibilité du cours » avec score, défauts de Moodle réparés, pré-audit axe-core automatique.
+- **Le pilotage** : un tableau de bord de gestion (activité, cours, achèvement, accessibilité de tous les cours), aussi pour chaque entreprise IOMAD.
 
 ## Sommaire
 
@@ -22,8 +23,9 @@
 7. [Vocabulaire](Vocabulaire.md)
 8. [IOMAD](IOMAD.md)
 9. [Accessibilité](Accessibilit%C3%A9.md) et [rapport de pré-audit](Pr%C3%A9-audit-d%E2%80%99accessibilit%C3%A9.md)
-10. [Questions fréquentes](FAQ.md)
-11. [Développement](D%C3%A9veloppement.md) et [variables CSS `--epure-*`](Variables-CSS.md)
+10. [Tableau de bord de gestion](Tableau-de-bord-de-gestion.md)
+11. [Questions fréquentes](FAQ.md)
+12. [Développement](D%C3%A9veloppement.md) et [variables CSS `--epure-*`](Variables-CSS.md)
 
 La documentation en anglais est dans le [README du thème](../README.md).
 

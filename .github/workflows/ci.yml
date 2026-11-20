@@ -1,9 +1,13 @@
 name: Moodle plugin CI
 
+# The documentation (Markdown: docs/, README, CHANGES…) does not run the tests: a change made only of it is published
+# without them. A change with any other file runs them all.
 on:
   push:
     branches: [main]
+    paths-ignore: ['**.md']
   pull_request:
+    paths-ignore: ['**.md']
 
 jobs:
   test:

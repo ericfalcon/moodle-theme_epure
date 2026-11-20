@@ -29,3 +29,19 @@ Il y contribue, sans suffire : les contenus des cours comptent aussi, et un audi
 ## Les e-mails ne sont pas aux couleurs de la marque
 
 Vérifiez que l'utilisateur reçoit les e-mails au format HTML (préférences du profil) et que le réglage « E-mails aux couleurs de la marque » est coché. Les logiciels de messagerie qui bloquent les images n'affichent le logo qu'après autorisation.
+
+## Le PDF de « Ma synthèse » n'est pas balisé pour les lecteurs d'écran
+
+Le PDF balisé (PDF/UA) demande PHP 8.2 ou plus : la bibliothèque tc-lib-pdf, fournie avec le thème, ne fonctionne pas avec PHP 8.1. Avec PHP 8.1 (possible avec Moodle 4.5), le PDF est produit par la bibliothèque de Moodle, non balisé, et la page « Ma synthèse » reste la version accessible. La page le dit.
+
+## Faut-il demander le consentement pour un cookie d'Épure ?
+
+Non. Le seul cookie du thème, `theme_epure_a11y`, garde les préférences d'affichage « Aa » d'un visiteur non connecté, dans son navigateur (un an). Il n'est posé que quand le visiteur choisit une préférence : c'est le cookie d'un service qu'il a demandé, exempté de consentement (selon la CNIL). Citez-le dans la mention des cookies du site.
+
+## Les points d'accessibilité confirmés suivent-ils le cours sauvegardé ?
+
+Oui, depuis la 1.44.0. Les points confirmés par les enseignants dans le guide « Accessibilité du cours » sont sauvegardés avec le cours, et reviennent quand il est restauré, dupliqué ou importé, chacun avec son activité dans le nouveau cours. Le nom de l'enseignant qui les a confirmés n'est gardé que si les utilisateurs sont sauvegardés ; sinon, le guide indique « Utilisateur inconnu ». Les scores du cours sont recalculés après la restauration.
+
+## Épure corrige-t-il les défauts d'accessibilité de Moodle ?
+
+En partie : ceux qu'un thème peut réparer dans la page (titre et en-têtes du tableau du calendrier, touche Espace sur les liens faits boutons, « (obligatoire) » dans le libellé des champs obligatoires, noms des navigations, piège au clavier des questions à choix unique…). Ce qu'il ne peut pas réparer est listé dans le [rapport de pré-audit](Pr%C3%A9-audit-d%E2%80%99accessibilit%C3%A9.md), à reprendre dans votre déclaration d'accessibilité, et signalé à Moodle.
