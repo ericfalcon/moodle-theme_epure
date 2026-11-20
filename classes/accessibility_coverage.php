@@ -114,8 +114,8 @@ class accessibility_coverage {
             return $model === 'world' ? '' : get_string('coverage_ref_law_' . $model, 'theme_epure');
         }
         if ($model === 'world') {
-            $criteria = array_map(fn(string $criterion): string => $criterion . ' (' . self::WCAG_LEVELS[$criterion] . ')',
-                $item['wcag']);
+            $level = fn(string $criterion): string => $criterion . ' (' . self::WCAG_LEVELS[$criterion] . ')';
+            $criteria = array_map($level, $item['wcag']);
             return $criteria ? get_string('coverage_ref_wcag', 'theme_epure', implode(', ', $criteria)) : '';
         }
         $older = array_values(array_diff($item['wcag'], self::WCAG22));

@@ -685,8 +685,9 @@ $ADMIN->add('theme_epure_a11yreports', new admin_externalpage(
     \theme_epure\management::CAPABILITY,
     !\theme_epure\accessibility_scores::active()
 ));
-foreach (['coverage' => 'coverage', 'accessibility' => 'a11ystatement', 'checklist' => 'checklist',
-        'profiles' => 'profilesguide'] as $file => $string) {
+$a11ypages = ['coverage' => 'coverage', 'accessibility' => 'a11ystatement', 'checklist' => 'checklist',
+    'profiles' => 'profilesguide'];
+foreach ($a11ypages as $file => $string) {
     $ADMIN->add('theme_epure_a11yreports', new admin_externalpage(
         'theme_epure_report_' . $file,
         new lang_string($string, 'theme_epure'),
