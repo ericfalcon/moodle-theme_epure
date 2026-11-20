@@ -415,6 +415,17 @@ const stop = () => {
 };
 
 /**
+ * Reads the page, or the window open over it, once the text of a PDF shown there is.
+ */
+const readPage = async() => {
+    await textVersion(root());
+    if (reading) {
+        queue = blocks();
+        next();
+    }
+};
+
+/**
  * Starts the reading: the text selected, else the page.
  */
 const start = () => {
@@ -432,13 +443,7 @@ const start = () => {
         say(chosen.text, language(chosen.node), stop);
     } else {
         named = new WeakSet();
-        textVersion(root()).then(() => {
-            if (reading) {
-                queue = blocks();
-                next();
-            }
-            return null;
-        }).catch(() => null);
+        readPage();
     }
     update();
 };
