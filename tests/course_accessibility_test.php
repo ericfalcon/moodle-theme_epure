@@ -474,8 +474,8 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
             '999999' => 'Inconnue',
         ]);
         $this->assertSame(2, $done);
-        $this->assertSame('<p>Déposez votre dossier avant vendredi.<br>Un seul fichier PDF.</p><p>Il est noté sur 20.</p>',
-            $DB->get_field('assign', 'activity', ['id' => $assign->id]));
+        $expected = '<p>Déposez votre dossier avant vendredi.<br>Un seul fichier PDF.</p><p>Il est noté sur 20.</p>';
+        $this->assertSame($expected, $DB->get_field('assign', 'activity', ['id' => $assign->id]));
         $this->assertSame('<p>Relisez deux travaux.</p>', $DB->get_field('workshop', 'instructauthors', ['id' => $workshop->id]));
         $this->assertSame('', (string) $DB->get_field('assign', 'activity', ['id' => $written->id]));
         $parts = array_column(course_accessibility::analyse(get_course($course->id)), null, 'id');

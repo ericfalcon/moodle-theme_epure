@@ -1437,12 +1437,12 @@ class course_accessibility {
         if (empty($part['issues']['noinstructions']) || !has_capability('moodle/course:manageactivities', $cm->context)) {
             return $data + ['haswrite' => false];
         }
+        $label = get_string('courseaccessibility_write_' . $cm->modname, 'theme_epure', $data['name']);
         return $data + ['haswrite' => true, 'write' => [
             'id' => $data['id'] . '-instructions',
             'cmid' => $cm->id,
             // Escaped once, by the template.
-            'label' => html_entity_decode(strip_tags(get_string('courseaccessibility_write_' . $cm->modname, 'theme_epure',
-                $data['name'])), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+            'label' => html_entity_decode(strip_tags($label), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
         ]];
     }
 
