@@ -126,6 +126,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.45.0** : aucun nouveau réglage ; mettez le site à jour. La lecture à voix haute de « Aa » lit les encadrés de C4L (« Concept clé », « Astuce »…) et les autres textes écrits sans paragraphe, chaque encadré avec son nom, et le texte alternatif des images.
 - **1.44.0** : aucun nouveau réglage ; mettez le site à jour. Les points d’accessibilité confirmés dans le guide d’un cours sont sauvegardés et restaurés avec le cours (qui les a confirmés, avec les utilisateurs).
 - **1.43.0** : aucun nouveau réglage ; mettez le site à jour. Des défauts de Moodle relevés par un audit RGAA réparés dans la page : le tableau du mois du calendrier a un titre et des en-têtes de colonnes ; la touche Espace actionne les liens faits boutons ; un champ obligatoire dit « (obligatoire) » dans son libellé ; les navigations sans nom en reçoivent un ; la recherche de « Mes cours » a un libellé visible.
 - **1.42.0** : aucun nouveau réglage ; mettez le site à jour. « Aa » indique quand l’affichage est celui que l’utilisateur a choisi (un point, « personnalisées » dans son nom) ; une fiche « Quel profil choisir ? » à imprimer ou à donner (`/theme/epure/profiles.php`).

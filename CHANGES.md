@@ -1,5 +1,13 @@
 # Changes
 
+## 1.45.0 — the reading aloud reads the boxes of C4L and the text alternatives of the images
+
+- « Aa », reading aloud: a text written straight in an element, without a paragraph, is read too. The boxes of Components for Learning (C4L: « Key concept », « Tip », « Reminder », « Attention »…) put their text in a div, and the reading skipped them; so did it with the names of the activities on the page of a course, and with the texts of other plugins of the editor or of activities written the same way. Only the own text of such an element is read, with its words in links or in bold: the paragraphs and lists it holds are read on their own, once. The buttons, the lists to choose from, the menus and the navigations are not read: they are controls, not texts.
+- A note named for the screen readers (role="note" with aria-label, as each box of C4L) is said by its name before its first text: « Tip. … », « Attention. … », as a screen reader does; its icon alone tells nothing to the ear.
+- The images with a text alternative are read by it, in the order of the page: « Image: plan of the exits » (an image in a paragraph, just after the text of the paragraph; an image that is a link, by its alternative). The decorative images (an empty alternative, role presentation or none) and the icons of Moodle are not read.
+- No new setting.
+- Checked in the browser with the markup of C4L and with images (with an alternative, decorative, an icon, a link) (the voice replaced by a recorder): each box read once, with its name, in the order of the page.
+
 ## 1.44.0 — the review of the plugins directory
 
 The review of Épure for the Moodle plugins directory recommended it for approval, with four points to fix in a later version. They are fixed:

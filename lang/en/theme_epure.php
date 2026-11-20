@@ -125,6 +125,7 @@ $string['a11yspacing_help'] = 'Lines, paragraphs, words and letters further apar
 $string['a11yspeech'] = 'Reading aloud';
 $string['a11yspeech_failed'] = 'The reading stopped: your device could not read this passage.';
 $string['a11yspeech_help'] = 'A bar at the bottom of the screen reads the page, or the text selected, with the voices installed on your device: nothing leaves it.';
+$string['a11yspeech_image'] = 'Image: {$a}';
 $string['a11yspeech_novoice'] = 'No voice on your device for the language « {$a} »: a passage was not read.';
 $string['a11yspeech_pause'] = 'Pause';
 $string['a11yspeech_play'] = 'Read';
