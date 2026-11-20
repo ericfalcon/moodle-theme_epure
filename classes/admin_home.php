@@ -39,11 +39,17 @@ class admin_home {
                 'tool_usertours/tours']],
         ['category' => 'modules', 'icon' => 'fa-puzzle-piece',
             'pages' => ['pluginsoverview', 'tool_installaddon_index', 'manageenrols', 'manageauths']],
+        ['category' => 'theme_epure_a11yreports', 'icon' => 'fa-universal-access',
+            'pages' => ['theme_epure_a11ycourses', 'themesettingepure#theme_epure_a11y', 'theme_epure_a11ystatement',
+                'theme_epure_report_coverage', 'theme_epure_report_checklist']],
         ['category' => 'reports', 'icon' => 'fa-chart-column',
             'pages' => ['theme_epure_management', 'reportlog', 'reportloglive', 'customreports', 'reportconfiglog']],
         ['category' => 'server', 'icon' => 'fa-server',
             'pages' => ['adminnotifications', 'scheduledtasks', 'maintenancemode', 'environment']],
     ];
+
+    /** @var array<string, string> Tabs of the settings of Épure given as a task (page#tab), with the string of their name. */
+    public const TABS = ['theme_epure_a11y' => 'a11ysettings_task'];
 
     /** @var string[] Pages of IOMAD in its card, by string of block_iomad_company_admin ({@see iomad::PAGES}). */
     public const IOMAD = ['dashboard' => 'dashboard', 'company' => 'editcompany', 'users' => 'edit_users_title',
@@ -77,10 +83,20 @@ class admin_home {
             }
             $tasks = [];
             foreach ($card['pages'] as $name) {
+                [$name, $tab] = array_pad(explode('#', $name, 2), 2, '');
                 $page = $root->locate($name);
-                if ($page && !$page->is_hidden() && $page->check_access()) {
-                    $tasks[] = ['name' => (string) $page->visiblename, 'url' => self::url($page)->out(false)];
+                if (!$page || $page->is_hidden() || !$page->check_access()) {
+                    continue;
                 }
+                $url = self::url($page);
+                if ($tab !== '') {
+                    // A tab of the settings: Moodle opens the tab named by the anchor of the address.
+                    $url->set_anchor($tab);
+                }
+                $tasks[] = [
+                    'name' => $tab !== '' ? get_string(self::TABS[$tab], 'theme_epure') : (string) $page->visiblename,
+                    'url' => $url->out(false),
+                ];
             }
             if ($tasks) {
                 $cards[] = [

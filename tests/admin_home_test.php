@@ -73,4 +73,40 @@ final class admin_home_test extends \advanced_testcase {
         $appearance = $cards[array_search(get_string('appearance', 'admin'), $names)];
         $this->assertStringContainsString('section=themesettingepure', $appearance['tasks'][0]['url']);
     }
+
+    /**
+     * The accessibility of the theme in a card of its own: the accessibility of the courses only once the guide is on,
+     * the tab of the settings opened by its anchor; and in a category of its own of the reports.
+     */
+    public function test_accessibility_card(): void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $name = get_string('a11yreports', 'theme_epure');
+        $card = $this->card($name);
+        $tasks = array_column($card['tasks'], 'url', 'name');
+        $this->assertArrayNotHasKey(get_string('a11yscores', 'theme_epure'), $tasks);
+        $settings = $tasks[get_string('a11ysettings_task', 'theme_epure')];
+        $this->assertStringEndsWith('section=themesettingepure#theme_epure_a11y', $settings);
+        $this->assertStringContainsString('/theme/epure/coverage.php', $tasks[get_string('coverage', 'theme_epure')]);
+        $this->assertStringContainsString('category=theme_epure_a11yreports', $card['url']);
+
+        set_config('courseaccessibility', 1, 'theme_epure');
+        admin_get_root(true, false);
+        $tasks = array_column($this->card($name)['tasks'], 'url', 'name');
+        $this->assertStringEndsWith('#epure-management-a11y', $tasks[get_string('a11yscores', 'theme_epure')]);
+        $this->assertNotNull(admin_get_root()->locate('reports')->locate('theme_epure_a11yreports'));
+    }
+
+    /**
+     * The card of a name, on the home of the administration.
+     *
+     * @param string $name Name of the card.
+     * @return array
+     */
+    protected function card(string $name): array {
+        $cards = admin_home::export()['cards'];
+        $index = array_search($name, array_column($cards, 'name'));
+        $this->assertNotFalse($index);
+        return $cards[$index];
+    }
 }

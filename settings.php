@@ -671,6 +671,30 @@ $ADMIN->add('reports', new admin_externalpage(
     \theme_epure\management::CAPABILITY
 ));
 
+// The reports of accessibility of the theme in a category of their own of « Reports », apart from the others: the
+// accessibility of the courses (in the management dashboard), what the theme covers, the statement, the checklist of the
+// teachers and the guide of the profiles of the learners.
+$ADMIN->add('reports', new admin_category(
+    'theme_epure_a11yreports',
+    new lang_string('a11yreports', 'theme_epure')
+));
+$ADMIN->add('theme_epure_a11yreports', new admin_externalpage(
+    'theme_epure_a11ycourses',
+    new lang_string('a11yscores', 'theme_epure'),
+    new moodle_url('/theme/epure/management.php', [], 'epure-management-a11y'),
+    \theme_epure\management::CAPABILITY,
+    !\theme_epure\accessibility_scores::active()
+));
+foreach (['coverage' => 'coverage', 'accessibility' => 'a11ystatement', 'checklist' => 'checklist',
+        'profiles' => 'profilesguide'] as $file => $string) {
+    $ADMIN->add('theme_epure_a11yreports', new admin_externalpage(
+        'theme_epure_report_' . $file,
+        new lang_string($string, 'theme_epure'),
+        new moodle_url('/theme/epure/' . $file . '.php'),
+        \theme_epure\management::CAPABILITY
+    ));
+}
+
 // Vocabulary of the platform: a page of its own, as applying it rewrites the language strings.
 $ADMIN->add('themes', new admin_externalpage(
     'theme_epure_vocabulary',
