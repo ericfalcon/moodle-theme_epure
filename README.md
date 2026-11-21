@@ -542,7 +542,7 @@ Each point says what to do, with a link to change the activity. The guide prints
 
 - the text size, from 90 to 200 % (90, 100, 115, 130, 150, 175 or 200 %), the page reflowing without scrolling across down to 320 pixels;
 - a reading font: the site's font, Atkinson Hyperlegible, OpenDyslexic or Lexend;
-- the colours: light, dark, as the device, yellow on black or cream; still images, scroll bars always shown, a reading ruler or mask; reading aloud of the selection or of the page, with the voices of the device only (nothing leaves the browser);
+- the colours: light, dark, as the device, yellow on black or cream; still images, scroll bars always shown, a reading ruler or mask; reading aloud of the selection or of the page, with only the voices the browser reports as local; without a local voice for the language, nothing is read;
 - a profile in one click (Dyslexia, Low vision, Concentration, No flashing), each choice then changed at will;
 - more text spacing (the values from WCAG success criterion 1.4.12), shorter lines, enhanced contrast, underlined links, reduced motion;
 - **shorter lines**: the long texts of the courses (pages, books, lessons, descriptions and instructions of the activities, summaries of the sections, posts of the forums) at 70 characters per line at most (WCAG 1.4.8). The width follows the size of the text: with a zoom of 200 % or a larger text, a line keeps at most 70 characters and fits the screen, without scrolling across.
