@@ -656,5 +656,4 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         $this->assertSame(1, $figures['levels']['serious']);
         $this->assertSame(100, course_accessibility::figures(array_fill(0, 45, $part), [])['score']);
     }
-
 }
