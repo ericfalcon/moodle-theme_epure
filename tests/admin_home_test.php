@@ -88,6 +88,10 @@ final class admin_home_test extends \advanced_testcase {
         $settings = $tasks[get_string('a11ysettings_task', 'theme_epure')];
         $this->assertStringEndsWith('section=themesettingepure#theme_epure_a11y', $settings);
         $this->assertStringContainsString('/theme/epure/coverage.php', $tasks[get_string('coverage', 'theme_epure')]);
+        // The page « Épure and personal data », in the administration and its card.
+        $this->assertNotNull(admin_get_root()->locate('theme_epure_dataprotection'));
+        $dataprot = $tasks[get_string('dataprot', 'theme_epure')];
+        $this->assertStringContainsString('/theme/epure/dataprotection.php', $dataprot);
         $reports = array_column($this->card(get_string('reports'))['tasks'], 'url', 'name');
         $this->assertArrayNotHasKey(get_string('a11yscores', 'theme_epure'), $reports);
 
