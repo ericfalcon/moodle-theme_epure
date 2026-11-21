@@ -1,5 +1,18 @@
 # Changes
 
+## 1.49.0 — the guide reads the SCORM packages
+
+- Accessibility of the course: the guide reads the content of the SCORM packages, from their files as Moodle unzipped them, without running any of their scripts. It recognises their authoring tool first:
+  - Articulate Storyline: each slide is read from its data; the images and buttons seen by the screen readers whose text alternative says nothing (none, or the name of a file or of a shape: « bandeau.png », « bt_suivant.png », « Rectangle 3 ») are counted once each, the states of a button (normal, hover) as one; the sounds without captions, once by file.
+  - Articulate Rise: its blocks are read; its images without a text alternative, but those of decoration (cover, backgrounds, avatars of quotes); its vague links and tables; its sounds (transcript to confirm) and its embedded contents (Genially, YouTube…, to confirm); the Storyline blocks it holds, as above.
+  - A package of HTML pages: its pages are read as the texts of the course.
+  - Captivate, iSpring: named, with the advice for their accessible publishing.
+  - In all of them, their PDF files and documents are checked as those of the course.
+- Two new mistakes, blocking: « Images and buttons of the package without a useful text alternative » and « Sounds of the package without captions », each with what to do in the authoring tool. The point to confirm of the package is named after its tool, with its advice (the keyboard, the order of reading and the interactions stay for a person to judge); a point already confirmed stays so.
+- A package is corrected in its authoring tool, then published again: the guide says what to fix, not where on the page.
+- No new setting.
+- Tests: PHPUnit (packages of Storyline, Rise and HTML built for the tests: the names that say nothing, the states of a button, the objects hidden from the screen readers, the sounds by file, the images of decoration of Rise, the embedded contents). Checked with two real packages, Storyline 360 and Rise 360.
+
 ## 1.48.2 — a score of 100 % only without any mistake
 
 - Accessibility of the course: the score of a course is the average of the scores of its parts, and it was rounded to the nearest: a course of 45 parts with one serious mistake (44 parts at 100, one at 85, 99.67) showed 100 %, beside « Serious: 1 ». It is now rounded down: 99 %. 100 % only when no part has a mistake left. The same on the management dashboard, for the average of the courses, of the categories and of each week.

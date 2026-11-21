@@ -126,6 +126,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.49.0**: no new setting; upgrade the site. The guide « Accessibility of the course » reads the SCORM packages (Storyline, Rise, HTML pages): images and buttons without a useful text alternative, sounds without captions, documents; the tool is named, with its advice.
 - **1.48.2**: no new setting; upgrade the site. The accessibility score of a course rounded down: 100 % only when no mistake is left.
 - **1.48.1**: no new setting; upgrade the site. The link to « Épure and personal data » in Appearance › Themes and in the card « Appearance » of the home of the administration.
 - **1.48.0**: no new setting; upgrade the site. The public page « Épure and personal data » (`/theme/epure/dataprotection.php`), for the data protection officer.
