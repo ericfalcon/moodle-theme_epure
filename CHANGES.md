@@ -1,5 +1,11 @@
 # Changes
 
+## 1.48.2 — a score of 100 % only without any mistake
+
+- Accessibility of the course: the score of a course is the average of the scores of its parts, and it was rounded to the nearest: a course of 45 parts with one serious mistake (44 parts at 100, one at 85, 99.67) showed 100 %, beside « Serious: 1 ». It is now rounded down: 99 %. 100 % only when no part has a mistake left. The same on the management dashboard, for the average of the courses, of the categories and of each week.
+- No new setting. The guide shows the corrected score at once; the scores of the management dashboard already kept are corrected at the next reading of each course (when it changes, or by the nightly task of the next week).
+- Tests: PHPUnit (one serious mistake among 45 parts makes 99 %).
+
 ## 1.48.1 — the link to « Épure and personal data »
 
 - The page « Épure and personal data » had no link in the administration: Moodle reads the settings of the theme with the appearance, before it makes the category « Privacy and policies » where the theme put it, so the link was never added, nor its task in the card « Appearance » of the home of the administration. It is now with the other pages of Épure (Site administration › Appearance › Themes), and in the card « Appearance »; its address does not change (`/theme/epure/dataprotection.php`).

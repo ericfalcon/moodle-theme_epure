@@ -1020,8 +1020,9 @@ class course_accessibility {
                     'level' => self::level($part)];
             }
         }
-        // The score of the course: the average of its parts, as each learner meets them one by one.
-        $figures['score'] = $scores ? (int) round(array_sum($scores) / count($scores)) : 100;
+        // The score of the course: the average of its parts, as each learner meets them one by one. Rounded down: 100 %
+        // only when no part has a mistake left (44 parts at 100 and one at 85 make 99, not 100).
+        $figures['score'] = $scores ? intdiv(array_sum($scores), count($scores)) : 100;
         return $figures;
     }
 

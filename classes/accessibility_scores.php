@@ -280,7 +280,8 @@ class accessibility_scores {
         );
         return array_values(array_map(fn($r) => [
             'week' => (int) $r->weekof,
-            'score' => (int) round((float) $r->score),
+            // Rounded down, as the scores of the courses (the margin keeps 100.0 read as 99.999… at 100).
+            'score' => (int) floor((float) $r->score + 1e-9),
             'courses' => (int) $r->courses,
         ], $records));
     }
@@ -296,7 +297,8 @@ class accessibility_scores {
     public static function export(int $now, int $categoryid = 0, int $companyid = 0): array {
         $latest = self::latest($categoryid, $companyid);
         $count = count($latest);
-        $average = $count ? (int) round(array_sum(array_column($latest, 'score')) / $count) : 0;
+        // Rounded down, as the score of a course: 100 % only when every course is at 100 %.
+        $average = $count ? intdiv(array_sum(array_column($latest, 'score')), $count) : 0;
         $blocking = count(array_filter($latest, fn($r) => (int) $r->blocking > 0));
         $levels = [];
         foreach (array_keys(course_accessibility::WEIGHTS) as $level) {
@@ -339,7 +341,7 @@ class accessibility_scores {
             $categories[] = [
                 'name' => $category->get_formatted_name(),
                 'courses' => count($records),
-                'score' => (int) round(array_sum(array_column($records, 'score')) / count($records)),
+                'score' => intdiv(array_sum(array_column($records, 'score')), count($records)),
                 'blocking' => count(array_filter($records, fn($r) => (int) $r->blocking > 0)),
             ];
         }
