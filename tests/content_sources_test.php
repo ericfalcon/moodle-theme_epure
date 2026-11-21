@@ -176,8 +176,8 @@ final class content_sources_test extends \advanced_testcase {
     }
 
     /**
-     * A SCORM package gets a point to confirm, named after its authoring tool (here HTML pages), with the key of a
-     * content from elsewhere: a point already confirmed stays so.
+     * A SCORM package and an IMS content package get a point to confirm, named after their authoring tool (here HTML
+     * pages), with the key of a content from elsewhere: a point already confirmed stays so.
      */
     public function test_external(): void {
         $this->resetAfterTest();
@@ -188,6 +188,14 @@ final class content_sources_test extends \advanced_testcase {
         $parts = array_column(course_accessibility::analyse($course), null, 'id');
         $checks = array_column($parts[$scorm->cmid]['checks'], null, 'key');
         $this->assertSame('Package', $checks['external']['label'] ?? null);
+        $this->assertSame('scorm_html', $checks['external']['kind'] ?? null);
+
+        // An IMS content package is read the same way, from the item of its revision.
+        $imscp = $this->getDataGenerator()->create_module('imscp', ['course' => $course->id, 'name' => 'Content']);
+        course_accessibility::forget((int) $course->id);
+        $parts = array_column(course_accessibility::analyse($course), null, 'id');
+        $checks = array_column($parts[$imscp->cmid]['checks'], null, 'key');
+        $this->assertSame('Content', $checks['external']['label'] ?? null);
         $this->assertSame('scorm_html', $checks['external']['kind'] ?? null);
     }
 

@@ -17,8 +17,8 @@
 namespace theme_epure;
 
 /**
- * What a SCORM package holds, read from its files as Moodle unzipped them (mod_scorm, area content), without running
- * any of its scripts. Its authoring tool first: Articulate Storyline and Rise keep their slides and blocks as data,
+ * What a SCORM package or an IMS content package holds, read from its files as Moodle unzipped them (area content),
+ * without running any of its scripts. Its authoring tool first: Articulate Storyline and Rise keep their slides and blocks as data,
  * read here; a package of plain HTML pages is read as a page of the course; the others (Captivate, iSpring…) are only
  * named, for the advice. Then the mistakes found: images and buttons without a useful text alternative (none, or the
  * name of a file or of a shape, that a screen reader would say), narrations without captions; and the PDF files and
@@ -63,14 +63,16 @@ class scorm_check {
     }
 
     /**
-     * The files of the package of an activity SCORM, by path.
+     * The files of the package of an activity SCORM or IMS content package, by path, as Moodle unzipped it.
      *
      * @param \context_module $context Context of the activity.
+     * @param string $component mod_scorm or mod_imscp.
      * @return \stored_file[]
      */
-    public static function files(\context_module $context): array {
+    public static function files(\context_module $context, string $component = 'mod_scorm'): array {
         $files = [];
-        $area = get_file_storage()->get_area_files($context->id, 'mod_scorm', 'content', 0, 'filepath, filename', false);
+        // Any item: SCORM keeps its package in the item 0, an IMS content package in the item of its revision.
+        $area = get_file_storage()->get_area_files($context->id, $component, 'content', false, 'filepath, filename', false);
         foreach ($area as $file) {
             $files[ltrim($file->get_filepath(), '/') . $file->get_filename()] = $file;
         }
