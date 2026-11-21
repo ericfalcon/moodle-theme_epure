@@ -9,7 +9,7 @@ Choose a brand colour (or click one in your logo): Épure derives the whole pale
 - Display preferences for every user, visitors included (« Aa »): text up to 200 %, dyslexia-friendly fonts, spacing, short lines, high contrast, reduced motion, reading ruler or mask, dark, yellow on black or cream, reading aloud with the local voices of the device. Profiles in one click: Dyslexia, Low vision, Concentration, No flashing.
 - Pages that reflow down to 320 px at 200 %, focus always visible, 24 px targets, keyboard shortcuts.
 - An accessibility statement filled in step by step (RGAA, EN 301 549 or WCAG), and a public page « What Épure covers », point by point of the referential.
-- A content checker as teachers write, and a guide « Accessibility of the course »: every activity and the 47 most installed activity plugins, Office and PDF documents; each mistake with its severity, a score out of 100 %, fixes made from the guide; two capabilities for who uses it and who confirms.
+- A content checker as teachers write, and a guide « Accessibility of the course »: every activity and the 47 most installed activity plugins, Office and PDF documents, SCORM packages (Storyline, Rise, HTML); each mistake with its severity, a score out of 100 %, fixes made from the guide; two capabilities for who uses it and who confirms.
 - The accessibility of all the courses on a management dashboard, week by week, with alerts if the computation fails.
 - Defects of Moodle repaired where a theme can, several found by an RGAA audit.
 - Automated pre-audit (axe-core, WCAG 2.2 AA) of 76 pages in every display, on every change.

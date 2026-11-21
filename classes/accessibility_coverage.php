@@ -63,6 +63,7 @@ class accessibility_coverage {
         'language' => ['level' => 'guide', 'wcag' => ['3.1.2'], 'rgaa' => ['8.7']],
         'moving' => ['level' => 'guide', 'wcag' => ['2.2.2'], 'rgaa' => ['13.8']],
         'tabindex' => ['level' => 'guide', 'wcag' => ['2.4.3'], 'rgaa' => ['12.8']],
+        'scorm' => ['level' => 'guide', 'wcag' => ['1.1.1', '1.2.1', '1.2.2'], 'rgaa' => ['1.1', '4.1', '4.3']],
         'documents' => ['level' => 'guide', 'wcag' => ['1.1.1', '1.3.1'], 'rgaa' => ['13.3']],
         'instructions' => ['level' => 'guide', 'wcag' => [], 'rgaa' => []],
         'colouronly' => ['level' => 'content', 'wcag' => ['1.4.1'], 'rgaa' => ['3.1']],
@@ -80,7 +81,7 @@ class accessibility_coverage {
 
     /** @var array<string, string> Level (A, AA) of each success criterion of the WCAG used above. */
     public const WCAG_LEVELS = [
-        '1.1.1' => 'A', '1.2.2' => 'A', '1.2.3' => 'A', '1.2.5' => 'AA', '1.3.1' => 'A', '1.3.2' => 'A', '1.4.1' => 'A',
+        '1.1.1' => 'A', '1.2.1' => 'A', '1.2.2' => 'A', '1.2.3' => 'A', '1.2.5' => 'AA', '1.3.1' => 'A', '1.3.2' => 'A', '1.4.1' => 'A',
         '1.4.3' => 'AA', '1.4.4' => 'AA', '1.4.10' => 'AA', '1.4.11' => 'AA', '1.4.12' => 'AA', '2.1.4' => 'A', '2.2.1' => 'A',
         '2.2.2' => 'A', '2.4.1' => 'A', '2.4.2' => 'A', '2.4.3' => 'A', '2.4.4' => 'A', '2.4.6' => 'AA', '2.4.7' => 'AA',
         '2.4.11' => 'AA', '2.5.7' => 'AA', '2.5.8' => 'AA', '3.1.1' => 'A', '3.1.2' => 'AA', '3.3.1' => 'A',

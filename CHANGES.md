@@ -10,6 +10,7 @@
   - In all of them, their PDF files and documents are checked as those of the course.
 - Two new mistakes, blocking: « Images and buttons of the package without a useful text alternative » and « Sounds of the package without captions », each with what to do in the authoring tool. The point to confirm of the package is named after its tool, with its advice (the keyboard, the order of reading and the interactions stay for a person to judge); a point already confirmed stays so.
 - A package is corrected in its authoring tool, then published again: the guide says what to fix, not where on the page.
+- The page « What Épure covers » has a point « SCORM packages » among what the guide checks; the README, the wiki (Accessibility, Management dashboard) and the descriptions of the plugins directory say it.
 - No new setting.
 - Tests: PHPUnit (packages of Storyline, Rise and HTML built for the tests: the names that say nothing, the states of a button, the objects hidden from the screen readers, the sounds by file, the images of decoration of Rise, the embedded contents). Checked with two real packages, Storyline 360 and Rise 360.
 
