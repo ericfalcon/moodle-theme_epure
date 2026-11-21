@@ -126,6 +126,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.48.2** : aucun nouveau réglage ; mettez le site à jour. Le score d’accessibilité d’un cours arrondi à l’inférieur : 100 % seulement quand il ne reste aucune erreur.
 - **1.48.1** : aucun nouveau réglage ; mettez le site à jour. Le lien vers « Épure et les données personnelles » dans Présentation › Thèmes et dans la carte « Présentation » de l’accueil de l’administration.
 - **1.48.0** : aucun nouveau réglage ; mettez le site à jour. La page publique « Épure et les données personnelles » (`/theme/epure/dataprotection.php`), pour le délégué à la protection des données.
 - **1.47.0** : aucun nouveau réglage ; mettez le site à jour. Deux capacités pour le guide « Accessibilité du cours » (clonées de « Modifier les paramètres du cours » : rien ne change tant qu’un rôle n’est pas modifié), l’état du calcul des scores dans le tableau de bord de gestion, la page publique « Ce que couvre Épure » (`/theme/epure/coverage.php`), et les pages d’accessibilité du thème dans une catégorie « Accessibilité (Épure) » des rapports et dans les tâches courantes de l’administration.

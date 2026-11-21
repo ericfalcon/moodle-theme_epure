@@ -643,4 +643,17 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         $this->setUser($student);
         $this->assertSame(0, course_accessibility::rename($course, [$page->cmid => 'Consignes du chantier']));
     }
+
+    /**
+     * The score of a course is rounded down: one serious mistake among 45 parts makes 99 %, never 100 %.
+     */
+    public function test_score_rounded_down(): void {
+        $part = ['type' => 'cm', 'id' => 0, 'issues' => [], 'checks' => []];
+        $parts = array_fill(0, 44, $part);
+        $parts[] = ['issues' => ['links' => 1]] + $part;
+        $figures = course_accessibility::figures($parts, []);
+        $this->assertSame(99, $figures['score']);
+        $this->assertSame(1, $figures['levels']['serious']);
+        $this->assertSame(100, course_accessibility::figures(array_fill(0, 45, $part), [])['score']);
+    }
 }

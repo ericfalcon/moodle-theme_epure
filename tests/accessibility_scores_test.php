@@ -169,7 +169,7 @@ final class accessibility_scores_test extends \advanced_testcase {
 
         $export = accessibility_scores::export($now);
         $this->assertTrue($export['hasdata']);
-        $this->assertSame((int) round(($score + 100) / 2), $export['score']);
+        $this->assertSame(intdiv($score + 100, 2), $export['score']);
         $this->assertSame(get_string('a11yscores_blocking', 'theme_epure', 1), $export['blockingtext']);
         // Only the courses below 100 % are to look at.
         $this->assertCount(1, $export['courses']);
@@ -205,8 +205,8 @@ final class accessibility_scores_test extends \advanced_testcase {
         $after = (int) $DB->get_field(accessibility_scores::TABLE, 'score', ['courseid' => $mistake->id,
             'weekstart' => accessibility_scores::week($now + WEEKSECS)]);
         $this->assertGreaterThan($score, $after);
-        $before = (int) round(($score + 100) / 2);
-        $this->assertSame((int) round(($after + 100) / 2), $export['weeks'][0]['score']);
+        $before = intdiv($score + 100, 2);
+        $this->assertSame(intdiv($after + 100, 2), $export['weeks'][0]['score']);
         $this->assertSame($before, $export['weeks'][1]['score']);
         $this->assertSame(get_string('a11yscores_change_up', 'theme_epure', (object) [
             'points' => $export['weeks'][0]['score'] - $before,
