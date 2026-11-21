@@ -6,7 +6,7 @@ Le thème vise les WCAG 2.2 niveau AA, le RGAA 4.1.2 et l'EN 301 549 : contraste
 
 - la taille du texte, de 90 à 200 % (90, 100, 115, 130, 150, 175 ou 200 %), la page se réorganisant sans défilement horizontal jusqu'à 320 pixels ;
 - une police de lecture : celle du site, Atkinson Hyperlegible, OpenDyslexic ou Lexend ;
-- les couleurs : clair, sombre, comme l'appareil, jaune sur noir ou crème ; images figées, barres de défilement toujours visibles, une règle ou un masque de lecture ; la lecture à voix haute de la sélection ou de la page, avec les seules voix de l'appareil (rien ne quitte le navigateur) ;
+- les couleurs : clair, sombre, comme l'appareil, jaune sur noir ou crème ; images figées, barres de défilement toujours visibles, une règle ou un masque de lecture ; la lecture à voix haute de la sélection ou de la page, avec les seules voix que le navigateur signale comme locales ; sans voix locale pour la langue, rien n'est lu ;
 - un profil en un clic (Dyslexie, Basse vision, Concentration, Sans clignotement), chaque choix se changeant ensuite à volonté ;
 - un texte plus espacé (valeurs du critère WCAG 1.4.12), des lignes courtes, un contraste renforcé, des liens soulignés, des animations réduites ;
 - **lignes courtes** : les textes longs des cours (pages, livres, leçons, descriptions et consignes des activités, résumés des sections, messages des forums) à 70 caractères par ligne au plus (WCAG 1.4.8). La largeur suit la taille du texte : avec un zoom à 200 % ou un texte agrandi, une ligne garde au plus 70 caractères et tient dans l'écran, sans défilement horizontal.
