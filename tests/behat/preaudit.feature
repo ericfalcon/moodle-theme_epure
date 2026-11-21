@@ -43,11 +43,12 @@ Feature: Pre-audit of accessibility of the Épure theme
 
   Scenario: The pages of a visitor meet accessibility standards in every display
     Then the following pages should meet accessibility standards in every display:
-      | path                           |
-      | /login/index.php               |
-      | /theme/epure/accessibility.php |
-      | /theme/epure/profiles.php      |
-      | /theme/epure/coverage.php      |
+      | path                            |
+      | /login/index.php                |
+      | /theme/epure/accessibility.php  |
+      | /theme/epure/profiles.php       |
+      | /theme/epure/coverage.php       |
+      | /theme/epure/dataprotection.php |
 
   Scenario: The pages of a learner meet accessibility standards in every display
     Given I log in as "learner1"

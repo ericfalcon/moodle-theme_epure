@@ -1,0 +1,105 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_epure/data_protection
+
+    Page « Épure and personal data »: the framework shown and the others, what the theme keeps (a table), then, by who
+    answers them (the theme, Moodle, the organisation, the plugins), each point with its references, and an extract for
+    the record of processing activities.
+
+    Example context (json):
+    {
+        "framework": "GDPR (European Union)",
+        "models": [{"label": "European Union: GDPR (framework of this site)", "url": "#", "current": true},
+            {"label": "Other countries: general principles", "url": "#", "current": false}],
+        "data": [{"what": "Display preferences", "where": "Preferences of the profile.", "how": "Changed in « Aa »."}],
+        "levels": [{"level": "theme", "heading": "What the theme ensures", "intro": "Nothing to do.",
+            "items": [{"title": "No third party", "text": "Nothing is called outside.", "references": "GDPR, art. 44"}]}],
+        "record": [{"label": "Processing", "value": "Display preferences."}],
+        "registryurl": "#"
+    }
+}}
+<div class="epure-coverage epure-dataprot">
+    <p>{{#str}}dataprot_intro, theme_epure{{/str}}</p>
+    <p><strong>{{#str}}dataprot_framework, theme_epure, {{framework}}{{/str}}</strong></p>
+    <nav aria-labelledby="epure-dataprot-models">
+        <h2 class="h6" id="epure-dataprot-models">{{#str}}dataprot_models, theme_epure{{/str}}</h2>
+        <ul class="epure-coverage-models">
+            {{#models}}
+                <li>
+                    {{#current}}<span aria-current="page">{{label}}</span>{{/current}}
+                    {{^current}}<a href="{{url}}">{{label}}</a>{{/current}}
+                </li>
+            {{/models}}
+        </ul>
+    </nav>
+    <div class="alert alert-info">
+        <p>{{#str}}dataprot_disclaimer, theme_epure{{/str}}</p>
+        <p class="mb-0">{{#str}}dataprot_country, theme_epure{{/str}}</p>
+    </div>
+
+    <section aria-labelledby="epure-dataprot-data">
+        <h2 id="epure-dataprot-data">{{#str}}dataprot_data, theme_epure{{/str}}</h2>
+        <p>{{#str}}dataprot_data_intro, theme_epure{{/str}}</p>
+        <table class="table generaltable epure-dataprot-data">
+            <thead>
+                <tr>
+                    <th scope="col">{{#str}}dataprot_data_what, theme_epure{{/str}}</th>
+                    <th scope="col">{{#str}}dataprot_data_where, theme_epure{{/str}}</th>
+                    <th scope="col">{{#str}}dataprot_data_how, theme_epure{{/str}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#data}}
+                    <tr>
+                        <th scope="row">{{what}}</th>
+                        <td data-label="{{#str}}dataprot_data_where, theme_epure{{/str}}">{{where}}</td>
+                        <td data-label="{{#str}}dataprot_data_how, theme_epure{{/str}}">{{how}}</td>
+                    </tr>
+                {{/data}}
+            </tbody>
+        </table>
+    </section>
+
+    {{#levels}}
+        <section class="epure-coverage-level" aria-labelledby="epure-dataprot-{{level}}">
+            <h2 id="epure-dataprot-{{level}}">{{heading}}</h2>
+            <p>{{intro}}</p>
+            <ul class="epure-coverage-items">
+                {{#items}}
+                    <li>
+                        <h3 class="h5">{{title}}</h3>
+                        <p class="mb-1">{{text}}</p>
+                        <p class="epure-coverage-references">{{references}}</p>
+                    </li>
+                {{/items}}
+            </ul>
+        </section>
+    {{/levels}}
+    <p><a href="{{registryurl}}">{{#str}}dataprot_registry_link, theme_epure{{/str}}</a></p>
+
+    <section class="epure-dataprot-record" aria-labelledby="epure-dataprot-record">
+        <h2 id="epure-dataprot-record">{{#str}}dataprot_recordextract, theme_epure{{/str}}</h2>
+        <p>{{#str}}dataprot_recordextract_intro, theme_epure{{/str}}</p>
+        <dl>
+            {{#record}}
+                <dt>{{label}}</dt>
+                <dd>{{value}}</dd>
+            {{/record}}
+        </dl>
+    </section>
+</div>

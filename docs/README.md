@@ -24,8 +24,9 @@
 8. [IOMAD](IOMAD.md)
 9. [Accessibilité](Accessibilit%C3%A9.md) et [rapport de pré-audit](Pr%C3%A9-audit-d%E2%80%99accessibilit%C3%A9.md)
 10. [Tableau de bord de gestion](Tableau-de-bord-de-gestion.md)
-11. [Questions fréquentes](FAQ.md)
-12. [Développement](D%C3%A9veloppement.md) et [variables CSS `--epure-*`](Variables-CSS.md)
+11. [Données personnelles](Donn%C3%A9es-personnelles.md)
+12. [Questions fréquentes](FAQ.md)
+13. [Développement](D%C3%A9veloppement.md) et [variables CSS `--epure-*`](Variables-CSS.md)
 
 La documentation en anglais est dans le [README du thème](../README.md).
 
