@@ -176,7 +176,8 @@ final class content_sources_test extends \advanced_testcase {
     }
 
     /**
-     * A SCORM package gets a point to confirm: its content comes from elsewhere.
+     * A SCORM package gets a point to confirm, named after its authoring tool (here HTML pages), with the key of a
+     * content from elsewhere: a point already confirmed stays so.
      */
     public function test_external(): void {
         $this->resetAfterTest();
@@ -185,8 +186,9 @@ final class content_sources_test extends \advanced_testcase {
         $scorm = $this->getDataGenerator()->create_module('scorm', ['course' => $course->id, 'name' => 'Package']);
         course_accessibility::forget((int) $course->id);
         $parts = array_column(course_accessibility::analyse($course), null, 'id');
-        $checks = array_column($parts[$scorm->cmid]['checks'], 'label', 'kind');
-        $this->assertSame('Package', $checks['external'] ?? null);
+        $checks = array_column($parts[$scorm->cmid]['checks'], null, 'key');
+        $this->assertSame('Package', $checks['external']['label'] ?? null);
+        $this->assertSame('scorm_html', $checks['external']['kind'] ?? null);
     }
 
     /**

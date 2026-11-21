@@ -46,7 +46,7 @@ class course_accessibility {
     public const ISSUES = ['images', 'imagelinks', 'links', 'tables', 'contrast', 'headings', 'noheadings', 'frames', 'videos',
         'pdf', 'pdfscanned', 'pdflang', 'docimages', 'docnoheadings', 'docheadings', 'doctables', 'doccontrast', 'slidetitles',
         'sheetnames', 'doctitle', 'h5pimages', 'emptyheadings', 'moving', 'tabindex', 'duplicateids', 'name', 'duplicate',
-        'noinstructions'];
+        'noinstructions', 'scormimages', 'scormaudio'];
 
     /** @var string[] Severity of each mistake: blocking (some learners cannot use the content at all), serious (they
      * use it with difficulty) or minor (it is less clear, for all). */
@@ -58,7 +58,7 @@ class course_accessibility {
         'pdflang' => 'serious', 'docnoheadings' => 'serious', 'docheadings' => 'serious', 'doctables' => 'serious',
         'doccontrast' => 'serious', 'slidetitles' => 'serious',
         'doctitle' => 'minor', 'sheetnames' => 'minor', 'duplicateids' => 'minor', 'name' => 'minor', 'duplicate' => 'minor',
-        'noinstructions' => 'serious',
+        'noinstructions' => 'serious', 'scormimages' => 'blocking', 'scormaudio' => 'blocking',
     ];
 
     /** @var int[] What each severity takes off the score of a part (out of 100), once whatever the number of mistakes
@@ -300,6 +300,7 @@ class course_accessibility {
         self::read_names($parts, $cms);
         self::read_files($parts, $cms, $coursecontext, $sectionparts);
         self::read_h5p($parts, $cms);
+        self::read_scorm($parts, $cms);
 
         // Without what was only useful to read.
         foreach ($parts as &$part) {
@@ -927,6 +928,38 @@ class course_accessibility {
             if (is_array($content)) {
                 self::read_h5p_content($parts[$key], $content);
             }
+        }
+    }
+
+    /**
+     * Reads the packages of the activities SCORM ({@see scorm_check}): the mistakes found in them, and the point to
+     * confirm named after their authoring tool, with the advice that goes with it (same key as before: a point
+     * already confirmed stays so).
+     *
+     * @param array $parts Parts.
+     * @param \cm_info[] $cms Activities.
+     */
+    protected static function read_scorm(array &$parts, array $cms): void {
+        foreach ($cms as $cm) {
+            if ($cm->modname !== 'scorm' || !isset($parts['cm_' . $cm->id])) {
+                continue;
+            }
+            $files = scorm_check::files($cm->context);
+            if (!$files) {
+                continue;
+            }
+            $package = scorm_check::read($files);
+            $part = &$parts['cm_' . $cm->id];
+            foreach ($package['issues'] as $issue => $count) {
+                self::add_issue($part, $issue, $count);
+            }
+            foreach ($package['checks'] as $check) {
+                $part['checks'][] = $check;
+            }
+            if ($package['tool'] !== 'unknown') {
+                $part['checks'][] = ['key' => 'external', 'kind' => 'scorm_' . $package['tool'], 'label' => (string) $cm->name];
+            }
+            unset($part);
         }
     }
 
