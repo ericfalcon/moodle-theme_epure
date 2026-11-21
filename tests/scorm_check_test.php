@@ -172,7 +172,7 @@ final class scorm_check_test extends \advanced_testcase {
         $this->assertSame(1, $package['issues']['links']);
         $kinds = array_column($package['checks'], 'label', 'kind');
         $this->assertSame('Intro.mp3', $kinds['transcript']);
-        $this->assertSame('view.genially.com', $kinds['embedded']);
+        $this->assertSame('view.genially.com/abc', $kinds['embedded']);
     }
 
     /**

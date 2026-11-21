@@ -283,9 +283,12 @@ class scorm_check {
                             break;
                         }
                     }
+                    // Its site and its path, shortened: two contents of the same site (two Genially) told apart.
                     $host = preg_replace('/^www\./', '', (string) (parse_url($address, PHP_URL_HOST) ?: $address));
+                    $label = $host . rtrim((string) parse_url($address, PHP_URL_PATH), '/');
+                    $label = \core_text::strlen($label) > 48 ? \core_text::substr($label, 0, 47) . '…' : $label;
                     $result['checks'][] = ['key' => 'embedded:' . substr(sha1($address), 0, 16), 'kind' => 'embedded',
-                        'label' => $host];
+                        'label' => $label];
                 }
                 foreach (['heading', 'paragraph', 'description', 'title'] as $field) {
                     if (is_string($node[$field] ?? null) && str_contains($node[$field], '<')) {

@@ -1326,7 +1326,11 @@ class course_accessibility {
         }
         $filename = clean_filename(get_string('courseaccessibility', 'theme_epure') . ' ' . $course->shortname . ' '
             . userdate(time(), '%Y-%m-%d', 99, false));
-        \core\dataformat::download_data($filename, $dataformat, $columns, new \ArrayIterator($rows));
+        // In the formats of HTML (PDF, HTML table), each point on a line of its own: their line breaks would be lost.
+        $lines = function (array $row, bool $html): array {
+            return $html ? array_map(fn(string $cell): string => nl2br(s($cell), false), $row) : $row;
+        };
+        \core\dataformat::download_data($filename, $dataformat, $columns, new \ArrayIterator($rows), $lines);
     }
 
     /**
