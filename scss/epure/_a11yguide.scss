@@ -651,3 +651,41 @@ html:has(.epure-a11yguide-save) {
         margin-bottom: .75rem;
     }
 }
+
+// The table of the data: on a narrow screen (a phone, or the text enlarged), each data in a block, its columns one under
+// the other, each with its name, rather than a table to scroll sideways (WCAG 1.4.10).
+@include media-breakpoint-down(md) {
+    .epure-dataprot-data {
+        thead {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+        }
+
+        tr,
+        th,
+        td {
+            display: block;
+        }
+
+        tr {
+            padding: .75rem 0;
+            border-bottom: 1px solid var(--epure-border);
+        }
+
+        th,
+        td {
+            padding: .25rem 0;
+            border: 0;
+        }
+
+        td::before {
+            display: block;
+            font-weight: 600;
+            content: attr(data-label);
+        }
+    }
+}

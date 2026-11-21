@@ -55,26 +55,24 @@
     <section aria-labelledby="epure-dataprot-data">
         <h2 id="epure-dataprot-data">{{#str}}dataprot_data, theme_epure{{/str}}</h2>
         <p>{{#str}}dataprot_data_intro, theme_epure{{/str}}</p>
-        <div class="table-responsive">
-            <table class="table generaltable epure-dataprot-data">
-                <thead>
+        <table class="table generaltable epure-dataprot-data">
+            <thead>
+                <tr>
+                    <th scope="col">{{#str}}dataprot_data_what, theme_epure{{/str}}</th>
+                    <th scope="col">{{#str}}dataprot_data_where, theme_epure{{/str}}</th>
+                    <th scope="col">{{#str}}dataprot_data_how, theme_epure{{/str}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#data}}
                     <tr>
-                        <th scope="col">{{#str}}dataprot_data_what, theme_epure{{/str}}</th>
-                        <th scope="col">{{#str}}dataprot_data_where, theme_epure{{/str}}</th>
-                        <th scope="col">{{#str}}dataprot_data_how, theme_epure{{/str}}</th>
+                        <th scope="row">{{what}}</th>
+                        <td data-label="{{#str}}dataprot_data_where, theme_epure{{/str}}">{{where}}</td>
+                        <td data-label="{{#str}}dataprot_data_how, theme_epure{{/str}}">{{how}}</td>
                     </tr>
-                </thead>
-                <tbody>
-                    {{#data}}
-                        <tr>
-                            <th scope="row">{{what}}</th>
-                            <td>{{where}}</td>
-                            <td>{{how}}</td>
-                        </tr>
-                    {{/data}}
-                </tbody>
-            </table>
-        </div>
+                {{/data}}
+            </tbody>
+        </table>
     </section>
 
     {{#levels}}
