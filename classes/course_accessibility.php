@@ -932,19 +932,19 @@ class course_accessibility {
     }
 
     /**
-     * Reads the packages of the activities SCORM ({@see scorm_check}): the mistakes found in them, and the point to
-     * confirm named after their authoring tool, with the advice that goes with it (same key as before: a point
-     * already confirmed stays so).
+     * Reads the packages of the activities SCORM and IMS content package ({@see scorm_check}): the mistakes found in
+     * them, and the point to confirm named after their authoring tool, with the advice that goes with it (same key as
+     * before: a point already confirmed stays so).
      *
      * @param array $parts Parts.
      * @param \cm_info[] $cms Activities.
      */
     protected static function read_scorm(array &$parts, array $cms): void {
         foreach ($cms as $cm) {
-            if ($cm->modname !== 'scorm' || !isset($parts['cm_' . $cm->id])) {
+            if (!in_array($cm->modname, ['scorm', 'imscp'], true) || !isset($parts['cm_' . $cm->id])) {
                 continue;
             }
-            $files = scorm_check::files($cm->context);
+            $files = scorm_check::files($cm->context, 'mod_' . $cm->modname);
             if (!$files) {
                 continue;
             }
@@ -1326,7 +1326,11 @@ class course_accessibility {
         }
         $filename = clean_filename(get_string('courseaccessibility', 'theme_epure') . ' ' . $course->shortname . ' '
             . userdate(time(), '%Y-%m-%d', 99, false));
-        \core\dataformat::download_data($filename, $dataformat, $columns, new \ArrayIterator($rows));
+        // In the formats of HTML (PDF, HTML table), each point on a line of its own: their line breaks would be lost.
+        $lines = function (array $row, bool $html): array {
+            return $html ? array_map(fn(string $cell): string => nl2br(s($cell), false), $row) : $row;
+        };
+        \core\dataformat::download_data($filename, $dataformat, $columns, new \ArrayIterator($rows), $lines);
     }
 
     /**

@@ -1,5 +1,14 @@
 # Changes
 
+## 1.49.1 — the IMS content packages too
+
+- Accessibility of the course: the guide reads the IMS content packages as the SCORM packages (1.49.0): their authoring tool, Storyline and Rise from their data, HTML pages as the course, their PDF files and documents. They were a point to confirm only. A point already confirmed stays so.
+- The page « What Épure covers », the README, the wiki and the descriptions of the plugins directory say « SCORM and IMS packages ».
+- The report of the guide downloaded as PDF or as an HTML table: each point to fix or to confirm on a line of its own (they ran together in one paragraph).
+- The embedded contents of a Rise course named by their site and their address, shortened: two Genially of the same course told apart.
+- No new setting.
+- Tests: PHPUnit (an IMS content package read from the item of its revision). Checked with a real Storyline package added as an IMS content package.
+
 ## 1.49.0 — the guide reads the SCORM packages
 
 - Accessibility of the course: the guide reads the content of the SCORM packages, from their files as Moodle unzipped them, without running any of their scripts. It recognises their authoring tool first:

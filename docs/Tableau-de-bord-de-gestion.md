@@ -12,7 +12,7 @@ Un tableau de bord pour piloter la plateforme : son activité, ses cours les plu
 
 Là où le guide « Accessibilité du cours » est activé, la partie « Accessibilité des cours » donne le score moyen des cours, combien ont un problème bloquant, leurs problèmes par gravité, les cours aux scores les plus bas (chacun lié à son guide), les catégories aux moyennes les plus basses, et le score semaine après semaine sur les 12 dernières semaines, écrit et répété par une barre, avec les points gagnés ou perdus. Une liste la restreint à une catégorie et ses sous-catégories. La liste complète se télécharge (CSV, Excel, ODS, PDF…), chaque cours avec sa catégorie, son score, ses problèmes par gravité et la date de sa lecture : pour le dossier d'une démarche qualité ou d'un audit annuel.
 
-Les scores comptent tout ce que lit le guide, y compris, depuis la 1.49, le contenu des paquets SCORM (Storyline, Rise, pages HTML) : un cours avec un module Storyline aux images sans texte alternatif voit son score baisser, même si le reste du cours est correct.
+Les scores comptent tout ce que lit le guide, y compris, depuis la 1.49, le contenu des paquets SCORM (Storyline, Rise, pages HTML), et depuis la 1.49.1 celui des paquetages IMS : un cours avec un module Storyline aux images sans texte alternatif voit son score baisser, même si le reste du cours est correct.
 
 Les scores sont calculés en arrière-plan par le cron, jamais pendant l'affichage d'une page :
 
