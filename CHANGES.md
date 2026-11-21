@@ -1,9 +1,15 @@
 # Changes
 
+## 1.48.1 — the link to « Épure and personal data »
+
+- The page « Épure and personal data » had no link in the administration: Moodle reads the settings of the theme with the appearance, before it makes the category « Privacy and policies » where the theme put it, so the link was never added, nor its task in the card « Appearance » of the home of the administration. It is now with the other pages of Épure (Site administration › Appearance › Themes), and in the card « Appearance »; its address does not change (`/theme/epure/dataprotection.php`).
+- No new setting.
+- Tests: PHPUnit (the page is in the administration and in the card « Appearance »).
+
 ## 1.48.0 — Épure and personal data
 
 - A new public page, « Épure and personal data » (`/theme/epure/dataprotection.php`, open without logging in, to give to the data protection officer): what the theme keeps on the users (the display preferences, the cookie of a visitor, the shortcuts in the browser, the points confirmed in the guide, the documents « My summary », the caches, the scores), where, how long and what each one can do about it; then, point by point, who answers the obligations of the GDPR: the theme (minimisation, no outside service called, local voices only for the reading aloud, a cookie of comfort only, export and deletion through the privacy API of Moodle, the technical rules of keeping, the learner in control of their documents, security of the verification, backups without the users), Moodle (requests, policies, logs, data registry), the organisation (record, legal basis, processors, data protection officer, impact assessment) or the plugins added. Each point with its articles of the GDPR (and the guidelines of the CNIL on cookies in France; the general principles outside the European Union). Each step of a document « My summary » told as it is: revoked, its content erased at once; expired, erased by the nightly task; then remain its code, its dates and a fingerprint of its content until the learner or the account deletes it; its PDF never stored. A visible note: the country of the site sets the references shown, not the law that applies (the GDPR can apply outside the Union, article 3). At the end, a technical extract to include in the record of processing activities and to complete: what the theme can tell, and what remains to the organisation (controller, legal basis, recipients, host, justification of the durations). An aid to compliance, never a legal advice: the page describes what the code does, not a conformity.
-- Linked from Site administration › Users › Privacy and policies, and from the card « Appearance » of the home of the administration.
+- Linked from the card « Appearance » of the home of the administration (from 1.48.1; the link of 1.48.0 in « Privacy and policies » was never added).
 - No new setting.
 - Tests: PHPUnit (every data, point and field with its words and its references in each framework; every data declared to the privacy API is on the page). Behat: the new page in the pre-audit of the pages of a visitor.
 
