@@ -150,6 +150,14 @@ html.epure-a11y-scrollbars {
     }
 }
 
+// Stronger keyboard focus: a white ring inside a black one, 3 px each, seen on any background, light or dark, the
+// header included (two colours, WCAG technique C40; WCAG 2.4.13, beyond the 2 px outline of the theme, WCAG 2.4.11).
+html.epure-a11y-focusring :focus-visible {
+    outline: 3px solid #fff !important; // stylelint-disable-line declaration-no-important
+    outline-offset: 0 !important; // stylelint-disable-line declaration-no-important
+    box-shadow: 0 0 0 6px #000 !important; // stylelint-disable-line declaration-no-important
+}
+
 // The button to play an animated image stopped by the preference (theme_epure/still_images), under it.
 .epure-still-play {
     display: flex;

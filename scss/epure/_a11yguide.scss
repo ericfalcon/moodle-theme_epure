@@ -202,6 +202,21 @@
     margin-top: .5rem;
 }
 
+// A table to mark: its first row, then the three choices (header, layout, as it is).
+fieldset.epure-a11yguide-check {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.epure-a11yguide-check-legend {
+    float: none;
+    width: auto;
+    margin-bottom: .25rem;
+    font-size: inherit;
+}
+
 .epure-a11yguide-check-help,
 .epure-a11yguide-check-link {
     margin: 0;

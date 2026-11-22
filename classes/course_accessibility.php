@@ -46,7 +46,7 @@ class course_accessibility {
     public const ISSUES = ['images', 'imagelinks', 'links', 'tables', 'contrast', 'headings', 'noheadings', 'frames', 'videos',
         'pdf', 'pdfscanned', 'pdflang', 'docimages', 'docnoheadings', 'docheadings', 'doctables', 'doccontrast', 'slidetitles',
         'sheetnames', 'doctitle', 'h5pimages', 'emptyheadings', 'moving', 'tabindex', 'duplicateids', 'name', 'duplicate',
-        'noinstructions', 'scormimages', 'scormaudio'];
+        'noinstructions', 'scormimages', 'scormaudio', 'fakelists', 'urllinks', 'capitals'];
 
     /** @var string[] Severity of each mistake: blocking (some learners cannot use the content at all), serious (they
      * use it with difficulty) or minor (it is less clear, for all). */
@@ -58,7 +58,8 @@ class course_accessibility {
         'pdflang' => 'serious', 'docnoheadings' => 'serious', 'docheadings' => 'serious', 'doctables' => 'serious',
         'doccontrast' => 'serious', 'slidetitles' => 'serious',
         'doctitle' => 'minor', 'sheetnames' => 'minor', 'duplicateids' => 'minor', 'name' => 'minor', 'duplicate' => 'minor',
-        'noinstructions' => 'serious', 'scormimages' => 'blocking', 'scormaudio' => 'blocking',
+        'noinstructions' => 'serious', 'scormimages' => 'blocking', 'scormaudio' => 'blocking', 'fakelists' => 'serious',
+        'urllinks' => 'minor', 'capitals' => 'minor',
     ];
 
     /** @var int[] What each severity takes off the score of a part (out of 100), once whatever the number of mistakes
@@ -81,6 +82,15 @@ class course_accessibility {
     /** @var string[] Texts of links that do not say where they go (as theme_epure/content_check). */
     public const VAGUE_LINKS = ['ici', 'cliquez ici', 'cliquer ici', 'ce lien', 'lien', 'en savoir plus', 'plus', 'suite',
         'lire la suite', 'here', 'click here', 'this link', 'link', 'more', 'read more', 'learn more'];
+
+    /** @var int Characters from which an address written as the text of its link is long to hear. */
+    public const URL_TEXT = 35;
+
+    /** @var string The mark of an item of a list written by hand, at the start of a line: a dash, a bullet, a number. */
+    public const LIST_MARK = '/^[\s\x{00A0}]*(?:[-–—•·▪◦●■*+]|\d{1,2}[.)])[\s\x{00A0}]+\S/u';
+
+    /** @var int Words in capitals one after the other from which a text is written in capitals. */
+    public const CAPITAL_WORDS = 4;
 
     /** @var string Blocks that give a link its context: the sentence, the item of a list, the cell, the caption. */
     public const BLOCKS = 'self::p or self::li or self::td or self::th or self::dd or self::dt or self::figcaption'
@@ -387,7 +397,7 @@ class course_accessibility {
         global $CFG;
         $found = ['images' => 0, 'imagelinks' => 0, 'links' => 0, 'tables' => 0, 'contrast' => 0, 'headings' => 0,
             'noheadings' => 0, 'frames' => 0, 'videos' => 0, 'emptyheadings' => 0, 'moving' => 0, 'tabindex' => 0,
-            'duplicateids' => 0];
+            'duplicateids' => 0, 'fakelists' => 0, 'urllinks' => 0, 'capitals' => 0];
         $checks = [];
         if (trim($html) === '') {
             return ['issues' => $found, 'checks' => []];
@@ -463,6 +473,10 @@ class course_accessibility {
         // lead to the wrong one.
         $ids = array_count_values(array_map(fn($node) => $node->nodeValue, iterator_to_array($xpath->query('//@id'))));
         $found['duplicateids'] = count(array_filter($ids, fn($count) => $count > 1));
+        // A list written by hand, lines that begin with a dash or a number (WCAG 1.3.1, RGAA 9.3): not said to be a list.
+        $found['fakelists'] = self::fake_lists($xpath);
+        // A text written in capitals: harder to read, the shape of the words lost, and spelt by some screen readers.
+        $found['capitals'] = self::capitals($xpath);
         // A long text without any title (WCAG 1.3.1, RGAA 9.1): its sections cannot be reached one by one.
         $body = $xpath->query('//body')->item(0);
         if (!$headings->length && $body && count(preg_split('/\s+/u', $text($body), -1, PREG_SPLIT_NO_EMPTY)) >= self::LONG_TEXT) {
@@ -492,9 +506,101 @@ class course_accessibility {
     }
 
     /**
+     * The lists written by hand of a text (WCAG 1.3.1, RGAA 9.3): two lines or more, one after the other, that begin with
+     * a dash, a bullet or a number, as paragraphs or as the lines of one paragraph apart by line breaks.
+     *
+     * @param \DOMXPath $xpath Document of the text.
+     * @return int How many.
+     */
+    public static function fake_lists(\DOMXPath $xpath): int {
+        $marked = fn(string $line): bool => (bool) preg_match(self::LIST_MARK, $line);
+        $count = 0;
+        // The lines of one paragraph.
+        foreach ($xpath->query('//p[br]') as $paragraph) {
+            $lines = [''];
+            foreach ($paragraph->childNodes as $child) {
+                if ($child->nodeName === 'br') {
+                    $lines[] = '';
+                } else {
+                    $lines[count($lines) - 1] .= $child->textContent;
+                }
+            }
+            $run = 0;
+            foreach ($lines as $line) {
+                $run = $marked($line) ? $run + 1 : 0;
+                if ($run === 2) {
+                    $count++;
+                }
+            }
+        }
+        // Paragraphs one after the other: counted at the first of two marked.
+        $next = function (\DOMNode $node): ?\DOMNode {
+            do {
+                $node = $node->nextSibling;
+            } while ($node && $node->nodeType === XML_TEXT_NODE && trim($node->textContent) === '');
+            return $node;
+        };
+        $previous = null;
+        foreach ($xpath->query('//p[not(br)]') as $paragraph) {
+            $following = $next($paragraph);
+            if (
+                $marked($paragraph->textContent) && $following && $following->nodeName === 'p'
+                    && $marked($following->textContent) && $previous !== $paragraph
+            ) {
+                $count++;
+            }
+            // The paragraphs of a list already counted.
+            $previous = $marked($paragraph->textContent) ? $following : null;
+        }
+        return $count;
+    }
+
+    /**
+     * The blocks of a text written in capitals, four words or more one after the other: harder to read, the shape of the
+     * words lost, and some screen readers spell them. The acronyms, alone or two by two, are not.
+     *
+     * @param \DOMXPath $xpath Document of the text.
+     * @return int How many blocks.
+     */
+    public static function capitals(\DOMXPath $xpath): int {
+        $blocks = self::BLOCKS . ' or self::div';
+        $count = 0;
+        foreach ($xpath->query('//body//*[' . $blocks . '][not(.//*[' . $blocks . '])]') as $block) {
+            if (self::shouts($block->textContent)) {
+                $count++;
+            }
+        }
+        return $count;
+    }
+
+    /**
+     * Whether a text holds words in capitals, four or more one after the other (words of one letter, numbers and signs
+     * between them do not count).
+     *
+     * @param string $text Text.
+     * @return bool
+     */
+    public static function shouts(string $text): bool {
+        $run = 0;
+        foreach (preg_split('/[\s\x{00A0}]+/u', $text, -1, PREG_SPLIT_NO_EMPTY) as $word) {
+            $letters = preg_replace('/\P{L}+/u', '', $word);
+            if (\core_text::strlen($letters) < 2) {
+                continue;
+            }
+            $upper = $letters === \core_text::strtoupper($letters) && $letters !== \core_text::strtolower($letters);
+            $run = $upper ? $run + 1 : 0;
+            if ($run >= self::CAPITAL_WORDS) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * What is wrong with a link: « imagelinks » for a link made only of images without a text alternative (a screen
      * reader says « link », without where it leads; WCAG 2.4.4, RGAA 6.2), « links » for a link without text, or whose
-     * short text is alone in its block (« click here »; WCAG 2.4.4, RGAA 6.1), empty otherwise.
+     * short text is alone in its block (« click here »; WCAG 2.4.4, RGAA 6.1), « urllinks » for a long address as its
+     * text, empty otherwise.
      *
      * @param \DOMXPath $xpath Document of the text.
      * @param \DOMElement $link Link.
@@ -517,6 +623,14 @@ class course_accessibility {
         $block = $xpath->query('ancestor::*[' . self::BLOCKS . '][1]', $link)->item(0);
         if (in_array($label, self::VAGUE_LINKS, true) && (!$block || $text($block) === $text($link))) {
             return 'links';
+        }
+        // A long address as the text of its link: right, but long to hear, sign by sign.
+        $shown = $text($link);
+        if (
+            trim($link->getAttribute('aria-label')) === '' && \core_text::strlen($shown) > self::URL_TEXT
+                && preg_match('~^(https?://|www\.)\S+$~i', $shown)
+        ) {
+            return 'urllinks';
         }
         return '';
     }
@@ -1415,6 +1529,7 @@ class course_accessibility {
             case 'emptyheadings':
             case 'moving':
             case 'tabindex':
+            case 'fakelists':
                 return get_string($string, 'theme_epure', $item['count']);
             default:
                 return get_string($string, 'theme_epure', self::address($item['src']));

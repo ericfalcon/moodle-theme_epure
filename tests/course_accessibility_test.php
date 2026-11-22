@@ -50,7 +50,8 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         );
         $this->assertSame(
             ['images' => 1, 'imagelinks' => 0, 'links' => 2, 'tables' => 1, 'contrast' => 0, 'headings' => 1, 'noheadings' => 0,
-                'frames' => 1, 'videos' => 1, 'emptyheadings' => 0, 'moving' => 0, 'tabindex' => 0, 'duplicateids' => 0],
+                'frames' => 1, 'videos' => 1, 'emptyheadings' => 0, 'moving' => 0, 'tabindex' => 0, 'duplicateids' => 0,
+                'fakelists' => 0, 'urllinks' => 0, 'capitals' => 0],
             $found['issues']
         );
         $this->assertEqualsCanonicalizing(['captions', 'captions', 'transcript'], array_column($found['checks'], 'kind'));
@@ -104,6 +105,31 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         $this->assertSame(2, $found['moving']);
         $this->assertSame(1, $found['tabindex']);
         $this->assertSame(1, $found['duplicateids']);
+    }
+
+    /**
+     * The lists written by hand, as paragraphs or as lines of a paragraph; the long addresses as the text of their link;
+     * the texts written in capitals. Not a real list, a line alone, a short address, an address with a name, acronyms.
+     */
+    public function test_check_html_writing(): void {
+        $long = 'https://example.org/a/very/long/path/to/a/document.pdf';
+        $found = course_accessibility::check_html(
+            '<p>Matériel :</p><p>- un crayon</p><p>- une gomme</p><p>- une règle</p>'
+            . '<p>Étapes :<br>1. Lire<br>2) Écrire</p>'
+            . '<p>• seul</p><ul><li>vraie liste</li><li>bien faite</li></ul><p>-5 °C la nuit</p>'
+            . '<p><a href="' . $long . '">' . $long . '</a></p>'
+            . '<p><a href="https://example.org">https://example.org</a></p>'
+            . '<p><a href="https://example.org/a/very/long/path/to/a/document.pdf" aria-label="Consignes">'
+            . 'https://example.org/a/very/long/path/to/a/document.pdf</a></p>'
+            . '<p>ATTENTION À BIEN RENDRE CE DEVOIR avant lundi.</p><h2>LE PLAN DU COURS COMPLET</h2>'
+            . '<p>La CNIL et le RGPD, selon l’ANSSI et la DGFIP.</p>'
+        )['issues'];
+        $this->assertSame(2, $found['fakelists']);
+        $this->assertSame(1, $found['urllinks']);
+        $this->assertSame(2, $found['capitals']);
+        $this->assertSame(0, $found['links']);
+        $this->assertTrue(course_accessibility::shouts('NE PAS OUBLIER LE DEVOIR'));
+        $this->assertFalse(course_accessibility::shouts('Le RGPD et la CNIL, la DGFIP'));
     }
 
     /**

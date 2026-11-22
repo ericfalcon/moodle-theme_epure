@@ -375,11 +375,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
             // The notes of the lists that update the page as soon as a choice is made (RGAA 7.4).
             'updates' => get_string('repairupdates', 'theme_epure'),
             'changes' => get_string('repairchanges', 'theme_epure'),
-            // The time left of a quiz, the links to a new window, the frames of H5P.
+            // The time left of a quiz, the links to a new window, the frames of H5P, the charts.
             'fiveminutes' => get_string('repairfiveminutes', 'theme_epure'),
             'oneminute' => get_string('repaironeminute', 'theme_epure'),
             'newwindow' => get_string('repairnewwindow', 'theme_epure'),
             'h5p' => get_string('repairh5p', 'theme_epure'),
+            'chart' => get_string('repairchart', 'theme_epure', 'TITLE'),
         ];
         // The session kept open while the user writes (RGAA 13.1): Moodle does it on the quizzes, not on these pages.
         if (in_array($this->page->pagetype, self::WRITING_PAGES, true)) {

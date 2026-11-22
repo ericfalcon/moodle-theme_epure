@@ -62,12 +62,18 @@
  * - the button « Flag question » is named by its visible text (WCAG 2.5.3);
  * - the frame of an H5P content has a title (RGAA 2.1);
  * - the same actions repeated in a table (« Edit », « Move ») say the line they act on (RGAA 6.1, 11.9);
- * - the links and buttons of an icon only are named by the title of their icon (RGAA 6.2).
+ * - the links and buttons of an icon only are named by the title of their icon (RGAA 6.2);
+ * - the charts are images named by their title, their data in the table that follows (RGAA 1.1, 1.3);
+ * - the keyboard focus comes back to the control that opened a window when the page drew it again meanwhile, instead
+ *   of the top of the page (RGAA 12.8).
  *
  * @module     theme_epure/aria_repair
  * @copyright  2026 Eric Falcon
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+import $ from 'jquery';
+import ModalEvents from 'core/modal_events';
 
 /**
  * Whether a field has a name for the screen readers.
@@ -634,6 +640,79 @@ const iconControls = () => document.querySelectorAll('a[href], button, [role="bu
 });
 
 /**
+ * The charts of Moodle (reports, statistics): an image named by its title, its data in the table that follows, instead
+ * of a role presentation that hides the canvas from the screen readers (RGAA 1.1, 1.3).
+ *
+ * @param {string} chart Name of a chart without a title; with one, the chart and its title (TITLE).
+ */
+const charts = (chart) => document.querySelectorAll('.chart-area .chart-image').forEach((image) => {
+    const area = image.closest('.chart-area');
+    const caption = area.querySelector('.chart-table-data caption');
+    // Its title, else the heading just before it (the reports of the quizzes write it above the chart).
+    const before = [area.previousElementSibling, area.parentElement?.previousElementSibling]
+        .find((element) => element && /^H[2-6]$/.test(element.tagName));
+    const title = (caption ? visibleText(caption) || caption.textContent.trim() : '') || (before ? visibleText(before) : '');
+    const label = title ? chart.replace('TITLE', title) : chart.replace(/\s*\W*\s*TITLE\s*/, '');
+    if (image.getAttribute('aria-label') !== label) {
+        image.setAttribute('role', 'img');
+        image.setAttribute('aria-label', label);
+    }
+});
+
+/** @var {Object|null} The control that had the keyboard focus before the last window opened, and how to find it again. */
+let opener = null;
+
+/**
+ * How to find a control again once the page updated it: by its id, else by its action and what it acts on.
+ *
+ * @param {Element} control Control.
+ * @returns {string|null} Selector.
+ */
+const findAgain = (control) => {
+    if (control.id) {
+        return `#${CSS.escape(control.id)}`;
+    }
+    const attributes = ['data-action', 'data-id', 'data-itemid', 'data-cmid', 'data-userid', 'data-region']
+        .filter((name) => control.hasAttribute(name))
+        .map((name) => `[${name}="${CSS.escape(control.getAttribute(name))}"]`);
+    return attributes.length ? control.tagName.toLowerCase() + attributes.join('') : null;
+};
+
+/**
+ * The keyboard focus back after a window of Moodle closes (RGAA 7.3, 12.8): Moodle gives it back to the control that
+ * opened it, but when the page replaced this control meanwhile (an action that reloads a part of the page), the focus
+ * falls to the top of the page. Then, to the same control drawn again, else to the title of the page.
+ */
+const modalFocus = () => {
+    document.addEventListener('focusin', (event) => {
+        const target = event.target;
+        if (target instanceof Element && !target.closest('.modal, [role="dialog"], .moodle-dialogue')) {
+            opener = {element: target, selector: findAgain(target)};
+        }
+    });
+    const back = () => window.setTimeout(() => {
+        const active = document.activeElement;
+        if (!opener || (active && active !== document.body && active !== document.documentElement)
+                || document.querySelector('.modal.show, .moodle-dialogue:not(.moodle-dialogue-hidden)')) {
+            return;
+        }
+        let target = opener.element.isConnected ? opener.element : null;
+        if (!target && opener.selector) {
+            target = [...document.querySelectorAll(opener.selector)].find((element) => element.getClientRects().length);
+        }
+        if (!target) {
+            target = document.querySelector('#region-main h1, #page-header h1, h1');
+            if (target && !target.hasAttribute('tabindex')) {
+                target.setAttribute('tabindex', '-1');
+            }
+        }
+        target?.focus();
+    }, 300);
+    // The windows of Moodle say they closed on their root (core/modal_events), with jQuery: the event bubbles.
+    $(document).on(ModalEvents.hidden, back);
+};
+
+/**
  * The repairs of what Moodle draws after the page: now, and each time something is added to the page.
  *
  * @param {Object<string, string>} texts The mark of the required fields, the names of the navigations.
@@ -661,6 +740,7 @@ const later = (texts) => {
         h5pFrames(texts.h5p);
         tableActions();
         iconControls();
+        charts(texts.chart);
     };
     run();
     new MutationObserver((mutations) => {
@@ -678,7 +758,7 @@ const later = (texts) => {
  * @param {Object<string, string>} texts The mark of the required fields (required), the names of the navigations
  *     (paging, choice, courseindex), the notes of the lists that update the page (updates, changes), the time left
  *     of a quiz (fiveminutes, oneminute), the note of the links to a new window (newwindow), the name of the frames
- *     of H5P without a heading (h5p).
+ *     of H5P without a heading (h5p), the name of a chart (chart).
  */
 export const init = (names = {}, menus = {site: '', page: ''}, texts = {}) => {
     statusRegion();
@@ -691,6 +771,7 @@ export const init = (names = {}, menus = {site: '', page: ''}, texts = {}) => {
     nameMenus(menus);
     clearChoices();
     later(texts);
+    modalFocus();
     window.addEventListener('keydown', spaceKey);
     window.addEventListener('load', () => {
         repair(document, names);

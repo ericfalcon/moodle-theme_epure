@@ -41,9 +41,10 @@ final class a11y_test extends \advanced_testcase {
         $this->assertSame('', a11y::html_classes());
         $this->setUser($this->getDataGenerator()->create_user());
         $this->assertSame('', a11y::html_classes());
-        $this->assertSame(['text' => 100, 'font' => '', 'scheme' => '', 'guide' => '',
+        $expected = ['text' => 100, 'font' => '', 'scheme' => '', 'guide' => '',
             'spacing' => false, 'lines' => false, 'contrast' => false, 'underline' => false,
-            'motion' => false, 'stillimages' => false, 'scrollbars' => false, 'speech' => false], a11y::preferences());
+            'motion' => false, 'stillimages' => false, 'scrollbars' => false, 'focusring' => false, 'speech' => false];
+        $this->assertSame($expected, a11y::preferences());
     }
 
     /**
@@ -106,6 +107,9 @@ final class a11y_test extends \advanced_testcase {
         set_user_preference('theme_epure_a11y_stillimages', 1);
         set_user_preference('theme_epure_a11y_scrollbars', 1);
         $this->assertSame('epure-a11y-font-atkinson epure-a11y-stillimages epure-a11y-scrollbars', a11y::html_classes());
+        // The stronger keyboard focus.
+        set_user_preference('theme_epure_a11y_focusring', 1);
+        $this->assertStringEndsWith(' epure-a11y-focusring', a11y::html_classes());
 
         $this->assertTrue(a11y::panel_enabled());
         set_config('prefpanel', 0, 'theme_epure');

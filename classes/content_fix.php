@@ -20,8 +20,9 @@ namespace theme_epure;
  * What the guide « Accessibility of the course » corrects in the texts of the course, besides the images
  * (content_alt): the frames without a title get the title written in the guide, the links made only of images without
  * a text alternative get, on their image, where they lead, the tables without a header get their first row as header,
- * the links whose text does not say where they lead get a new text, the titles of a text whose levels skip one are put
- * back in order, the colours of a text too little contrasted are taken away.
+ * or, for a table of layout, the role presentation, the links whose text does not say where they lead or is a long
+ * address get a new text, the titles of a text whose levels skip one are put back in order, the colours of a text too
+ * little contrasted are taken away, the lists written by hand become lists.
  * Found as course_accessibility::check_html finds them, so that once corrected they are no longer counted.
  *
  * @package    theme_epure
@@ -36,8 +37,17 @@ class content_fix {
     protected const TABINDEX = '~(<[a-z][a-z0-9]*\b[^>]*\s)tabindex\s*=\s*(["\']?)\s*0*[1-9]\d*\s*\2~i';
 
     /** @var string[] What the guide corrects, in their order on the page. */
-    public const KINDS = ['frames', 'imagelinks', 'tables', 'links', 'headings', 'contrast', 'emptyheadings', 'moving',
-        'tabindex'];
+    public const KINDS = ['frames', 'imagelinks', 'tables', 'links', 'urllinks', 'headings', 'contrast', 'emptyheadings',
+        'moving', 'tabindex', 'fakelists'];
+
+    /** @var string The mark of an item of a list written by hand, as course_accessibility::LIST_MARK, in HTML. */
+    protected const LIST_MARK = '(?:[-–—•·▪◦●■*+]|&(?:bull|middot|ndash|mdash|#8226|#8211|#8212);|\d{1,2}[.)])';
+
+    /** @var string What may come before the mark: tags of a text, spaces. */
+    protected const BEFORE_MARK = '(?:<(?:span|strong|em|b|i|u|font)\b[^>]*>|&nbsp;|&#160;|\s|\x{00A0})*';
+
+    /** @var string The spaces after the mark. */
+    protected const AFTER_MARK = '(?:&nbsp;|&#160;|\s|\x{00A0})+';
 
     /**
      * The frames without a title of a text: each with its tag, its offset and its address.
@@ -120,6 +130,96 @@ class content_fix {
      * @return array[] Each: tag (the whole link), offset, src (its address), text.
      */
     public static function links(string $html): array {
+        return self::problem_links($html, 'links');
+    }
+
+    /**
+     * The links whose text is a long address, found as the guide finds them: each with the whole link, its offset, its
+     * address and its text.
+     *
+     * @param string $html Text.
+     * @return array[] Each: tag (the whole link), offset, src (its address), text.
+     */
+    public static function urllinks(string $html): array {
+        return self::problem_links($html, 'urllinks');
+    }
+
+    /**
+     * The lists written by hand of a text, lines that begin with a dash, a bullet or a number, as paragraphs one after the
+     * other or as the lines of a paragraph: the whole text, and how many.
+     *
+     * @param string $html Text.
+     * @return array[] None, or one: tag (the whole text), offset, src, count.
+     */
+    public static function fakelists(string $html): array {
+        $count = 0;
+        self::lists_made($html, $count);
+        return $count ? [['tag' => $html, 'offset' => 0, 'src' => 'fakelists' . $count, 'count' => $count]] : [];
+    }
+
+    /**
+     * A text whose lists written by hand became lists: numbered when their marks are numbers, else with bullets; the
+     * marks taken away, the rest of each line kept.
+     *
+     * @param string $html Text.
+     * @param int $count Lists made, counted.
+     * @return string
+     */
+    protected static function lists_made(string $html, int &$count): string {
+        $mark = '~^(' . self::BEFORE_MARK . ')' . self::LIST_MARK . self::AFTER_MARK . '(?=\S)~iu';
+        $list = function (array $lines) use ($mark, &$count): string {
+            $count++;
+            $numbered = array_filter($lines, fn($line) => preg_match('~^' . self::BEFORE_MARK . '\d~iu', $line));
+            $tag = count($numbered) === count($lines) ? 'ol' : 'ul';
+            $items = array_map(fn($line) => '<li>' . trim(preg_replace($mark, '$1', $line, 1)) . '</li>', $lines);
+            return '<' . $tag . '>' . implode('', $items) . '</' . $tag . '>';
+        };
+        // Paragraphs one after the other, each a line: a list.
+        $item = '<p\b[^>]*>' . self::BEFORE_MARK . self::LIST_MARK . self::AFTER_MARK . '(?:(?!<br\b|</p\s*>).)*</p\s*>';
+        $html = preg_replace_callback('~(?:' . $item . '\s*){2,}~isu', function ($run) use ($list) {
+            preg_match_all('~<p\b[^>]*>(.*?)</p\s*>~is', $run[0], $lines);
+            $end = preg_match('~\s+$~', $run[0], $space) ? $space[0] : '';
+            return $list($lines[1]) . $end;
+        }, $html);
+        // The lines of a paragraph apart by line breaks: the marked ones, two or more, a list; the others stay paragraphs.
+        $paragraphs = function ($paragraph) use ($list, $mark) {
+            $lines = preg_split('~<br\s*/?>~i', $paragraph[2]);
+            $groups = [];
+            foreach ($lines as $line) {
+                $marked = (bool) preg_match($mark, $line);
+                $last = count($groups) - 1;
+                if ($last >= 0 && $groups[$last]['marked'] === $marked) {
+                    $groups[$last]['lines'][] = $line;
+                } else {
+                    $groups[] = ['marked' => $marked, 'lines' => [$line]];
+                }
+            }
+            if (!array_filter($groups, fn($group) => $group['marked'] && count($group['lines']) > 1)) {
+                return $paragraph[0];
+            }
+            $out = '';
+            foreach ($groups as $group) {
+                if ($group['marked'] && count($group['lines']) > 1) {
+                    $out .= $list($group['lines']);
+                } else if (trim(implode('', $group['lines'])) !== '') {
+                    $out .= '<p' . $paragraph[1] . '>' . implode('<br>', $group['lines']) . '</p>';
+                }
+            }
+            return $out;
+        };
+        $pattern = '~<p(\b[^>]*)>((?:(?!</p\s*>).)*<br\b(?:(?!</p\s*>).)*)</p\s*>~isu';
+        return preg_replace_callback($pattern, $paragraphs, $html);
+    }
+
+    /**
+     * The links of a text with a problem, found as the guide finds them: each with the whole link, its offset, its
+     * address and its text.
+     *
+     * @param string $html Text.
+     * @param string $problem Problem (course_accessibility::link_problem).
+     * @return array[] Each: tag (the whole link), offset, src (its address), text.
+     */
+    protected static function problem_links(string $html, string $problem): array {
         $xpath = self::dom($html);
         $nodes = iterator_to_array($xpath->query('//a[@href]'));
         $tags = array_values(array_filter(
@@ -132,7 +232,7 @@ class content_fix {
         }
         $links = [];
         foreach ($nodes as $i => $node) {
-            if (course_accessibility::link_problem($xpath, $node) === 'links') {
+            if (course_accessibility::link_problem($xpath, $node) === $problem) {
                 [$tag, $offset] = $tags[$i];
                 $links[] = ['tag' => $tag, 'offset' => $offset, 'src' => $node->getAttribute('href'), 'text' => self::text($tag)];
             }
@@ -288,7 +388,8 @@ class content_fix {
      * @param \stdClass $course Course.
      * @param array $parts Parts of the guide.
      * @param array $given By kind, by key: the title of a frame, where a link of images leads, whether the first row
-     *     of a table is its header, the new text of a link, whether to put the titles in order, to take a colour away.
+     *     of a table is its header (header) or the table only lays out (layout), the new text of a link, whether to put
+     *     the titles in order, to take a colour away, to make the lists.
      * @return int[] Corrected, by kind.
      */
     public static function apply(\stdClass $course, array $parts, array $given): array {
@@ -338,8 +439,12 @@ class content_fix {
      * @return string|null
      */
     protected static function correct(string $kind, array $item, $value): ?string {
-        if (in_array($kind, ['emptyheadings', 'moving', 'tabindex'], true) && empty($value)) {
+        if (in_array($kind, ['emptyheadings', 'moving', 'tabindex', 'fakelists'], true) && empty($value)) {
             return null;
+        }
+        if ($kind === 'fakelists') {
+            $count = 0;
+            return self::lists_made($item['tag'], $count);
         }
         if ($kind === 'emptyheadings') {
             // The titles without text taken away, from the last to the first.
@@ -383,8 +488,13 @@ class content_fix {
             }, $tag);
         }
         if ($kind === 'tables') {
-            if (empty($value)) {
+            if (empty($value) || $value === 'none') {
                 return null;
+            }
+            if ($value === 'layout') {
+                // A table of layout: said so, a screen reader reads its cells as text.
+                $layout = fn($open) => self::with_attribute($open[0], 'role', 'presentation');
+                return preg_replace_callback('~^<table\b[^>]*>~i', $layout, $item['tag']);
             }
             // The cells of the first row become headers of their column.
             return preg_replace_callback('~<tr\b[^>]*>.*?</tr\s*>~is', fn($row) => preg_replace(
@@ -400,7 +510,7 @@ class content_fix {
         if ($kind === 'frames') {
             return self::with_attribute($item['tag'], 'title', $text);
         }
-        if ($kind === 'links') {
+        if ($kind === 'links' || $kind === 'urllinks') {
             preg_match('~^(<a\b[^>]*>)(.*)(</a\s*>)$~is', $item['tag'], $parts);
             // A link with a text: the new text in its place. A link without any (an icon): its name.
             return $item['text'] !== '' ? $parts[1] . s($text) . $parts[3]

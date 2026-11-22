@@ -63,18 +63,20 @@ if (data_submitted() && confirm_sesskey()) {
         optional_param_array('alt', [], PARAM_TEXT),
         optional_param_array('decorative', [], PARAM_BOOL)
     );
-    // The titles of the frames, where the links lead, the headers of the tables, the levels of the titles, the colours
-    // taken away, into their texts.
+    // The titles of the frames, where the links lead, the headers of the tables (or their layout), the texts of the
+    // links, the levels of the titles, the colours taken away, the lists made, into their texts.
     $fixed = \theme_epure\content_fix::apply($course, course_accessibility::analyse($course), [
         'frames' => optional_param_array('frametitle', [], PARAM_TEXT),
         'imagelinks' => optional_param_array('linkalt', [], PARAM_TEXT),
-        'tables' => optional_param_array('tablehead', [], PARAM_BOOL),
+        'tables' => optional_param_array('tablehead', [], PARAM_ALPHA),
         'links' => optional_param_array('linktext', [], PARAM_TEXT),
+        'urllinks' => optional_param_array('urltext', [], PARAM_TEXT),
         'headings' => optional_param_array('headings', [], PARAM_BOOL),
         'contrast' => optional_param_array('uncolour', [], PARAM_BOOL),
         'emptyheadings' => optional_param_array('emptyheadings', [], PARAM_BOOL),
         'moving' => optional_param_array('unmove', [], PARAM_BOOL),
         'tabindex' => optional_param_array('taborder', [], PARAM_BOOL),
+        'fakelists' => optional_param_array('makelists', [], PARAM_BOOL),
     ]);
     // The names changed in the guide, into their activities.
     $renamed = course_accessibility::rename($course, optional_param_array('rename', [], PARAM_TEXT));

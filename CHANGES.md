@@ -1,5 +1,26 @@
 # Changes
 
+## 1.50.2 — charts, focus, lists, long addresses and capitals
+
+Repaired in the page, on every version of Moodle and IOMAD:
+
+- The charts of Moodle (reports of the quizzes, statistics) were a canvas hidden from the screen readers (role presentation): they are images named by their title (« Chart: Overall number of students achieving grade ranges »), their data still in the table below (RGAA 1.1, 1.3).
+- When a window of Moodle closes after an action that drew the page again, the keyboard focus fell to the top of the page: it comes back to the same control drawn again, else to the title of the page (RGAA 12.8).
+
+The content checker of the editors and the guide « Accessibility of the course » find three more mistakes:
+
+- Lists written by hand, two lines or more that begin with a dash, a bullet or a number, as paragraphs or as lines of one paragraph (serious, RGAA 9.3): the guide makes them real lists in one click, numbered for numbers, the other lines kept.
+- Long addresses (more than 35 characters) as the text of a link (minor): the guide gives them a text, as the vague links.
+- Texts written in capitals, four words or more one after the other (minor, a good practice): harder to read, and spelt by some screen readers. Acronyms are not counted.
+- The tables without headers are marked in the guide in one click as their header (the first row) or as a table of layout (role presentation), or left as they are.
+
+The panel « Aa »:
+
+- A new switch « Stronger keyboard focus »: a white ring inside a black one, 3 px each, seen on any background, the header included. Part of the profile « Low vision »; with its setting of the display by default of the site (off), as the other switches.
+
+- The page « What Épure covers » says it (headings and lists, tables, links, focus, charts, texts in capitals).
+- Tests: PHPUnit (the lists, addresses and capitals found; the lists made, the table marked as layout, the link given a text; the preference). Checked in the browser on Moodle 4.5: the guide and its fixes, the line under the editor and the window on saving, the focus in two colours, the chart of the report of a quiz, the focus back after a window.
+
 ## 1.50.1 — smaller defects repaired, found on the pages of Moodle
 
 Found by going through 49 pages of Moodle (every activity, the pages of the teachers, of the learners and of the administration), repaired in the page, on every version of Moodle and IOMAD:
