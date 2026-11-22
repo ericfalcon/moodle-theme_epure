@@ -353,7 +353,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
 
     /**
-     * The repairs of the page ({@see amd/src/aria_repair.js}): the ARIA attributes that Moodle and IOMAD write wrongly,
+     * The repairs of the page (the module theme_epure/aria_repair): the ARIA attributes that Moodle and IOMAD write wrongly,
      * the fields of IOMAD with an empty label, the names of the menus and of the navigations, the mark of the required
      * fields, the notes of the lists that update the page; the status messages told to the screen readers.
      */
