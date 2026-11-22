@@ -126,7 +126,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
-- **1.50.2**: one new display preference (stronger keyboard focus, with its setting of the display by default, off); upgrade the site. Charts named, focus back after a window, lists written by hand, long addresses as links and texts in capitals found by the checker and the guide; lists made and tables marked as layout in one click.
+- **1.50.2**: a new display preference of the panel « Aa », off by default (and its setting of the display by default of the site): a stronger keyboard focus. Charts named, focus back after a window, lists written by hand, long addresses as links and texts in capitals found by the checker and the guide; lists made and tables marked as layout in one click.
 - **1.50.1**: no new setting; upgrade the site. Smaller defects of Moodle repaired in the page: session kept open while writing, quiz timer told, missing page titles, new windows, personal data fields, link titles, sorted columns, quiz navigation, H5P frames, repeated actions in tables.
 - **1.50.0**: no new setting; upgrade the site. More defects of Moodle repaired in the page: hidden labels given as titles, the lists that update the page say it, links made buttons, status messages told.
 - **1.49.1**: no new setting; upgrade the site. The guide reads the IMS content packages as the SCORM packages.

@@ -126,7 +126,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
-- **1.50.2** : une nouvelle préférence d’affichage (focus clavier renforcé, avec son réglage de l’affichage par défaut, désactivé) ; mettez le site à jour. Graphiques nommés, focus rendu après une fenêtre, listes écrites à la main, longues adresses en guise de lien et textes en majuscules repérés par le vérificateur et le guide ; listes faites et tableaux marqués de mise en page en un clic.
+- **1.50.2** : une nouvelle préférence d'affichage du panneau « Aa », désactivée par défaut (et son réglage de l'affichage par défaut du site) : le focus clavier renforcé. Graphiques nommés, focus rendu après une fenêtre, listes écrites à la main, longues adresses en guise de lien et textes en majuscules repérés par le vérificateur et le guide ; listes faites et tableaux marqués de mise en page en un clic.
 - **1.50.1** : aucun nouveau réglage ; mettez le site à jour. De plus petits défauts de Moodle réparés dans la page : session maintenue pendant la rédaction, minuteur des tests annoncé, titres de page manquants, nouvelles fenêtres, champs de données personnelles, titres des liens, colonnes triées, navigation des tests, cadres H5P, actions répétées des tableaux.
 - **1.50.0** : aucun nouveau réglage ; mettez le site à jour. D’autres défauts de Moodle réparés dans la page : libellés masqués donnés en titre, listes qui mettent la page à jour qui le disent, liens devenus boutons, messages d’état annoncés.
 - **1.49.1** : aucun nouveau réglage ; mettez le site à jour. Le guide lit les paquetages IMS comme les paquets SCORM.
