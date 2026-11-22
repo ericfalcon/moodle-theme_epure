@@ -48,6 +48,21 @@
  *   buttons, and obey Space;
  * - status messages were not told to the screen readers (RGAA 7.5): the error of the login form, shown with the page;
  *   the number of messages selected; the first notification, whose region appeared with it; « No courses ».
+ * Smaller defects found on the pages of Moodle, repaired the same way:
+ * - the timer of a quiz with a time limit (role timer, which the screen readers do not read) is told at 5 minutes and at
+ *   1 minute left (RGAA 13.1);
+ * - a link that opens a new window says it, to the screen readers (WCAG 3.2.5);
+ * - the fields of personal data of the profile give their purpose, for the filling in (RGAA 11.13);
+ * - a picture of a user beside the name of the user says it once only (RGAA 1.2);
+ * - a link whose title does not hold its visible text gets it first (RGAA 6.1); a link of a symbol only (« ◄ ») is
+ *   named by its title;
+ * - the sorted column of a table says its order (aria-sort);
+ * - the menus and the parts to open say whether they are open from the start (RGAA 7.1);
+ * - the buttons of the navigation of a quiz say the state of their question, not only by its colour (RGAA 3.1);
+ * - the button « Flag question » is named by its visible text (WCAG 2.5.3);
+ * - the frame of an H5P content has a title (RGAA 2.1);
+ * - the same actions repeated in a table (« Edit », « Move ») say the line they act on (RGAA 6.1, 11.9);
+ * - the links and buttons of an icon only are named by the title of their icon (RGAA 6.2).
  *
  * @module     theme_epure/aria_repair
  * @copyright  2026 Eric Falcon
@@ -377,6 +392,248 @@ const statusMessages = () => {
 };
 
 /**
+ * The visible text of an element, its spaces made one.
+ *
+ * @param {HTMLElement} element Element.
+ * @return {string}
+ */
+const visibleText = (element) => (element.innerText || element.textContent || '').replace(/\s+/g, ' ').trim();
+
+/**
+ * Tells the time left of the quiz at 5 minutes and at 1 minute (its timer has role timer, which is not read).
+ *
+ * @param {string} five Message at 5 minutes.
+ * @param {string} one Message at 1 minute.
+ */
+const quizTimer = (five, one) => {
+    const left = document.getElementById('quiz-time-left');
+    if (!left || left.dataset.epureTimer) {
+        return;
+    }
+    left.dataset.epureTimer = '1';
+    const told = new Set();
+    const check = () => {
+        const parts = left.textContent.trim().split(':').map(Number);
+        if (parts.some(Number.isNaN) || !parts.length) {
+            return;
+        }
+        const seconds = parts.reduce((total, part) => total * 60 + part, 0);
+        [[300, five], [60, one]].forEach(([limit, text]) => {
+            if (seconds <= limit && seconds > limit - 30 && !told.has(limit) && text) {
+                told.add(limit);
+                announce(text);
+            }
+        });
+    };
+    new MutationObserver(check).observe(left, {childList: true, characterData: true, subtree: true});
+};
+
+/**
+ * Says to the screen readers that a link opens a new window.
+ *
+ * @param {string} text « (opens in a new window) ».
+ */
+const newWindows = (text) => {
+    if (!text) {
+        return;
+    }
+    document.querySelectorAll('a[target="_blank"]:not([data-epure-window])').forEach((link) => {
+        link.dataset.epureWindow = '1';
+        const name = (link.getAttribute('aria-label') || visibleText(link)).toLowerCase();
+        if (name.includes(text.replace(/[()]/g, '').trim().toLowerCase())) {
+            return;
+        }
+        if (link.hasAttribute('aria-label')) {
+            link.setAttribute('aria-label', link.getAttribute('aria-label') + ' ' + text);
+            return;
+        }
+        const note = document.createElement('span');
+        note.className = 'sr-only visually-hidden';
+        note.textContent = ' ' + text;
+        link.append(note);
+    });
+};
+
+/**
+ * The purpose of the fields of personal data, by their name (RGAA 11.13).
+ *
+ * @type {Object<string, string>}
+ */
+const PURPOSES = {firstname: 'given-name', lastname: 'family-name', middlename: 'additional-name', email: 'email',
+    city: 'address-level2', country: 'country', phone1: 'tel', phone2: 'tel', address: 'street-address',
+    institution: 'organization', url: 'url'};
+
+/**
+ * Gives the fields of personal data of the forms of the profile their purpose.
+ */
+const purposes = () => document.querySelectorAll('form.mform input:not([autocomplete]), form.mform select:not([autocomplete])')
+    .forEach((field) => {
+        const purpose = PURPOSES[field.name];
+        if (purpose && (field.type !== 'password')) {
+            field.setAttribute('autocomplete', purpose);
+        }
+    });
+
+/**
+ * Empties the text alternative of a picture of a user that repeats the name beside it (RGAA 1.2).
+ */
+const userPictures = () => document.querySelectorAll('img.userpicture[alt]:not([alt=""])').forEach((picture) => {
+    const holder = picture.closest('a, td, th, li') || picture.parentElement;
+    const alt = picture.alt.trim().toLowerCase();
+    if (holder && alt && visibleText(holder).toLowerCase().includes(alt)) {
+        picture.alt = '';
+    }
+});
+
+/**
+ * Puts the visible text of a link first in its title; names by its title a link of a symbol only (RGAA 6.1).
+ */
+const linkTitles = () => document.querySelectorAll(
+    'a[href][title]:not([aria-label]):not([aria-labelledby]):not(.qnbutton)'
+).forEach((link) => {
+    const text = visibleText(link);
+    const title = link.title.trim();
+    if (!text || !title || title.toLowerCase().includes(text.toLowerCase())) {
+        return;
+    }
+    if (!/[\p{L}\p{N}]/u.test(text)) {
+        link.setAttribute('aria-label', title);
+    } else {
+        link.title = `${text} – ${title}`;
+    }
+});
+
+/**
+ * Says the order of the sorted column of a table (aria-sort).
+ */
+const sortedColumns = () => document.querySelectorAll('th:not([aria-sort])').forEach((header) => {
+    if (!header.querySelector('a[data-sortable], a[href*="tsort="], a[href*="sort="]')) {
+        return;
+    }
+    const icon = header.querySelector('.icon[class*="fa-arrow-"], .icon[class*="fa-sort-"], i[class*="fa-sort-"]');
+    if (!icon) {
+        return;
+    }
+    const down = /(arrow-down|sort-desc|sort-down|amount-desc)/.test(icon.className);
+    const up = /(arrow-up|sort-asc|sort-up|amount-asc)/.test(icon.className);
+    if (down || up) {
+        header.setAttribute('aria-sort', down ? 'descending' : 'ascending');
+    }
+});
+
+/**
+ * Says whether the menus and the parts to open are open, from the start (RGAA 7.1).
+ */
+const toggles = () => document.querySelectorAll(
+    '[data-toggle="dropdown"]:not([aria-expanded]), [data-bs-toggle="dropdown"]:not([aria-expanded]), '
+        + '[data-toggle="collapse"]:not([aria-expanded]), [data-bs-toggle="collapse"]:not([aria-expanded])'
+).forEach((toggle) => {
+    let open = false;
+    if (/dropdown/.test(toggle.dataset.toggle || toggle.dataset.bsToggle || '')) {
+        open = toggle.classList.contains('show');
+    } else {
+        const target = toggle.dataset.target || toggle.dataset.bsTarget || toggle.getAttribute('href') || '';
+        try {
+            const part = (target.startsWith('#') || target.startsWith('.')) ? document.querySelector(target) : null;
+            open = !!part?.classList.contains('show');
+        } catch (e) {
+            // Expected: an address that is not a selector; the part is closed.
+            open = false;
+        }
+    }
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+});
+
+/**
+ * Names the buttons of the navigation of a quiz with the state of their question (RGAA 3.1), and the button
+ * « Flag question » by its visible text (WCAG 2.5.3).
+ */
+const quizNavigation = () => {
+    document.querySelectorAll('.qn_buttons .qnbutton[title]').forEach((button) => {
+        // Its state from its title (« Question 1 - Not answered »), then the page shown and the flag, as Moodle marks them.
+        const parts = [button.title.trim()];
+        const flag = visibleText(button.querySelector('.flagstate') || document.createElement('span'));
+        const hidden = [...button.querySelectorAll('.accesshide')].pop();
+        const page = hidden ? hidden.textContent.replace(flag, '').replace(/\s+/g, ' ').trim() : '';
+        if (button.classList.contains('thispage') && page) {
+            parts.push(page);
+        }
+        if (flag) {
+            parts.push(flag);
+        }
+        const name = parts.join(', ');
+        if (button.getAttribute('aria-label') !== name) {
+            button.setAttribute('aria-label', name);
+        }
+    });
+    document.querySelectorAll('.questionflag [role="button"][aria-label]').forEach((flag) => {
+        const text = visibleText(flag);
+        if (text && flag.getAttribute('aria-label') !== text) {
+            flag.setAttribute('aria-label', text);
+        }
+    });
+};
+
+/**
+ * Gives the frames of the H5P contents a title (RGAA 2.1).
+ *
+ * @param {string} fallback Name when the page has no heading.
+ */
+const h5pFrames = (fallback) => document.querySelectorAll(
+    'iframe.h5p-player:not([title]), iframe[src*="/h5p/embed.php"]:not([title]), iframe.h5p-iframe:not([title])'
+).forEach((frame) => {
+    const heading = document.querySelector('#region-main h1, .page-header-headings h1, h1');
+    frame.title = (heading ? visibleText(heading) : '') || fallback;
+});
+
+/**
+ * Adds the line they act on to the same actions repeated in a table (RGAA 6.1, 11.9).
+ */
+const tableActions = () => document.querySelectorAll('table').forEach((table) => {
+    const controls = [...table.querySelectorAll('a[href], button')].filter((control) => !control.dataset.epureLine
+        && !control.hasAttribute('aria-labelledby'));
+    const nameOf = (control) => (control.getAttribute('aria-label') || visibleText(control)
+        || [...control.querySelectorAll('img[alt]')].map((image) => image.alt).join(' ') || control.title || '').trim();
+    const byName = new Map();
+    controls.forEach((control) => {
+        const name = nameOf(control);
+        if (name && name.length <= 30) {
+            byName.set(name, [...(byName.get(name) || []), control]);
+        }
+    });
+    byName.forEach((same, name) => {
+        if (same.length < 2) {
+            return;
+        }
+        same.forEach((control) => {
+            const row = control.closest('tr');
+            const cell = control.closest('td, th');
+            const head = row && [...row.cells].find((other) => other !== cell && visibleText(other)
+                && (other.tagName === 'TH' || other.cellIndex <= 1));
+            const line = head ? visibleText(head).slice(0, 80) : '';
+            control.dataset.epureLine = '1';
+            if (line && !name.toLowerCase().includes(line.toLowerCase())) {
+                control.setAttribute('aria-label', `${name} : ${line}`);
+            }
+        });
+    });
+});
+
+/**
+ * Names the links and buttons of an icon only by the title of their icon (RGAA 6.2).
+ */
+const iconControls = () => document.querySelectorAll('a[href], button, [role="button"]').forEach((control) => {
+    if (control.hasAttribute('aria-label') || control.hasAttribute('aria-labelledby') || visibleText(control)
+        || control.querySelector('img[alt]:not([alt=""])')) {
+        return;
+    }
+    const titled = control.title ? control : control.querySelector('[title]');
+    if (titled && titled.title.trim()) {
+        control.setAttribute('aria-label', titled.title.trim());
+    }
+});
+
+/**
  * The repairs of what Moodle draws after the page: now, and each time something is added to the page.
  *
  * @param {Object<string, string>} texts The mark of the required fields, the names of the navigations.
@@ -393,6 +650,17 @@ const later = (texts) => {
         contextChanges(texts.updates, texts.changes);
         linkButtons();
         watchStatus();
+        quizTimer(texts.fiveminutes, texts.oneminute);
+        newWindows(texts.newwindow);
+        purposes();
+        userPictures();
+        linkTitles();
+        sortedColumns();
+        toggles();
+        quizNavigation();
+        h5pFrames(texts.h5p);
+        tableActions();
+        iconControls();
     };
     run();
     new MutationObserver((mutations) => {
@@ -408,7 +676,9 @@ const later = (texts) => {
  * @param {Object<string, string>} names Names of the fields of IOMAD with an empty label, by their name.
  * @param {{site: string, page: string}} menus Names of the menu of the site and of the menu of the page.
  * @param {Object<string, string>} texts The mark of the required fields (required), the names of the navigations
- *     (paging, choice, courseindex), the notes of the lists that update the page (updates, changes).
+ *     (paging, choice, courseindex), the notes of the lists that update the page (updates, changes), the time left
+ *     of a quiz (fiveminutes, oneminute), the note of the links to a new window (newwindow), the name of the frames
+ *     of H5P without a heading (h5p).
  */
 export const init = (names = {}, menus = {site: '', page: ''}, texts = {}) => {
     statusRegion();

@@ -41,6 +41,16 @@ const addPill = (cm) => {
         icon.className = 'fa fa-universal-access';
         icon.setAttribute('aria-hidden', 'true');
         link.append(icon, document.createTextNode(cm.text));
+        // The activity in the name of the link: the same text repeats from one activity to the next (RGAA 6.1).
+        const activity = item.querySelector('.instancename') || item.querySelector('.activityname');
+        const title = activity ? [...activity.childNodes].filter((node) => !(node.classList?.contains('accesshide')))
+            .map((node) => node.textContent).join('').trim() : '';
+        if (title) {
+            const context = document.createElement('span');
+            context.className = 'sr-only visually-hidden';
+            context.textContent = ` : ${title}`;
+            link.append(context);
+        }
         name.append(link);
     });
 };
