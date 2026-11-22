@@ -26,6 +26,10 @@ namespace theme_epure\output;
 class core_renderer extends \theme_boost\output\core_renderer {
     use email_renderer;
 
+    /** @var string[] The pages where the users write a text, whose session is kept open while they are shown. */
+    protected const WRITING_PAGES = ['mod-assign-editsubmission', 'mod-forum-post', 'mod-data-edit', 'mod-glossary-edit',
+        'mod-wiki-edit', 'mod-workshop-submission', 'mod-forum-discuss', 'mod-lesson-view', 'mod-feedback-complete'];
+
     /** @var string Tables read as cards on phones ({@see full_header()}). */
     public const CARD_TABLES = '#participants, #overview-grade, table.reportlog, #outlinereport, table.reportbuilder-table, '
         . '.path-local-report_users table.generaltable, .path-local-report_completion_overview table.generaltable, '
@@ -371,8 +375,34 @@ class core_renderer extends \theme_boost\output\core_renderer {
             // The notes of the lists that update the page as soon as a choice is made (RGAA 7.4).
             'updates' => get_string('repairupdates', 'theme_epure'),
             'changes' => get_string('repairchanges', 'theme_epure'),
+            // The time left of a quiz, the links to a new window, the frames of H5P.
+            'fiveminutes' => get_string('repairfiveminutes', 'theme_epure'),
+            'oneminute' => get_string('repaironeminute', 'theme_epure'),
+            'newwindow' => get_string('repairnewwindow', 'theme_epure'),
+            'h5p' => get_string('repairh5p', 'theme_epure'),
         ];
+        // The session kept open while the user writes (RGAA 13.1): Moodle does it on the quizzes, not on these pages.
+        if (in_array($this->page->pagetype, self::WRITING_PAGES, true)) {
+            \core\session\manager::keepalive();
+        }
         $this->page->requires->js_call_amd('theme_epure/aria_repair', 'init', [$names, $menus, $texts]);
+    }
+
+    /**
+     * The title of the page; when a page leaves it empty (some plugins do), its heading and the name of the site, as
+     * every page needs a title (RGAA 8.5).
+     *
+     * @return string
+     */
+    public function page_title() {
+        $title = parent::page_title();
+        if (trim((string) $title) !== '') {
+            return $title;
+        }
+        global $SITE;
+        $heading = trim(strip_tags((string) $this->page->heading));
+        $site = format_string($SITE->shortname, true, ['context' => \context_system::instance()]);
+        return $heading !== '' && $heading !== $site ? $heading . ' | ' . $site : $site;
     }
 
     /**

@@ -1,5 +1,27 @@
 # Changes
 
+## 1.50.1 — smaller defects repaired, found on the pages of Moodle
+
+Found by going through 49 pages of Moodle (every activity, the pages of the teachers, of the learners and of the administration), repaired in the page, on every version of Moodle and IOMAD:
+
+- The session stays open while a text is written (submission of an assignment, post of a forum, entry of a database or of a glossary, page of a wiki, submission of a workshop, lesson, feedback): Moodle kept it only during a quiz, and a learner who writes slowly lost the text (RGAA 13.1).
+- The timer of a quiz with a time limit (role timer, not read) tells « 5 minutes left » then « 1 minute left » to the screen readers (RGAA 13.1).
+- A page left without a title by a plugin gets its heading and the name of the site (RGAA 8.5).
+- A link that opens a new window says it to the screen readers (« opens in a new window »).
+- The fields of personal data of the forms of the profile give their purpose (autocomplete: given-name, family-name, email…; RGAA 11.13).
+- A picture of a user that repeats the name beside it stays silent (RGAA 1.2).
+- The title of a link starts with its visible text (breadcrumb, roles of the participants, names of the sections in edit mode); a link of a symbol only (« ◄ », « ► ») takes its title as its name (RGAA 6.1, WCAG 2.5.3).
+- The sorted column of a table says its order (aria-sort).
+- The menus and parts to open say from the start whether they are open (user menu, « Add discussion topic », « More actions »; RGAA 7.1).
+- The buttons of the navigation of a quiz say the state of their question (« Question 1 - Not answered, This page, Flagged »), not only by colour (RGAA 3.1); the button « Flag question » carries the name of its visible text (WCAG 2.5.3).
+- The frame of an H5P content has a title, the name of the activity (RGAA 2.1).
+- The actions repeated in a table say the line they act on (« Edit : Manual enrolments », « Move : … »; RGAA 6.1, 11.9).
+- The links and buttons of an icon only take the title of their icon as their name (« Collapse » of the gradebook; RGAA 6.2).
+- Épure itself: the links of the page « To do » say their course, the badges of accessibility of the edit mode their activity (the same text repeated, RGAA 6.1).
+- The page « What Épure covers » says it (forms, titles of the pages, time limits).
+- No new setting.
+- Tests: PHPUnit (the title of a page without one). Checked in the browser on Moodle 4.5: each repair on its page, the timer at 5 and at 1 minute, no error of JavaScript.
+
 ## 1.50.0 — more defects of Moodle repaired in the page
 
 Four defects of Moodle itself, found by an RGAA audit of a Moodle platform, repaired in the page where a theme can, on every version of Moodle and IOMAD:
