@@ -199,18 +199,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
         // Focus never hidden under the bars fixed at the top and at the bottom of the screen.
         $this->page->requires->js_call_amd('theme_epure/focus_clear', 'init');
-        // ARIA attributes that Moodle and IOMAD write wrongly; the fields of IOMAD with an empty label; the names of the menus.
-        $names = \theme_epure\iomad::installed()
-            ? ['deptid' => get_string('department', 'block_iomad_company_admin')] : [];
-        $menus = ['site' => get_string('menusite', 'theme_epure'), 'page' => get_string('menupage', 'theme_epure')];
-        // The mark of the required fields, the names of the navigations of Moodle that have none.
-        $texts = [
-            'required' => get_string('requiredmark', 'theme_epure'),
-            'paging' => get_string('navpaging', 'theme_epure'),
-            'choice' => get_string('navchoice', 'theme_epure'),
-            'courseindex' => get_string('courseindex', 'courseformat'),
-        ];
-        $this->page->requires->js_call_amd('theme_epure/aria_repair', 'init', [$names, $menus, $texts]);
+        $this->aria_repair();
         // The course index scrolls the page back to itself when its drawer does not scroll on its own (styles turned off).
         $this->page->requires->js_call_amd('theme_epure/courseindex_scroll', 'init');
         // Moodle 5.0 nests the tree items of the subsections in the course index; Moodle 5.1 corrected it.
@@ -356,7 +345,34 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return string HTML.
      */
     public function standard_top_of_body_html() {
+        // The login page has no header of the site: its repairs (the error of the form told) are started here.
+        if ($this->page->pagelayout === 'login') {
+            $this->aria_repair();
+        }
         return parent::standard_top_of_body_html() . \theme_epure\busy::top_of_body($this->page);
+    }
+
+    /**
+     * The repairs of the page (the module theme_epure/aria_repair): the ARIA attributes that Moodle and IOMAD write wrongly,
+     * the fields of IOMAD with an empty label, the names of the menus and of the navigations, the mark of the required
+     * fields, the notes of the lists that update the page; the status messages told to the screen readers.
+     */
+    protected function aria_repair(): void {
+        // ARIA attributes that Moodle and IOMAD write wrongly; the fields of IOMAD with an empty label; the names of the menus.
+        $names = \theme_epure\iomad::installed()
+            ? ['deptid' => get_string('department', 'block_iomad_company_admin')] : [];
+        $menus = ['site' => get_string('menusite', 'theme_epure'), 'page' => get_string('menupage', 'theme_epure')];
+        // The mark of the required fields, the names of the navigations of Moodle that have none.
+        $texts = [
+            'required' => get_string('requiredmark', 'theme_epure'),
+            'paging' => get_string('navpaging', 'theme_epure'),
+            'choice' => get_string('navchoice', 'theme_epure'),
+            'courseindex' => get_string('courseindex', 'courseformat'),
+            // The notes of the lists that update the page as soon as a choice is made (RGAA 7.4).
+            'updates' => get_string('repairupdates', 'theme_epure'),
+            'changes' => get_string('repairchanges', 'theme_epure'),
+        ];
+        $this->page->requires->js_call_amd('theme_epure/aria_repair', 'init', [$names, $menus, $texts]);
     }
 
     /**

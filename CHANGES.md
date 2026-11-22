@@ -1,5 +1,17 @@
 # Changes
 
+## 1.50.0 — more defects of Moodle repaired in the page
+
+Four defects of Moodle itself, found by an RGAA audit of a Moodle platform, repaired in the page where a theme can, on every version of Moodle and IOMAD:
+
+- A field whose label is hidden, or which has a name only for the screen readers (the searches of the timeline and of the messages, the courses of the calendar, the message to write), said nothing to whoever sees it (RGAA 11.1): it gets that name as its title, shown on hover; the page does not change.
+- The lists that update the page as soon as a choice is made (the courses of the calendar, the filters of « My courses » and of the timeline, the choices of a page) did not say it (RGAA 7.4): they say it to the screen readers (« The list is updated as soon as a choice is made »).
+- Links that act as buttons without leading anywhere (the arrows of the month, the days and the events of the calendar, the actions on a course, « Mark all as read », the contact of the data protection officer) were said to be links (RGAA 7.1): they are buttons, and obey Space.
+- Status messages missed by the screen readers (RGAA 7.5) are told by a region of Épure there from the start of the page: the error of the login form, shown with the page; the number of messages selected; the first notification, whose region of Moodle appeared with it; « No courses » once the courses are filtered.
+- The repairs now also run on the login page, which has no header of the site.
+- No new setting.
+- Checked in the browser on Moodle 4.5: the titles, the notes, the buttons, the error of the login form told.
+
 ## 1.49.1 — the IMS content packages too
 
 - Accessibility of the course: the guide reads the IMS content packages as the SCORM packages (1.49.0): their authoring tool, Storyline and Rise from their data, HTML pages as the course, their PDF files and documents. They were a point to confirm only. A point already confirmed stays so.

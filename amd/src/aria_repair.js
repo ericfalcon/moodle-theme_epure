@@ -38,7 +38,16 @@
  * - a required field is only marked by an icon hidden from the screen readers, after its label (RGAA 11.10): its
  *   label gets the text « (required) », visible, and the note that explains the mark is read;
  * - some navigations have no name, which tells them apart from the others (RGAA 12.6): the letters that filter the
- *   people by their name, the choice of the page, the pages of a list, the course index.
+ *   people by their name, the choice of the page, the pages of a list, the course index;
+ * - a field whose label is hidden, or which has a name only for the screen readers, says nothing to whoever sees it
+ *   (RGAA 11.1): it gets its name as its title, shown on hover (test 11.1.3), the page unchanged;
+ * - the lists that update the page as soon as a choice is made (the courses of the calendar, the choices of a page,
+ *   the filters of « My courses » and of the timeline) did not say it (RGAA 7.4): they say it, to the screen readers;
+ * - links that act as buttons, without leading anywhere (the arrows of the month and the events of the calendar, the
+ *   actions on a course, the contact of the data protection officer), were said to be links (RGAA 7.1): they are
+ *   buttons, and obey Space;
+ * - status messages were not told to the screen readers (RGAA 7.5): the error of the login form, shown with the page;
+ *   the number of messages selected; the first notification, whose region appeared with it; « No courses ».
  *
  * @module     theme_epure/aria_repair
  * @copyright  2026 Eric Falcon
@@ -220,17 +229,170 @@ const spaceKey = (event) => {
 };
 
 /**
+ * The region of Épure that tells the status messages to the screen readers, there from the start of the page (a region
+ * added with its message is not read).
+ *
+ * @return {HTMLElement}
+ */
+const statusRegion = () => {
+    let region = document.getElementById('epure-status-repair');
+    if (!region) {
+        region = document.createElement('div');
+        region.id = 'epure-status-repair';
+        region.className = 'sr-only visually-hidden';
+        region.setAttribute('role', 'status');
+        region.setAttribute('aria-live', 'polite');
+        document.body.append(region);
+    }
+    return region;
+};
+
+/**
+ * Tells a status message to the screen readers, a moment later (so that the region is read as changed).
+ *
+ * @param {string} text Message.
+ */
+const announce = (text) => {
+    const message = (text || '').replace(/\s+/g, ' ').trim();
+    if (!message) {
+        return;
+    }
+    const region = statusRegion();
+    region.textContent = '';
+    window.setTimeout(() => {
+        region.textContent = message;
+    }, 150);
+};
+
+/**
+ * Whether a label is hidden from those who see the page.
+ *
+ * @param {HTMLLabelElement} label Label.
+ * @return {boolean}
+ */
+const hiddenLabel = (label) => {
+    const hidden = '.sr-only, .visually-hidden, .accesshide';
+    if (label.matches(hidden)) {
+        return true;
+    }
+    const text = label.textContent.trim();
+    return text !== '' && [...label.querySelectorAll(hidden)].map((part) => part.textContent.trim()).join(' ').trim() === text;
+};
+
+/**
+ * Gives a title, its name, to the fields whose label is hidden or which have a name for the screen readers only.
+ */
+const fieldTitles = () => document.querySelectorAll(
+    'input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="image"]):not([title]), '
+        + 'select:not([title]), textarea:not([title])'
+).forEach((field) => {
+    const labels = [...(field.labels || [])];
+    let name = '';
+    if (labels.length && labels.every(hiddenLabel)) {
+        name = labels.map((label) => label.textContent.trim()).join(' ');
+    } else if (!labels.length) {
+        name = field.getAttribute('aria-label')?.trim() || '';
+        const ids = field.getAttribute('aria-labelledby');
+        if (!name && ids) {
+            name = ids.split(/\s+/).map((id) => document.getElementById(id)?.textContent.trim() || '').join(' ').trim();
+        }
+    }
+    if (name) {
+        field.setAttribute('title', name.replace(/\s+/g, ' '));
+    }
+});
+
+/**
+ * Says that the lists which update the page as soon as a choice is made do so (RGAA 7.4).
+ *
+ * @param {string} list Note of the lists that update a list of the page.
+ * @param {string} page Note of the lists that change the page.
+ */
+const contextChanges = (list, page) => {
+    const note = (id, text) => {
+        if (!text || document.getElementById(id)) {
+            return;
+        }
+        const element = document.createElement('span');
+        element.id = id;
+        element.className = 'sr-only visually-hidden';
+        element.textContent = text;
+        document.body.append(element);
+    };
+    note('epure-note-updates', list);
+    note('epure-note-changes', page);
+    const describe = (selector, id) => document.querySelectorAll(selector).forEach((control) => {
+        const ids = (control.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+        if (document.getElementById(id) && !ids.includes(id)) {
+            control.setAttribute('aria-describedby', [...ids, id].join(' '));
+        }
+    });
+    describe('.block_myoverview [data-region="filter"] .dropdown-toggle, .block_timeline .dropdown-toggle, '
+        + 'select.cal_courses_flt', 'epure-note-updates');
+    describe('.singleselect select, .urlselect select', 'epure-note-changes');
+};
+
+/**
+ * Makes buttons of the links that act as buttons, without leading anywhere (RGAA 7.1).
+ */
+const linkButtons = () => document.querySelectorAll(
+    'a[href="#"][data-action]:not([role]), a[data-action="view-event"]:not([role]), '
+        + '.calendar-controls a.arrow_link:not([role]), a[data-action="contactdpo"]:not([role])'
+).forEach((link) => link.setAttribute('role', 'button'));
+
+/**
+ * Tells the status messages that the screen readers miss (RGAA 7.5): the number of messages selected, the first
+ * notification (its region appears with it), « No courses » once the courses are filtered.
+ */
+const statusMessages = () => {
+    const watched = new WeakSet();
+    const watch = (element, text) => {
+        if (watched.has(element)) {
+            return;
+        }
+        watched.add(element);
+        new MutationObserver(() => announce(text(element))).observe(element, {childList: true, characterData: true,
+            subtree: true});
+    };
+    const run = () => {
+        document.querySelectorAll('[data-region="message-selected-court"]').forEach((count) => {
+            watch(count, (element) => element.parentElement?.textContent || '');
+        });
+        document.querySelectorAll('.block_myoverview [data-region="courses-view"]').forEach((view) => {
+            watch(view, (element) => {
+                const empty = element.querySelector('.text-center, [data-region="empty-message"], .empty-placeholder');
+                return empty && !element.querySelector('[data-region="course-content"], .course-listitem, .course-card')
+                    ? empty.textContent : '';
+            });
+        });
+    };
+    run();
+    // The region of the notifications, added with the first one: its message is told once it is in.
+    new MutationObserver((mutations) => mutations.forEach((mutation) => mutation.addedNodes.forEach((node) => {
+        if (node.nodeType === 1 && node.classList.contains('toast-wrapper')) {
+            window.setTimeout(() => announce(node.textContent), 300);
+        }
+    }))).observe(document.body, {childList: true});
+    return run;
+};
+
+/**
  * The repairs of what Moodle draws after the page: now, and each time something is added to the page.
  *
  * @param {Object<string, string>} texts The mark of the required fields, the names of the navigations.
  */
 const later = (texts) => {
+    const watchStatus = statusMessages();
     const run = () => {
         emptySelections();
         resizeHandles();
         calendars();
         requiredFields(texts.required);
         nameNavigations(texts);
+        fieldTitles();
+        contextChanges(texts.updates, texts.changes);
+        linkButtons();
+        watchStatus();
     };
     run();
     new MutationObserver((mutations) => {
@@ -246,9 +408,15 @@ const later = (texts) => {
  * @param {Object<string, string>} names Names of the fields of IOMAD with an empty label, by their name.
  * @param {{site: string, page: string}} menus Names of the menu of the site and of the menu of the page.
  * @param {Object<string, string>} texts The mark of the required fields (required), the names of the navigations
- *     (paging, choice, courseindex).
+ *     (paging, choice, courseindex), the notes of the lists that update the page (updates, changes).
  */
 export const init = (names = {}, menus = {site: '', page: ''}, texts = {}) => {
+    statusRegion();
+    // The error of the login form, shown with the page: its role alert is not read when the page opens.
+    const error = document.getElementById('loginerrormessage');
+    if (error && error.textContent.trim()) {
+        window.setTimeout(() => announce(error.textContent), 600);
+    }
     repair(document, names);
     nameMenus(menus);
     clearChoices();
