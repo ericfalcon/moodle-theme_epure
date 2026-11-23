@@ -1601,6 +1601,7 @@ $string['repairabbr_scorm'] = 'Sharable Content Object Reference Model';
 $string['repairabbr_scorm_word'] = 'SCORM';
 $string['repairchanges'] = 'The page changes as soon as a choice is made.';
 $string['repairchart'] = 'Chart: {$a}';
+$string['repaireditorframe'] = 'Rich text area';
 $string['repaireditorpath'] = 'Path of the element';
 $string['repairfiveminutes'] = '5 minutes left.';
 $string['repairgradesummary'] = 'Each row is an element of the gradebook, under the category it belongs to (the categories span several rows); each cell is tied to its row and to its column. The columns: {$a}.';

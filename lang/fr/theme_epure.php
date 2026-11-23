@@ -1601,6 +1601,7 @@ $string['repairabbr_scorm'] = 'Sharable Content Object Reference Model (paquet d
 $string['repairabbr_scorm_word'] = 'SCORM';
 $string['repairchanges'] = 'La page change dès le choix.';
 $string['repairchart'] = 'Graphique : {$a}';
+$string['repaireditorframe'] = 'Zone de texte enrichi';
 $string['repaireditorpath'] = 'Chemin de l’élément';
 $string['repairfiveminutes'] = 'Il reste 5 minutes.';
 $string['repairgradesummary'] = 'Chaque ligne est un élément du carnet de notes, sous la catégorie à laquelle il appartient (les catégories s’étendent sur plusieurs lignes) ; chaque cellule est reliée à sa ligne et à sa colonne. Les colonnes : {$a}.';

@@ -732,7 +732,8 @@ const sessionNote = (text) => {
  * What the RGAA asks of the code of the page, repaired where the interface of Moodle and of its editor writes it
  * otherwise:
  * - the icons of the editor TinyMCE (svg), drawn in buttons that have their name, are ignored by the screen readers
- *   (RGAA 1.2); the path of the element written, a navigation, gets a name (RGAA 12.6);
+ *   (RGAA 1.2); the path of the element written, a navigation, gets a name (RGAA 12.6); its frame, without a title
+ *   in TinyMCE 7, gets the label of its field (RGAA 2.1);
  * - the attributes of presentation (frameborder of a frame, cellspacing, cellpadding and border of the tables of the
  *   interface) go, the styles do the same (RGAA 10.1); the tables written by the teachers keep theirs;
  * - on the page of the messages, the drawer of the messages, hidden, repeats the identifiers of the page (RGAA 8.2):
@@ -741,14 +742,26 @@ const sessionNote = (text) => {
  *   5.6); the user report of the gradebook gets a caption and a summary (RGAA 5.1, 5.4); a page without a title of
  *   level 1 gets one, for the screen readers (RGAA 9.1).
  *
- * @param {Object<string, string>} texts The name of the path of the element of the editor (editorpath), the summary of
- *     the user report (gradesummary, its columns as COLUMNS).
+ * @param {Object<string, string>} texts The name of the path of the element of the editor (editorpath), of its frame
+ *     without a label (editorframe), the summary of the user report (gradesummary, its columns as COLUMNS).
  */
 const codeRepairs = (texts) => {
     document.querySelectorAll('.tox svg:not([aria-hidden])').forEach((svg) => svg.setAttribute('aria-hidden', 'true'));
     document.querySelectorAll('.tox-statusbar__path[role="navigation"]:not([aria-label])')
         .forEach((nav) => nav.setAttribute('aria-label', texts.editorpath));
     document.querySelectorAll('iframe[frameborder]').forEach((frame) => frame.removeAttribute('frameborder'));
+    // The frame of the editor without a title (TinyMCE 7, Moodle 5.x, names it otherwise): the RGAA asks for its title
+    // (2.1), the label of the field it edits, else its other name.
+    document.querySelectorAll('iframe.tox-edit-area__iframe:not([title])').forEach((frame) => {
+        const field = frame.id.replace(/_ifr$/, '');
+        const label = field && document.querySelector(`label[for="${CSS.escape(field)}"]`);
+        const named = (frame.getAttribute('aria-labelledby') || '').split(/\s+/)
+            .map((id) => document.getElementById(id)?.textContent.trim() || '').filter(Boolean).join(' ');
+        const name = (label ? visibleText(label) : '') || named || texts.editorframe;
+        if (name) {
+            frame.title = name;
+        }
+    });
     document.querySelectorAll('table[cellspacing], table[cellpadding], table[border]').forEach((table) => {
         if (!table.closest(CONTENTS)) {
             ['cellspacing', 'cellpadding', 'border'].forEach((name) => table.removeAttribute(name));
