@@ -126,6 +126,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.51.1** : aucun nouveau réglage ; mettez le site à jour. Mode sombre : l'encadré d'une mise à jour de plugin disponible est lisible.
 - **1.51.0** : aucun nouveau réglage ; mettez le site à jour. Le texte du pied de page, du site et des entreprises IOMAD, s'écrit dans l'éditeur de Moodle (colonnes, liens, images) ; les textes écrits en Markdown deviennent du HTML à la mise à jour.
 - **1.50.2** : une nouvelle préférence d'affichage du panneau « Aa », désactivée par défaut (et son réglage de l'affichage par défaut du site) : le focus clavier renforcé. Graphiques nommés, focus rendu après une fenêtre, listes écrites à la main, longues adresses en guise de lien et textes en majuscules repérés par le vérificateur et le guide ; listes faites et tableaux marqués de mise en page en un clic.
 - **1.50.1** : aucun nouveau réglage ; mettez le site à jour. De plus petits défauts de Moodle réparés dans la page : session maintenue pendant la rédaction, minuteur des tests annoncé, titres de page manquants, nouvelles fenêtres, champs de données personnelles, titres des liens, colonnes triées, navigation des tests, cadres H5P, actions répétées des tableaux.

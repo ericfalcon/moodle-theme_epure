@@ -618,6 +618,30 @@
         text-decoration: underline;
     }
 
+    // The update of a plugin available (Plugins overview, Plugins check): Moodle paints it in the pale colours of
+    // its alerts, written at build time, under the light text of the dark mode. The colours of the alerts above.
+    #plugins-check-page,
+    #plugins-control-panel {
+        .pluginupdateinfo {
+            color: #bfe6f1;
+            background-color: #0f2e38;
+            border: 1px solid #1f5566;
+
+            &.maturity50 {
+                color: #f6c9cc;
+                background-color: #3a1519;
+                border-color: #6b2a31;
+            }
+
+            &.maturity100,
+            &.maturity150 {
+                color: #f5e2b8;
+                background-color: #352a10;
+                border-color: #63501f;
+            }
+        }
+    }
+
     // Descriptions of the activities and other boxes of Moodle.
     .activity-description,
     .box.generalbox,

@@ -1,5 +1,11 @@
 # Changes
 
+## 1.51.1 — the update of a plugin readable in dark mode
+
+- Dark mode: the box « A new version is available » of the plugins overview (and of the check of the plugins) kept the pale background of Moodle under the light text of the dark mode, unreadable. It takes the dark colours of the alerts of Épure: information, or warning and danger for a version not stable (WCAG 1.4.3).
+- No new setting.
+- Checked in the browser on Moodle 4.5: the three boxes, text at more than 10:1, links at 5.4:1 at least.
+
 ## 1.51.0 — the text of the footer in the editor
 
 - The text of the footer is written in the editor of Moodle (TinyMCE), in the tab Footer and in the getting started, as any text of the site: bold, links, images, columns (a table, or a row of Bootstrap in the source code). It was a field in Markdown.
