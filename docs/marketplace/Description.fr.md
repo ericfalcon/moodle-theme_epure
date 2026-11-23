@@ -8,10 +8,10 @@ Choisissez une couleur de marque (ou cliquez-la dans votre logo) : Épure en dé
 
 - Des préférences d'affichage pour chaque utilisateur, visiteurs compris (« Aa ») : texte jusqu'à 200 %, polices adaptées à la dyslexie, espacement, lignes courtes, contraste renforcé, animations réduites, règle ou masque de lecture, sombre, jaune sur noir ou crème, lecture à voix haute avec les voix locales de l'appareil. Des profils en un clic : Dyslexie, Basse vision, Concentration, Sans clignotement.
 - Des pages qui s'adaptent jusqu'à 320 px à 200 %, un focus toujours visible, des cibles de 24 px, des raccourcis clavier.
-- Une déclaration d'accessibilité remplie pas à pas (RGAA, EN 301 549 ou WCAG), et une page publique « Ce que couvre Épure », point par point du référentiel.
+- Une déclaration d'accessibilité remplie pas à pas, et une page publique « Ce que couvre Épure » : la grille entière du référentiel (106 critères du RGAA, EN 301 549 ou WCAG 2.2), qui répond à chaque critère et son état dans un pré-audit de référence, à télécharger.
 - Un vérificateur de contenu pendant la saisie, et un guide « Accessibilité du cours » : toutes les activités et les 47 plugins d'activité les plus installés, les documents bureautiques et PDF, les paquets SCORM et IMS (Storyline, Rise, HTML) ; chaque erreur avec sa gravité, un score sur 100 %, des corrections depuis le guide ; deux capacités pour qui l'utilise et qui confirme.
 - L'accessibilité de tous les cours sur un tableau de bord de gestion, semaine après semaine, avec des alertes si le calcul échoue.
-- Des défauts de Moodle réparés là où un thème le peut, dont plusieurs relevés par un audit RGAA.
+- Des défauts de Moodle réparés là où un thème le peut.
 - Un pré-audit automatisé (axe-core, WCAG 2.2 AA) de 76 pages dans tous les affichages, à chaque modification.
 
 ### Pour les apprenants
@@ -37,6 +37,6 @@ Chaque entreprise a ses couleurs, son logo, sa police, son vocabulaire, sa décl
 
 ### Compatibilité
 
-Moodle 4.5 à 5.3, IOMAD 4.5 à 5.2, PHP 8.1 à 8.4, PostgreSQL et MariaDB, testés en intégration continue. API de confidentialité pour chaque donnée stockée ; polices et bibliothèques fournies (tc-lib-pdf, smalot/pdfparser, LGPL).
+Moodle 4.5 à 5.3, IOMAD 4.5 à 5.2, PHP 8.1 à 8.4, PostgreSQL et MariaDB, testés en intégration continue. API de confidentialité ; polices et bibliothèques fournies.
 
 Un pré-audit automatisé ne remplace pas un audit manuel. Épure est indépendant, sans lien avec Moodle HQ ni IOMAD. Documentation : <https://github.com/ericfalcon/moodle-theme_epure>

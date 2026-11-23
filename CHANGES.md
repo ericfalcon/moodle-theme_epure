@@ -4,7 +4,7 @@
 
 The page « What Épure covers » gives, under its points, the whole grid of the referential of the country of the site, criterion by criterion: the 106 criteria of the RGAA 4.1.2 by theme (official wording, from the DINUM), the clauses 9 of the EN 301 549 and what the European accessibility statement must give (directive 2016/2102), or the success criteria of the WCAG 2.2 A and AA and those of the level AAA that Épure meets too. For each: who answers it (Épure, the guide then the authors, the authors, Moodle), its state in the reference pre-audit and why. To download (CSV, Excel, ODS, PDF…).
 
-The reference pre-audit (Moodle 4.5.15, Épure 1.52.0, 44 pages of the sample of the RGAA, a course written with care): 80 criteria conform, 0 not conform, 9 to verify, 17 not applicable; an estimate, never the audit of a site. Its method and its results are in the wiki (« Pré-audit d'accessibilité »).
+The reference pre-audit (Moodle 4.5.15 and 5.3.1, Épure 1.52.0, 44 and 49 pages of the sample of the RGAA, a course written with care, in every display): 80 criteria conform, 0 not conform, 9 to verify, 17 not applicable; an estimate, never the audit of a site. Its method and its results are in the wiki (« Pré-audit d'accessibilité »).
 
 Repaired in the page, found by the VPAT of Moodle LMS (October 2026) and by this pre-audit:
 
@@ -17,6 +17,8 @@ Repaired in the page, found by the VPAT of Moodle LMS (October 2026) and by this
 - The tables of the summary of the retention of the data get a caption and the headers of their rows (5.4, 5.6); the user report of the gradebook, a complex table, a caption and a summary of its structure (5.1).
 - A page without a title of level 1 (the forgotten password) gets one, for the screen readers (9.1).
 - Login page: the text beside the form, on the brand colour, lost its transparency, which took it under 4.5:1 with some brand colours (4.1:1).
+- Moodle 5.3: the frame of the editor TinyMCE 7, without a title, gets the label of its field (2.1); the name of each bank of questions, a link only coloured, is underlined (10.6).
+- The texts of the repairs no longer pass the size past which Moodle, in developer mode, writes a message before the page (which then lost its doctype and its editor).
 - The reports for the tracker of Moodle quote the VPAT where these defects contradict it.
 - No new setting.
 - Tests: PHPUnit (the grids: every criterion, every string in both languages, the counts). Checked in the browser on Moodle 4.5: each repair, the grid in the three referentials on a computer and a phone, its download; axe without error on the 16 pages touched, in light, dark, yellow on black, cream and enhanced contrast (light and dark).

@@ -36,7 +36,7 @@ class accessibility_grid {
     public const STATES = ['c', 'nc', 'v', 'na'];
 
     /** @var string Version of Épure, of Moodle and pages of the reference pre-audit. */
-    public const PREAUDIT = ['epure' => '1.52.0', 'moodle' => '4.5.15', 'pages' => 44, 'date' => '2026-11-23'];
+    public const PREAUDIT = ['epure' => '1.52.0', 'moodle' => '4.5.15 / 5.3.1', 'pages' => '44 / 49', 'date' => '2026-11-23'];
 
     /**
      * @var array<string, array{0: string, 1: string, 2: string}> The criteria of the RGAA 4.1.2: who answers each, its
