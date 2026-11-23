@@ -187,6 +187,13 @@ function xmldb_theme_epure_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026120105, 'theme', 'epure');
     }
 
+    // The text of the footer, of the site and of the IOMAD companies, written in the editor from 1.51.0: from Markdown
+    // to HTML.
+    if ($oldversion < 2026120200) {
+        \theme_epure\footer::markdown_to_html();
+        upgrade_plugin_savepoint(true, 2026120200, 'theme', 'epure');
+    }
+
     // The strings of Épure take the vocabulary too (« Search my courses »), but those describing it, and change with
     // its versions: after each upgrade, it is applied again in the languages it is used in.
     foreach (\theme_epure\vocabulary\manager::languages() as $lang) {

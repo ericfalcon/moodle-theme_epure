@@ -419,6 +419,12 @@ class hook_callbacks {
                 'setupfield' => company_setup::DONE_FIELD]
         ));
         $PAGE->requires->js_call_amd('theme_epure/company_vocabulary', 'init', [$guided]);
+        // The text of the footer of the company in the editor of Moodle, as the one of the site. Started after the
+        // fields are moved into the form of IOMAD: the editor loads its files first.
+        global $CFG;
+        require_once($CFG->libdir . '/editorlib.php');
+        editors_get_preferred_editor(FORMAT_HTML)->use_editor('id_epure_footertext', ['context' => $context,
+            'autosave' => false, 'maxfiles' => 0]);
     }
 
     /**

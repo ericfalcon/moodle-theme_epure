@@ -73,11 +73,34 @@ class footer {
 
         return [
             'site' => $site,
-            'text' => $text === '' ? '' : format_text($text, FORMAT_MARKDOWN, ['context' => $context]),
+            'text' => $text === '' ? '' : format_text($text, FORMAT_HTML, ['context' => $context]),
             'links' => $links,
             'haslinks' => !empty($links),
             'copyright' => get_string('footercopyright', 'theme_epure', (object) ['year' => date('Y'), 'site' => $site]),
         ];
+    }
+
+    /**
+     * The texts of the footer of the site and of the IOMAD companies, written in Markdown until 1.51.0, in HTML: they are
+     * now written in the editor of Moodle.
+     */
+    public static function markdown_to_html(): void {
+        $convert = fn(string $text): string => trim($text) === '' ? $text : trim(markdown_to_html($text));
+        $site = (string) get_config('theme_epure', 'footertext');
+        if (trim($site) !== '') {
+            set_config('footertext', $convert($site), 'theme_epure');
+        }
+        foreach ((array) get_config('theme_epure') as $name => $json) {
+            if (!str_starts_with($name, 'companystyle_')) {
+                continue;
+            }
+            $values = json_decode((string) $json, true);
+            if (is_array($values) && trim((string) ($values['footertext'] ?? '')) !== '') {
+                $values['footertext'] = $convert((string) $values['footertext']);
+                set_config($name, json_encode($values), 'theme_epure');
+            }
+        }
+        company_style::reset();
     }
 
     /**

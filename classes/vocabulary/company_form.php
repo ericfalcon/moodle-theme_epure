@@ -232,6 +232,7 @@ class company_form {
                 'label' => get_string($name === 'footerlinks' ? 'footerlinksetting' : $name, 'theme_epure'),
                 'value' => self::posted($name, $settings[$name]),
                 'multiline' => in_array($name, ['footertext', 'footerlinks'], true),
+                'editor' => $name === 'footertext',
                 // The value of the site, used while the company has none.
                 'placeholder' => trim((string) get_config('theme_epure', $name)),
             ], \theme_epure\company_style::FOOTER_FIELDS),
@@ -258,7 +259,8 @@ class company_form {
      * @return string
      */
     protected static function posted(string $name, string $default): string {
-        return trim(optional_param(self::PREFIX . $name, $default, PARAM_TEXT));
+        // The text of the footer is written in the editor: in HTML, cleaned when shown.
+        return trim(optional_param(self::PREFIX . $name, $default, $name === 'footertext' ? PARAM_RAW : PARAM_TEXT));
     }
 
     /** @var array Options of the file area of the logo for the brand-coloured header. */

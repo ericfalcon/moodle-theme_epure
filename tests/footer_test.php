@@ -40,7 +40,7 @@ final class footer_test extends \advanced_testcase {
         set_config('supportavailability', CONTACT_SUPPORT_ANYONE);
         set_config('footerlegalurl', 'https://example.org/legal', 'theme_epure');
         set_config('footerlinks', "Terms|https://example.org/terms\nBroken line\n|https://example.org/nolabel", 'theme_epure');
-        set_config('footertext', '1 rue des **Tilleuls**', 'theme_epure');
+        set_config('footertext', '<p>1 rue des <strong>Tilleuls</strong></p>', 'theme_epure');
 
         $footer = footer::export();
         $this->assertStringContainsString('<strong>Tilleuls</strong>', $footer['text']);
@@ -79,17 +79,35 @@ final class footer_test extends \advanced_testcase {
     }
 
     /**
-     * The text of the footer is written as Markdown by an administrator, or by the manager of an IOMAD company: its
-     * HTML is cleaned by Moodle (format_text cleans the Markdown with HTML Purifier), so no script reaches the page.
+     * The text of the footer is written in the editor by an administrator, or by the manager of an IOMAD company: its
+     * HTML is cleaned by Moodle (format_text cleans it with HTML Purifier), so no script reaches the page; its columns
+     * (a row of Bootstrap) stay.
      */
     public function test_text_cleaned(): void {
         $this->resetAfterTest();
-        set_config('footertext', "**Campus**\n\n<script>alert(1)</script><img src=\"x\" onerror=\"alert(2)\">"
-            . '<a href="javascript:alert(3)">link</a>', 'theme_epure');
+        set_config('footertext', '<div class="row"><div class="col-md-6"><strong>Campus</strong></div></div>'
+            . '<script>alert(1)</script><img src="x" onerror="alert(2)"><a href="javascript:alert(3)">link</a>', 'theme_epure');
         $text = footer::export()['text'];
-        $this->assertStringContainsString('<strong>Campus</strong>', $text);
+        $this->assertStringContainsString('<div class="row"><div class="col-md-6"><strong>Campus</strong></div></div>', $text);
         $this->assertStringNotContainsString('<script', $text);
         $this->assertStringNotContainsString('onerror', $text);
         $this->assertStringNotContainsString('javascript:', $text);
+    }
+
+    /**
+     * The texts of the footer written in Markdown before 1.51.0, of the site and of the companies, become HTML once, at the
+     * upgrade; the empty ones stay empty.
+     */
+    public function test_markdown_to_html(): void {
+        $this->resetAfterTest();
+        set_config('footertext', "1 rue des **Tilleuls**\n\n[Contact](https://example.org)", 'theme_epure');
+        company_style::save_settings(7, ['footertext' => 'Campus *de Lyon*']);
+        company_style::save_settings(8, ['brandcolor' => '#9B2335']);
+        footer::markdown_to_html();
+        $expected = '<p>1 rue des <strong>Tilleuls</strong></p>' . "\n\n" . '<p><a href="https://example.org">Contact</a></p>';
+        $this->assertSame($expected, get_config('theme_epure', 'footertext'));
+        $this->assertSame('<p>Campus <em>de Lyon</em></p>', company_style::settings(7)['footertext']);
+        $this->assertSame('', company_style::settings(8)['footertext']);
+        $this->assertSame('#9B2335', company_style::settings(8)['brandcolor']);
     }
 }

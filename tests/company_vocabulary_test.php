@@ -19,7 +19,6 @@ namespace theme_epure;
 use theme_epure\vocabulary\company;
 use theme_epure\vocabulary\terms;
 
-
 #[\PHPUnit\Framework\Attributes\CoversClass(vocabulary\company::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(string_manager::class)]
 #[\PHPUnit\Framework\Attributes\CoversClass(hook_callbacks::class)]

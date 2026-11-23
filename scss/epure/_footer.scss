@@ -37,8 +37,19 @@
     font-weight: 600;
 }
 
+// The text of the administrator takes the width left by the links: room for its columns (a row of Bootstrap, a table).
+.epure-footer-about {
+    flex: 1 1 20rem;
+    min-width: 0;
+}
+
 .epure-footer-text p {
     margin: 0;
+}
+
+.epure-footer-text img {
+    max-width: 100%;
+    height: auto;
 }
 
 .epure-footer-nav ul {

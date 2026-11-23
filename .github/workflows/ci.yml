@@ -146,7 +146,11 @@ jobs:
         run: moodle-plugin-ci add-plugin --branch ${{ matrix.include-moodle.certificate }} ericfalcon/moodle-mod_coursecertificate
 
       - name: Install Moodle and the plugin
-        run: moodle-plugin-ci install --plugin ./repo --db-host=127.0.0.1
+        # Without the history of git: moodle-plugin-ci 4.5.12 copies the plugin back after grunt, and cannot write
+        # over the read-only packs of git.
+        run: |
+          rm -rf ./repo/.git
+          moodle-plugin-ci install --plugin ./repo --db-host=127.0.0.1
         env:
           DB: ${{ matrix.include-moodle.db || 'pgsql' }}
           MOODLE_BRANCH: ${{ matrix.include-moodle.branch }}

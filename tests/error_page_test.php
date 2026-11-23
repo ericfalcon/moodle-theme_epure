@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace theme_epure;
+
 #[\PHPUnit\Framework\Attributes\CoversClass(error_page::class)]
 /**
  * Tests for the error pages.

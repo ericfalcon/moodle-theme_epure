@@ -126,6 +126,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.51.0**: no new setting; upgrade the site. The text of the footer, of the site and of the IOMAD companies, is written in the editor of Moodle (columns, links, images); the texts written in Markdown become HTML at the upgrade.
 - **1.50.2**: a new display preference of the panel « Aa », off by default (and its setting of the display by default of the site): a stronger keyboard focus. Charts named, focus back after a window, lists written by hand, long addresses as links and texts in capitals found by the checker and the guide; lists made and tables marked as layout in one click.
 - **1.50.1**: no new setting; upgrade the site. Smaller defects of Moodle repaired in the page: session kept open while writing, quiz timer told, missing page titles, new windows, personal data fields, link titles, sorted columns, quiz navigation, H5P frames, repeated actions in tables.
 - **1.50.0**: no new setting; upgrade the site. More defects of Moodle repaired in the page: hidden labels given as titles, the lists that update the page say it, links made buttons, status messages told.
@@ -353,7 +354,7 @@ The Épure settings:
 | Navigation | As the site, or another choice for the breadcrumb, the quick search, the activity pages, the blocks and the dashboard on phones. |
 | Pages | As the site, or another choice for the course catalogue, the progress of the sections and My courses by role. |
 | Login page | Layout, headline and supporting text of its login page (its own address or its link `login/index.php?id=…&code=…`), which also takes its colours, its logo and its name. Empty fields: the site's. |
-| Footer | Text, legal notice, privacy, contact, other links; an empty field uses the site's value, shown greyed out. |
+| Footer | Text (in the editor of Moodle), legal notice, privacy, contact, other links; an empty field uses the site's value, shown greyed out. |
 | Logo for the brand-coloured header | Optional: a version of the logo that is legible on the company's brand colour, often white on a transparent background. |
 | Font | As the site, one of the 8 bundled fonts, the font uploaded for the site, or a font uploaded for the company (name, normal and bold files in woff2 or woff; check that its licence allows its use on a website). Without a normal file, the font of the site is kept. |
 
@@ -398,7 +399,7 @@ Initial SCSS (to override variables) and SCSS added at the end of the stylesheet
 
 ## Footer
 
-At the bottom of every page, including the login page: the site name, free text (for example the organisation's address), then the **Legal notice**, **Privacy**, **Accessibility: …** (once the statement is published) and **Contact** links, and custom links. It is set in the **Footer** tab of the theme settings; with IOMAD, each company can have its own text and links (company profile › Appearance). When left empty, the "Privacy" and "Contact" links use Moodle's own when it has them (site policies, contact site support form).
+At the bottom of every page, including the login page: the site name, free text written in the editor of Moodle (the organisation's address, in columns if you wish: a table, or a row of Bootstrap in the source code), then the **Legal notice**, **Privacy**, **Accessibility: …** (once the statement is published) and **Contact** links, and custom links. It is set in the **Footer** tab of the theme settings; with IOMAD, each company can have its own text and links (company profile › Appearance). When left empty, the "Privacy" and "Contact" links use Moodle's own when it has them (site policies, contact site support form).
 
 ## Key figures
 
