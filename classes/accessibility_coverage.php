@@ -141,14 +141,24 @@ class accessibility_coverage {
     }
 
     /**
+     * The referential shown: the one asked for, else the one of the country of the site.
+     *
+     * @param string|null $model Referential asked for.
+     * @return string fr, eu or world.
+     */
+    public static function model(?string $model): string {
+        return in_array($model, self::MODELS, true) ? $model : accessibility_statement::model();
+    }
+
+    /**
      * Context of the template theme_epure/coverage.
      *
      * @param string|null $model Referential to show, the one of the country of the site if none.
      * @return array
      */
     public static function export(?string $model = null): array {
+        $model = self::model($model);
         $sitemodel = accessibility_statement::model();
-        $model = in_array($model, self::MODELS, true) ? $model : $sitemodel;
         $levels = [];
         foreach (self::LEVELS as $level) {
             $items = [];
@@ -185,6 +195,7 @@ class accessibility_coverage {
             'models' => $models,
             'levels' => $levels,
             'statementurl' => accessibility_statement::url()->out(false),
-        ];
+            'isrgaa' => $model === 'fr',
+        ] + accessibility_grid::export($model);
     }
 }

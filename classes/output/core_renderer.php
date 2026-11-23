@@ -381,12 +381,33 @@ class core_renderer extends \theme_boost\output\core_renderer {
             'newwindow' => get_string('repairnewwindow', 'theme_epure'),
             'h5p' => get_string('repairh5p', 'theme_epure'),
             'chart' => get_string('repairchart', 'theme_epure', 'TITLE'),
+            'editorpath' => get_string('repaireditorpath', 'theme_epure'),
+            'editorframe' => get_string('repaireditorframe', 'theme_epure'),
+            'gradesummary' => get_string('repairgradesummary', 'theme_epure', 'COLUMNS'),
         ];
+        // The abbreviations of the interface, explained (WCAG 3.1.4).
+        $texts['abbreviations'] = [];
+        foreach (['h5p', 'scorm', 'aicc', 'lti', 'ai'] as $abbreviation) {
+            $texts['abbreviations'][get_string('repairabbr_' . $abbreviation . '_word', 'theme_epure')] =
+                get_string('repairabbr_' . $abbreviation, 'theme_epure');
+        }
         // The session kept open while the user writes (RGAA 13.1): Moodle does it on the quizzes, not on these pages.
+        // Elsewhere, the forms say how long it lasts without activity (WCAG 2.2.6).
+        global $CFG;
+        $texts['session'] = '';
         if (in_array($this->page->pagetype, self::WRITING_PAGES, true)) {
             \core\session\manager::keepalive();
+        } else if (
+            isloggedin() && !isguestuser() && !empty($CFG->sessiontimeout)
+                && !str_starts_with($this->page->pagetype, 'mod-quiz-')
+        ) {
+            $texts['session'] = get_string('repairsession', 'theme_epure', format_time((int) $CFG->sessiontimeout));
         }
-        $this->page->requires->js_call_amd('theme_epure/aria_repair', 'init', [$names, $menus, $texts]);
+        // Started inline, not with js_call_amd: the texts of the repairs are longer than the 1024 characters past which
+        // js_call_amd writes a debugging message, before the page, in developer mode (the page then loses its doctype).
+        $json = fn($value) => json_encode($value, JSON_HEX_TAG | JSON_UNESCAPED_UNICODE);
+        $arguments = implode(', ', array_map($json, [$names, $menus, $texts]));
+        $this->page->requires->js_amd_inline("require(['theme_epure/aria_repair'], (repair) => repair.init({$arguments}));");
     }
 
     /**

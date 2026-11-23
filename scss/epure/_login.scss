@@ -77,10 +77,11 @@
     letter-spacing: -.02em;
 }
 
+// The text in the full colour of the visual: its colour is computed for 4.5:1 against the brand colour, any
+// transparency would lower it (4.1:1 with a brand colour at the limit; WCAG 1.4.3).
 .epure-login-text {
     margin-bottom: 0;
     font-size: 1.0625rem;
-    opacity: .92;
 }
 
 // From tablets up: the visual takes the left half, the form loses its own logo (the visual shows it).

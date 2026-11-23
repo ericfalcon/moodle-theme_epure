@@ -1,4 +1,45 @@
-Pré-audit d'Épure 0.56.2 (31 octobre 2026), étendu aux widgets de Moodle en 1.17.0 (12 novembre 2026), aux couleurs jaune sur noir et crème et au texte à 200 % en 1.36.0, et complété par les défauts de Moodle relevés par un audit RGAA d'une plateforme Moodle en 1.43.0 (19 novembre 2026). Il s'agit d'un **contrôle automatisé et de vérifications au clavier**, pas d'un audit RGAA complet : il prépare l'audit manuel, qui reste nécessaire avant de déclarer la conformité. Il remplace le pré-audit de la 0.21.0 (5 octobre 2026), qui ne valait plus pour la version courante.
+Pré-audit RGAA de référence d'Épure 1.52.0 (23 novembre 2026), sur les 106 critères. Pré-audit continu d'Épure 0.56.2 (31 octobre 2026), étendu aux widgets de Moodle en 1.17.0 (12 novembre 2026), aux couleurs jaune sur noir et crème et au texte à 200 % en 1.36.0, et complété par les défauts de Moodle relevés par un audit RGAA d'une plateforme Moodle en 1.43.0 (19 novembre 2026). Il s'agit d'un **contrôle automatisé et de vérifications au clavier**, pas d'un audit RGAA complet : il prépare l'audit manuel, qui reste nécessaire avant de déclarer la conformité. Il remplace le pré-audit de la 0.21.0 (5 octobre 2026), qui ne valait plus pour la version courante.
+
+## Pré-audit RGAA de référence (1.52.0)
+
+Le 23 novembre 2026, critère par critère sur les **106 critères du RGAA 4.1.2**, sur un Moodle 4.5.15 et un Moodle 5.3.1 avec Épure 1.52.0 et un cours rédigé avec soin. C'est une **estimation**, jamais l'audit qui fonde une déclaration d'accessibilité : celui-ci se fait sur le site réel, avec ses contenus et ses plugins, par un auditeur.
+
+**Échantillon (44 pages en 4.5, 49 en 5.3)**, celui que le RGAA impose, plus les pages représentatives d'une plateforme de formation :
+
+- visiteur : connexion, accueil, déclaration d'accessibilité, contact, mot de passe oublié, fiche « Quel profil choisir ? », pense-bête « Rendre mes cours accessibles » ;
+- apprenant : tableau de bord, mes cours, catalogue, cours, page, forum, test, devoir et sa remise, leçon, base de données, wiki, atelier, H5P, feedback, calendrier, notes (vue d'ensemble et rapport du cours), profil, préférences, messagerie, contact, déclaration, résumé des données personnelles, Ma synthèse, badges, recherche ;
+- formateur : cours, participants, carnet de notes, évaluation d'un devoir, paramètres du cours et d'une activité, rapport d'un test, guide « Accessibilité du cours », banque de questions.
+
+**Méthode.** Sur chaque page : l'audit axe (WCAG 2.0 à 2.2, A et AA), et un script qui relève ce qu'axe ne voit pas et que le RGAA demande : identifiants en double (8.2), langue (8.3), titre (8.5), balises et attributs de présentation (8.9, 10.1), cadres et leur titre (2.1), images et SVG (1.1, 1.2), titres de niveau 1 (9.1), régions et navigations nommées (12.6), lien d'évitement (12.7), ordre de tabulation (12.8). Les autres critères sont jugés sur le code de Moodle et d'Épure, et sur les contrôles du pré-audit continu ci-dessous (sept affichages, clavier, 320 px, texte à 200 %).
+
+**Moodle 5.3.1.** Le même échantillon (34 pages de l'apprenant, 9 du formateur, 6 du visiteur, dont glossaire et livre en plus) a été contrôlé dans les six affichages, clair, sombre, jaune sur noir, crème et contraste renforcé en clair et en sombre : 264 contrôles, aucune erreur une fois corrigés trois défauts propres à 5.3 (ci-dessous).
+
+**Dans toutes les couleurs.** Les 16 pages touchées par la 1.52.0 (grilles des trois référentiels, forum, remise d'un devoir, notes et rapport de l'utilisateur, messagerie, résumé des données personnelles, profil, test, calendrier, déclaration, tableau de bord) ont été repassées à axe en sombre, jaune sur noir, crème et contraste renforcé (clair et sombre) : aucune erreur. En contraste renforcé, les liens et les textes indicatifs dépassent 7:1.
+
+**Résultat.** **80 conformes, 0 non conforme, 9 à vérifier, 17 non applicables** : 100 % des critères vérifiés, au moins 89 % si tous ceux à vérifier se révélaient non conformes. La page « Ce que couvre Épure » donne la grille entière, téléchargeable, avec qui répond à chaque critère et pourquoi.
+
+**À vérifier** (un script ne peut pas trancher) :
+
+- 4.8, 4.9, 4.12, 4.13 : contenus H5P, SCORM et IMS, dont l'accessibilité dépend de leur bibliothèque ou de leur outil auteur ;
+- 7.3, 11.6 : le sélecteur de fichiers de Moodle (YUI), son arbre de dossiers au clavier et les groupes de son formulaire d'envoi ;
+- 8.2 : la validité de tout le code, à passer au validateur sur les pages du site ;
+- 8.9 : les icônes de Moodle dessinées avec l'élément `i`, masqué aux lecteurs d'écran : certains auditeurs l'acceptent, d'autres non ;
+- 10.11 : la barre d'outils de l'éditeur TinyMCE à 320 px.
+
+**Non applicables** sur un cours sans média ni CAPTCHA : médias temporels (4.1 à 4.7), CAPTCHA (1.4, 1.5), descriptions détaillées et légendes (1.6, 1.7, 1.9), sens de lecture (8.10), citations (9.4), plan du site (12.3, 12.4 : les menus et la recherche sont les deux systèmes de navigation), mouvement de l'appareil (13.12). Un site qui en a les évalue.
+
+**Défauts trouvés pendant ce pré-audit et corrigés dans Épure 1.52.0** :
+
+- page de connexion : le texte d'accompagnement, sur la couleur de marque, avec une transparence qui le faisait passer sous 4,5:1 (4,1:1) ;
+- éditeur TinyMCE : ses icônes lues par les lecteurs d'écran (1.2), le chemin de l'élément, une navigation sans nom (12.6), l'attribut `frameborder` de son cadre (10.1) ;
+- notes : l'attribut `cellspacing` du tableau de la vue d'ensemble (10.1) ;
+- messagerie : douze identifiants répétés par le tiroir des messages caché (8.2) ;
+- résumé des données personnelles : le titre de chaque tableau dans une cellule d'en-tête au lieu d'un titre, les bases légales en cellules de données (5.4, 5.6) ;
+- rapport de l'utilisateur du carnet de notes, un tableau complexe sans titre ni résumé (5.1, 5.4) ;
+- mot de passe oublié : pas de titre de niveau 1 (9.1) ;
+- Moodle 5.3 : le cadre de l'éditeur TinyMCE 7 sans titre (2.1), il reçoit l'étiquette de son champ ;
+- Moodle 5.3 : le nom de chaque banque de questions, un lien seulement coloré à côté du nombre de questions (10.6), souligné ;
+- en mode développeur, les textes des réparations dépassaient la taille au-delà de laquelle Moodle écrit un message avant la page, qui perdait son type de document (l'éditeur ne démarrait plus) : le module est lancé autrement.
 
 ## Ce qui est contrôlé, et où
 

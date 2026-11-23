@@ -65,7 +65,12 @@
  * - the links and buttons of an icon only are named by the title of their icon (RGAA 6.2);
  * - the charts are images named by their title, their data in the table that follows (RGAA 1.1, 1.3);
  * - the keyboard focus comes back to the control that opened a window when the page drew it again meanwhile, instead
- *   of the top of the page (RGAA 12.8).
+ *   of the top of the page (RGAA 12.8);
+ * - the actions of each message of a forum say the message they act on (WCAG 2.4.9);
+ * - the abbreviations of the interface (H5P, SCORM, AICC, LTI, IA) are explained (WCAG 3.1.4);
+ * - a form says how long the session lasts without activity, where nothing keeps it open (WCAG 2.2.6);
+ * - the icons of the editor are ignored, its path is named, the attributes of presentation go, the identifiers
+ *   repeated by the drawer of the messages are unique (RGAA 1.2, 12.6, 10.1, 8.2).
  *
  * @module     theme_epure/aria_repair
  * @copyright  2026 Eric Falcon
@@ -626,6 +631,214 @@ const tableActions = () => document.querySelectorAll('table').forEach((table) =>
 });
 
 /**
+ * The actions of each message of a forum (« Edit », « Delete », « Reply »…), the same from one message to the next:
+ * each says the message it acts on, its subject and its author (WCAG 2.4.9).
+ */
+const postActions = () => document.querySelectorAll('[data-region="post-actions-container"]').forEach((actions) => {
+    const post = actions.closest('[data-region-content="forum-post-core"], article');
+    const subject = post?.querySelector('[data-region-content="forum-post-core-subject"]');
+    if (!subject) {
+        return;
+    }
+    // The subject and the author: the first link of the line under the subject, else the line.
+    const byline = subject.parentElement.querySelector('.mb-3');
+    const author = byline ? byline.querySelector('a') || byline : null;
+    const about = [visibleText(subject), author ? visibleText(author) : ''].filter(Boolean).join(', ').slice(0, 120);
+    actions.querySelectorAll('a[href], button').forEach((control) => {
+        if (control.dataset.epurePost || control.hasAttribute('aria-label') || control.hasAttribute('aria-labelledby')) {
+            return;
+        }
+        const name = visibleText(control);
+        control.dataset.epurePost = '1';
+        if (name && about) {
+            control.setAttribute('aria-label', `${name} : ${about}`);
+        }
+    });
+});
+
+/** @var {string} The parts of the interface whose abbreviations are explained: not the texts of the courses. */
+const INTERFACE = '.breadcrumb, .page-header-headings, .modchooser, .optionname, .activityname, .instancename, '
+    + '.nav-link, .dropdown-item, legend, label, th, .col-form-label, .activity-header, .page-context-header, '
+    + 'table td:first-child, .form-description';
+
+/** @var {string} The texts written by the teachers and the learners, left as they are written. */
+const CONTENTS = '[contenteditable="true"], .text_to_html, .tox, .activity-description, .summarytext, .course-description, '
+    + '.post-content-container, .box.contents, .book_content, .generalbox .no-overflow, #intro';
+
+/**
+ * The abbreviations of the interface of Moodle (H5P, SCORM, AICC, LTI, IA), explained the first time they appear in
+ * each part of the interface (WCAG 3.1.4): an element abbr with their full form as its title.
+ *
+ * @param {Object<string, string>} abbreviations Full forms, by abbreviation, in the language of the page.
+ */
+const abbreviations = (abbreviations) => {
+    const words = Object.keys(abbreviations || {});
+    if (!words.length) {
+        return;
+    }
+    const pattern = new RegExp(`(^|[^\\p{L}\\p{N}])(${words.join('|')})(?=$|[^\\p{L}\\p{N}])`, 'u');
+    document.querySelectorAll(INTERFACE).forEach((part) => {
+        if (part.dataset.epureAbbr || part.closest(CONTENTS)) {
+            return;
+        }
+        part.dataset.epureAbbr = '1';
+        const walker = document.createTreeWalker(part, NodeFilter.SHOW_TEXT);
+        const done = new Set();
+        const nodes = [];
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+            if (!node.parentElement.closest('abbr, script, style, .sr-only, .visually-hidden')) {
+                nodes.push(node);
+            }
+        }
+        nodes.forEach((node) => {
+            const match = node.nodeValue.match(pattern);
+            if (!match || done.has(match[2])) {
+                return;
+            }
+            done.add(match[2]);
+            const start = match.index + match[1].length;
+            const word = node.splitText(start);
+            word.splitText(match[2].length);
+            const abbr = document.createElement('abbr');
+            abbr.title = abbreviations[match[2]];
+            word.replaceWith(abbr);
+            abbr.append(word);
+        });
+    });
+};
+
+/**
+ * Before the buttons of a form, how long the session lasts without activity, when nothing keeps it open (WCAG 2.2.6):
+ * whoever takes their time knows when to save. Once on the page, under the first form that saves something.
+ *
+ * @param {string} text The note, empty where the session is kept open.
+ */
+const sessionNote = (text) => {
+    if (!text || document.querySelector('.epure-session-note')) {
+        return;
+    }
+    const buttons = document.querySelector('#region-main form.mform [id^="fgroup_id_buttonar"], #region-main form.mform '
+        + '.fitem_actionbuttons');
+    if (!buttons) {
+        return;
+    }
+    const note = document.createElement('p');
+    note.className = 'epure-session-note text-muted small';
+    note.textContent = text;
+    buttons.before(note);
+};
+
+/**
+ * What the RGAA asks of the code of the page, repaired where the interface of Moodle and of its editor writes it
+ * otherwise:
+ * - the icons of the editor TinyMCE (svg), drawn in buttons that have their name, are ignored by the screen readers
+ *   (RGAA 1.2); the path of the element written, a navigation, gets a name (RGAA 12.6); its frame, without a title
+ *   in TinyMCE 7, gets the label of its field (RGAA 2.1);
+ * - the attributes of presentation (frameborder of a frame, cellspacing, cellpadding and border of the tables of the
+ *   interface) go, the styles do the same (RGAA 10.1); the tables written by the teachers keep theirs;
+ * - on the page of the messages, the drawer of the messages, hidden, repeats the identifiers of the page (RGAA 8.2):
+ *   its own get a suffix, and the attributes of the drawer that name them follow;
+ * - the tables of the summary of the retention of the data get a caption and the headers of their rows (RGAA 5.4,
+ *   5.6); the user report of the gradebook gets a caption and a summary (RGAA 5.1, 5.4); a page without a title of
+ *   level 1 gets one, for the screen readers (RGAA 9.1).
+ *
+ * @param {Object<string, string>} texts The name of the path of the element of the editor (editorpath), of its frame
+ *     without a label (editorframe), the summary of the user report (gradesummary, its columns as COLUMNS).
+ */
+const codeRepairs = (texts) => {
+    document.querySelectorAll('.tox svg:not([aria-hidden])').forEach((svg) => svg.setAttribute('aria-hidden', 'true'));
+    document.querySelectorAll('.tox-statusbar__path[role="navigation"]:not([aria-label])')
+        .forEach((nav) => nav.setAttribute('aria-label', texts.editorpath));
+    document.querySelectorAll('iframe[frameborder]').forEach((frame) => frame.removeAttribute('frameborder'));
+    // The frame of the editor without a title (TinyMCE 7, Moodle 5.x, names it otherwise): the RGAA asks for its title
+    // (2.1), the label of the field it edits, else its other name.
+    document.querySelectorAll('iframe.tox-edit-area__iframe:not([title])').forEach((frame) => {
+        const field = frame.id.replace(/_ifr$/, '');
+        const label = field && document.querySelector(`label[for="${CSS.escape(field)}"]`);
+        const named = (frame.getAttribute('aria-labelledby') || '').split(/\s+/)
+            .map((id) => document.getElementById(id)?.textContent.trim() || '').filter(Boolean).join(' ');
+        const name = (label ? visibleText(label) : '') || named || texts.editorframe;
+        if (name) {
+            frame.title = name;
+        }
+    });
+    document.querySelectorAll('table[cellspacing], table[cellpadding], table[border]').forEach((table) => {
+        if (!table.closest(CONTENTS)) {
+            ['cellspacing', 'cellpadding', 'border'].forEach((name) => table.removeAttribute(name));
+        }
+    });
+    // The summary of the retention of the data: the title of each table in a header cell spanning the table, the names
+    // of the lawful bases in data cells (RGAA 5.4, 5.6): a caption, and the headers of their rows.
+    document.querySelectorAll('#page-admin-tool-dataprivacy-summary #region-main table:not([data-epure-table])')
+        .forEach((table) => {
+            table.dataset.epureTable = '1';
+            const head = table.tHead;
+            const cells = head?.rows.length === 1 ? head.rows[0].cells : [];
+            if (cells.length === 1 && cells[0].colSpan > 1 && !table.caption) {
+                table.createCaption().textContent = visibleText(cells[0]);
+                head.remove();
+            }
+            [...table.tBodies].forEach((body) => [...body.rows].forEach((row) => {
+                const first = row.cells[0];
+                if (first?.tagName === 'TD' && row.cells.length > 1) {
+                    const header = document.createElement('th');
+                    header.scope = 'row';
+                    header.append(...first.childNodes);
+                    first.replaceWith(header);
+                }
+            }));
+        });
+    // The user report of the gradebook, a complex table (categories over several rows, cells tied to their headers),
+    // without a title nor a summary (RGAA 5.1, 5.4): the title of the page as its caption, its structure as its summary.
+    document.querySelectorAll('table.user-grade:not([data-epure-table])').forEach((table) => {
+        table.dataset.epureTable = '1';
+        if (!table.caption) {
+            const caption = table.createCaption();
+            caption.className = 'sr-only visually-hidden';
+            // The title of the page without the name of the site: the report and its course.
+            const parts = document.title.split(' | ');
+            caption.textContent = (parts.length > 1 ? parts.slice(0, -1) : parts).join(', ');
+        }
+        const columns = [...table.querySelectorAll('thead th, tr:first-child th[scope="col"]')].map(visibleText)
+            .filter(Boolean);
+        if (texts.gradesummary && columns.length && !table.hasAttribute('aria-describedby')) {
+            const summary = document.createElement('p');
+            summary.id = `epure-grade-summary-${Math.random().toString(36).slice(2)}`;
+            summary.className = 'sr-only visually-hidden';
+            summary.textContent = texts.gradesummary.replace('COLUMNS', [...new Set(columns)].join(', '));
+            table.before(summary);
+            table.setAttribute('aria-describedby', summary.id);
+        }
+    });
+    // A page without a title of level 1 (the forgotten password): the title of the page, for the screen readers, at
+    // the start of its content (RGAA 9.1).
+    const main = document.querySelector('[role="main"], main, #region-main');
+    if (main && !document.querySelector('h1')) {
+        const title = document.createElement('h1');
+        title.className = 'sr-only visually-hidden';
+        title.textContent = document.title.split(' | ')[0];
+        main.prepend(title);
+    }
+    const drawer = document.querySelector('[data-region="message-drawer"]');
+    const page = document.querySelector('#region-main [data-region="message-drawer"], #region-main .message-app');
+    if (drawer && page && !drawer.dataset.epureIds && !drawer.closest('#region-main')) {
+        drawer.dataset.epureIds = '1';
+        const renamed = new Map();
+        drawer.querySelectorAll('[id]').forEach((element) => {
+            if (page.querySelector(`#${CSS.escape(element.id)}`)) {
+                renamed.set(element.id, `${element.id}-drawer`);
+                element.id = `${element.id}-drawer`;
+            }
+        });
+        const follow = (value) => value.split(/\s+/).map((id) => renamed.get(id) || id).join(' ');
+        drawer.querySelectorAll('[for], [aria-labelledby], [aria-describedby], [aria-controls], [aria-owns]')
+            .forEach((element) => ['for', 'aria-labelledby', 'aria-describedby', 'aria-controls', 'aria-owns']
+                .filter((name) => element.hasAttribute(name))
+                .forEach((name) => element.setAttribute(name, follow(element.getAttribute(name)))));
+    }
+};
+
+/**
  * Names the links and buttons of an icon only by the title of their icon (RGAA 6.2).
  */
 const iconControls = () => document.querySelectorAll('a[href], button, [role="button"]').forEach((control) => {
@@ -741,6 +954,10 @@ const later = (texts) => {
         tableActions();
         iconControls();
         charts(texts.chart);
+        postActions();
+        abbreviations(texts.abbreviations);
+        sessionNote(texts.session);
+        codeRepairs(texts);
     };
     run();
     new MutationObserver((mutations) => {
@@ -758,7 +975,9 @@ const later = (texts) => {
  * @param {Object<string, string>} texts The mark of the required fields (required), the names of the navigations
  *     (paging, choice, courseindex), the notes of the lists that update the page (updates, changes), the time left
  *     of a quiz (fiveminutes, oneminute), the note of the links to a new window (newwindow), the name of the frames
- *     of H5P without a heading (h5p), the name of a chart (chart).
+ *     of H5P without a heading (h5p), the name of a chart (chart), the full forms of the abbreviations of the interface
+ *     (abbreviations), how long the session lasts without activity (session, empty where it is kept open), the name of the
+ *     path of the element of the editor (editorpath).
  */
 export const init = (names = {}, menus = {site: '', page: ''}, texts = {}) => {
     statusRegion();

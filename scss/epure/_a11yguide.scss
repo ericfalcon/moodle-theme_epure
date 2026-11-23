@@ -609,7 +609,15 @@ html:has(.epure-a11yguide-save) {
 // The page « What Épure covers » (coverage.php): the referentials side by side, then each point in a card, with its
 // criteria below, quieter; a page break does not cut a card.
 .epure-coverage {
-    max-width: 52rem;
+    max-width: 76rem;
+
+    > p,
+    > section > p,
+    > section > ul,
+    > nav,
+    > section:not(.epure-coverage-grid) {
+        max-width: 52rem;
+    }
 }
 
 .epure-coverage-models {
@@ -646,6 +654,69 @@ html:has(.epure-a11yguide-save) {
     margin-bottom: 0;
     font-size: .875rem;
     color: var(--epure-ink-muted);
+}
+
+// The grid of the referential: every criterion in a row, the themes of the RGAA as headers of their group, the state
+// in words in a badge of its colour (the colour repeats the word).
+.epure-coverage-table {
+    font-size: .875rem;
+
+    // Criterion, title, who, state, remark: the two texts share the width.
+    @include media-breakpoint-up(md) {
+        table-layout: fixed;
+
+        thead th:nth-child(1) {
+            width: 7rem;
+        }
+
+        thead th:nth-child(3) {
+            width: 10rem;
+        }
+
+        thead th:nth-child(4) {
+            width: 9rem;
+        }
+    }
+
+    .epure-coverage-topic th {
+        padding-top: 1rem;
+        font-size: 1rem;
+        background-color: var(--epure-surface-muted);
+    }
+}
+
+.epure-coverage-wcag {
+    display: block;
+    font-weight: 400;
+    color: var(--epure-ink-muted);
+}
+
+.epure-coverage-state {
+    display: inline-block;
+    padding: .125rem .5rem;
+    font-weight: 600;
+    white-space: nowrap;
+    border-radius: var(--epure-radius-pill, 999px);
+}
+
+.epure-coverage-state-c {
+    color: var(--epure-state-done);
+    background-color: var(--epure-state-done-soft);
+}
+
+.epure-coverage-state-nc {
+    color: var(--epure-state-late);
+    background-color: var(--epure-state-late-soft);
+}
+
+.epure-coverage-state-v {
+    color: var(--epure-state-soon);
+    background-color: var(--epure-state-soon-soft);
+}
+
+.epure-coverage-state-na {
+    color: var(--epure-ink-muted);
+    background-color: var(--epure-surface-muted);
 }
 
 // The page « Épure and personal data » (dataprotection.php): as the page « What Épure covers », with the table of the

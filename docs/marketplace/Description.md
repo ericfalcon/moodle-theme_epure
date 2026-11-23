@@ -7,11 +7,11 @@ Choose a brand colour (or click one in your logo): Épure derives the whole pale
 ### Accessibility built in
 
 - Display preferences for every user, visitors included (« Aa »): text up to 200 %, dyslexia-friendly fonts, spacing, short lines, high contrast, reduced motion, reading ruler or mask, dark, yellow on black or cream, reading aloud with the local voices of the device. Profiles in one click: Dyslexia, Low vision, Concentration, No flashing.
-- Pages that reflow down to 320 px at 200 %, focus always visible, 24 px targets, keyboard shortcuts.
-- An accessibility statement filled in step by step (RGAA, EN 301 549 or WCAG), and a public page « What Épure covers », point by point of the referential.
+- Pages that reflow down to 320 px, focus always visible, 24 px targets, shortcuts.
+- An accessibility statement filled in step by step, and a public page « What Épure covers »: the whole grid of the referential (106 RGAA criteria, EN 301 549 or WCAG 2.2), who answers each criterion and its state in a reference pre-audit, to download.
 - A content checker as teachers write, and a guide « Accessibility of the course »: every activity and the 47 most installed activity plugins, Office and PDF documents, SCORM and IMS packages (Storyline, Rise, HTML); each mistake with its severity, a score out of 100 %, fixes made from the guide; two capabilities for who uses it and who confirms.
 - The accessibility of all the courses on a management dashboard, week by week, with alerts if the computation fails.
-- Defects of Moodle repaired where a theme can, several found by an RGAA audit.
+- Defects of Moodle repaired where a theme can.
 - Automated pre-audit (axe-core, WCAG 2.2 AA) of 76 pages in every display, on every change.
 
 ### For learners
@@ -37,6 +37,6 @@ Each company has its own colours, logo, font, vocabulary, accessibility statemen
 
 ### Compatibility
 
-Moodle 4.5 to 5.3, IOMAD 4.5 to 5.2, PHP 8.1 to 8.4, PostgreSQL and MariaDB, tested in continuous integration. Privacy API for every stored data; fonts and libraries bundled (tc-lib-pdf, smalot/pdfparser, LGPL).
+Moodle 4.5 to 5.3, IOMAD 4.5 to 5.2, PHP 8.1 to 8.4, PostgreSQL and MariaDB, tested in continuous integration. Privacy API; fonts and libraries bundled.
 
 An automated pre-audit does not replace a manual audit. Épure is independent, not affiliated with Moodle HQ or IOMAD. Documentation: <https://github.com/ericfalcon/moodle-theme_epure>

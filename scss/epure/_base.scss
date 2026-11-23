@@ -79,7 +79,9 @@ dd a:not(.btn),
 .epure-footer-text a:not(.btn),
 .epure-a11y-statement a:not(.btn),
 .text_to_html a:not(.btn),
-.noticebox a:not(.btn) {
+.noticebox a:not(.btn),
+// The banks of questions (Moodle 5.x): the name of each bank beside the count of its questions.
+#page-question-banks .flex-grow-1 > a:not(.btn) {
     text-decoration: underline;
     text-underline-offset: .15em;
 }
