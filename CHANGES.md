@@ -1,10 +1,16 @@
 # Changes
 
-## 1.51.1 — the update of a plugin readable in dark mode
+## 1.51.1 — dark mode: what was left light, found page by page
 
-- Dark mode: the box « A new version is available » of the plugins overview (and of the check of the plugins) kept the pale background of Moodle under the light text of the dark mode, unreadable. It takes the dark colours of the alerts of Épure: information, or warning and danger for a version not stable (WCAG 1.4.3).
+Found by a check of the contrast of 120 pages of Moodle in dark mode (administration, activities, reports, gradebook), the boxes and rows that Moodle paints in light colours written at build time, and that stayed light under the light text of the dark mode, are dark (WCAG 1.4.3):
+
+- the box « A new version is available » of the plugins overview and of the check of the plugins (information, or warning and danger for a version not stable);
+- the rows of a plugin missing or downgraded, of the upload of users (warning, error, done), the state of a badge, the files of a restore that failed, an error of a setting: the soft colours of the states of Épure;
+- the rows of the activity report of a course, the actions of the user tours, the tables of YUI (list of the events);
+- the links of the text of the footer (now in the editor, 1.51.0), underlined as the links of a text; the links of the pills (tree of the data registry); the buttons « outline dark » (reset of the columns of the question bank).
+- In both modes, the technical name under each event of the list of the events (#888, 3.5:1 on white) takes the muted text of the theme.
 - No new setting.
-- Checked in the browser on Moodle 4.5: the three boxes, text at more than 10:1, links at 5.4:1 at least.
+- Checked in the browser on Moodle 4.5: axe, no contrast left in dark mode on the 120 pages; the boxes that only appear with a state (an update, a plugin missing) checked one by one.
 
 ## 1.51.0 — the text of the footer in the editor
 

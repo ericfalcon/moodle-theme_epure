@@ -51,3 +51,9 @@
     background-color: var(--epure-brand-soft);
     border-color: var(--epure-brand-soft-2);
 }
+
+// List of the events: the technical name under each event, in a grey of Moodle too pale on the page (#888, 3.5:1 on
+// white): the muted text of the theme, which reads in both modes (WCAG 1.4.3).
+.report-eventlist-name {
+    color: var(--epure-ink-muted);
+}

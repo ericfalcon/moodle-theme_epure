@@ -189,6 +189,9 @@
     .drawer a:not(.btn):not(.nav-link):not(.dropdown-item):not(.list-group-item):not(.courseindex-link),
     .modal-body a:not(.btn):not(.nav-link):not(.dropdown-item):not(.list-group-item),
     .epure-a11y-mention a,
+    // The links of the text of the footer, outside the page; the links in pills (tree of the data registry).
+    .epure-footer-text a:not(.btn),
+    #page .nav-pills .nav-link:not(.active),
     .btn-link {
         color: var(--epure-brand-text);
     }
@@ -494,7 +497,8 @@
     // Buttons other than the brand ones.
     .btn-secondary,
     .btn-light,
-    .btn-outline-secondary {
+    .btn-outline-secondary,
+    .btn-outline-dark {
         color: var(--epure-ink);
         background-color: var(--epure-surface-raised);
         border-color: #707a8a;
@@ -503,7 +507,8 @@
     .btn-secondary:hover,
     .btn-secondary:focus,
     .btn-light:hover,
-    .btn-outline-secondary:hover {
+    .btn-outline-secondary:hover,
+    .btn-outline-dark:hover {
         color: var(--epure-ink);
         background-color: #2c333f;
         border-color: #5a6475;
@@ -616,6 +621,67 @@
     .alert a:not(.btn) {
         color: inherit !important; // stylelint-disable-line declaration-no-important
         text-decoration: underline;
+    }
+
+    // Other boxes and rows that Moodle paints in the pale colours of its states, written at build time: a plugin
+    // missing or downgraded, the rows of the upload of users, the state of a badge, the files of a restore that
+    // failed, an error of a setting. The soft colours of the states of Épure, their text in the colour of the page.
+    #plugins-control-panel .status-missing td,
+    #plugins-check .status-missing td,
+    #plugins-check .status-downgrade td,
+    .path-admin-tool-uploaduser .uuwarning,
+    .path-admin-tool-uploaduser .uuerror,
+    .path-admin-tool-uploaduser .uuinfo,
+    .statusbox.active,
+    .statusbox.inactive,
+    #page-backup-restore .filealiasesfailures,
+    #adminsettings span.error {
+        color: var(--epure-ink);
+    }
+
+    #plugins-control-panel .status-missing td,
+    .path-admin-tool-uploaduser .uuwarning,
+    .statusbox.inactive {
+        background-color: var(--epure-state-soon-soft);
+    }
+
+    #plugins-check .status-missing td,
+    #plugins-check .status-downgrade td,
+    .path-admin-tool-uploaduser .uuerror,
+    #page-backup-restore .filealiasesfailures,
+    #adminsettings span.error {
+        background-color: var(--epure-state-late-soft);
+    }
+
+    .path-admin-tool-uploaduser .uuinfo,
+    .statusbox.active {
+        background-color: var(--epure-state-done-soft);
+    }
+
+    // Rows and boxes that Moodle and its plugins paint white or light grey: the rows of the activity report of a
+    // course, the actions of the user tours, the tables of YUI (list of the events).
+    #page-report-outline-index .generaltable tbody tr {
+        background-color: transparent;
+    }
+
+    .tour-actions > ul > li {
+        background-color: var(--epure-surface-raised);
+        border-color: var(--epure-border);
+    }
+
+    .yui3-skin-sam .yui3-datatable-header {
+        color: var(--epure-ink);
+        background: var(--epure-surface-raised);
+    }
+
+    .yui3-skin-sam .yui3-datatable-even .yui3-datatable-cell {
+        color: var(--epure-ink);
+        background-color: var(--epure-surface);
+    }
+
+    .yui3-skin-sam .yui3-datatable-odd .yui3-datatable-cell {
+        color: var(--epure-ink);
+        background-color: var(--epure-surface-raised);
     }
 
     // The update of a plugin available (Plugins overview, Plugins check): Moodle paints it in the pale colours of
