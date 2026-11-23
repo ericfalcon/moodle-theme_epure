@@ -1,5 +1,15 @@
 # Changes
 
+## 1.51.0 — the text of the footer in the editor
+
+- The text of the footer is written in the editor of Moodle (TinyMCE), in the tab Footer and in the getting started, as any text of the site: bold, links, images, columns (a table, or a row of Bootstrap in the source code). It was a field in Markdown.
+- With IOMAD, the text of the footer of a company too (company profile › Appearance); empty, the text of the site.
+- At the upgrade, the texts already written in Markdown, of the site and of the companies, become HTML: nothing to write again.
+- The text of the footer takes the width the links leave, room for its columns; its images keep to it.
+- The HTML is cleaned by Moodle when shown (no script); the e-mails take it as text, as before.
+- No new setting.
+- Tests: PHPUnit (the columns kept and the HTML cleaned, the Markdown turned into HTML at the upgrade); the field of the editor in the settings is marked as an editor for Behat (template core_admin/setting_confightmleditor). Checked in the browser on Moodle 4.5: the editor in the settings and in the getting started, the footer in three columns on a computer and one under the other on a phone.
+
 ## 1.50.2 — charts, focus, lists, long addresses and capitals
 
 Repaired in the page, on every version of Moodle and IOMAD:

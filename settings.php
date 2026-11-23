@@ -578,7 +578,8 @@ if ($ADMIN->fulltree) {
         1
     ));
 
-    $page->add(new admin_setting_configtextarea(
+    // In the editor of Moodle: columns, links, images, as in any text of the site.
+    $page->add(new admin_setting_confightmleditor(
         'theme_epure/footertext',
         get_string('footertext', 'theme_epure'),
         get_string('footertext_desc', 'theme_epure'),

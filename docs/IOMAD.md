@@ -56,7 +56,7 @@ Les réglages propres à Épure :
 | Navigation | Comme le site, ou un autre choix pour le fil d'Ariane, la recherche rapide, les pages d'activité, les blocs et le tableau de bord sur téléphone. |
 | Pages | Comme le site, ou un autre choix pour le catalogue des cours, la progression des sections et « Mes cours » par rôle. |
 | Page de connexion | Disposition, accroche et texte d'accompagnement de sa page de connexion (son adresse propre ou son lien `login/index.php?id=…&code=…`), qui prend aussi ses couleurs, son logo et son nom. Champs vides : ceux du site. |
-| Pied de page | Texte, mentions légales, données personnelles, contact, autres liens ; un champ vide reprend la valeur du site, affichée en grisé. |
+| Pied de page | Texte (dans l'éditeur de Moodle), mentions légales, données personnelles, contact, autres liens ; un champ vide reprend la valeur du site, affichée en grisé. |
 | Logo pour l'en-tête en couleur | Facultatif : une version du logo lisible sur la couleur de marque de l'entreprise, souvent blanche sur fond transparent. |
 | Police | Comme le site, l'une des 8 polices fournies, la police téléversée du site, ou une police téléversée pour l'entreprise (nom, fichiers normal et gras en woff2 ou woff ; vérifiez que sa licence autorise l'usage sur un site web). Sans fichier normal, la police du site est gardée. |
 

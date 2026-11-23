@@ -123,7 +123,7 @@ Le formulaire lui-même reste celui de Moodle : il suit chaque version (4.5 à 5
 
 ## Pied de page
 
-En bas de chaque page, page de connexion comprise : le nom du site, un texte libre (par exemple l'adresse de l'établissement), puis les liens **Mentions légales**, **Données personnelles**, **Accessibilité : …** (une fois la déclaration publiée) et **Contact**, et des liens libres. Il se règle dans l'onglet **Pied de page** des réglages du thème ; avec IOMAD, chaque entreprise peut avoir ses propres texte et liens (fiche de l'entreprise › Apparence). Laissés vides, les liens « Données personnelles » et « Contact » reprennent ceux de Moodle quand il en a (politiques du site, formulaire du support).
+En bas de chaque page, page de connexion comprise : le nom du site, un texte libre écrit dans l'éditeur de Moodle (l'adresse de l'établissement, en colonnes si vous voulez : un tableau, ou une ligne de Bootstrap dans le code source), puis les liens **Mentions légales**, **Données personnelles**, **Accessibilité : …** (une fois la déclaration publiée) et **Contact**, et des liens libres. Il se règle dans l'onglet **Pied de page** des réglages du thème ; avec IOMAD, chaque entreprise peut avoir ses propres texte et liens (fiche de l'entreprise › Apparence). Laissés vides, les liens « Données personnelles » et « Contact » reprennent ceux de Moodle quand il en a (politiques du site, formulaire du support).
 
 ## Réglages avancés
 

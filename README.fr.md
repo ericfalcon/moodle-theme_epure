@@ -126,6 +126,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.51.0** : aucun nouveau réglage ; mettez le site à jour. Le texte du pied de page, du site et des entreprises IOMAD, s'écrit dans l'éditeur de Moodle (colonnes, liens, images) ; les textes écrits en Markdown deviennent du HTML à la mise à jour.
 - **1.50.2** : une nouvelle préférence d'affichage du panneau « Aa », désactivée par défaut (et son réglage de l'affichage par défaut du site) : le focus clavier renforcé. Graphiques nommés, focus rendu après une fenêtre, listes écrites à la main, longues adresses en guise de lien et textes en majuscules repérés par le vérificateur et le guide ; listes faites et tableaux marqués de mise en page en un clic.
 - **1.50.1** : aucun nouveau réglage ; mettez le site à jour. De plus petits défauts de Moodle réparés dans la page : session maintenue pendant la rédaction, minuteur des tests annoncé, titres de page manquants, nouvelles fenêtres, champs de données personnelles, titres des liens, colonnes triées, navigation des tests, cadres H5P, actions répétées des tableaux.
 - **1.50.0** : aucun nouveau réglage ; mettez le site à jour. D’autres défauts de Moodle réparés dans la page : libellés masqués donnés en titre, listes qui mettent la page à jour qui le disent, liens devenus boutons, messages d’état annoncés.
@@ -351,7 +352,7 @@ Les réglages propres à Épure :
 | Navigation | Comme le site, ou un autre choix pour le fil d'Ariane, la recherche rapide, les pages d'activité, les blocs et le tableau de bord sur téléphone. |
 | Pages | Comme le site, ou un autre choix pour le catalogue des cours, la progression des sections et « Mes cours » par rôle. |
 | Page de connexion | Disposition, accroche et texte d'accompagnement de sa page de connexion (son adresse propre ou son lien `login/index.php?id=…&code=…`), qui prend aussi ses couleurs, son logo et son nom. Champs vides : ceux du site. |
-| Pied de page | Texte, mentions légales, données personnelles, contact, autres liens ; un champ vide reprend la valeur du site, affichée en grisé. |
+| Pied de page | Texte (dans l'éditeur de Moodle), mentions légales, données personnelles, contact, autres liens ; un champ vide reprend la valeur du site, affichée en grisé. |
 | Logo pour l'en-tête en couleur | Facultatif : une version du logo lisible sur la couleur de marque de l'entreprise, souvent blanche sur fond transparent. |
 | Police | Comme le site, l'une des 8 polices fournies, la police téléversée du site, ou une police téléversée pour l'entreprise (nom, fichiers normal et gras en woff2 ou woff ; vérifiez que sa licence autorise l'usage sur un site web). Sans fichier normal, la police du site est gardée. |
 
@@ -396,7 +397,7 @@ SCSS initial (pour redéfinir des variables) et SCSS ajouté à la fin de la feu
 
 ## Pied de page
 
-En bas de chaque page, page de connexion comprise : le nom du site, un texte libre (par exemple l'adresse de l'établissement), puis les liens **Mentions légales**, **Données personnelles**, **Accessibilité : …** (une fois la déclaration publiée) et **Contact**, et des liens libres. Il se règle dans l'onglet **Pied de page** des réglages du thème ; avec IOMAD, chaque entreprise peut avoir ses propres texte et liens (fiche de l'entreprise › Apparence). Laissés vides, les liens « Données personnelles » et « Contact » reprennent ceux de Moodle quand il en a (politiques du site, formulaire du support).
+En bas de chaque page, page de connexion comprise : le nom du site, un texte libre écrit dans l'éditeur de Moodle (l'adresse de l'établissement, en colonnes si vous voulez : un tableau, ou une ligne de Bootstrap dans le code source), puis les liens **Mentions légales**, **Données personnelles**, **Accessibilité : …** (une fois la déclaration publiée) et **Contact**, et des liens libres. Il se règle dans l'onglet **Pied de page** des réglages du thème ; avec IOMAD, chaque entreprise peut avoir ses propres texte et liens (fiche de l'entreprise › Apparence). Laissés vides, les liens « Données personnelles » et « Contact » reprennent ceux de Moodle quand il en a (politiques du site, formulaire du support).
 
 ## Chiffres clés
 

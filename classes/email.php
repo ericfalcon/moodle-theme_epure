@@ -114,7 +114,7 @@ class email {
             'logo' => $logo ? $logo->out(false) : '',
             'siteurl' => $CFG->wwwroot . '/',
             'footertext' => $text === '' ? '' : html_to_text(
-                format_text($text, FORMAT_MARKDOWN, ['context' => $context, 'filter' => false]),
+                format_text($text, FORMAT_HTML, ['context' => $context, 'filter' => false]),
                 0,
                 false
             ),
