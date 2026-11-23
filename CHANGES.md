@@ -7,8 +7,9 @@
 - At the upgrade, the texts already written in Markdown, of the site and of the companies, become HTML: nothing to write again.
 - The text of the footer takes the width the links leave, room for its columns; its images keep to it.
 - The HTML is cleaned by Moodle when shown (no script); the e-mails take it as text, as before.
+- The editor of the footer saves nothing by itself (no autosave): the text is saved with its page.
 - No new setting.
-- Tests: PHPUnit (the columns kept and the HTML cleaned, the Markdown turned into HTML at the upgrade); the field of the editor in the settings is marked as an editor for Behat (template core_admin/setting_confightmleditor). Checked in the browser on Moodle 4.5: the editor in the settings and in the getting started, the footer in three columns on a computer and one under the other on a phone.
+- Tests: PHPUnit (the columns kept and the HTML cleaned, the Markdown turned into HTML at the upgrade). Checked in the browser on Moodle 4.5: the editor in the settings and in the getting started, the footer in three columns on a computer and one under the other on a phone.
 
 ## 1.50.2 — charts, focus, lists, long addresses and capitals
 
