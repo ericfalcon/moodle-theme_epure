@@ -19,7 +19,7 @@ Repaired in the page, found by the VPAT of Moodle LMS (October 2026) and by this
 - Login page: the text beside the form, on the brand colour, lost its transparency, which took it under 4.5:1 with some brand colours (4.1:1).
 - The reports for the tracker of Moodle quote the VPAT where these defects contradict it.
 - No new setting.
-- Tests: PHPUnit (the grids: every criterion, every string in both languages, the counts). Checked in the browser on Moodle 4.5: each repair, the grid in the three referentials on a computer and a phone, its download, axe without error.
+- Tests: PHPUnit (the grids: every criterion, every string in both languages, the counts). Checked in the browser on Moodle 4.5: each repair, the grid in the three referentials on a computer and a phone, its download; axe without error on the 16 pages touched, in light, dark, yellow on black, cream and enhanced contrast (light and dark).
 
 ## 1.51.1 — dark mode: what was left light, found page by page
 

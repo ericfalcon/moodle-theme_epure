@@ -12,6 +12,8 @@ Le 23 novembre 2026, critère par critère sur les **106 critères du RGAA 4.1.2
 
 **Méthode.** Sur chaque page : l'audit axe (WCAG 2.0 à 2.2, A et AA), et un script qui relève ce qu'axe ne voit pas et que le RGAA demande : identifiants en double (8.2), langue (8.3), titre (8.5), balises et attributs de présentation (8.9, 10.1), cadres et leur titre (2.1), images et SVG (1.1, 1.2), titres de niveau 1 (9.1), régions et navigations nommées (12.6), lien d'évitement (12.7), ordre de tabulation (12.8). Les autres critères sont jugés sur le code de Moodle et d'Épure, et sur les contrôles du pré-audit continu ci-dessous (sept affichages, clavier, 320 px, texte à 200 %).
 
+**Dans toutes les couleurs.** Les 16 pages touchées par la 1.52.0 (grilles des trois référentiels, forum, remise d'un devoir, notes et rapport de l'utilisateur, messagerie, résumé des données personnelles, profil, test, calendrier, déclaration, tableau de bord) ont été repassées à axe en sombre, jaune sur noir, crème et contraste renforcé (clair et sombre) : aucune erreur. En contraste renforcé, les liens et les textes indicatifs dépassent 7:1.
+
 **Résultat.** **80 conformes, 0 non conforme, 9 à vérifier, 17 non applicables** : 100 % des critères vérifiés, au moins 89 % si tous ceux à vérifier se révélaient non conformes. La page « Ce que couvre Épure » donne la grille entière, téléchargeable, avec qui répond à chaque critère et pourquoi.
 
 **À vérifier** (un script ne peut pas trancher) :
