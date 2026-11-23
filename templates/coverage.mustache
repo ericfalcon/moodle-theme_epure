@@ -28,7 +28,12 @@
         "levels": [{"level": "theme", "heading": "What the theme ensures on every page", "intro": "Nothing to do.",
             "items": [{"key": "skiplinks", "title": "Skip links", "text": "The first links go to the content.",
                 "references": "RGAA 4.1.2: 12.7 (WCAG 2.4.1)"}]}],
-        "statementurl": "#"
+        "statementurl": "#", "isrgaa": true,
+        "gridtitle": "All the criteria of the RGAA 4.1.2 (106)", "gridintro": "For each criterion: who answers it.",
+        "gridcounts": "80 conform", "downloadselector": "",
+        "groups": [{"topic": "Images", "rows": [{"number": "1.1", "title": "Chaque image porteuse d’information a-t-elle une alternative textuelle ?",
+            "wcag": "1.1.1", "owner": "The guide", "state": "c", "statelabel": "Conform", "note": "Checked."}]}],
+        "hasbeyond": false, "beyond": [], "hasstatementneeds": false, "statementneeds": []
     }
 }}
 <div class="epure-coverage">
@@ -61,5 +66,58 @@
             </ul>
         </section>
     {{/levels}}
+    <section class="epure-coverage-grid" aria-labelledby="epure-coverage-grid">
+        <h2 id="epure-coverage-grid">{{gridtitle}}</h2>
+        <p>{{gridintro}}</p>
+        <p><strong>{{gridcounts}}</strong></p>
+        {{{downloadselector}}}
+        <div class="table-responsive" tabindex="0" role="region" aria-labelledby="epure-coverage-grid">
+            <table class="generaltable epure-coverage-table">
+                <caption class="sr-only visually-hidden">{{gridtitle}}</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">{{#str}}coverage_grid_criterion, theme_epure{{/str}}</th>
+                        <th scope="col">{{#str}}coverage_grid_title, theme_epure{{/str}}</th>
+                        <th scope="col">{{#str}}coverage_grid_who, theme_epure{{/str}}</th>
+                        <th scope="col">{{#str}}coverage_grid_state, theme_epure{{/str}}</th>
+                        <th scope="col">{{#str}}coverage_grid_remark, theme_epure{{/str}}</th>
+                    </tr>
+                </thead>
+                {{#groups}}
+                    <tbody>
+                        {{#topic}}<tr class="epure-coverage-topic"><th scope="rowgroup" colspan="5">{{topic}}</th></tr>{{/topic}}
+                        {{#rows}}
+                            <tr>
+                                <th scope="row">{{number}}{{#wcag}}<span class="epure-coverage-wcag">WCAG {{wcag}}</span>{{/wcag}}</th>
+                                <td>{{title}}</td>
+                                <td>{{owner}}</td>
+                                <td><span class="epure-coverage-state epure-coverage-state-{{state}}">{{statelabel}}</span></td>
+                                <td>{{note}}</td>
+                            </tr>
+                        {{/rows}}
+                    </tbody>
+                {{/groups}}
+            </table>
+        </div>
+        {{#isrgaa}}<p class="epure-coverage-references">{{#str}}coverage_grid_rgaasource, theme_epure{{/str}}</p>{{/isrgaa}}
+    </section>
+    {{#hasbeyond}}
+        <section aria-labelledby="epure-coverage-beyond">
+            <h2 id="epure-coverage-beyond">{{#str}}coverage_grid_beyond, theme_epure{{/str}}</h2>
+            <p>{{#str}}coverage_grid_beyond_intro, theme_epure{{/str}}</p>
+            <ul class="epure-coverage-items">
+                {{#beyond}}<li><h3 class="h5">{{number}} {{title}}</h3><p class="mb-1">{{note}}</p></li>{{/beyond}}
+            </ul>
+        </section>
+    {{/hasbeyond}}
+    {{#hasstatementneeds}}
+        <section aria-labelledby="epure-coverage-statementneeds">
+            <h2 id="epure-coverage-statementneeds">{{#str}}coverage_grid_statement, theme_epure{{/str}}</h2>
+            <p>{{#str}}coverage_grid_statement_intro, theme_epure{{/str}}</p>
+            <ul class="epure-coverage-items">
+                {{#statementneeds}}<li><h3 class="h5">{{title}}</h3><p class="mb-1">{{text}}</p><p class="epure-coverage-references">{{who}}</p></li>{{/statementneeds}}
+            </ul>
+        </section>
+    {{/hasstatementneeds}}
     <p><a href="{{statementurl}}">{{#str}}coverage_statement_link, theme_epure{{/str}}</a></p>
 </div>

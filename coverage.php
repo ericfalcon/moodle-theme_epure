@@ -36,6 +36,32 @@ $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('coverage', 'theme_epure'));
 $PAGE->set_heading(get_string('coverage', 'theme_epure'));
 
+// The grid of the referential, criterion by criterion, as a file (CSV, Excel, ODS, PDF…).
+$dataformat = optional_param('download', '', PARAM_ALPHA);
+if ($dataformat !== '') {
+    $grid = \theme_epure\accessibility_coverage::model($model);
+    $columns = ['number' => get_string('coverage_grid_criterion', 'theme_epure'),
+        'title' => get_string('coverage_grid_title', 'theme_epure'), 'owner' => get_string('coverage_grid_who', 'theme_epure'),
+        'state' => get_string('coverage_grid_state', 'theme_epure'), 'note' => get_string('coverage_grid_remark', 'theme_epure')];
+    $rows = array_map(fn(array $row): array => [
+        'number' => $row['number'],
+        'title' => $row['title'],
+        'owner' => get_string('coverage_owner_' . $row['owner'], 'theme_epure'),
+        'state' => get_string('coverage_state_' . $row['state'], 'theme_epure'),
+        'note' => get_string('coverage_note_' . $row['note'], 'theme_epure'),
+    ], \theme_epure\accessibility_grid::rows($grid));
+    $filename = 'epure-' . ['fr' => 'rgaa', 'eu' => 'en301549', 'world' => 'wcag22'][$grid];
+    \core\dataformat::download_data($filename, $dataformat, $columns, new ArrayIterator($rows));
+    die();
+}
+
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template('theme_epure/coverage', \theme_epure\accessibility_coverage::export($model));
+$context = \theme_epure\accessibility_coverage::export($model);
+$context['downloadselector'] = $OUTPUT->download_dataformat_selector(
+    get_string('coverage_grid_download', 'theme_epure'),
+    $PAGE->url->out_omit_querystring(),
+    'download',
+    ['model' => \theme_epure\accessibility_coverage::model($model)]
+);
+echo $OUTPUT->render_from_template('theme_epure/coverage', $context);
 echo $OUTPUT->footer();

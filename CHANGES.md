@@ -1,5 +1,26 @@
 # Changes
 
+## 1.52.0 — the whole grid of the referential, and a reference pre-audit of the RGAA
+
+The page « What Épure covers » gives, under its points, the whole grid of the referential of the country of the site, criterion by criterion: the 106 criteria of the RGAA 4.1.2 by theme (official wording, from the DINUM), the clauses 9 of the EN 301 549 and what the European accessibility statement must give (directive 2016/2102), or the success criteria of the WCAG 2.2 A and AA and those of the level AAA that Épure meets too. For each: who answers it (Épure, the guide then the authors, the authors, Moodle), its state in the reference pre-audit and why. To download (CSV, Excel, ODS, PDF…).
+
+The reference pre-audit (Moodle 4.5.15, Épure 1.52.0, 44 pages of the sample of the RGAA, a course written with care): 80 criteria conform, 0 not conform, 9 to verify, 17 not applicable; an estimate, never the audit of a site. Its method and its results are in the wiki (« Pré-audit d'accessibilité »).
+
+Repaired in the page, found by the VPAT of Moodle LMS (October 2026) and by this pre-audit:
+
+- The actions of each message of a forum (« Edit », « Delete », « Reply ») say the message they act on, its subject and its author (WCAG 2.4.9).
+- The abbreviations of the interface (H5P, SCORM, AICC, LTI, AI) are explained (WCAG 3.1.4).
+- A form says how long the session lasts without activity, where nothing keeps it open (WCAG 2.2.6).
+- Enhanced contrast of « Aa »: the brand colour of the texts and links darkened to 7:1, the placeholders in the muted text (WCAG 1.4.6).
+- The icons of the editor TinyMCE are ignored by the screen readers (RGAA 1.2), the path of the element, a navigation, is named (12.6); the attributes of presentation of its frame and of the tables of the interface go (10.1).
+- On the page of the messages, the identifiers repeated by the hidden drawer of the messages are unique (8.2).
+- The tables of the summary of the retention of the data get a caption and the headers of their rows (5.4, 5.6); the user report of the gradebook, a complex table, a caption and a summary of its structure (5.1).
+- A page without a title of level 1 (the forgotten password) gets one, for the screen readers (9.1).
+- Login page: the text beside the form, on the brand colour, lost its transparency, which took it under 4.5:1 with some brand colours (4.1:1).
+- The reports for the tracker of Moodle quote the VPAT where these defects contradict it.
+- No new setting.
+- Tests: PHPUnit (the grids: every criterion, every string in both languages, the counts). Checked in the browser on Moodle 4.5: each repair, the grid in the three referentials on a computer and a phone, its download, axe without error.
+
 ## 1.51.1 — dark mode: what was left light, found page by page
 
 Found by a check of the contrast of 98 pages of Moodle in dark mode (administration, activities, reports, gradebook), the boxes and rows that Moodle paints in light colours written at build time, and that stayed light under the light text of the dark mode, are dark (WCAG 1.4.3):

@@ -68,6 +68,12 @@ html.epure-a11y-lines #region-main {
     }
 }
 
+// Enhanced contrast, 7:1 (WCAG 1.4.6): the brand colour of the texts and links, computed for 4.5:1, darkened by 40 %
+// (7:1 at least from 4.5:1), in the light colours only; the dark mode has its own.
+html.epure-a11y-contrast:not(.epure-dark) {
+    --epure-brand-text: color-mix(in srgb, var(--epure-light-brand-text) 60%, #000);
+}
+
 html.epure-a11y-contrast {
     --epure-border: #6b7280;
     --epure-surface-muted: var(--epure-surface);
@@ -97,6 +103,13 @@ html.epure-a11y-contrast {
 
     a:not(.btn) {
         color: var(--epure-brand-text);
+    }
+
+    // The placeholders of the fields, grey for the browser, in the muted text (WCAG 1.4.6).
+
+    ::placeholder {
+        color: var(--epure-ink-muted);
+        opacity: 1;
     }
 }
 
