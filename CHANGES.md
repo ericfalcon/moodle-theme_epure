@@ -2,7 +2,7 @@
 
 ## 1.51.1 — dark mode: what was left light, found page by page
 
-Found by a check of the contrast of 120 pages of Moodle in dark mode (administration, activities, reports, gradebook), the boxes and rows that Moodle paints in light colours written at build time, and that stayed light under the light text of the dark mode, are dark (WCAG 1.4.3):
+Found by a check of the contrast of 98 pages of Moodle in dark mode (administration, activities, reports, gradebook), the boxes and rows that Moodle paints in light colours written at build time, and that stayed light under the light text of the dark mode, are dark (WCAG 1.4.3):
 
 - the box « A new version is available » of the plugins overview and of the check of the plugins (information, or warning and danger for a version not stable);
 - the rows of a plugin missing or downgraded, of the upload of users (warning, error, done), the state of a badge, the files of a restore that failed, an error of a setting: the soft colours of the states of Épure;
@@ -10,7 +10,7 @@ Found by a check of the contrast of 120 pages of Moodle in dark mode (administra
 - the links of the text of the footer (now in the editor, 1.51.0), underlined as the links of a text; the links of the pills (tree of the data registry); the buttons « outline dark » (reset of the columns of the question bank).
 - In both modes, the technical name under each event of the list of the events (#888, 3.5:1 on white) takes the muted text of the theme.
 - No new setting.
-- Checked in the browser on Moodle 4.5: axe, no contrast left in dark mode on the 120 pages; the boxes that only appear with a state (an update, a plugin missing) checked one by one.
+- Checked in the browser on Moodle 4.5: axe, no contrast left in dark mode on the 98 pages; the boxes that only appear with a state (an update, a plugin missing) checked one by one.
 
 ## 1.51.0 — the text of the footer in the editor
 
