@@ -17,8 +17,9 @@
  * Accessibility of the contents written by the teachers: the editors are read for the common mistakes (images without a
  * text alternative, images used as links without one, links without text or whose text does not say where they go
  * even with the sentence around them, tables without headers, levels of titles skipped, a long text without any
- * title), without false alerts on what is right: decorative images (alt=""), tables of layout, headers on several
- * rows, short links clear in their sentence.
+ * title, lists written by hand, long addresses as the text of a link, texts written in capitals), without false
+ * alerts on what is right: decorative images (alt=""), tables of layout, headers on several rows, short links clear in
+ * their sentence.
  *
  * As it is written, a line under each editor tells what it finds, with a button that selects each element concerned
  * in the editor. When the form is saved, a window lists them, field by field, with « Fix », « Open the accessibility
@@ -44,7 +45,78 @@ const BLOCKS = 'p, li, td, th, dd, dt, figcaption, blockquote, caption, h1, h2, 
 const text = (element) => element.textContent.replace(/\s+/g, ' ').trim();
 
 /** @var {string[]} Mistakes, in their order in the window and in the line under the editor. */
-const KEYS = ['images', 'imagelinks', 'links', 'tables', 'contrast', 'headings', 'noheadings'];
+const KEYS = ['images', 'imagelinks', 'links', 'tables', 'contrast', 'headings', 'noheadings', 'fakelists', 'urllinks',
+    'capitals'];
+
+/** @var {number} Characters from which an address written as the text of its link is long to hear. */
+const URL_TEXT = 35;
+
+/** @var {RegExp} The mark of an item of a list written by hand, at the start of a line: a dash, a bullet, a number. */
+const LIST_MARK = /^[\s\u00A0]*(?:[-–—•·▪◦●■*+]|\d{1,2}[.)])[\s\u00A0]+\S/;
+
+/** @var {number} Words in capitals one after the other from which a text is written in capitals. */
+const CAPITAL_WORDS = 4;
+
+/**
+ * Whether a text holds words in capitals, four or more one after the other (words of one letter, numbers and signs
+ * between them do not count), as theme_epure\course_accessibility::shouts.
+ *
+ * @param {string} value Text.
+ * @returns {boolean}
+ */
+const shouts = (value) => {
+    let run = 0;
+    for (const word of value.split(/[\s\u00A0]+/)) {
+        const letters = word.replace(/\P{L}+/gu, '');
+        if (letters.length < 2) {
+            continue;
+        }
+        run = letters === letters.toUpperCase() && letters !== letters.toLowerCase() ? run + 1 : 0;
+        if (run >= CAPITAL_WORDS) {
+            return true;
+        }
+    }
+    return false;
+};
+
+/**
+ * The lists written by hand of a content (WCAG 1.3.1, RGAA 9.3), as theme_epure\course_accessibility::fake_lists: two
+ * lines or more that begin with a dash, a bullet or a number, as paragraphs or as the lines of one paragraph.
+ *
+ * @param {Element} root Content.
+ * @returns {Element[]} The first paragraph of each.
+ */
+const fakeLists = (root) => {
+    const found = [];
+    const marked = (line) => LIST_MARK.test(line);
+    root.querySelectorAll('p').forEach((paragraph) => {
+        if (paragraph.querySelector(':scope > br')) {
+            const lines = [''];
+            paragraph.childNodes.forEach((child) => {
+                if (child.nodeName === 'BR') {
+                    lines.push('');
+                } else {
+                    lines[lines.length - 1] += child.textContent;
+                }
+            });
+            let run = 0;
+            lines.forEach((line) => {
+                run = marked(line) ? run + 1 : 0;
+                if (run === 2) {
+                    found.push(paragraph);
+                }
+            });
+            return;
+        }
+        const before = paragraph.previousElementSibling;
+        const after = paragraph.nextElementSibling;
+        const start = !(before && before.tagName === 'P' && !before.querySelector(':scope > br') && marked(before.textContent));
+        if (start && marked(paragraph.textContent) && after && after.tagName === 'P' && marked(after.textContent)) {
+            found.push(paragraph);
+        }
+    });
+    return found;
+};
 
 /** @var {Object<string, number[]>} The named colours most written, as red, green and blue (as theme_epure\content_colours). */
 const NAMED = {
@@ -158,7 +230,8 @@ const LONG_TEXT = 400;
 /**
  * The mistakes in a content, each with the elements concerned: images without a text alternative, links made of
  * images without a text alternative, links without text or whose short text says nothing, tables without headers,
- * levels of titles skipped, a long text without any title.
+ * levels of titles skipped, a long text without any title, lists written by hand, long addresses as the text of their
+ * links, texts written in capitals.
  *
  * @param {Element} root Content.
  * @returns {Object<string, Element[]>} Elements by mistake.
@@ -198,6 +271,21 @@ export const problems = (root) => {
         const block = link.parentElement ? link.parentElement.closest(BLOCKS) : null;
         if (VAGUE_LINKS.includes(label) && (!block || text(block) === text(link))) {
             found.links.push(link);
+            return;
+        }
+        // A long address as the text of its link: right, but long to hear, sign by sign.
+        if (!link.getAttribute('aria-label')?.trim() && text(link).length > URL_TEXT
+                && /^(https?:\/\/|www\.)\S+$/i.test(text(link))) {
+            found.urllinks.push(link);
+        }
+    });
+    // A list written by hand (WCAG 1.3.1, RGAA 9.3); a text written in capitals, harder to read and spelt by some
+    // screen readers.
+    found.fakelists = fakeLists(root);
+    const blocks = BLOCKS + ', div';
+    root.querySelectorAll(blocks).forEach((block) => {
+        if (!block.querySelector(blocks) && shouts(block.textContent)) {
+            found.capitals.push(block);
         }
     });
     // A text whose colour does not stand out enough from its background (WCAG 1.4.3, RGAA 3.2).

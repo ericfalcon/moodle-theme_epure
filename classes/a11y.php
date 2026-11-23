@@ -42,16 +42,17 @@ class a11y {
     public const GUIDES = ['ruler', 'mask'];
 
     /** @var string[] Preferences that are on or off. */
-    public const SWITCHES = ['spacing', 'lines', 'contrast', 'underline', 'motion', 'stillimages', 'scrollbars'];
+    public const SWITCHES = ['spacing', 'lines', 'contrast', 'underline', 'motion', 'stillimages', 'scrollbars',
+        'focusring'];
 
     /** @var array[] Profiles: the choices set in one click, all the others back to their default (the colour scheme
      * kept). Dyslexia: a font drawn to be read easily, more spacing, shorter lines, a ruler under the line read. Low
-     * vision: text at 150 %, more contrast, underlined links, the scroll bars shown. Focus: shorter lines, nothing that
-     * moves, a mask around the lines read. Seizures: nothing that moves nor flashes. */
+     * vision: text at 150 %, more contrast, underlined links, the scroll bars shown, a stronger focus. Focus: shorter
+     * lines, nothing that moves, a mask around the lines read. Seizures: nothing that moves nor flashes. */
     public const PROFILES = [
         'dyslexia' => ['text' => 115, 'font' => 'lexend', 'guide' => 'ruler', 'switches' => ['spacing', 'lines']],
         'lowvision' => ['text' => 150, 'font' => 'atkinson', 'guide' => '',
-            'switches' => ['contrast', 'underline', 'scrollbars']],
+            'switches' => ['contrast', 'underline', 'scrollbars', 'focusring']],
         'focus' => ['text' => 100, 'font' => '', 'guide' => 'mask', 'switches' => ['lines', 'motion', 'stillimages']],
         'seizures' => ['text' => 100, 'font' => '', 'guide' => '', 'switches' => ['motion', 'stillimages']],
     ];
@@ -178,7 +179,7 @@ class a11y {
      * default » of the theme.
      *
      * @return array{text: int, font: string, spacing: bool, lines: bool, contrast: bool, underline: bool, motion: bool,
-     *     stillimages: bool, scrollbars: bool}
+     *     stillimages: bool, scrollbars: bool, focusring: bool}
      */
     public static function site_defaults(): array {
         $config = get_config('theme_epure');

@@ -30,7 +30,8 @@ import * as Guide from 'theme_epure/reading_guide';
 import * as ReadAloud from 'theme_epure/read_aloud';
 
 /** Preferences that are on or off. */
-const SWITCHES = ['spacing', 'lines', 'contrast', 'underline', 'motion', 'stillimages', 'scrollbars', 'speech'];
+const SWITCHES = ['spacing', 'lines', 'contrast', 'underline', 'motion', 'stillimages', 'scrollbars', 'focusring',
+    'speech'];
 
 /**
  * Current choices of the panel.

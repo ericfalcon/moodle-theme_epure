@@ -207,4 +207,52 @@ final class content_fix_test extends \advanced_testcase {
             $this->assertSame(0, $part['issues'][$kind] ?? 0, $kind);
         }
     }
+
+    /**
+     * A table marked as layout gets the role presentation; a link whose text is a long address gets a new text; the lists
+     * written by hand become lists, numbered for numbers, the other lines kept; once corrected, nothing is left.
+     */
+    public function test_apply_writing(): void {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $course = $this->getDataGenerator()->create_course();
+        $address = 'https://example.org/a/very/long/path/to/the/safety/rules.pdf';
+        $html = '<table><tr><td><img src="a.png" alt=""></td><td>Texte</td></tr></table>'
+            . '<p><a href="' . $address . '">' . $address . '</a></p>'
+            . '<p>Matériel :</p><p>- un crayon</p><p>– une <strong>gomme</strong></p>'
+            . '<p class="x">Étapes :<br>1. Lire<br>2) Écrire<br>Fin.</p>';
+        $page = $this->getDataGenerator()->create_module('page', ['course' => $course->id, 'content' => $html,
+            'contentformat' => FORMAT_HTML]);
+        $parts = course_accessibility::analyse($course);
+        $part = array_values(array_filter($parts, fn($part) => $part['type'] === 'cm' && $part['id'] == $page->cmid))[0];
+        $this->assertSame(2, $part['issues']['fakelists']);
+        $this->assertSame(1, $part['issues']['urllinks']);
+        $items = content_fix::items($part, $course);
+        $this->assertCount(1, $items['tables']);
+        $this->assertCount(1, $items['urllinks']);
+        $this->assertSame(2, $items['fakelists'][0]['count']);
+
+        $done = content_fix::apply($course, $parts, [
+            'tables' => [$items['tables'][0]['key'] => 'layout'],
+            'urllinks' => [$items['urllinks'][0]['key'] => 'Safety rules (PDF)'],
+            'fakelists' => [$items['fakelists'][0]['key'] => true],
+        ]);
+        $expected = array_merge(array_fill_keys(content_fix::KINDS, 0), ['tables' => 1, 'urllinks' => 1, 'fakelists' => 1]);
+        $this->assertSame($expected, $done);
+        $this->assertSame(
+            '<table role="presentation"><tr><td><img src="a.png" alt=""></td><td>Texte</td></tr></table>'
+            . '<p><a href="' . $address . '">Safety rules (PDF)</a></p>'
+            . '<p>Matériel :</p><ul><li>un crayon</li><li>une <strong>gomme</strong></li></ul>'
+            . '<p class="x">Étapes :</p><ol><li>Lire</li><li>Écrire</li></ol><p class="x">Fin.</p>',
+            $DB->get_field('page', 'content', ['id' => $page->id])
+        );
+        $parts = course_accessibility::analyse($course);
+        $part = array_values(array_filter($parts, fn($part) => $part['type'] === 'cm' && $part['id'] == $page->cmid))[0];
+        foreach (['tables', 'urllinks', 'fakelists'] as $kind) {
+            $this->assertSame(0, $part['issues'][$kind] ?? 0, $kind);
+        }
+        // A table left as it is: nothing changes.
+        $this->assertSame([], content_fix::items($part, $course)['tables']);
+    }
 }
