@@ -11,8 +11,8 @@ Choisissez une couleur de marque (ou cliquez-la dans votre logo) : Épure en dé
 - Une déclaration d'accessibilité remplie pas à pas, et une page publique « Ce que couvre Épure » : la grille entière du référentiel (106 critères du RGAA, EN 301 549 ou WCAG 2.2), qui répond à chaque critère et son état dans un pré-audit de référence, à télécharger.
 - Un vérificateur de contenu pendant la saisie, et un guide « Accessibilité du cours » : toutes les activités et les 47 plugins d'activité les plus installés, les documents bureautiques et PDF, les paquets SCORM et IMS (Storyline, Rise, HTML) ; chaque erreur avec sa gravité, un score sur 100 %, des corrections depuis le guide ; deux capacités pour qui l'utilise et qui confirme.
 - L'accessibilité de tous les cours sur un tableau de bord de gestion, semaine après semaine, avec des alertes si le calcul échoue.
-- Des défauts de Moodle réparés là où un thème le peut.
-- Un pré-audit automatisé (axe-core, WCAG 2.2 AA) de 76 pages dans tous les affichages, à chaque modification.
+- Des défauts de Moodle réparés là où un thème le peut (calendrier, formulaires, tableaux, éditeur, messages d'état…), dont plusieurs relevés par un audit RGAA et par le VPAT de Moodle LMS.
+- Un pré-audit automatisé (axe-core, WCAG 2.2 AA) de 76 pages dans tous les affichages, à chaque modification ; un pré-audit RGAA de référence sur Moodle 4.5 et 5.3 : 80 critères conformes, aucun non conforme, 9 à vérifier par un auditeur.
 
 ### Pour les apprenants
 
@@ -29,7 +29,7 @@ Choisissez une couleur de marque (ou cliquez-la dans votre logo) : Épure en dé
 - Un tableau de bord de gestion (aussi par entreprise IOMAD) : activité, cours les plus suivis, achèvement, accessibilité.
 - « Épure et les données personnelles » pour le délégué à la protection des données : ce que garde le thème, les responsabilités RGPD, un extrait pour le registre. Aucun traceur, aucun service extérieur.
 - Recherche rapide (Ctrl+K), réglages en onglets, accueil de l'administration plus clair, formulaires longs plus faciles à enregistrer.
-- E-mails aux couleurs de la marque et modèle d'attestation.
+- Un pied de page écrit dans l'éditeur, des e-mails aux couleurs de la marque et un modèle d'attestation.
 
 ### Avec IOMAD
 
