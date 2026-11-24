@@ -40,7 +40,7 @@
             "hasfixtables": true, "fixtables": [{"id": "epure-a11y-cm-4-tables-0", "key": "page-content-4-0-def", "label": "The first row of this table is its header: « Name | Date »"}],
             "hasfixlinks": true, "fixlinks": [{"id": "epure-a11y-cm-4-links-0", "key": "page-content-4-0-ghi", "label": "New text of the link to « example.org » (now « click here »)"}],
             "hasfixheadings": true, "fixheadings": [{"id": "epure-a11y-cm-4-headings-0", "key": "page-content-4-0-jkl", "label": "Put the titles of this text in order: levels 2, 4 become 2, 3"}],
-            "hasrename": true, "rename": {"id": "epure-a11y-cm-4-rename", "cmid": 4, "value": "Risks", "label": "New name of « Risks » (Week 1)"},
+            "hasrename": true, "rename": {"id": "epure-a11y-cm-4-rename", "field": "rename", "cmid": 4, "value": "Risks", "label": "New name of « Risks » (Week 1)", "help": "A name a learner understands."},
             "haschecks": true, "checks": [{"name": "4|captions:abc", "id": "epure-a11y-check-cm-4-0",
                 "label": "The video « youtube.com » has subtitles", "help": "Subtitles let the deaf follow.",
                 "checked": false}],
@@ -129,8 +129,8 @@
                             <div class="epure-a11yguide-rename d-print-none">
                                 {{#rename}}
                                     <label for="{{id}}">{{label}}</label>
-                                    <input type="text" class="form-control" id="{{id}}" name="rename[{{cmid}}]" value="{{value}}" maxlength="255" required aria-describedby="{{id}}-help">
-                                    <p class="epure-a11yguide-check-help" id="{{id}}-help">{{#str}}courseaccessibility_rename_help, theme_epure{{/str}}</p>
+                                    <input type="text" class="form-control" id="{{id}}" name="{{field}}[{{cmid}}]" value="{{value}}"{{#placeholder}} placeholder="{{.}}"{{/placeholder}} maxlength="255"{{#required}} required{{/required}} aria-describedby="{{id}}-help">
+                                    <p class="epure-a11yguide-check-help" id="{{id}}-help">{{help}}</p>
                                 {{/rename}}
                             </div>
                         {{/hasrename}}

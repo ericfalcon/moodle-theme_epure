@@ -244,7 +244,9 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
     }
 
     /**
-     * The images of an H5P content without a text alternative, but the decorative ones; its videos, to confirm.
+     * The images of an H5P content without a text alternative, but the decorative ones; its videos given with it without
+     * subtitles (a mistake), with subtitles (nothing), hosted elsewhere (to confirm); its sounds (a transcript to
+     * confirm); its texts read as those of the course; a type that some learners cannot use (to confirm).
      */
     public function test_read_h5p_content(): void {
         $part = ['type' => 'cm', 'id' => 1, 'section' => 0, 'issues' => [], 'checks' => []];
@@ -252,10 +254,67 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
             ['params' => ['file' => ['path' => 'a.png', 'mime' => 'image/png'], 'alt' => '']],
             ['params' => ['file' => ['path' => 'b.png', 'mime' => 'image/png'], 'alt' => 'Un casque']],
             ['params' => ['file' => ['path' => 'c.png', 'mime' => 'image/png'], 'decorative' => true]],
-            ['params' => ['files' => [['path' => 'v.mp4', 'mime' => 'video/mp4']]]],
-        ]]);
-        $this->assertSame(['h5pimages' => 1], $part['issues']);
-        $this->assertSame(['captions'], array_column($part['checks'], 'kind'));
+            ['params' => ['files' => [['path' => 'videos/v.mp4', 'mime' => 'video/mp4']]]],
+            ['params' => ['sources' => [['path' => 'videos/w.mp4', 'mime' => 'video/mp4']],
+                'textTracks' => ['videoTrack' => [['label' => 'Français', 'track' => ['path' => 'videos/w.vtt']]]]]],
+            ['params' => ['files' => [['path' => 'https://www.youtube.com/watch?v=abc', 'mime' => 'video/YouTube']]]],
+            ['params' => ['files' => [['path' => 'audios/s.mp3', 'mime' => 'audio/mpeg']]]],
+            ['params' => ['text' => '<p><a href="https://example.org">ici</a></p>']],
+        ]], 'H5P.ImageHotspotQuestion', 'Trouver le danger');
+        $this->assertSame(['h5pimages' => 1, 'h5pvideos' => 1, 'h5ptexts' => 1], $part['issues']);
+        $this->assertSame(['captions', 'transcript', 'h5p_hard'], array_column($part['checks'], 'kind'));
+        $this->assertSame('Trouver le danger', $part['checks'][2]['label']);
+
+        // A content of a type without difficulty, without mistakes: nothing.
+        $clean = ['type' => 'cm', 'id' => 2, 'section' => 0, 'issues' => [], 'checks' => []];
+        course_accessibility::read_h5p_content(
+            $clean,
+            ['text' => '<p>Le règlement est <a href="#">ici</a>.</p>'],
+            'H5P.Accordion',
+            'Règles'
+        );
+        $this->assertSame([], $clean['issues']);
+        $this->assertSame([], $clean['checks']);
+    }
+
+    /**
+     * A section without a name of its own, whose name says nothing, or that another shares: a mistake, to rename in the
+     * guide; not the first section, nor a section with a clear name of its own.
+     */
+    public function test_section_names(): void {
+        global $CFG, $DB, $PAGE;
+        require_once($CFG->dirroot . '/course/lib.php');
+        [$course] = $this->course();
+        $byindex = array_column($DB->get_records('course_sections', ['course' => $course->id], 'section'), null, 'section');
+        $DB->set_field('course_sections', 'name', 'Agir en cas d’urgence', ['id' => $byindex[1]->id]);
+        $DB->set_field('course_sections', 'name', 'Partie 2', ['id' => $byindex[2]->id]);
+        $DB->set_field('course_sections', 'name', 'Agir en cas d’urgence', ['id' => $byindex[3]->id]);
+        $DB->set_field('course_sections', 'name', null, ['id' => $byindex[4]->id]);
+        // Sections that hold something: an activity, or a presentation; the empty fifth section is not read.
+        foreach ([1, 2, 3] as $index) {
+            $this->getDataGenerator()->create_module('label', ['course' => $course->id, 'section' => $index]);
+        }
+        $DB->set_field('course_sections', 'summary', '<p>Les gestes qui sauvent.</p>', ['id' => $byindex[4]->id]);
+        $DB->set_field('course_sections', 'name', null, ['id' => $byindex[5]->id]);
+        rebuild_course_cache($course->id, true);
+        course_accessibility::forget((int) $course->id);
+        $issues = [];
+        foreach (course_accessibility::analyse($course) as $part) {
+            if ($part['type'] === 'section' && $part['section'] <= 5) {
+                $issues[$part['section']] = $part['issues']['sectionname'] ?? 0;
+            }
+        }
+        $this->assertSame([0 => 0, 1 => 1, 2 => 1, 3 => 1, 4 => 1, 5 => 0], $issues);
+
+        // Renamed in the guide: the mistakes go.
+        $this->assertSame(3, course_accessibility::rename_sections($course, [$byindex[1]->id => 'Les premiers gestes',
+            $byindex[2]->id => 'Partie 2', $byindex[3]->id => 'Alerter les secours', $byindex[4]->id => 'Mettre en sécurité']));
+        $this->assertSame(1, count(array_filter(
+            course_accessibility::analyse($course),
+            fn($part) => !empty($part['issues']['sectionname'])
+        )));
+        $export = course_accessibility::export($course, $PAGE->get_renderer('core'));
+        $this->assertStringContainsString('sectionrename', json_encode($export));
     }
 
     /**
@@ -271,6 +330,11 @@ final class course_accessibility_test extends \core_privacy\tests\provider_testc
         $generator = $this->getDataGenerator();
         $course = $generator->create_course(['summary' => '<p>Bienvenue. <span style="color: #b42318">En rouge</span>, '
             . 'les parties obligatoires.</p>', 'summaryformat' => FORMAT_HTML]);
+        // Sections with a clear name of their own: their names are read too (test_section_names).
+        foreach ($DB->get_records_select('course_sections', 'course = ? AND section > 0', [$course->id]) as $section) {
+            $DB->set_field('course_sections', 'name', 'Le thème ' . chr(64 + (int) $section->section), ['id' => $section->id]);
+        }
+        rebuild_course_cache($course->id, true);
         $teacher = $generator->create_and_enrol($course, 'editingteacher');
         $page = $generator->create_module('page', ['course' => $course->id, 'name' => 'Document 2',
             'content' => '<img src="a.png"><iframe src="https://www.youtube.com/embed/abc"></iframe>']);

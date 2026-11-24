@@ -46,7 +46,8 @@ class course_accessibility {
     public const ISSUES = ['images', 'imagelinks', 'links', 'tables', 'contrast', 'headings', 'noheadings', 'frames', 'videos',
         'pdf', 'pdfscanned', 'pdflang', 'docimages', 'docnoheadings', 'docheadings', 'doctables', 'doccontrast', 'slidetitles',
         'sheetnames', 'doctitle', 'h5pimages', 'emptyheadings', 'moving', 'tabindex', 'duplicateids', 'name', 'duplicate',
-        'noinstructions', 'scormimages', 'scormaudio', 'fakelists', 'urllinks', 'capitals'];
+        'noinstructions', 'scormimages', 'scormaudio', 'fakelists', 'urllinks', 'capitals', 'sectionname', 'h5pvideos',
+        'h5ptexts'];
 
     /** @var string[] Severity of each mistake: blocking (some learners cannot use the content at all), serious (they
      * use it with difficulty) or minor (it is less clear, for all). */
@@ -59,7 +60,8 @@ class course_accessibility {
         'doccontrast' => 'serious', 'slidetitles' => 'serious',
         'doctitle' => 'minor', 'sheetnames' => 'minor', 'duplicateids' => 'minor', 'name' => 'minor', 'duplicate' => 'minor',
         'noinstructions' => 'serious', 'scormimages' => 'blocking', 'scormaudio' => 'blocking', 'fakelists' => 'serious',
-        'urllinks' => 'minor', 'capitals' => 'minor',
+        'urllinks' => 'minor', 'capitals' => 'minor', 'sectionname' => 'minor', 'h5pvideos' => 'blocking',
+        'h5ptexts' => 'serious',
     ];
 
     /** @var int[] What each severity takes off the score of a part (out of 100), once whatever the number of mistakes
@@ -104,6 +106,11 @@ class course_accessibility {
     protected const VAGUE_NAME = '~^(activit[ée]|activity|document|doc|fichier|file|ressource|resource|lien|link|page|url'
         . '|dossier|folder|test|quiz|devoir|assignment|forum|sans titre|untitled|nouveau|nouvelle|new|vid[ée]o|cours'
         . '|course|module|support|pdf)\s*(n°\s*)?[0-9]*$~iu';
+
+    /** @var string Names of sections that say nothing: the name given by Moodle, a word and a number. */
+    protected const VAGUE_SECTION = '~^(nouvelle section|new section|section|sujet|topic|th[èe]me|theme|partie|part|module'
+        . '|chapitre|chapter|s[ée]quence|sequence|unit[ée]|unit|bloc|block|[ée]tape|step|le[çc]on|lesson|semaine|week)'
+        . '\s*(n°\s*)?[0-9]*$~iu';
 
     /** @var int Size above which a PDF file is not read: its structure is then to confirm. */
     protected const PDF_MAX_SIZE = 31457280;
@@ -308,6 +315,7 @@ class course_accessibility {
 
         self::read_texts($parts, $cms);
         self::read_names($parts, $cms);
+        self::read_section_names($parts, $course, $modinfo);
         self::read_files($parts, $cms, $coursecontext, $sectionparts);
         self::read_h5p($parts, $cms);
         self::read_scorm($parts, $cms);
@@ -815,6 +823,51 @@ class course_accessibility {
     }
 
     /**
+     * Reads the names of the sections, titles of the course page, of its index and of the progress (WCAG 2.4.6, RGAA
+     * 9.1): a section without a name of its own (« New section », « Topic 2 »), whose name says nothing (« Part 3 »),
+     * or that another section shares. Not the first section, nor an empty section, nor the sections of the weekly formats
+     * named by their dates, nor the subsections (activities, whose names are read with theirs).
+     *
+     * @param array $parts Parts.
+     * @param \stdClass $course Course.
+     * @param \course_modinfo $modinfo Activities and sections.
+     */
+    protected static function read_section_names(array &$parts, \stdClass $course, \course_modinfo $modinfo): void {
+        $dates = in_array($course->format, ['weeks'], true);
+        $names = [];
+        foreach ($modinfo->get_section_info_all() as $section) {
+            if ((int) $section->section === 0 || !empty($section->component) || !isset($parts['section_' . $section->id])) {
+                continue;
+            }
+            // An empty section, which holds neither an activity nor a presentation, says nothing to read.
+            if (empty($modinfo->sections[$section->section]) && trim(strip_tags((string) $section->summary)) === '') {
+                continue;
+            }
+            $raw = trim((string) $section->name);
+            if ($raw === '') {
+                if (!$dates) {
+                    self::add_issue($parts['section_' . $section->id], 'sectionname');
+                }
+                continue;
+            }
+            $name = trim(preg_replace('/[\s\p{P}]+/u', ' ', \core_text::strtolower(strip_tags($raw))));
+            if (preg_match(self::VAGUE_SECTION, $name)) {
+                self::add_issue($parts['section_' . $section->id], 'sectionname');
+            }
+            $names[$name][] = 'section_' . $section->id;
+        }
+        foreach ($names as $name => $keys) {
+            if ($name !== '' && count($keys) > 1) {
+                foreach ($keys as $key) {
+                    if (empty($parts[$key]['issues']['sectionname'])) {
+                        self::add_issue($parts[$key], 'sectionname');
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Reads the files that the teachers give in the course: PDF files without structure; documents of an office suite,
      * videos without a file of subtitles beside them, audios, to confirm.
      *
@@ -1011,38 +1064,86 @@ class course_accessibility {
     }
 
     /**
-     * Reads the H5P contents: the images without a text alternative, the videos whose subtitles are to confirm.
+     * Reads the H5P contents of the activities H5P of Moodle and of the plugin H5P (mod_hvp), as the SCORM packages:
+     * from their package when Moodle has not deployed it yet (shown once), else from what Moodle deployed.
      *
      * @param array $parts Parts.
      * @param \cm_info[] $cms Activities.
      */
     protected static function read_h5p(array &$parts, array $cms): void {
         global $DB;
-        $contexts = [];
+        $dbman = $DB->get_manager();
+        $fs = get_file_storage();
         foreach ($cms as $cm) {
-            if ($cm->modname === 'h5pactivity') {
-                $contexts[(int) $cm->context->id] = 'cm_' . $cm->id;
+            $key = 'cm_' . $cm->id;
+            if (!isset($parts[$key]) || !in_array($cm->modname, ['h5pactivity', 'hvp'], true)) {
+                continue;
             }
-        }
-        if (!$contexts || !$DB->get_manager()->table_exists('h5p')) {
-            return;
-        }
-        [$insql, $params] = $DB->get_in_or_equal(array_keys($contexts), SQL_PARAMS_NAMED);
-        // The content is read once shown (deployed) the first time.
-        $records = $DB->get_records_sql(
-            "SELECT h.id, f.contextid, h.jsoncontent
-               FROM {h5p} h
-               JOIN {files} f ON f.pathnamehash = h.pathnamehash
-              WHERE f.contextid $insql AND f.component = 'mod_h5pactivity' AND f.filearea = 'package'",
-            $params
-        );
-        foreach ($records as $record) {
-            $key = $contexts[(int) $record->contextid];
-            $content = json_decode((string) $record->jsoncontent, true);
+            $content = null;
+            $library = '';
+            try {
+                if ($cm->modname === 'h5pactivity') {
+                    $files = $fs->get_area_files($cm->context->id, 'mod_h5pactivity', 'package', 0, 'id', false);
+                    $file = reset($files);
+                    if (!$file) {
+                        continue;
+                    }
+                    $record = $dbman->table_exists('h5p') ? $DB->get_record_sql(
+                        "SELECT h.jsoncontent, l.machinename
+                           FROM {h5p} h
+                      LEFT JOIN {h5p_libraries} l ON l.id = h.mainlibraryid
+                          WHERE h.pathnamehash = ?",
+                        [$file->get_pathnamehash()],
+                        IGNORE_MULTIPLE
+                    ) : null;
+                    [$content, $library] = $record ? [json_decode((string) $record->jsoncontent, true),
+                        (string) $record->machinename] : self::h5p_package($file);
+                } else if ($dbman->table_exists('hvp')) {
+                    $record = $DB->get_record_sql(
+                        "SELECT h.json_content, l.machine_name
+                           FROM {hvp} h
+                      LEFT JOIN {hvp_libraries} l ON l.id = h.main_library_id
+                          WHERE h.id = ?",
+                        [$cm->instance]
+                    );
+                    if ($record) {
+                        [$content, $library] = [json_decode((string) $record->json_content, true), (string) $record->machine_name];
+                    }
+                }
+            } catch (\dml_exception $e) {
+                // A version of the plugin H5P whose tables differ: nothing read.
+                $content = null;
+            }
             if (is_array($content)) {
-                self::read_h5p_content($parts[$key], $content);
+                self::read_h5p_content($parts[$key], $content, $library, (string) $cm->name);
             }
         }
+    }
+
+    /**
+     * The parameters and the main type of an H5P package, read in its file (content/content.json, h5p.json).
+     *
+     * @param \stored_file $file Package.
+     * @return array Parameters (or null), machine name of the main library.
+     */
+    protected static function h5p_package(\stored_file $file): array {
+        if ($file->get_filesize() > self::PDF_MAX_SIZE || !class_exists('ZipArchive')) {
+            return [null, ''];
+        }
+        $path = $file->copy_content_to_temp('theme_epure', 'h5p_');
+        $content = null;
+        $library = '';
+        $zip = new \ZipArchive();
+        if ($path && $zip->open($path) === true) {
+            $content = json_decode((string) $zip->getFromName('content/content.json'), true);
+            $main = json_decode((string) $zip->getFromName('h5p.json'), true);
+            $library = (string) ($main['mainLibrary'] ?? '');
+            $zip->close();
+        }
+        if ($path) {
+            @unlink($path);
+        }
+        return [is_array($content) ? $content : null, $library];
     }
 
     /**
@@ -1077,32 +1178,74 @@ class course_accessibility {
         }
     }
 
+    /** @var string[] Types of H5P contents that some learners cannot use, by their nature: to find a place on an image
+     * with the pointer, to speak, a timeline drawn by a library that is not accessible. Their machine names. */
+    public const H5P_HARD = ['H5P.ImageHotspotQuestion', 'H5P.ImageMultipleHotspotQuestion', 'H5P.SpeakTheWords',
+        'H5P.SpeakTheWordsSet', 'H5P.Timeline'];
+
+    /** @var string[] The videos of H5P hosted with the content, whose subtitles Épure can read. */
+    protected const H5P_VIDEOS = ['video/mp4', 'video/webm', 'video/ogg'];
+
     /**
-     * Reads the parameters of an H5P content, at all depths.
+     * Reads the parameters of an H5P content, at all depths: the images without a text alternative (but the decorative
+     * ones); the videos given with the content without subtitles (a mistake), those hosted elsewhere (to confirm); the
+     * sounds, whose transcript is to confirm; its texts, read as the texts of the course (vague links, tables, texts
+     * that move, colours, long addresses); a type of content that some learners cannot use, to confirm.
      *
      * @param array $part Part of the activity.
      * @param array $content Parameters.
+     * @param string $library Machine name of its main type (H5P.InteractiveVideo…), empty when unknown.
+     * @param string $name Name of the activity.
      */
-    public static function read_h5p_content(array &$part, array $content): void {
-        $walk = function (array $node) use (&$walk, &$part): void {
+    public static function read_h5p_content(array &$part, array $content, string $library = '', string $name = ''): void {
+        $html = '';
+        $walk = function (array $node) use (&$walk, &$part, &$html): void {
             $mime = (string) ($node['file']['mime'] ?? '');
             if (str_starts_with($mime, 'image/') && trim((string) ($node['alt'] ?? '')) === '' && empty($node['decorative'])) {
                 self::add_issue($part, 'h5pimages');
             }
-            foreach ($node['files'] ?? [] as $file) {
-                if (is_array($file) && str_starts_with((string) ($file['mime'] ?? ''), 'video/')) {
-                    $path = (string) ($file['path'] ?? '');
-                    $part['checks'][] = self::media_check('captions', $path) + ['h5p' => true];
+            $media = array_filter(array_merge((array) ($node['files'] ?? []), (array) ($node['sources'] ?? [])), 'is_array');
+            foreach ($media as $file) {
+                $mime = (string) ($file['mime'] ?? '');
+                $path = (string) ($file['path'] ?? '');
+                if (str_starts_with($mime, 'video/')) {
+                    $tracks = array_filter((array) ($node['textTracks']['videoTrack'] ?? []), fn($track) => is_array($track)
+                        && !empty($track['track']['path']));
+                    if ($tracks) {
+                        break;
+                    }
+                    if (in_array($mime, self::H5P_VIDEOS, true) && !preg_match('~^https?://~i', $path)) {
+                        self::add_issue($part, 'h5pvideos');
+                    } else {
+                        $part['checks'][] = self::media_check('captions', $path) + ['h5p' => true];
+                    }
+                    break;
+                }
+                if (str_starts_with($mime, 'audio/')) {
+                    $part['checks'][] = self::media_check('transcript', $path);
                     break;
                 }
             }
             foreach ($node as $value) {
                 if (is_array($value)) {
                     $walk($value);
+                } else if (is_string($value) && $value !== strip_tags($value)) {
+                    $html .= $value . "\n";
                 }
             }
         };
         $walk($content);
+        if ($html !== '') {
+            $found = self::check_html($html)['issues'];
+            $count = 0;
+            foreach (['links', 'tables', 'moving', 'contrast', 'urllinks'] as $issue) {
+                $count += (int) ($found[$issue] ?? 0);
+            }
+            self::add_issue($part, 'h5ptexts', $count);
+        }
+        if (in_array($library, self::H5P_HARD, true)) {
+            $part['checks'][] = ['key' => 'h5ptype', 'kind' => 'h5p_hard', 'label' => $name];
+        }
     }
 
     /**
@@ -1295,7 +1438,7 @@ class course_accessibility {
                     $name = format_string($course->fullname, true, ['context' => $context]);
                     $edit = new \moodle_url('/course/edit.php', ['id' => $course->id]);
                 }
-                $sections[$current]['parts'][] = self::with_fixes(self::with_images(self::export_part(
+                $exported = self::with_fixes(self::with_images(self::export_part(
                     $part,
                     $name,
                     '',
@@ -1305,6 +1448,9 @@ class course_accessibility {
                     $users,
                     $output
                 ), $part, $course), $part, $course);
+                $sections[$current]['parts'][] = isset($section) && $part['type'] === 'section'
+                    ? self::with_section_rename($exported, $part, $section, $sections[$current]['name'], $course)
+                    : $exported + ['hasrename' => false];
                 continue;
             }
             $cm = $modinfo->get_cm($part['id']);
@@ -1569,12 +1715,84 @@ class course_accessibility {
         }
         return $data + ['hasrename' => true, 'rename' => [
             'id' => $data['id'] . '-rename',
+            'field' => 'rename',
+            'required' => true,
+            'help' => get_string('courseaccessibility_rename_help', 'theme_epure'),
             'cmid' => $cm->id,
             'value' => $cm->name,
             // Escaped once, by the template.
             'label' => html_entity_decode(strip_tags(get_string('courseaccessibility_rename', 'theme_epure', (object) [
                 'name' => $data['name'], 'section' => $section])), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
         ]];
+    }
+
+    /**
+     * A section whose name says nothing, or that another section shares: its name in a field, to change here, saved with
+     * the button at the bottom of the page, for those who may change the course.
+     *
+     * @param array $data Context of the part.
+     * @param array $part Part.
+     * @param \section_info $section Section.
+     * @param string $name Its name as the course shows it.
+     * @param \stdClass $course Course.
+     * @return array
+     */
+    protected static function with_section_rename(
+        array $data,
+        array $part,
+        \section_info $section,
+        string $name,
+        \stdClass $course
+    ): array {
+        $context = \context_course::instance($course->id);
+        if (empty($part['issues']['sectionname']) || !has_capability('moodle/course:update', $context)) {
+            return $data + ['hasrename' => false];
+        }
+        return $data + ['hasrename' => true, 'rename' => [
+            'id' => $data['id'] . '-rename',
+            'field' => 'sectionrename',
+            'cmid' => $section->id,
+            'value' => (string) $section->name,
+            // Not required: a section without a name of its own keeps it while the rest of the guide is saved.
+            'required' => false,
+            'placeholder' => $name,
+            'label' => html_entity_decode(
+                strip_tags(get_string('courseaccessibility_sectionrename', 'theme_epure', $name)),
+                ENT_QUOTES | ENT_HTML5,
+                'UTF-8'
+            ),
+            'help' => get_string('courseaccessibility_sectionrename_help', 'theme_epure'),
+        ]];
+    }
+
+    /**
+     * Renames the sections whose name was changed in the guide, as the course page renames them.
+     *
+     * @param \stdClass $course Course.
+     * @param array $names New names, by id of section.
+     * @return int Sections renamed.
+     */
+    public static function rename_sections(\stdClass $course, array $names): int {
+        global $CFG;
+        require_once($CFG->dirroot . '/course/lib.php');
+        if (!$names || !has_capability('moodle/course:update', \context_course::instance($course->id))) {
+            return 0;
+        }
+        $modinfo = get_fast_modinfo($course);
+        $done = 0;
+        foreach ($names as $sectionid => $name) {
+            $section = $modinfo->get_section_info_by_id((int) $sectionid);
+            $name = trim(\core_text::substr(clean_param((string) $name, PARAM_TEXT), 0, 255));
+            if (!$section || $name === '' || $name === (string) $section->name) {
+                continue;
+            }
+            course_update_section($course, $section, ['name' => $name]);
+            $done++;
+        }
+        if ($done) {
+            self::forget((int) $course->id);
+        }
+        return $done;
     }
 
     /**
