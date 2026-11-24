@@ -39,6 +39,7 @@ Choose a brand colour (or click a colour of your logo), and optionally an accent
 - A dashboard that shows where to resume, what is due this week and what is completed.
 - « My courses » by role, a course catalogue with course presentation pages, progress per section, previous and next activity on every activity page, previous and next section on the page of a section, a reading mode.
 - « My summary »: a printable page of their courses, progress, completed activities, grades and certificates, or a PDF tagged for the screen readers (PDF/UA, with PHP 8.2 and later) with a code of verification that the recipient checks on the platform. The learner sees what the recipient will see, chooses how long the document can be verified, and can revoke or delete it.
+- The preview of the files of the course (PDF, images, videos, Word or PowerPoint documents) without leaving the course page.
 - A navigation bar at the bottom of the screen on phones, and an installable web app.
 
 ![« My courses »: the courses in progress with their progress and the next activity to do](screenshots/my-courses.webp)
@@ -487,6 +488,14 @@ At the top of each course, a **banner** shows the course image (or a generated p
 For learners, the title of each section shows how many of its activities they have completed ("2/5", with a tick once the section is complete). The banner can be turned off in the theme's Courses tab ("Course banner"); with IOMAD, each company can make a different choice in its profile. The progress of the sections stays without the banner, and can be turned off on its own ("Progress of the sections"). The progress bars and the completed sections take the accent colour, when one is set (Identity tab).
 
 **Subsections** (Moodle 4.5 and later): a section counts the activities of its subsections in its progress, and each subsection gets its own. The activities of a subsection come at the place of the subsection in the course order, for the next activity (banner, My courses, dashboard), the position in the course and the previous and next activities. On the course page, subsections are set apart by a tinted background and a band of the brand colour, in light and dark mode.
+
+**Preview of the files.** On the course page, a click on a « File » resource opens its file in a window above the course, without leaving it: PDF, image, video, sound, text file, and the text of Word, PowerPoint, Excel and LibreOffice documents; with the previous and next files, « Open in a new tab » and « Download ». No setting: the preview opens when
+
+- the user is logged in (not as a guest) and the **edit mode is off**;
+- the click starts from the **course page** or the page of a section (not from the course index or another page), without Ctrl, Shift or the middle button;
+- the resource has, in its settings (Appearance → Display), **Embed**, **In frame** or **Open**. With **Automatic** (often the default), **Force download**, **New window** or **In pop-up**, Moodle keeps its usual behaviour.
+
+If nothing opens, first check the display of the resource: most often, it is « Automatic ».
 
 ## Branded e-mails
 
