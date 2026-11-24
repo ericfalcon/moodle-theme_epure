@@ -126,7 +126,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
-- **1.52.1** : aucun nouveau réglage ; mettez le site à jour. Le guide « Accessibilité du cours » lit les contenus H5P comme les paquets SCORM (vidéos sans sous-titres, sons, textes, types qu'une partie des apprenants ne peut pas utiliser), et repère les noms de sections qui ne disent rien, renommées dans le guide.
+- **1.52.1** : aucun nouveau réglage ; mettez le site à jour. Le guide « Accessibilité du cours » lit les contenus H5P comme les paquets SCORM (vidéos sans sous-titres, sons, textes, types qu'une partie des apprenants ne peut pas utiliser), et repère les noms de sections qui ne disent rien, renommées dans le guide. « Aa » : la règle et le masque de lecture fonctionnent sur les écrans tactiles.
 - **1.52.0** : aucun nouveau réglage ; mettez le site à jour. « Ce que couvre Épure » donne la grille entière du référentiel du pays (106 critères du RGAA, EN 301 549, WCAG 2.2), avec qui répond à chacun et son état dans le pré-audit de référence, à télécharger ; d'autres défauts de Moodle réparés dans la page ; contraste renforcé à 7:1.
 - **1.51.1** : aucun nouveau réglage ; mettez le site à jour. Mode sombre : les encadrés, lignes et liens restés clairs sur certaines pages de Moodle (mises à jour de plugins, rapports, visites guidées, événements, liens du pied de page) sont sombres.
 - **1.51.0** : aucun nouveau réglage ; mettez le site à jour. Le texte du pied de page, du site et des entreprises IOMAD, s'écrit dans l'éditeur de Moodle (colonnes, liens, images) ; les textes écrits en Markdown deviennent du HTML à la mise à jour.

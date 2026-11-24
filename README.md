@@ -126,7 +126,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
-- **1.52.1**: no new setting; upgrade the site. The guide « Accessibility of the course » reads the H5P contents as the SCORM packages (videos without subtitles, sounds, texts, types some learners cannot use), and finds the names of sections that say nothing, renamed in the guide.
+- **1.52.1**: no new setting; upgrade the site. The guide « Accessibility of the course » reads the H5P contents as the SCORM packages (videos without subtitles, sounds, texts, types some learners cannot use), and finds the names of sections that say nothing, renamed in the guide. « Aa »: the reading ruler and mask work on touch screens.
 - **1.52.0**: no new setting; upgrade the site. « What Épure covers » gives the whole grid of the referential of the country (106 criteria of the RGAA, EN 301 549, WCAG 2.2), with who answers each and its state in the reference pre-audit, to download; more defects of Moodle repaired in the page; enhanced contrast at 7:1.
 - **1.51.1**: no new setting; upgrade the site. Dark mode: boxes, rows and links left light on some pages of Moodle (plugin updates, reports, user tours, events, footer links) are dark.
 - **1.51.0**: no new setting; upgrade the site. The text of the footer, of the site and of the IOMAD companies, is written in the editor of Moodle (columns, links, images); the texts written in Markdown become HTML at the upgrade.

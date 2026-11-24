@@ -1,14 +1,15 @@
 # Changes
 
-## 1.52.1 — the guide reads the H5P contents, and the names of the sections
+## 1.52.1 — the guide reads the H5P contents and the names of the sections; the reading guide on touch screens
 
 The guide « Accessibility of the course » reads the H5P contents as it reads the SCORM packages (H5P activity, and the plugin mod_hvp): their content as Moodle deployed it, or else in the .h5p package, without running it.
 
 - The images without a text alternative (already counted), the videos uploaded without subtitles (blocking: WCAG 1.2.2), and in their texts the vague links, tables without headers, moving texts and low contrasts (serious), counted once per content.
 - To confirm: the subtitles of the online videos (YouTube…), the transcript of the sounds, and the types some learners cannot use (spots to find on an image, answers spoken aloud, timeline), with another way to answer.
 - The names of the sections that say nothing (« Section 2 », « New section », « Topic 3 ») or that two sections share are found (minor: WCAG 2.4.6, RGAA 9.1): the name of a section is a title of the course page, of its index and of the progress. A field renames the section in place. Section 0, the empty sections and the weeks without a name of their own are left alone.
+- « Aa », on a phone or a tablet: the reading ruler and mask showed nothing, as they followed only a mouse or a pen (a finger would cover the line read). On a touch screen they now stay at a third of the screen, the text scrolling under them, and a tap on a line brings them there.
 - No new setting.
-- Tests: PHPUnit (H5P contents: images, videos, texts, sounds, types; names of sections and their renaming). Checked in the browser on Moodle 4.5: the field, the renaming, axe without error.
+- Tests: PHPUnit (H5P contents: images, videos, texts, sounds, types; names of sections and their renaming). Checked in the browser on Moodle 4.5: the field, the renaming, axe without error; the ruler and the mask on an emulated iPhone (shown, moved by a tap, kept while scrolling) and with a mouse.
 
 ## 1.52.0 — the whole grid of the referential, and a reference pre-audit of the RGAA
 

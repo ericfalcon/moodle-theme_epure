@@ -15,8 +15,10 @@
 
 /**
  * Reading guide of the display preferences (« Aa »): a ruler under the line read, or a mask that darkens all but a few
- * lines around it. It follows the pointer, or the element reached with the keyboard. Drawn over the page for the eyes
- * only: hidden from the screen readers, it lets every click through and changes nothing under it.
+ * lines around it. It follows the pointer, or the element reached with the keyboard. On a touch screen, where a finger
+ * would cover what it reads, it waits at a third of the screen while the text scrolls under it, and a tap on a line
+ * brings it there. Drawn over the page for the eyes only: hidden from the screen readers, it lets every click through
+ * and changes nothing under it.
  *
  * @module     theme_epure/reading_guide
  * @copyright  2026 Eric Falcon
@@ -31,6 +33,22 @@ let parts = [];
 let line = null;
 /** @type {boolean} Whether the guide is to be moved at the next frame of the screen. */
 let pending = false;
+/** @type {{x: number, y: number}|null} Where the finger touched the screen, to tell a tap from a scroll. */
+let touched = null;
+
+/**
+ * Whether the device has no pointer that hovers: a touch screen, where the guide waits at a height of its own.
+ *
+ * @returns {boolean}
+ */
+const touchOnly = () => window.matchMedia('(hover: none)').matches;
+
+/**
+ * Height where the guide waits on a touch screen: at a third of the screen, where the eyes read.
+ *
+ * @returns {number}
+ */
+const resting = () => Math.round(window.innerHeight / 3);
 
 /**
  * The height of a line of text of the page, in pixels.
@@ -86,6 +104,38 @@ const pointer = (e) => {
 };
 
 /**
+ * Notes where a finger touches the screen.
+ *
+ * @param {PointerEvent} e Event.
+ */
+const down = (e) => {
+    touched = e.pointerType === 'touch' ? {x: e.clientX, y: e.clientY} : null;
+};
+
+/**
+ * Brings the guide to the line tapped: a finger lifted where it touched, not a scroll.
+ *
+ * @param {PointerEvent} e Event.
+ */
+const up = (e) => {
+    if (e.pointerType === 'touch' && touched && Math.hypot(e.clientX - touched.x, e.clientY - touched.y) < 10) {
+        line = e.clientY;
+        later();
+    }
+    touched = null;
+};
+
+/**
+ * Keeps the guide on the screen when its size changes (a phone turned, the bar of the browser hidden).
+ */
+const resize = () => {
+    if (line !== null && line > window.innerHeight) {
+        line = resting();
+    }
+    later();
+};
+
+/**
  * Follows the element reached with the keyboard: the guide goes to its middle.
  *
  * @param {FocusEvent} e Event.
@@ -127,14 +177,21 @@ export const set = (next) => {
     mode = next;
     if (!mode) {
         document.removeEventListener('pointermove', pointer);
+        document.removeEventListener('pointerdown', down);
+        document.removeEventListener('pointerup', up);
         document.removeEventListener('focusin', focus);
-        window.removeEventListener('resize', later);
+        window.removeEventListener('resize', resize);
         return;
     }
     parts = mode === 'ruler' ? [part('ruler')] : [part('top'), part('bottom')];
     document.addEventListener('pointermove', pointer, {passive: true});
+    document.addEventListener('pointerdown', down, {passive: true});
+    document.addEventListener('pointerup', up, {passive: true});
     document.addEventListener('focusin', focus);
-    window.addEventListener('resize', later);
+    window.addEventListener('resize', resize);
+    if (line === null && touchOnly()) {
+        line = resting();
+    }
     place();
 };
 
