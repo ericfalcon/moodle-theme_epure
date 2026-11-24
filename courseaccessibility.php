@@ -80,10 +80,11 @@ if (data_submitted() && confirm_sesskey()) {
     ]);
     // The names changed in the guide, into their activities.
     $renamed = course_accessibility::rename($course, optional_param_array('rename', [], PARAM_TEXT));
+    $sectionsrenamed = course_accessibility::rename_sections($course, optional_param_array('sectionrename', [], PARAM_TEXT));
     // The instructions written in the guide, into the activities that had none.
     $written = course_accessibility::write_instructions($course, optional_param_array('instructions', [], PARAM_TEXT));
     // The changes saved, or only the points confirmed.
-    $changed = $described || array_filter($fixed) || $renamed || $written;
+    $changed = $described || array_filter($fixed) || $renamed || $sectionsrenamed || $written;
     redirect(
         course_accessibility::url((int) $course->id),
         get_string($changed ? 'courseaccessibility_saved' : 'courseaccessibility_savedconfirmations', 'theme_epure')
@@ -94,6 +95,7 @@ if (data_submitted() && confirm_sesskey()) {
                 \theme_epure\content_fix::KINDS
             ))
             . ($renamed ? ' ' . get_string('courseaccessibility_renamed', 'theme_epure', $renamed) : '')
+            . ($sectionsrenamed ? ' ' . get_string('courseaccessibility_sectionsrenamed', 'theme_epure', $sectionsrenamed) : '')
             . ($written ? ' ' . get_string('courseaccessibility_written', 'theme_epure', $written) : ''),
         null,
         \core\output\notification::NOTIFY_SUCCESS
