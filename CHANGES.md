@@ -9,7 +9,7 @@ The guide « Accessibility of the course » reads the H5P contents as it reads t
 - The names of the sections that say nothing (« Section 2 », « New section », « Topic 3 ») or that two sections share are found (minor: WCAG 2.4.6, RGAA 9.1): the name of a section is a title of the course page, of its index and of the progress. A field renames the section in place. Section 0, the empty sections and the weeks without a name of their own are left alone.
 - « Aa », on a phone or a tablet: the reading ruler and mask showed nothing, as they followed only a mouse or a pen (a finger would cover the line read). On a touch screen they now stay at a third of the screen, the text scrolling under them, and a tap on a line brings them there.
 - No new setting.
-- Tests: PHPUnit (H5P contents: images, videos, texts, sounds, types; names of sections and their renaming). Checked in the browser on Moodle 4.5: the field, the renaming, axe without error; the ruler and the mask on an emulated iPhone (shown, moved by a tap, kept while scrolling) and with a mouse.
+- Tests: PHPUnit (H5P contents: images, videos, texts, sounds, types; names of sections and their renaming). Checked in the browser on Moodle 4.5: the field, the renaming, axe without error; the ruler and the mask on an emulated iPhone, Pixel and Galaxy (the phones that say they hover: at the first touch) (shown, moved by a tap, kept while scrolling) and with a mouse.
 
 ## 1.52.0 — the whole grid of the referential, and a reference pre-audit of the RGAA
 

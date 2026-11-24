@@ -110,6 +110,11 @@ const pointer = (e) => {
  */
 const down = (e) => {
     touched = e.pointerType === 'touch' ? {x: e.clientX, y: e.clientY} : null;
+    // A touch screen that says it hovers (some phones with a pen): the guide shows at the first touch.
+    if (touched && line === null) {
+        line = resting();
+        later();
+    }
 };
 
 /**
