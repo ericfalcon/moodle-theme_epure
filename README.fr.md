@@ -39,6 +39,7 @@ Choisissez une couleur de marque (ou cliquez sur une couleur de votre logo), et 
 - Un tableau de bord qui montre où reprendre, ce qui est à faire cette semaine et ce qui est terminé.
 - « Mes cours » par rôle, un catalogue avec une page de présentation des cours, la progression par section, l'activité précédente et suivante sur chaque activité, section précédente et suivante sur la page d'une section, un mode lecture.
 - « Ma synthèse » : une page imprimable de leurs cours, progression, activités terminées, notes et attestations, ou un PDF balisé pour les lecteurs d'écran (PDF/UA, avec PHP 8.2 et plus) avec un code de vérification que le destinataire contrôle sur la plateforme. L'apprenant voit ce que verra le destinataire, choisit combien de temps le document est vérifiable, et peut le révoquer ou le supprimer.
+- L'aperçu des fichiers du cours (PDF, images, vidéos, documents Word ou PowerPoint) sans quitter la page du cours.
 - Une barre de navigation en bas de l'écran sur téléphone, et une application web installable.
 
 ![« Mes cours » : les formations en cours avec leur progression et la prochaine activité à faire](screenshots/my-courses.webp)
@@ -480,6 +481,14 @@ En tête de chaque cours, une **bannière** reprend l'image du cours (ou un moti
 Pour l'apprenant, le titre de chaque section indique combien de ses activités il a terminées (« 2/5 », coche une fois la section terminée). La bannière se désactive dans l'onglet Cours du thème (« Bannière des cours ») ; avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche. La progression des sections reste affichée sans la bannière, et se désactive à part (« Progression des sections »). Les barres de progression et les sections terminées prennent la couleur d'accent, si elle est réglée (onglet Identité).
 
 **Sous-sections** (Moodle 4.5 et suivants) : une section compte les activités de ses sous-sections dans sa progression, et chaque sous-section a la sienne. Les activités d'une sous-section viennent à la place de la sous-section dans l'ordre du cours, pour la prochaine activité (bannière, Mes cours, tableau de bord), la position dans le cours et les activités précédente et suivante. Sur la page du cours, les sous-sections se distinguent par un fond teinté et une bande de la couleur de marque, en clair comme en sombre.
+
+**Aperçu des fichiers.** Sur la page du cours, un clic sur une ressource « Fichier » ouvre son fichier dans une fenêtre au-dessus du cours, sans le quitter : PDF, image, vidéo, son, fichier texte, et le texte des documents Word, PowerPoint, Excel et LibreOffice ; avec les fichiers précédent et suivant, « Ouvrir dans un nouvel onglet » et « Télécharger ». Aucun réglage : l'aperçu s'ouvre quand
+
+- l'utilisateur est connecté (pas en invité) et le **mode édition est désactivé** ;
+- le clic part de la **page du cours** ou de celle d'une section (pas de l'index du cours ni d'une autre page), sans Ctrl, Maj ni le bouton du milieu ;
+- la ressource a, dans ses paramètres (Apparence → Affichage), **Intégrer**, **Dans un cadre** ou **Ouvrir**. Avec **Automatique** (souvent la valeur par défaut), **Forcer le téléchargement**, **Nouvelle fenêtre** ou **Pop-up**, Moodle garde son comportement habituel.
+
+Si rien ne s'ouvre, vérifiez d'abord l'affichage de la ressource : le plus souvent, elle est en « Automatique ».
 
 ## E-mails aux couleurs de la marque
 
