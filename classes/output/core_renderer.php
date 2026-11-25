@@ -57,6 +57,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
         ) {
             return $url;
         }
+        // The logo of the entity of the page on Moodle: its version for the brand-coloured header when it applies.
+        if ($url = $this->entity_logo_url()) {
+            return $url;
+        }
         if ($url = $this->company_logo_url(['logocompact', 'logo'])) {
             return $url;
         }
@@ -113,6 +117,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $company = \theme_epure\company_style::current_company();
         if ($company && ($css = \theme_epure\company_style::css($company)) !== '') {
             $output .= \html_writer::tag('style', $css, ['id' => 'epure-company-style']);
+        } else if (!$company && ($css = \theme_epure\entity::current_css()) !== '') {
+            // On Moodle, the appearance of the entity of the page: its category, or the cohorts of the user.
+            $output .= \html_writer::tag('style', $css, ['id' => 'epure-entity-style']);
         }
         // The installable web app: its manifest and its service worker; once turned off, the service worker is removed.
         if (\theme_epure\web_app::enabled()) {
@@ -562,9 +569,31 @@ class core_renderer extends \theme_boost\output\core_renderer {
     public function company_logo_url(array $settings): ?\moodle_url {
         $company = \theme_epure\company_style::current_company();
         if (!$company) {
-            return null;
+            // On Moodle, the logo of the entity of the page ({@see \theme_epure\entity}).
+            $entity = \theme_epure\entity::current();
+            return $entity ? \theme_epure\entity::logo_url($entity->id) : null;
         }
         return \theme_epure\company_style::logo_url((int) $company->id, $settings);
+    }
+
+    /**
+     * Logo of the entity of the page on Moodle ({@see \theme_epure\entity}): its version for the brand-coloured header
+     * when it applies and it has one, else its logo.
+     *
+     * @return \moodle_url|null
+     */
+    public function entity_logo_url(): ?\moodle_url {
+        $entity = \theme_epure\entity::current();
+        if (!$entity) {
+            return null;
+        }
+        $areas = \theme_epure\company_style::header_style() === 'brand' ? ['entitylogoonbrand', 'entitylogo'] : ['entitylogo'];
+        foreach ($areas as $area) {
+            if ($url = \theme_epure\entity::logo_url($entity->id, $area)) {
+                return $url;
+            }
+        }
+        return null;
     }
 
     /**

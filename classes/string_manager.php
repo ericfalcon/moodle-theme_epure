@@ -44,6 +44,12 @@ class string_manager extends \core_string_manager_standard {
     /** @var int|null User the company was found for. */
     protected ?int $companyuserid = null;
 
+    /** @var int|null Entity of the cohorts of the current user (theme_epure\entity), once known. */
+    protected ?int $entityid = null;
+
+    /** @var int|null User the entity was found for. */
+    protected ?int $entityuserid = null;
+
     /** @var bool Whether the company is being looked for (IOMAD may load strings meanwhile). */
     protected bool $resolving = false;
 
@@ -63,11 +69,14 @@ class string_manager extends \core_string_manager_standard {
             return $strings;
         }
         $companyid = $this->company_id();
-        if (!($rewriter = company::rewriter($companyid, $lang))) {
+        // Without a company, on Moodle, the entity of the cohorts of the user, when it has words of its own.
+        $entityid = $companyid ? 0 : $this->entity_id();
+        $rewriter = $entityid ? company::entity_rewriter($entityid, $lang) : company::rewriter($companyid, $lang);
+        if (!$rewriter) {
             return $strings;
         }
 
-        $key = $companyid . '_' . $lang . '_' . str_replace('-', '_', $component);
+        $key = ($entityid ? 'e' . $entityid : $companyid) . '_' . $lang . '_' . str_replace('-', '_', $component);
         if (!$disablecache && isset($this->companystrings[$key])) {
             return $this->companystrings[$key];
         }
@@ -137,5 +146,29 @@ class string_manager extends \core_string_manager_standard {
             $this->companyuserid = $userid;
         }
         return $this->companyid;
+    }
+
+    /**
+     * The entity of the cohorts of the current user, when the entities have words of their own: the words follow the
+     * user, as a cohort theme does, not the page (the strings of the scripts are kept by the browser for all pages).
+     *
+     * @return int Category of the entity, 0 when there is none.
+     */
+    protected function entity_id(): int {
+        global $USER;
+        $userid = (int) ($USER->id ?? 0);
+        if ($this->resolving || !$userid || during_initial_install() || !entity::vocabulary_active()) {
+            return 0;
+        }
+        if ($this->entityid === null || $this->entityuserid !== $userid) {
+            $this->resolving = true;
+            try {
+                $this->entityid = entity::available() ? entity::of_user($userid) : 0;
+            } finally {
+                $this->resolving = false;
+            }
+            $this->entityuserid = $userid;
+        }
+        return $this->entityid;
     }
 }

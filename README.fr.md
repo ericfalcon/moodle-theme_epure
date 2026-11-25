@@ -91,6 +91,17 @@ Chaque entreprise a ses couleurs, son logo, sa police et son vocabulaire (ici «
 
 ![La création d'un utilisateur de l'entreprise, avec la même mise en page des formulaires longs](screenshots/iomad-create-user.webp)
 
+### Plusieurs entités, sans IOMAD
+
+Une université ou un groupe sur un Moodle sans IOMAD donne à chaque composante, école ou filiale son apparence : couleurs, logo, en-tête, pages et pied de page. L'entité est une catégorie de cours : ses cours et ses sous-catégories la prennent, comme avec un thème de catégorie ; hors des cours (tableau de bord, Mes cours, profil), les membres de ses cohortes la prennent, comme avec un thème de cohorte. Un utilisateur des cohortes de deux entités, ou d'aucune, voit le site. Il n'y a qu'un Épure pour tout le site : aucune copie du thème à maintenir.
+
+- **Son vocabulaire** : ses mots pour les cours, les étudiants et les enseignants, pour les membres de ses cohortes, partout dans Moodle ; ils suivent l'utilisateur, pas la page, pour que les mots d'une page ne se mélangent jamais.
+- **Créer une entité** : dans les paramètres de la catégorie, « Apparence de l'entité » (il faut pouvoir gérer la catégorie). Chaque champ laissé « Comme le site » garde le réglage du site ; le SCSS personnalisé, les e-mails et la page de connexion restent ceux du site.
+- **Le geste habituel marche aussi** : une catégorie dont le thème est Épure devient une entité à compléter, et ses cours s'affichent avec Épure même sur un site sous un autre thème ; une cohorte dont le thème est Épure, dans la catégorie d'une entité, y mène. Épure signale quand « Autoriser les thèmes de catégorie » ou « de cohorte » manque.
+- **Page « Entités »** (Présentation › Thèmes) : les entités, les catégories sous Épure sans apparence, et les catégories sous un autre thème (souvent une copie de Boost), avec la création de leur entité à partir de la couleur de leur thème, pour s'en passer.
+
+Avec IOMAD, les entreprises sont les entités : les entités par catégorie n'y sont pas proposées. Détails : [Entités par catégorie et cohorte](docs/Entités-par-catégorie-et-cohorte.md).
+
 ### Compatibilité
 
 - Moodle 4.5 à 5.3, IOMAD 4.5 à 5.2, PHP 8.1 à 8.4, PostgreSQL et MariaDB : tous testés en intégration continue (PHPUnit, Behat, contrôles du code).
@@ -127,6 +138,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.53.0** : aucun nouveau réglage ; mettez le site à jour. Plusieurs entités sans IOMAD : une apparence par catégorie (couleurs, logo, en-tête, pages, pied de page) et son vocabulaire, pour ses cours et les membres de ses cohortes, sans copie du thème ; Épure reconnaît les catégories et cohortes dont le thème est Épure, et aide à quitter les copies de thèmes de catégorie (page « Entités »). L'aperçu des fichiers s'ouvre aussi en affichage « Automatique » (c'était déjà le cas, la documentation disait le contraire).
 - **1.52.1** : aucun nouveau réglage ; mettez le site à jour. Le guide « Accessibilité du cours » lit les contenus H5P comme les paquets SCORM (vidéos sans sous-titres, sons, textes, types qu'une partie des apprenants ne peut pas utiliser), et repère les noms de sections qui ne disent rien, renommées dans le guide. « Aa » : la règle et le masque de lecture fonctionnent sur les écrans tactiles.
 - **1.52.0** : aucun nouveau réglage ; mettez le site à jour. « Ce que couvre Épure » donne la grille entière du référentiel du pays (106 critères du RGAA, EN 301 549, WCAG 2.2), avec qui répond à chacun et son état dans le pré-audit de référence, à télécharger ; d'autres défauts de Moodle réparés dans la page ; contraste renforcé à 7:1.
 - **1.51.1** : aucun nouveau réglage ; mettez le site à jour. Mode sombre : les encadrés, lignes et liens restés clairs sur certaines pages de Moodle (mises à jour de plugins, rapports, visites guidées, événements, liens du pied de page) sont sombres.
@@ -486,9 +498,9 @@ Pour l'apprenant, le titre de chaque section indique combien de ses activités i
 
 - l'utilisateur est connecté (pas en invité) et le **mode édition est désactivé** ;
 - le clic part de la **page du cours** ou de celle d'une section (pas de l'index du cours ni d'une autre page), sans Ctrl, Maj ni le bouton du milieu ;
-- la ressource a, dans ses paramètres (Apparence → Affichage), **Intégrer**, **Dans un cadre** ou **Ouvrir**. Avec **Automatique** (souvent la valeur par défaut), **Forcer le téléchargement**, **Nouvelle fenêtre** ou **Pop-up**, Moodle garde son comportement habituel.
+- la ressource a, dans ses paramètres (Apparence → Affichage), **Automatique** (la valeur par défaut de Moodle), **Intégrer**, **Dans un cadre** ou **Ouvrir**. Avec **Forcer le téléchargement**, **Nouvelle fenêtre** ou **Pop-up**, Moodle garde son comportement habituel.
 
-Si rien ne s'ouvre, vérifiez d'abord l'affichage de la ressource : le plus souvent, elle est en « Automatique ».
+Si rien ne s'ouvre, vérifiez d'abord l'affichage de la ressource (« Forcer le téléchargement », « Nouvelle fenêtre » ou « Pop-up ») et le type du fichier (une archive ZIP se télécharge).
 
 ## E-mails aux couleurs de la marque
 

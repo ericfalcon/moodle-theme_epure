@@ -30,7 +30,10 @@ namespace theme_epure;
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class file_preview {
-    /** @var int[] Displays of a resource that open in Moodle's page (resourcelib: embed, frame, open). */
+    /**
+     * @var int[] Displays of a resource that open in Moodle's page (resourcelib: embed, frame, open). The display
+     * « Automatic » is one of them: Moodle keeps the display it chose for the file (customdata of the module).
+     */
     public const DISPLAYS = [1, 2, 5];
 
     /**

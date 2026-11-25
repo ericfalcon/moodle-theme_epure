@@ -148,4 +148,15 @@ class observer {
         // What was read of it, without asking for its score again (forget()): it is gone.
         \cache::make('theme_epure', 'courseaccessibility')->delete((int) $event->objectid);
     }
+
+    /**
+     * The appearance of a course category deleted, and its logos, are deleted with it.
+     *
+     * @param \core\event\course_category_deleted $event Event.
+     */
+    public static function course_category_deleted(\core\event\course_category_deleted $event): void {
+        if (entity::exists((int) $event->objectid)) {
+            entity::delete((int) $event->objectid);
+        }
+    }
 }

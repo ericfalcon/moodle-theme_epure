@@ -26,3 +26,5 @@ Après chaque mise à jour de Moodle ou d'un paquet de langue, appliquez à nouv
 **Langues.** Le vocabulaire s'applique en français et en anglais, dont le thème connaît la grammaire : en français, les articles, l'élision et les accords suivent le mot choisi ; en anglais, le singulier et le pluriel. Les autres langues installées gardent la formulation de Moodle. Le même mécanisme conviendrait à l'espagnol, à l'italien ou au portugais (genre et élision) ; l'allemand demanderait davantage (déclinaisons, mots composés). Chaque nouvelle langue demande un relecteur natif et des phrases de test (voir la feuille de route).
 
 Avec IOMAD, la même page propose les mots « entreprise » et « département » pour toutes les entreprises ; chaque entreprise peut choisir les siens dans sa fiche (voir la section IOMAD).
+
+Sans IOMAD, chaque entité (une catégorie avec son apparence) peut choisir ses mots pour les cours, les étudiants et les enseignants, pour les membres de ses cohortes : voir [Entités par catégorie et cohorte](Entit%C3%A9s-par-cat%C3%A9gorie-et-cohorte.md).

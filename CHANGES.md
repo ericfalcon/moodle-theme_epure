@@ -1,5 +1,19 @@
 # Changes
 
+## 1.53.0 — several entities without IOMAD: an appearance per category, for its courses and its cohorts
+
+On a Moodle without IOMAD, a university or a group gives each faculty, school or subsidiary its own appearance, as with category and cohort themes, but without a copy of the theme: one Épure for the whole site, as for the IOMAD companies.
+
+- An entity is a course category with an appearance: brand and accent colours (the palette computed with the contrasts of the site), logos, header, font, dark mode, icons, corners, the pages and navigation that a company can set, the footer. Each field left « As the site » keeps the site setting; the custom SCSS, the e-mails and the login page stay those of the site.
+- In the order of Moodle (course, category, …, cohort, site): in a course or a category, the nearest category with an appearance; elsewhere, and in a course of no entity, the entity of the cohorts of the user, those chosen in its appearance and those whose theme is Épure in its category. The cohorts of two entities, or of none: the site.
+- The vocabulary of an entity: its words for course, student and teacher, in French and English, for the members of its cohorts, everywhere in Moodle, as for an IOMAD company. The words follow the user, not the page: Moodle loads some strings before it knows the page, and the browser keeps the strings of the scripts for every page, so words that changed with the page would mix on a page. The words of the languages not installed are kept.
+- « Appearance of the entity » in the settings of each category, for those who manage it (moodle/category:manage). Its logos are kept apart; a category deleted takes its appearance with it.
+- The page « Entities » (Appearance › Themes): the entities and their cohorts; the categories whose theme is Épure without an appearance; the categories under another theme, with the creation of their entity from the brand colour of their theme, to leave the copies of themes. A warning when categories or cohorts have Épure as their theme while Moodle does not allow category or cohort themes.
+- With IOMAD, the companies are the entities: the entities of categories are not offered there.
+- Preview of the files: a resource left in « Automatic » opens in the preview (Moodle keeps the display it chose for the file; an archive is downloaded). It already did: the wiki and the README said otherwise, and a test now covers it.
+- No new setting.
+- Tests: PHPUnit (the settings of an entity; the nearest category; the cohorts, chosen or with the theme Épure, one entity or two; the page, its colours and settings; the categories to move; a category deleted; the words of an entity, cleaned, rewritten, for its members only). Checked in the browser on Moodle 4.5 and 5.3: a learner of the cohort of an entity sees it on the dashboard, in its courses and in a course of no entity, with its words (« My programmes »); a teacher out of its cohorts sees it only in its courses, with the words of the site; the form (a colour refused, the colour of a Boost category taken, saved) and the page « Entities »: axe without error, in light and dark mode. IOMAD 5.2: not offered, nothing changes.
+
 ## 1.52.1 — the guide reads the H5P contents and the names of the sections; the reading guide on touch screens
 
 The guide « Accessibility of the course » reads the H5P contents as it reads the SCORM packages (H5P activity, and the plugin mod_hvp): their content as Moodle deployed it, or else in the .h5p package, without running it.

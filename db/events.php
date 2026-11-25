@@ -31,6 +31,11 @@ $observers = [
         'eventname' => '\core\event\user_deleted',
         'callback' => '\theme_epure\observer::user_deleted',
     ],
+    // The appearance of a course category deleted (an entity, theme_epure\entity) is deleted with it.
+    [
+        'eventname' => '\core\event\course_category_deleted',
+        'callback' => '\theme_epure\observer::course_category_deleted',
+    ],
     [
         'eventname' => '\block_iomad_company_admin\event\company_created',
         'callback' => '\theme_epure\observer::company_saved',
