@@ -493,9 +493,9 @@ For learners, the title of each section shows how many of its activities they ha
 
 - the user is logged in (not as a guest) and the **edit mode is off**;
 - the click starts from the **course page** or the page of a section (not from the course index or another page), without Ctrl, Shift or the middle button;
-- the resource has, in its settings (Appearance → Display), **Embed**, **In frame** or **Open**. With **Automatic** (often the default), **Force download**, **New window** or **In pop-up**, Moodle keeps its usual behaviour.
+- the resource has, in its settings (Appearance → Display), **Automatic** (Moodle's default), **Embed**, **In frame** or **Open**. With **Force download**, **New window** or **In pop-up**, Moodle keeps its usual behaviour.
 
-If nothing opens, first check the display of the resource: most often, it is « Automatic ».
+If nothing opens, first check the display of the resource (« Force download », « New window » or « In pop-up ») and the type of the file (a ZIP archive is downloaded).
 
 ## Branded e-mails
 

@@ -45,10 +45,10 @@ Sur la page d'un cours, le fichier d'une ressource s'ouvre dans une fenêtre au-
 
 - l'utilisateur soit connecté (pas en invité) et que le **mode édition soit désactivé** ;
 - le clic parte de la **page du cours** ou de celle d'une section (pas de l'index du cours ni d'une autre page), sans Ctrl, Maj ni le bouton du milieu, qui gardent leur comportement ;
-- la ressource ait, dans ses paramètres (Apparence → Affichage), **Intégrer**, **Dans un cadre** ou **Ouvrir**. Avec **Automatique** (souvent la valeur par défaut du site), **Forcer le téléchargement**, **Nouvelle fenêtre** ou **Pop-up**, Moodle garde son comportement habituel ;
+- la ressource ait, dans ses paramètres (Apparence → Affichage), **Automatique** (la valeur par défaut de Moodle), **Intégrer**, **Dans un cadre** ou **Ouvrir**. Avec **Forcer le téléchargement**, **Nouvelle fenêtre** ou **Pop-up**, Moodle garde son comportement habituel ;
 - le fichier principal de la ressource soit d'un type que l'aperçu sait montrer (PDF, image, vidéo, son, texte, document bureautique) ; une archive ZIP ou un fichier d'un autre type se télécharge comme d'habitude.
 
-**Si rien ne s'ouvre** : désactivez le mode édition, puis ouvrez les paramètres de la ressource, Apparence → Affichage : le plus souvent, elle est en « Automatique ». Passez-la en « Intégrer » (ou « Ouvrir »). Pour toutes les nouvelles ressources, l'administrateur peut changer la valeur par défaut dans Administration du site → Plugins → Modules d'activité → Fichier (« Affichage »).
+**Si rien ne s'ouvre** : désactivez le mode édition, puis ouvrez les paramètres de la ressource, Apparence → Affichage : si elle est en « Forcer le téléchargement », « Nouvelle fenêtre » ou « Pop-up », passez-la en « Automatique ». Vérifiez aussi le type du fichier. Pour toutes les nouvelles ressources, l'administrateur choisit la valeur par défaut dans Administration du site → Plugins → Modules d'activité → Fichier (« Affichage »).
 
 ## Sous-sections
 

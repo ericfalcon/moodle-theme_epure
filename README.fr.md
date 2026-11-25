@@ -486,9 +486,9 @@ Pour l'apprenant, le titre de chaque section indique combien de ses activités i
 
 - l'utilisateur est connecté (pas en invité) et le **mode édition est désactivé** ;
 - le clic part de la **page du cours** ou de celle d'une section (pas de l'index du cours ni d'une autre page), sans Ctrl, Maj ni le bouton du milieu ;
-- la ressource a, dans ses paramètres (Apparence → Affichage), **Intégrer**, **Dans un cadre** ou **Ouvrir**. Avec **Automatique** (souvent la valeur par défaut), **Forcer le téléchargement**, **Nouvelle fenêtre** ou **Pop-up**, Moodle garde son comportement habituel.
+- la ressource a, dans ses paramètres (Apparence → Affichage), **Automatique** (la valeur par défaut de Moodle), **Intégrer**, **Dans un cadre** ou **Ouvrir**. Avec **Forcer le téléchargement**, **Nouvelle fenêtre** ou **Pop-up**, Moodle garde son comportement habituel.
 
-Si rien ne s'ouvre, vérifiez d'abord l'affichage de la ressource : le plus souvent, elle est en « Automatique ».
+Si rien ne s'ouvre, vérifiez d'abord l'affichage de la ressource (« Forcer le téléchargement », « Nouvelle fenêtre » ou « Pop-up ») et le type du fichier (une archive ZIP se télécharge).
 
 ## E-mails aux couleurs de la marque
 

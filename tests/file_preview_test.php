@@ -64,18 +64,21 @@ final class file_preview_test extends \advanced_testcase {
         $resource('Forced', 'forced.txt', RESOURCELIB_DISPLAY_DOWNLOAD);
         $resource('Window', 'window.txt', RESOURCELIB_DISPLAY_NEW);
         $resource('Hidden', 'hidden.txt', RESOURCELIB_DISPLAY_OPEN, 0);
+        // Automatic, often the default: Moodle shows the file in its page (open, or embed), but an archive it downloads.
+        $auto = $resource('Auto', 'auto.txt', RESOURCELIB_DISPLAY_AUTO);
+        $resource('Archive', 'archive.zip', RESOURCELIB_DISPLAY_AUTO);
 
         $this->setUser($learner);
         $items = file_preview::items($course);
-        $this->assertSame(['Notes', 'Map'], array_column($items, 'name'));
-        $this->assertSame([(int) $notes->cmid, (int) $map->cmid], array_column($items, 'cmid'));
-        $this->assertSame(['text', 'image'], array_column($items, 'kind'));
+        $this->assertSame(['Notes', 'Map', 'Auto'], array_column($items, 'name'));
+        $this->assertSame([(int) $notes->cmid, (int) $map->cmid, (int) $auto->cmid], array_column($items, 'cmid'));
+        $this->assertSame(['text', 'image', 'text'], array_column($items, 'kind'));
         $this->assertStringContainsString('/mod_resource/content/', $items[0]['url']);
         $this->assertStringEndsWith('/notes.txt', $items[0]['url']);
         $this->assertStringContainsString('forcedownload=1', $items[0]['download']);
 
         $this->setAdminUser();
-        $this->assertCount(3, file_preview::items($course), 'The hidden resource for whoever can see it.');
+        $this->assertCount(4, file_preview::items($course), 'The hidden resource for whoever can see it.');
     }
 
     /**
