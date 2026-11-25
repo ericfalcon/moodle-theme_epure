@@ -711,3 +711,13 @@ $ADMIN->add('themes', new admin_externalpage(
     new lang_string('vocabulary', 'theme_epure'),
     new moodle_url('/theme/epure/vocabulary.php')
 ));
+
+// Entities of a site without IOMAD: categories with their own appearance, for their courses and the members of their
+// cohorts, without a copy of the theme (theme_epure\entity). With IOMAD, the companies are the entities.
+$ADMIN->add('themes', new admin_externalpage(
+    'theme_epure_entities',
+    new lang_string('entities', 'theme_epure'),
+    new moodle_url('/theme/epure/entities.php'),
+    'moodle/site:config',
+    \theme_epure\iomad::installed()
+));

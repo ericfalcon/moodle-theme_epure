@@ -88,6 +88,20 @@ function theme_epure_pluginfile($course, $cm, $context, $filearea, $args, $force
         }
         send_file_not_found();
     }
+    // Logos of an entity (theme_epure\entity): item = category, then a revision, then the file name.
+    if (
+        $context->contextlevel == CONTEXT_SYSTEM && in_array($filearea, \theme_epure\entity::FILE_AREAS, true)
+            && count($args) >= 3
+    ) {
+        $categoryid = (int) array_shift($args);
+        $filename = array_pop($args);
+        $file = \theme_epure\entity::allowed_file($filename)
+            ? get_file_storage()->get_file($context->id, 'theme_epure', $filearea, $categoryid, '/', $filename) : false;
+        if ($file && !$file->is_directory()) {
+            send_stored_file($file, YEARSECS, 0, $forcedownload, ['cacheability' => 'public'] + $options);
+        }
+        send_file_not_found();
+    }
     // Style sheet of the Moodle app (theme_epure\mobile_app), for the user of the token, or the site on the login screen.
     if ($context->contextlevel == CONTEXT_SYSTEM && $filearea === \theme_epure\mobile_app::FILEAREA) {
         if (!\theme_epure\mobile_app::enabled()) {
@@ -287,4 +301,14 @@ function theme_epure_myprofile_navigation(\core_user\output\myprofile\tree $tree
  */
 function theme_epure_extend_navigation_course(navigation_node $navigation, stdClass $course, context $context) {
     \theme_epure\course_accessibility::extend_navigation($navigation, $course, $context);
+}
+
+/**
+ * Adds « Appearance of the entity » to the settings of a course category, for those who manage it.
+ *
+ * @param navigation_node $navigation Settings of the category.
+ * @param context_coursecat $context Context of the category.
+ */
+function theme_epure_extend_navigation_category_settings(navigation_node $navigation, context_coursecat $context) {
+    \theme_epure\entity::extend_navigation($navigation, $context);
 }

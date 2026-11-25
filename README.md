@@ -91,6 +91,16 @@ Each company has its own colours, logo, font and vocabulary (here « parcours »
 
 ![Creating a user of the company, with the same long form layout](screenshots/iomad-create-user.webp)
 
+### Several entities, without IOMAD
+
+A university or a group on Moodle without IOMAD gives each faculty, school or subsidiary its own appearance: colours, logo, header, pages and footer. The entity is a course category: its courses and its subcategories take it, as with a category theme; out of the courses (dashboard, My courses, profile), the members of its cohorts take it, as with a cohort theme. A user in the cohorts of two entities, or of none, sees the site. There is one Épure for the whole site: no copy of the theme to maintain.
+
+- **Create an entity**: in the settings of the category, « Appearance of the entity » (it takes managing the category). Each field left « As the site » keeps the site setting; the custom SCSS, the e-mails and the login page stay those of the site.
+- **The usual gesture works too**: a category whose theme is Épure becomes an entity to complete, and its courses show Épure even on a site under another theme; a cohort whose theme is Épure, in the category of an entity, leads to it. Épure warns when « Allow category themes » or « cohort themes » is missing.
+- **Page « Entities »** (Appearance › Themes): the entities, the categories under Épure without an appearance, and the categories under another theme (often a copy of Boost), with the creation of their entity from the colour of their theme, to do without it.
+
+With IOMAD, the companies are the entities: the entities of categories are not offered there. Details (in French): [Entités par catégorie et cohorte](docs/Entités-par-catégorie-et-cohorte.md).
+
 ### Compatibility
 
 - Moodle 4.5 to 5.3, IOMAD 4.5 to 5.2, PHP 8.1 to 8.4, PostgreSQL and MariaDB: all tested in continuous integration (PHPUnit, Behat, code checks).
@@ -127,6 +137,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
+- **1.53.0**: no new setting; upgrade the site. Several entities without IOMAD: an appearance per category (colours, logo, header, pages, footer), for its courses and the members of its cohorts, without a copy of the theme; Épure recognises the categories and cohorts whose theme is Épure, and helps leave the copies of category themes (page « Entities »). The preview of the files opens with the display « Automatic » too (it already did; the documentation said otherwise).
 - **1.52.1**: no new setting; upgrade the site. The guide « Accessibility of the course » reads the H5P contents as the SCORM packages (videos without subtitles, sounds, texts, types some learners cannot use), and finds the names of sections that say nothing, renamed in the guide. « Aa »: the reading ruler and mask work on touch screens.
 - **1.52.0**: no new setting; upgrade the site. « What Épure covers » gives the whole grid of the referential of the country (106 criteria of the RGAA, EN 301 549, WCAG 2.2), with who answers each and its state in the reference pre-audit, to download; more defects of Moodle repaired in the page; enhanced contrast at 7:1.
 - **1.51.1**: no new setting; upgrade the site. Dark mode: boxes, rows and links left light on some pages of Moodle (plugin updates, reports, user tours, events, footer links) are dark.

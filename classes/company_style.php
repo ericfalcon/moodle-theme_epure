@@ -139,12 +139,12 @@ class company_style {
     }
 
     /**
-     * Keeps the valid settings of a company only.
+     * Keeps the valid settings of a company only (those of an entity too, {@see entity::clean()}).
      *
      * @param array $values Values.
      * @return array<string, string>
      */
-    protected static function clean(array $values): array {
+    public static function clean(array $values): array {
         $choice = fn(string $name, array $choices) => in_array($values[$name] ?? '', $choices, true) ? $values[$name] : '';
         $settings = [
             'brandcolor' => (string) (palette::normalise($values['brandcolor'] ?? null) ?? ''),
@@ -173,14 +173,19 @@ class company_style {
     }
 
     /**
-     * Value of a setting for the company of the current page, empty when there is none or when it uses the site setting.
+     * Value of a setting for the company of the current page, or for its entity on Moodle ({@see entity}), empty when
+     * there is none or when it uses the site setting.
      *
      * @param string $name Setting.
      * @return string
      */
-    protected static function company_value(string $name): string {
+    public static function company_value(string $name): string {
         $company = self::current_company();
-        return $company ? (string) (self::settings((int) $company->id)[$name] ?? '') : '';
+        if ($company) {
+            return (string) (self::settings((int) $company->id)[$name] ?? '');
+        }
+        // On Moodle, the entity of the page: its category, or the cohorts of the user.
+        return entity::value($name);
     }
 
     /**
@@ -223,8 +228,7 @@ class company_style {
      * @return string light, brand or gradient (from the brand colour to the accent colour).
      */
     public static function header_style(): string {
-        $company = self::current_company();
-        if ($company && ($style = self::settings((int) $company->id)['headerstyle'])) {
+        if ($style = self::company_value('headerstyle')) {
             return $style;
         }
         $style = (string) get_config('theme_epure', 'headerstyle');
@@ -265,8 +269,7 @@ class company_style {
      * @return string light (never dark), auto (dark when the device asks for it) or dark (always).
      */
     public static function dark_mode(): string {
-        $company = self::current_company();
-        if ($company && ($mode = self::settings((int) $company->id)['darkmode'])) {
+        if ($mode = self::company_value('darkmode')) {
             return $mode;
         }
         $mode = (string) get_config('theme_epure', 'darkmode');
@@ -274,13 +277,14 @@ class company_style {
     }
 
     /**
-     * Brand colour of the current page: the one of the company of the user, else the one of the site.
+     * Brand colour of the current page: the one of the company of the user (or of the entity), else the one of the site.
      *
      * @return string Hex colour.
      */
     public static function page_brand(): string {
         $company = self::current_company();
         return ($company ? self::brand_colour($company) : null)
+            ?? (self::company_value('brandcolor') ?: null)
             ?? palette::normalise(get_config('theme_epure', 'brandcolor'))
             ?? palette::DEFAULT_BRAND;
     }
@@ -452,12 +456,31 @@ class company_style {
      * @return string CSS, empty when the company sets nothing.
      */
     public static function css(\stdClass $company): string {
+        $companyid = (int) ($company->id ?? 0);
+        $css = self::appearance_css(self::settings($companyid), self::brand_colour($company), $companyid);
+        if (!empty($company->customcss)) {
+            // The custom CSS of the company, as IOMAD's own theme applies it. A closing style
+            // tag would end the style element early, so it is neutralised.
+            $css .= str_ireplace('</style', '<\/style', (string) $company->customcss);
+        }
+        return $css;
+    }
+
+    /**
+     * CSS of an appearance, of a company or of an entity, on top of the theme: its colours, header, corners and font.
+     *
+     * @param array $settings Settings of the appearance ({@see self::settings()}).
+     * @param string|null $brand Its brand colour, null for the one of the site.
+     * @param int $companyid Company, for its uploaded font; 0 for an entity.
+     * @return string CSS, empty when the appearance sets nothing.
+     */
+    public static function appearance_css(array $settings, ?string $brand, int $companyid = 0): string {
         $css = '';
-        if ($brand = self::brand_colour($company)) {
+        if ($brand) {
             $p = palette::derive($brand);
             $d = palette::derive($brand, true);
             // Under the cream overlay, with the accent and the header of the company, as below.
-            $own = self::settings((int) ($company->id ?? 0));
+            $own = $settings;
             $headerstyle = $own['headerstyle'] ?: (string) get_config('theme_epure', 'headerstyle');
             $cream = palette::cream($brand, $own['accentcolor'] ?: $brand, $headerstyle);
             $light = $p['on'] === palette::SURFACE_LIGHT;
@@ -498,7 +521,6 @@ class company_style {
                 'border-color:var(--epure-brand-hover);color:var(--epure-on-brand);}';
         }
         // The accent colour (progress bars, completed sections): the one of the company, else its brand colour.
-        $settings = self::settings((int) ($company->id ?? 0));
         if ($accent = ($settings['accentcolor'] ?: $brand)) {
             $a = palette::derive($accent);
             $ad = palette::derive($accent, true);
@@ -512,7 +534,7 @@ class company_style {
         // The header of the company in a gradient (its own choice, or that of the site) from its brand colour to its accent
         // colour (those of the site when it has none), with the text that reads on both ends.
         if (($settings['headerstyle'] ?: get_config('theme_epure', 'headerstyle')) === 'gradient') {
-            $brandcolour = self::brand_colour($company) ?? get_config('theme_epure', 'brandcolor');
+            $brandcolour = $brand ?? get_config('theme_epure', 'brandcolor');
             $g = palette::header_gradient($brandcolour, $settings['accentcolor'] ?: (get_config('theme_epure', 'accentcolor')
                 ?: $brandcolour));
             $light = $g['on'] === palette::SURFACE_LIGHT;
@@ -538,13 +560,8 @@ class company_style {
                 '}';
         }
         // The font of the company: its faces, then the font of the text.
-        if ($settings['font'] && ($font = self::font((int) ($company->id ?? 0), $settings['font'], $settings['fontname']))) {
+        if ($settings['font'] && ($font = self::font($companyid, $settings['font'], (string) ($settings['fontname'] ?? '')))) {
             $css .= $font[0] . 'body,.tooltip,.popover{font-family:' . $font[1] . ';}';
-        }
-        if (!empty($company->customcss)) {
-            // The custom CSS of the company, as IOMAD's own theme applies it. A closing style
-            // tag would end the style element early, so it is neutralised.
-            $css .= str_ireplace('</style', '<\/style', (string) $company->customcss);
         }
         return $css;
     }

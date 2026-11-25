@@ -39,8 +39,8 @@ class activity_icons {
      * @return string brand, moodle or none.
      */
     public static function current(): string {
-        $company = company_style::current_company();
-        if ($company && ($choice = company_style::settings((int) $company->id)['activityicons'] ?? '')) {
+        // The choice of the company of the user, or of the entity of the page on Moodle.
+        if ($choice = company_style::company_value('activityicons')) {
             return $choice;
         }
         return self::site();
