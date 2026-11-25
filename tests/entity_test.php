@@ -156,6 +156,13 @@ final class entity_test extends \advanced_testcase {
         // In a course of the entity, for anyone.
         $this->setUser($guest);
         $PAGE->set_context(\context_course::instance($course->id));
+        if (iomad::installed()) {
+            // With IOMAD, the companies are the entities: those of the categories are not offered.
+            $this->assertFalse(entity::available());
+            $this->assertNull(entity::current());
+            $this->assertSame('', entity::current_css());
+            return;
+        }
         $this->assertSame((int) $iae->id, entity::current()->id);
         $this->assertSame('#0F766E', company_style::page_brand());
         $this->assertSame('brand', company_style::header_style());
