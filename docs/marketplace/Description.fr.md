@@ -9,7 +9,7 @@ Choisissez une couleur de marque (ou cliquez-la dans votre logo) : Épure en dé
 - Des préférences d'affichage pour chaque utilisateur, visiteurs compris (« Aa ») : texte jusqu'à 200 %, polices adaptées à la dyslexie, espacement, lignes courtes, contraste renforcé, animations réduites, règle ou masque de lecture, sombre, jaune sur noir ou crème, lecture à voix haute avec les voix locales de l'appareil. Des profils en un clic : Dyslexie, Basse vision, Concentration, Sans clignotement.
 - Des pages qui s'adaptent jusqu'à 320 px à 200 %, un focus toujours visible, des cibles de 24 px, des raccourcis clavier.
 - Une déclaration d'accessibilité remplie pas à pas, et une page publique « Ce que couvre Épure » : la grille entière du référentiel (106 critères du RGAA, EN 301 549 ou WCAG 2.2), qui répond à chaque critère et son état dans un pré-audit de référence, à télécharger.
-- Un vérificateur de contenu pendant la saisie, et un guide « Accessibilité du cours » : toutes les activités et les 47 plugins d'activité les plus installés, les documents bureautiques et PDF, les paquets SCORM et IMS (Storyline, Rise, HTML) ; chaque erreur avec sa gravité, un score sur 100 %, des corrections depuis le guide ; deux capacités pour qui l'utilise et qui confirme.
+- Un vérificateur de contenu pendant la saisie, et un guide « Accessibilité du cours » : toutes les activités et les 47 plugins d'activité les plus installés, les documents bureautiques et PDF, les paquets SCORM et IMS (Storyline, Rise, HTML), les contenus H5P, les noms de sections ; chaque erreur avec sa gravité, un score sur 100 %, des corrections depuis le guide ; deux capacités pour qui l'utilise et qui confirme.
 - L'accessibilité de tous les cours sur un tableau de bord de gestion, semaine après semaine, avec des alertes si le calcul échoue.
 - Des défauts de Moodle réparés là où un thème le peut (calendrier, formulaires, tableaux, éditeur, messages d'état…), dont plusieurs relevés par un audit RGAA et par le VPAT de Moodle LMS.
 - Un pré-audit automatisé (axe-core, WCAG 2.2 AA) de 76 pages dans tous les affichages, à chaque modification ; un pré-audit RGAA de référence sur Moodle 4.5 et 5.3 : 80 critères conformes, aucun non conforme, 9 à vérifier par un auditeur.
@@ -31,9 +31,12 @@ Choisissez une couleur de marque (ou cliquez-la dans votre logo) : Épure en dé
 - Recherche rapide (Ctrl+K), réglages en onglets, accueil de l'administration plus clair, formulaires longs plus faciles à enregistrer.
 - Un pied de page écrit dans l'éditeur, des e-mails aux couleurs de la marque et un modèle d'attestation.
 
-### Avec IOMAD
+### Plusieurs entités, sans copie du thème
 
-Chaque entreprise a ses couleurs, son logo, sa police, son vocabulaire, sa déclaration d'accessibilité et son tableau de bord de gestion.
+Universités, groupes, réseaux : chaque composante, école ou filiale a ses couleurs, son logo, son en-tête, son pied de page et son vocabulaire, avec un seul Épure pour tout le site.
+
+- **Sans IOMAD** : l'entité est une catégorie de cours. Ses cours la prennent, comme avec un thème de catégorie ; hors des cours, les membres de ses cohortes la prennent, comme avec un thème de cohorte. Épure reconnaît les catégories et cohortes dont le thème est Épure, et aide à quitter les copies de thèmes de catégorie.
+- **Avec IOMAD** : chaque entreprise a aussi sa police, sa page de connexion, sa déclaration d'accessibilité et son tableau de bord de gestion.
 
 ### Compatibilité
 
