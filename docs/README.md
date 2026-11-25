@@ -9,7 +9,7 @@
 - **Des outils de navigation** : recherche rapide Ctrl+K, barre de navigation mobile, application web installable.
 - **Le vocabulaire de votre organisation** (formation, stagiaire, formateur…) appliqué à tout Moodle.
 - **IOMAD** : apparence, vocabulaire, pied de page et options par entreprise, tableau de bord IOMAD réorganisé.
-- **Plusieurs entités sans IOMAD** : une apparence par catégorie, pour ses cours et les membres de ses cohortes, sans copie du thème.
+- **Plusieurs entités sans IOMAD** : une apparence et un vocabulaire par catégorie, pour ses cours et les membres de ses cohortes, sans copie du thème.
 - **L'accessibilité** : préférences d'affichage de chaque utilisateur, visiteurs compris (texte jusqu'à 200 %, polices, couleurs, lecture à voix haute, profils), affichage par défaut du site, déclaration d'accessibilité (RGAA, WCAG 2.1 AA), guide « Accessibilité du cours » avec score, défauts de Moodle réparés, pré-audit axe-core automatique.
 - **Le pilotage** : un tableau de bord de gestion (activité, cours, achèvement, accessibilité de tous les cours), aussi pour chaque entreprise IOMAD.
 

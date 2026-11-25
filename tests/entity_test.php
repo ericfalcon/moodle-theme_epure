@@ -223,4 +223,62 @@ final class entity_test extends \advanced_testcase {
         $this->assertFalse(get_config('theme_epure', entity::PREFIX . $category->id));
         $this->assertFalse(entity::exists((int) $category->id));
     }
+
+    /**
+     * The words of an entity: only those of the list or typed (cleaned), for the members of its cohorts; the string
+     * manager is then needed, and the strings change for them only.
+     */
+    public function test_vocabulary(): void {
+        global $CFG;
+        $this->resetAfterTest();
+        set_config('theme', 'epure');
+        $category = $this->getDataGenerator()->create_category(['name' => 'IAE']);
+        $this->assertFalse(entity::vocabulary_active());
+
+        $fr = fn(string $concept, string $suffix = '') => vocabulary\terms::setting('fr', $concept, ...($suffix ? [$suffix] : []));
+        $vocabulary = entity::clean_vocabulary([
+            $fr('course') => 'parcours',
+            $fr('student') => vocabulary\terms::CUSTOM,
+            $fr('student', 'singular') => 'apprenti<script>',
+            $fr('student', 'plural') => 'apprentis',
+            $fr('student', 'gender') => 'm',
+            $fr('teacher') => 'nope',
+        ]);
+        $this->assertSame('parcours', $vocabulary[$fr('course')]);
+        $this->assertSame('apprentiscript', $vocabulary[$fr('student', 'singular')]);
+        $this->assertArrayNotHasKey($fr('teacher'), $vocabulary);
+
+        entity::save($category->id, ['vocabulary' => $vocabulary]);
+        $this->assertTrue(entity::vocabulary_active());
+        $rewriter = vocabulary\company::entity_rewriter((int) $category->id, 'fr');
+        $this->assertSame('Mes parcours', $rewriter->rewrite('Mes cours'));
+        $this->assertSame('Ajouter un apprentiscript', $rewriter->rewrite('Ajouter un étudiant'));
+        $this->assertNull(vocabulary\company::entity_rewriter((int) $category->id, 'en'), 'No words in English.');
+
+        $manager = new class ($CFG->langotherroot, $CFG->langlocalroot, []) extends string_manager {
+            /** @var int Entity of the user in the test. */
+            public int $fakeentity = 0;
+
+            /**
+             * Entity of the user in the test.
+             *
+             * @return int
+             */
+            protected function entity_id(): int {
+                return $this->fakeentity;
+            }
+        };
+        $manager->fakeentity = (int) $category->id;
+        entity::save($category->id, ['vocabulary' => [vocabulary\terms::setting('en', 'course') => 'programme']]);
+        vocabulary\company::reset();
+        $manager->reset_caches();
+        $this->assertStringContainsStringIgnoringCase('programme', $manager->get_string('addnewcourse', 'moodle', null, 'en'));
+        $manager->fakeentity = 0;
+        $manager->reset_caches();
+        $this->assertSame('Add a new course', $manager->get_string('addnewcourse', 'moodle', null, 'en'));
+
+        // No words left: the string manager is no longer needed.
+        entity::save($category->id, ['vocabulary' => []]);
+        $this->assertFalse(entity::vocabulary_active());
+    }
 }

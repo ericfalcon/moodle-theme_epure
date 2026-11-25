@@ -8,7 +8,8 @@ Une entité est une **catégorie de cours** qui a son apparence :
 - logo, et sa version pour l'en-tête à la couleur de marque ;
 - couleur de l'en-tête, police (celles du thème ou celle du site), mode sombre, couleurs des icônes d'activités, arrondis ;
 - pages et navigation : bannière des cours, aperçu de l'apprenant, barre de navigation mobile, catalogue, recherche rapide, pages d'activité, progression des sections, Mes cours par rôle, guide « Accessibilité du cours », fil d'Ariane, blocs et tableau de bord sur téléphone, vue simplifiée ;
-- pied de page : texte, mentions légales, données personnelles, contact, liens.
+- pied de page : texte, mentions légales, données personnelles, contact, liens ;
+- vocabulaire : ses mots pour les cours, les étudiants et les enseignants (« parcours », « apprenti », « formateur »…), en français et en anglais, comme une entreprise IOMAD (voir [Vocabulaire](Vocabulaire.md)).
 
 Chaque champ laissé « Comme le site » garde le réglage du site. Le SCSS personnalisé (onglet Avancé) reste celui du site : il est compilé une fois pour tous. Les e-mails et la page de connexion gardent l'apparence du site, car Moodle ne sait pas encore à quelle entité appartient leur destinataire ou leur visiteur.
 
@@ -21,6 +22,8 @@ Chaque champ laissé « Comme le site » garde le réglage du site. Le SCSS pers
    - les cohortes choisies dans son apparence (« Cohortes de l'entité ») ;
    - les cohortes dont le thème est Épure, dans le contexte de sa catégorie ou d'une de ses sous-catégories.
 3. Un utilisateur des cohortes de **deux entités**, ou d'aucune, voit **le site**, comme Moodle avec deux thèmes de cohorte.
+
+**Le vocabulaire suit l'utilisateur, pas la page** : les mots de l'entité s'appliquent aux membres de ses cohortes, partout dans Moodle, y compris dans les cours d'autres catégories. Un visiteur de ses cours qui n'est pas dans ses cohortes, et un utilisateur des cohortes de deux entités, gardent les mots du site. Changer les mots selon la page mélangerait ceux d'une même page : Moodle charge une partie des textes avant de connaître la page, et le navigateur garde les textes des scripts pour toutes les pages. Les mots des langues que le site n'a pas installées sont gardés, prêts quand elles le seront.
 
 Moodle n'a pas d'inscription à une catégorie : les membres d'une entité sont ceux de ses cohortes, souvent celles qui les inscrivent à ses cours (méthode « Synchronisation des cohortes »), alimentées par l'annuaire ou le système d'information de scolarité.
 

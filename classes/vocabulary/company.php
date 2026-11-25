@@ -185,4 +185,39 @@ class company {
     public static function reset(): void {
         self::$rewriters = [];
     }
+
+    /**
+     * Rewriter of the strings for the members of an entity (a course category with words of its own, without IOMAD,
+     * {@see \theme_epure\entity}): its words for course, student and teacher where they differ from those of the site.
+     *
+     * @param int $categoryid Category of the entity.
+     * @param string $lang Language.
+     * @return rewriter|null Null when the entity keeps the words of the site.
+     */
+    public static function entity_rewriter(int $categoryid, string $lang): ?rewriter {
+        $key = 'e' . $categoryid;
+        if (!array_key_exists($lang, self::$rewriters[$key] ?? [])) {
+            $targets = [];
+            $sources = [];
+            if (in_array($lang, terms::LANGUAGES, true)) {
+                $values = \theme_epure\entity::settings($categoryid)['vocabulary'];
+                foreach (terms::CONCEPTS as $concept) {
+                    // No choice: the word of the site. The word of the language pack can be a choice, as for a company.
+                    if (!$values || !($term = terms::chosen($lang, $concept, $values, false))) {
+                        continue;
+                    }
+                    $platform = self::platform($lang, $concept)
+                        ?? terms::presets()[$lang][$concept][terms::DEFAULTS[$lang][$concept]];
+                    if (self::same($term, $platform)) {
+                        continue;
+                    }
+                    $targets[$concept] = $term;
+                    $site = self::platform($lang, $concept);
+                    $sources[$concept] = array_merge($site ? [$site] : [], terms::pack_words($lang, $concept));
+                }
+            }
+            self::$rewriters[$key][$lang] = $targets ? rewriter::for_language($lang, $targets, $sources) : null;
+        }
+        return self::$rewriters[$key][$lang];
+    }
 }

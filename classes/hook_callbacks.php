@@ -43,7 +43,7 @@ class hook_callbacks {
         self::give_back_certificate_frames();
         if (
             during_initial_install() || !empty($CFG->config_php_settings['customstringmanager'])
-                || !company_style::iomad_installed() || !company::active()
+                || !((company_style::iomad_installed() && company::active()) || entity::vocabulary_active())
         ) {
             return;
         }

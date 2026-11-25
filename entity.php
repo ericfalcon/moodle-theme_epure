@@ -74,7 +74,7 @@ if ($form->is_cancelled()) {
     redirect($back);
 }
 if ($data = $form->get_data()) {
-    entity::save($category->id, entity_form::values($data));
+    entity::save($category->id, entity_form::values($data, entity::settings($category->id)['vocabulary']));
     foreach (entity::FILE_AREAS as $area) {
         file_save_draft_area_files(
             $data->$area,
@@ -115,6 +115,9 @@ foreach (entity::blocked_settings() as $setting) {
     ))->out(false)), \core\output\notification::NOTIFY_WARNING, false);
 }
 
+if (!\theme_epure\hook_callbacks::string_manager_available()) {
+    echo $OUTPUT->notification(get_string('entityvocabunavailable', 'theme_epure'), \core\output\notification::NOTIFY_WARNING);
+}
 $form->display();
 if (entity::exists($category->id)) {
     echo $OUTPUT->single_button(

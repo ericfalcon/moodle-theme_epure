@@ -123,7 +123,65 @@ class entity {
         $cohorts = array_values(array_unique(array_filter(array_map('intval', (array) ($values['cohorts'] ?? [])))));
         sort($cohorts);
         $settings['cohorts'] = $cohorts;
+        $settings['vocabulary'] = self::clean_vocabulary((array) ($values['vocabulary'] ?? []));
         return $settings;
+    }
+
+    /**
+     * Keeps the valid words of an entity: for each language and each of course, student and teacher, a word of the list
+     * or one typed (cleaned as those of the companies), empty for the word of the site.
+     *
+     * @param array $values Setting names of the vocabulary ({@see vocabulary\terms::setting()}) => values.
+     * @return array<string, string> Only the words chosen.
+     */
+    public static function clean_vocabulary(array $values): array {
+        $clean = [];
+        $presets = vocabulary\terms::presets();
+        foreach (vocabulary\terms::LANGUAGES as $lang) {
+            foreach (vocabulary\terms::CONCEPTS as $concept) {
+                $name = vocabulary\terms::setting($lang, $concept);
+                $choice = (string) ($values[$name] ?? '');
+                if ($choice === vocabulary\terms::CUSTOM) {
+                    $field = vocabulary\terms::setting($lang, $concept, 'singular');
+                    $singular = vocabulary\terms::clean_word((string) ($values[$field] ?? ''));
+                    if ($singular === '') {
+                        continue;
+                    }
+                    $clean[$name] = $choice;
+                    $clean[vocabulary\terms::setting($lang, $concept, 'singular')] = $singular;
+                    $clean[vocabulary\terms::setting($lang, $concept, 'plural')] = vocabulary\terms::clean_word(
+                        (string) ($values[vocabulary\terms::setting($lang, $concept, 'plural')] ?? '')
+                    );
+                    $clean[vocabulary\terms::setting($lang, $concept, 'gender')] =
+                        ($values[vocabulary\terms::setting($lang, $concept, 'gender')] ?? '') === 'f' ? 'f' : 'm';
+                } else if ($choice !== '' && isset($presets[$lang][$concept][$choice])) {
+                    $clean[$name] = $choice;
+                }
+            }
+        }
+        return $clean;
+    }
+
+    /**
+     * Whether an entity has words of its own: the string manager of the theme is then needed
+     * ({@see hook_callbacks::after_config()}).
+     *
+     * @return bool
+     */
+    public static function vocabulary_active(): bool {
+        return get_config('theme_epure', 'entityvocab') === '1';
+    }
+
+    /**
+     * After a change of the words of an entity: whether some entity has words, and the strings to load again.
+     */
+    protected static function vocabulary_changed(): void {
+        self::$all = null;
+        $any = (bool) array_filter(array_column(self::all(), 'vocabulary'));
+        set_config('entityvocab', $any ? '1' : '0', 'theme_epure');
+        set_config('companyrev', time(), 'theme_epure');
+        vocabulary\company::reset();
+        get_string_manager()->reset_caches();
     }
 
     /**
@@ -133,8 +191,13 @@ class entity {
      * @param array $values Values of {@see self::settings()}.
      */
     public static function save(int $categoryid, array $values): void {
-        set_config(self::PREFIX . $categoryid, json_encode(self::clean($values)), 'theme_epure');
+        $before = self::settings($categoryid)['vocabulary'];
+        $settings = self::clean($values);
+        set_config(self::PREFIX . $categoryid, json_encode($settings), 'theme_epure');
         self::reset();
+        if ($settings['vocabulary'] !== $before) {
+            self::vocabulary_changed();
+        }
     }
 
     /**
@@ -143,12 +206,16 @@ class entity {
      * @param int $categoryid Category.
      */
     public static function delete(int $categoryid): void {
+        $words = (bool) self::settings($categoryid)['vocabulary'];
         unset_config(self::PREFIX . $categoryid, 'theme_epure');
         $fs = get_file_storage();
         foreach (self::FILE_AREAS as $area) {
             $fs->delete_area_files(\context_system::instance()->id, 'theme_epure', $area, $categoryid);
         }
         self::reset();
+        if ($words) {
+            self::vocabulary_changed();
+        }
     }
 
     /**
