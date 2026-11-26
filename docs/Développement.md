@@ -22,6 +22,10 @@ Les tests Behat passent l'audit axe-core de Moodle (« the page should meet acce
 
 L'intégration continue teste Moodle 4.5 à 5.3 (PostgreSQL, et MariaDB pour 4.5 et 5.3) et IOMAD 4.5, 5.0, 5.1 et 5.2. Elle teste aussi la version de développement de Moodle (6.0, branche `main`), sans bloquer une fusion, et tourne chaque samedi même sans modification du thème, après les publications hebdomadaires de Moodle : ce que la 6.0 change se voit la semaine même, pour que la version qui la prend en charge soit prête à sa sortie. Les tests Behat couvrent les formats de cours thématique, hebdomadaire (avec une sous-section), activité unique et informel, avec l'audit axe-core.
 
+Les formats de cours d'autres plugins les plus installés sont testés sur les versions de Moodle que prend en charge leur branche : Grid et Collapsed Topics (4.5), Collapsed Topics, Flexible Sections et Tiles (5.2), Flexible Sections (5.3), et Section tabs (4.5, 5.2, 5.3). La page d'un cours de chaque format, côté apprenant, passe l'audit axe-core dans tous les affichages (`tests/behat/course_formats_plugins.feature`) ; le scénario est sauté là où le format n'est pas installé.
+
+Pour contribuer : le [guide de contribution](../CONTRIBUTING.md) ; les défauts de Moodle que répare Épure, et leurs tickets : [Réparations de Moodle](R%C3%A9parations-de-Moodle.md).
+
 Behat tourne aussi sur IOMAD 4.5, 5.0, 5.1 et 5.2. Deux contextes Behat d'IOMAD, qui empêchent Behat de démarrer, sont retirés du clone d'IOMAD de l'intégration continue : celui d'`auth_iomadsaml2` (signature incompatible sur IOMAD 4.5) et celui de `tool_iomadpolicy` (il redéfinit une étape de `tool_policy`). Un scénario vérifie qu'un apprenant d'une entreprise voit la couleur et le logo de son entreprise, qu'un utilisateur sans entreprise garde la couleur du site, et que la page « Mes cours » d'IOMAD est la page par rôle d'Épure, avec l'audit axe-core. Les scénarios IOMAD (étiquette `@theme_epure_iomad`) tournent sur les tâches IOMAD, les autres sur les tâches Moodle.
 
 ## Performances

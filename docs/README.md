@@ -23,11 +23,11 @@
 6. [Mode sombre, e-mails et mises à jour](Mode-sombre-et-e-mails.md)
 7. [Vocabulaire](Vocabulaire.md)
 8. [IOMAD](IOMAD.md) et [entités par catégorie et cohorte](Entit%C3%A9s-par-cat%C3%A9gorie-et-cohorte.md)
-9. [Accessibilité](Accessibilit%C3%A9.md) et [rapport de pré-audit](Pr%C3%A9-audit-d%E2%80%99accessibilit%C3%A9.md)
+9. [Accessibilité](Accessibilit%C3%A9.md), [rapport de pré-audit](Pr%C3%A9-audit-d%E2%80%99accessibilit%C3%A9.md) et [réparations de Moodle](R%C3%A9parations-de-Moodle.md)
 10. [Tableau de bord de gestion](Tableau-de-bord-de-gestion.md)
 11. [Données personnelles](Donn%C3%A9es-personnelles.md)
 12. [Questions fréquentes](FAQ.md)
-13. [Développement](D%C3%A9veloppement.md) et [variables CSS `--epure-*`](Variables-CSS.md)
+13. [Développement](D%C3%A9veloppement.md), [variables CSS `--epure-*`](Variables-CSS.md) et [guide de contribution](../CONTRIBUTING.md)
 
 La documentation en anglais est dans le [README du thème](../README.md).
 
