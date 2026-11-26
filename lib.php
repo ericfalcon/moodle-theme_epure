@@ -312,3 +312,35 @@ function theme_epure_extend_navigation_course(navigation_node $navigation, stdCl
 function theme_epure_extend_navigation_category_settings(navigation_node $navigation, context_coursecat $context) {
     \theme_epure\entity::extend_navigation($navigation, $context);
 }
+
+/**
+ * Adds « My entity » to the preferences of a user in the cohorts of several entities (theme_epure\entity).
+ *
+ * @param navigation_node $parentnode Preferences of the user.
+ * @param stdClass $user User.
+ * @param context_user $usercontext Context of the user.
+ * @param stdClass $course Course.
+ * @param context_course $coursecontext Context of the course.
+ */
+function theme_epure_extend_navigation_user_settings(
+    navigation_node $parentnode,
+    stdClass $user,
+    context_user $usercontext,
+    stdClass $course,
+    context_course $coursecontext
+) {
+    global $USER;
+    if (
+        (int) $user->id === (int) $USER->id && \theme_epure\entity::available()
+            && count(\theme_epure\entity::of_user_all((int) $user->id)) > 1
+    ) {
+        $parentnode->add(
+            get_string('myentity', 'theme_epure'),
+            new moodle_url('/theme/epure/myentity.php'),
+            navigation_node::TYPE_SETTING,
+            null,
+            'theme_epure_myentity',
+            new pix_icon('i/settings', '')
+        );
+    }
+}

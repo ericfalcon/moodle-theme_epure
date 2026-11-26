@@ -75,11 +75,12 @@ if (!$entities) {
     $table->caption = get_string('entitieslist', 'theme_epure');
     $table->captionhide = true;
     $table->head = [get_string('category'), get_string('brandcolor', 'theme_epure'), get_string('entitycohorts', 'theme_epure'),
-        get_string('actions')];
+        get_string('entitypriority', 'theme_epure'), get_string('actions')];
     foreach ($entities as $id => $settings) {
         $cohorts = array_keys(array_filter($map, fn($ids) => in_array($id, $ids, true)));
         $edit = html_writer::link(entity::url($id), get_string('entityedit', 'theme_epure', $categoryname($id)));
-        $table->data[] = [s($categoryname($id)), $swatch((string) $settings['brandcolor']), s($cohortnames($cohorts)), $edit];
+        $table->data[] = [s($categoryname($id)), $swatch((string) $settings['brandcolor']), s($cohortnames($cohorts)),
+            (int) $settings['priority'], $edit];
     }
     echo html_writer::table($table);
 }

@@ -288,4 +288,79 @@ final class entity_test extends \advanced_testcase {
         entity::save($category->id, ['vocabulary' => []]);
         $this->assertFalse(entity::vocabulary_active());
     }
+
+    /**
+     * A user in the cohorts of two entities: the one they chose, else the one with the highest priority, else the site.
+     */
+    public function test_priority_and_choice(): void {
+        global $CFG;
+        require_once($CFG->dirroot . '/cohort/lib.php');
+        $this->resetAfterTest();
+        $generator = $this->getDataGenerator();
+        $iae = $generator->create_category(['name' => 'IAE']);
+        $letters = $generator->create_category(['name' => 'Letters']);
+        $first = $this->cohort('IAE students', \context_system::instance());
+        $second = $this->cohort('Letters students', \context_system::instance());
+        entity::save($iae->id, ['brandcolor' => '#0f766e', 'cohorts' => [$first]]);
+        entity::save($letters->id, ['brandcolor' => '#7c3aed', 'cohorts' => [$second]]);
+        $user = $generator->create_user();
+        cohort_add_member($first, $user->id);
+        cohort_add_member($second, $user->id);
+
+        $this->assertSame([(int) $iae->id, (int) $letters->id], entity::of_user_all((int) $user->id));
+        $this->assertSame(0, entity::of_user((int) $user->id), 'Same priority: the site.');
+
+        entity::save($letters->id, ['brandcolor' => '#7c3aed', 'cohorts' => [$second], 'priority' => 3]);
+        $this->assertSame(3, entity::settings($letters->id)['priority']);
+        $this->assertSame((int) $letters->id, entity::of_user((int) $user->id), 'The highest priority.');
+
+        set_user_preference(entity::PREFERENCE, $iae->id, $user);
+        entity::reset();
+        $this->assertSame((int) $iae->id, entity::of_user((int) $user->id), 'The choice of the user.');
+
+        // A choice that is no longer one of their entities is ignored.
+        set_user_preference(entity::PREFERENCE, 999999, $user);
+        entity::reset();
+        $this->assertSame((int) $letters->id, entity::of_user((int) $user->id));
+        $this->assertSame(entity::MAX_PRIORITY, entity::clean(['priority' => 100])['priority']);
+    }
+
+    /**
+     * The e-mails to a member of the cohorts of an entity get its colour, name and footer; its CSS and its login texts are
+     * kept with its appearance.
+     */
+    public function test_email_and_login(): void {
+        global $CFG;
+        require_once($CFG->dirroot . '/cohort/lib.php');
+        $this->resetAfterTest();
+        if (iomad::installed()) {
+            $this->assertFalse(entity::available());
+            return;
+        }
+        $generator = $this->getDataGenerator();
+        $iae = $generator->create_category(['name' => 'IAE']);
+        $cohort = $this->cohort('IAE students', \context_system::instance());
+        entity::save($iae->id, ['brandcolor' => '#0f766e', 'cohorts' => [$cohort], 'footertext' => 'IAE footer',
+            'logintagline' => 'Welcome', 'customcss' => 'body{}</style><script>', 'loginlayout' => 'centered']);
+        $member = $generator->create_user();
+        cohort_add_member($cohort, $member->id);
+        $other = $generator->create_user();
+
+        $email = email::export((int) $member->id);
+        $this->assertSame(palette::derive('#0F766E')['fill'], $email['brand']);
+        $this->assertSame('IAE', $email['name']);
+        $this->assertSame('IAE footer', $email['footertext']);
+        $this->assertNotSame('IAE', email::export((int) $other->id)['name']);
+
+        $settings = entity::settings($iae->id);
+        $this->assertSame('Welcome', $settings['logintagline']);
+        $this->assertSame('centered', $settings['loginlayout']);
+        $this->assertStringContainsString('/login/index.php?entity=' . $iae->id, entity::login_url((int) $iae->id)->out(false));
+
+        // The CSS of the entity cannot close the style element of the page.
+        global $PAGE;
+        $this->setUser($member);
+        $PAGE->set_context(\context_system::instance());
+        $this->assertStringNotContainsString('</style', entity::current_css());
+    }
 }

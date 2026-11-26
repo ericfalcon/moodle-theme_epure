@@ -80,11 +80,19 @@ class email {
         global $CFG;
         $company = self::company_of($userid);
         $settings = $company ? company_style::settings((int) $company->id) : [];
+        // On Moodle, the entity of the cohorts of the recipient (theme_epure\entity): its colour, logo, name and footer.
+        $entity = !$company && $userid && entity::available() ? entity::of_user($userid) : 0;
+        $category = $entity ? \core_course_category::get($entity, IGNORE_MISSING, true) : null;
+        if ($category) {
+            $settings = entity::settings($entity);
+        }
         $brand = ($company ? company_style::brand_colour($company) : null)
+            ?? ($category && $settings['brandcolor'] !== '' ? $settings['brandcolor'] : null)
             ?? palette::normalise(get_config('theme_epure', 'brandcolor'));
         $palette = palette::derive($brand);
 
         $logo = $company ? company_style::logo_url((int) $company->id) : null;
+        $logo = $logo ?? ($category ? entity::logo_url($entity) : null);
         $logo = $logo ?? logos::url('logo');
         if (!$logo) {
             foreach (['logo', 'logocompact'] as $setting) {
@@ -104,7 +112,8 @@ class email {
 
         $context = \context_system::instance();
         $site = format_string(get_site()->fullname, true, ['context' => $context]);
-        $name = $company ? format_string($company->name, true, ['context' => $context]) : $site;
+        $name = $company ? format_string($company->name, true, ['context' => $context])
+            : ($category ? $category->get_formatted_name() : $site);
         $text = trim((string) (($settings['footertext'] ?? '') !== '' ? $settings['footertext']
             : get_config('theme_epure', 'footertext')));
         return [

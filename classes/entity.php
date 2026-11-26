@@ -45,7 +45,16 @@ class entity {
     public const FILE_TYPES = ['svg', 'png', 'webp', 'jpg', 'jpeg'];
 
     /** @var string[] Settings of a company that an entity has not: e-mails, login page and the font uploaded for a company. */
-    public const NOT_FOR_ENTITIES = ['emailbranding', 'loginlayout', 'logintagline', 'logintext', 'fontname'];
+    public const NOT_FOR_ENTITIES = ['emailbranding', 'fontname'];
+
+    /** @var string Parameter of the address of the login page of an entity: /login/index.php?entity=<category>. */
+    public const LOGIN_PARAM = 'entity';
+
+    /** @var string User preference: the entity chosen by a user in the cohorts of several entities. */
+    public const PREFERENCE = 'theme_epure_entity';
+
+    /** @var int Highest priority of an entity. */
+    public const MAX_PRIORITY = 9;
 
     /** @var array<int, array>|null Appearances of the site, by category, cached for the request. */
     protected static ?array $all = null;
@@ -55,6 +64,9 @@ class entity {
 
     /** @var array<int, int> Entity of the cohorts of each user (0: none), cached for the request. */
     protected static array $users = [];
+
+    /** @var array<int, int[]> Entities of the cohorts of each user, cached for the request. */
+    protected static array $userentities = [];
 
     /**
      * Whether the entities apply: on Moodle, not on IOMAD, whose companies are the entities.
@@ -123,6 +135,10 @@ class entity {
         $cohorts = array_values(array_unique(array_filter(array_map('intval', (array) ($values['cohorts'] ?? [])))));
         sort($cohorts);
         $settings['cohorts'] = $cohorts;
+        // CSS added to the pages of the entity, set by the administrators of the site only (theme_epure\form\entity_form).
+        $settings['customcss'] = trim((string) ($values['customcss'] ?? ''));
+        // For a user in the cohorts of several entities: the one with the highest priority, when it is the only one.
+        $settings['priority'] = max(0, min(self::MAX_PRIORITY, (int) ($values['priority'] ?? 0)));
         $settings['vocabulary'] = self::clean_vocabulary((array) ($values['vocabulary'] ?? []));
         return $settings;
     }
@@ -307,15 +323,15 @@ class entity {
     }
 
     /**
-     * The entity of the cohorts of a user: the only one they lead to.
+     * The entities the cohorts of a user lead to.
      *
      * @param int $userid User.
-     * @return int Category of the entity, 0 when the cohorts of the user lead to none, or to several.
+     * @return int[] Categories of the entities, in the order of their categories.
      */
-    public static function of_user(int $userid): int {
+    public static function of_user_all(int $userid): array {
         global $DB;
-        if (!array_key_exists($userid, self::$users)) {
-            self::$users[$userid] = 0;
+        if (!array_key_exists($userid, self::$userentities)) {
+            self::$userentities[$userid] = [];
             $map = $userid ? self::cohort_map() : [];
             if ($map) {
                 [$insql, $params] = $DB->get_in_or_equal(array_keys($map), SQL_PARAMS_NAMED);
@@ -331,8 +347,41 @@ class entity {
                         $entities[$categoryid] = true;
                     }
                 }
-                self::$users[$userid] = count($entities) === 1 ? (int) array_key_first($entities) : 0;
+                ksort($entities);
+                self::$userentities[$userid] = array_map('intval', array_keys($entities));
             }
+        }
+        return self::$userentities[$userid];
+    }
+
+    /**
+     * The entity of the cohorts of a user: the only one they lead to; among several, the one the user chose
+     * ({@see self::PREFERENCE}), else the one with the highest priority when no other has it.
+     *
+     * @param int $userid User.
+     * @return int Category of the entity, 0 when the cohorts of the user lead to none, or to several without a choice.
+     */
+    public static function of_user(int $userid): int {
+        if (!array_key_exists($userid, self::$users)) {
+            $entities = self::of_user_all($userid);
+            $entity = 0;
+            if (count($entities) === 1) {
+                $entity = $entities[0];
+            } else if ($entities) {
+                $chosen = (int) get_user_preferences(self::PREFERENCE, 0, $userid);
+                if (in_array($chosen, $entities, true)) {
+                    $entity = $chosen;
+                } else {
+                    $priorities = [];
+                    foreach ($entities as $categoryid) {
+                        $priorities[$categoryid] = (int) self::settings($categoryid)['priority'];
+                    }
+                    $highest = max($priorities);
+                    $first = array_keys($priorities, $highest, true);
+                    $entity = count($first) === 1 ? (int) $first[0] : 0;
+                }
+            }
+            self::$users[$userid] = $entity;
         }
         return self::$users[$userid];
     }
@@ -360,11 +409,42 @@ class entity {
                 if (!$categoryid && isloggedin() && !isguestuser()) {
                     $categoryid = self::of_user((int) $USER->id);
                 }
+                // The login page of an entity (its address with ?entity=), kept in the session, as IOMAD keeps the
+                // company of its login page: before the login, and after it for a user out of every entity.
+                if (!$categoryid) {
+                    $categoryid = self::of_session();
+                }
                 $category = $categoryid ? \core_course_category::get($categoryid, IGNORE_MISSING, true) : null;
                 self::$current = $category ? (object) ['id' => (int) $category->id, 'name' => $category->name] : false;
             }
         }
         return self::$current ?: null;
+    }
+
+    /**
+     * The entity whose login page was opened (its address with ?entity=), kept in the session.
+     *
+     * @return int Category of the entity, 0 when none.
+     */
+    public static function of_session(): int {
+        global $SCRIPT, $SESSION;
+        // The parameter is read on the login page only: other pages can have a parameter of the same name.
+        $param = $SCRIPT === '/login/index.php' ? optional_param(self::LOGIN_PARAM, 0, PARAM_INT) : 0;
+        if ($param && self::exists($param)) {
+            $SESSION->theme_epure_entity = $param;
+        }
+        $id = (int) ($SESSION->theme_epure_entity ?? 0);
+        return $id && self::exists($id) ? $id : 0;
+    }
+
+    /**
+     * Address of the login page of an entity: its appearance and the texts of its login page before the login.
+     *
+     * @param int $categoryid Category of the entity.
+     * @return \moodle_url
+     */
+    public static function login_url(int $categoryid): \moodle_url {
+        return new \moodle_url('/login/index.php', [self::LOGIN_PARAM => $categoryid]);
     }
 
     /**
@@ -390,7 +470,9 @@ class entity {
             return '';
         }
         $settings = self::settings($entity->id);
-        return company_style::appearance_css($settings, $settings['brandcolor'] ?: null);
+        $css = company_style::appearance_css($settings, $settings['brandcolor'] ?: null);
+        // The CSS of the entity, as that of an IOMAD company: a closing style tag would end the style element early.
+        return $css . str_ireplace('</style', '<\\/style', $settings['customcss']);
     }
 
     /**
@@ -535,5 +617,6 @@ class entity {
         self::$all = null;
         self::$current = null;
         self::$users = [];
+        self::$userentities = [];
     }
 }
