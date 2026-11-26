@@ -18,6 +18,33 @@ vendor/bin/behat --config <behat_dataroot>/behatrun/behat/behat.yml --tags @them
 
 Les tests Behat passent l'audit axe-core de Moodle (« the page should meet accessibility standards ») sur le tableau de bord, les préférences d'affichage, la déclaration d'accessibilité et son formulaire pas à pas, la page de cours, les pages d'activité, le catalogue, la recherche rapide, les formulaires longs, la fenêtre « Ajouter un bloc », Ma synthèse et le réglage des émoticônes. Le pré-audit de la version courante (Moodle 4.5, Moodle 5.3 et IOMAD, par rôle, en clair, en sombre et sur téléphone, contrôles au clavier) est dans la documentation ([Pré-audit d'accessibilité](Pr%C3%A9-audit-d%E2%80%99accessibilit%C3%A9.md)).
 
+## Déclarer le contenu d'un module dans le guide d'accessibilité
+
+Un module tiers peut fournir les textes rédigés par les formateurs au guide « Accessibilité du cours » en déclarant, dans son `lib.php`, la fonction suivante :
+
+```php
+/**
+ * Texts written by teachers in this activity.
+ *
+ * @param cm_info $cm Activity.
+ * @return array<int, array{text: string, format?: int, name?: string, url?: string}>
+ */
+function mod_example_epure_accessibility_texts(cm_info $cm): array {
+    return [
+        [
+            'text' => '<h2>Instructions</h2><p>Read this first.</p>',
+            'format' => FORMAT_HTML,
+            'name' => 'Instructions',
+            'url' => (new moodle_url('/mod/example/edit.php', ['id' => $cm->id]))->out(false),
+        ],
+    ];
+}
+```
+
+Chaque entrée doit fournir un champ `text` de type chaîne non vide. `format` est une constante de format Moodle (par défaut `FORMAT_HTML`), `name` est facultatif et `url` pointe vers l'endroit où le formateur peut corriger le contenu. Les URL acceptées sont les chemins relatifs à la racine du site (commençant par un seul `/`) et les URL absolues HTTP ou HTTPS. Toute URL invalide est remplacée par le lien de modification de l'activité. Les entrées mal formées sont ignorées individuellement.
+
+Le callback ne doit retourner que le contenu pédagogique rédigé par les formateurs. Les contributions des apprenants (réponses, dépôts, messages, enregistrements) ne doivent pas être transmises. Une exception du callback est interceptée : elle est signalée en mode débogage développeur et ne doit pas empêcher l'ouverture du guide.
+
 ## Compatibilité testée
 
 L'intégration continue teste Moodle 4.5 à 5.3 (PostgreSQL, et MariaDB pour 4.5 et 5.3) et IOMAD 4.5, 5.0, 5.1 et 5.2. Les tests Behat couvrent les formats de cours thématique, hebdomadaire (avec une sous-section), activité unique et informel, avec l'audit axe-core.
