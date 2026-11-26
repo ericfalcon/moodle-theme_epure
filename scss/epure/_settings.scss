@@ -144,10 +144,16 @@
 }
 
 .epure-pl-modes {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
     margin-bottom: 1rem;
+
+    // Side by side when there is room, else one under the other, never wider than the region: at 320 px with the text
+    // at 200 %, a mode narrower than its base (WCAG 1.4.10).
+    > .epure-pl-mode {
+        flex: 1 1 16rem;
+    }
 }
 
 .epure-pl-mode {
@@ -162,6 +168,7 @@
     --pl-header-on: var(--pl-light-header-on);
     --pl-ink: #1d2125;
     --pl-line: #dee2e6;
+    min-width: 0;
     overflow: hidden;
     border: 1px solid var(--pl-line);
     border-radius: var(--epure-radius, .5rem);
@@ -186,7 +193,8 @@
 
 .epure-pl-header {
     display: flex;
-    gap: 1rem;
+    flex-wrap: wrap;
+    gap: .25rem 1rem;
     align-items: center;
     padding: .5rem .75rem;
     border-bottom: 1px solid var(--pl-line);
@@ -196,6 +204,7 @@
 
 .epure-pl-logo {
     margin-right: auto;
+    overflow-wrap: anywhere;
     font-weight: 700;
 }
 

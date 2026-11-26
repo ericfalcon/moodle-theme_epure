@@ -101,7 +101,7 @@ html.epure-a11y-contrast {
         border-color: var(--epure-contrast-border);
     }
 
-    a:not(.btn) {
+    a:not(.btn):not(.gtabs-tab) {
         color: var(--epure-brand-text);
     }
 
@@ -364,7 +364,8 @@ html.epure-a11y-focusring :focus-visible {
         --bs-emphasis-color: #ff0;
         --mds-text-emphasis: #ff0;
 
-        a:not(.btn) {
+        // The tabs of the course format Section tabs keep their text, chosen for their own background.
+        a:not(.btn):not(.gtabs-tab) {
             color: var(--epure-brand-text);
         }
     }
