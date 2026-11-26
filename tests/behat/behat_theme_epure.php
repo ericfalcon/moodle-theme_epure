@@ -968,4 +968,28 @@ class behat_theme_epure extends behat_base {
             throw new \Moodle\BehatExtension\Exception\SkippedException('The course format ' . $format . ' is not installed.');
         }
     }
+
+    /**
+     * Skips the scenario when an activity module is not installed: the activities of other plugins are added to some jobs
+     * of the continuous integration only.
+     *
+     * @Given /^the activity module "(?P<modname_string>(?:[^"]|\\")*)" is installed$/
+     * @param string $modname Name of the module, without mod_.
+     */
+    public function the_activity_module_is_installed(string $modname): void {
+        if (!\core_component::get_component_directory('mod_' . $modname)) {
+            throw new \Moodle\BehatExtension\Exception\SkippedException('The activity module ' . $modname . ' is not installed.');
+        }
+    }
+
+    /**
+     * Opens a page by its path, which can name a course, an activity or a user ({@see self::epure_path()}).
+     *
+     * @When /^I visit the Épure page "(?P<path_string>(?:[^"]|\\")*)"$/
+     * @param string $path Path, with {course SHORTNAME} and {cm IDNUMBER}.
+     */
+    public function i_visit_the_epure_page(string $path): void {
+        $this->getSession()->visit($this->locate_path($this->epure_path($path)));
+        $this->wait_for_pending_js();
+    }
 }

@@ -51,7 +51,9 @@ jobs:
           - { branch: MOODLE_500_STABLE, php: '8.3', certificate: MOODLE_500_STABLE }
           - { branch: MOODLE_501_STABLE, php: '8.3', certificate: MOODLE_500_STABLE }
           - { branch: MOODLE_502_STABLE, php: '8.3', certificate: MOODLE_500_STABLE, formats: 'gjb2048/moodle-format_topcoll@MOODLE_502 marinaglancy/moodle-format_flexsections@MOODLE_500_STABLE ericfalcon/moodle-format_tiles@MOODLE_502_STABLE ericfalcon/moodle-format_sectiontabs@main' }
-          - { branch: MOODLE_503_STABLE, php: '8.4', pg: '17', certificate: MOODLE_500_STABLE, formats: 'marinaglancy/moodle-format_flexsections@MOODLE_500_STABLE ericfalcon/moodle-format_sectiontabs@main' }
+          # The activities of other plugins most installed that the guide reads (tests/behat/activity_plugins.feature), at
+          # the branch of Moodle 5.3: repository@branch, separated by spaces.
+          - { branch: MOODLE_503_STABLE, php: '8.4', pg: '17', certificate: MOODLE_500_STABLE, formats: 'marinaglancy/moodle-format_flexsections@MOODLE_500_STABLE ericfalcon/moodle-format_sectiontabs@main', activities: 'danmarsden/moodle-mod_attendance@MOODLE_503_STABLE PoetOS/moodle-mod_questionnaire@MOODLE_503_STABLE davosmith/moodle-checklist@master elearningsoftware/moodle-mod_journal@master grabs/moodle-mod_unilabel@main davosmith/moodle-realtimequiz@master drachels/moodle-mod_diary@master bdecentgmbh/moodle-mod_videotime@master mdjnelson/moodle-mod_customcert@MOODLE_503_STABLE sokunthearithmakara/mod_interactivevideo@main' }
           - { branch: MOODLE_405_STABLE, php: '8.3', db: mariadb }
           - { branch: MOODLE_503_STABLE, php: '8.4', db: mariadb }
           # IOMAD, whose tables and classes were renamed in 5.1 (theme_epure\iomad knows both).
@@ -165,6 +167,14 @@ jobs:
             if grep -qE "component *= *'format_" "$file"; then
               find "$(dirname "$file")/tests/behat" -name '*.feature' -print -delete 2>/dev/null || true
             fi
+          done
+
+      # The activities of other plugins read by the guide, on the jobs that list them (activities).
+      - name: Add the activities of other plugins
+        if: ${{ matrix.include-moodle.activities }}
+        run: |
+          for spec in ${{ matrix.include-moodle.activities }}; do
+            moodle-plugin-ci add-plugin --branch "${spec#*@}" "${spec%@*}"
           done
 
       - name: Install Moodle and the plugin
