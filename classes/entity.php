@@ -62,6 +62,9 @@ class entity {
     /** @var \stdClass|false|null Entity of the current page, cached for the request. */
     protected static $current = null;
 
+    /** @var string What the cached entities were read for: the revision of the appearances, the page and the user. */
+    protected static string $cachekey = '';
+
     /** @var array<int, int> Entity of the cohorts of each user (0: none), cached for the request. */
     protected static array $users = [];
 
@@ -83,6 +86,7 @@ class entity {
      * @return array<int, array> Settings of each ({@see self::settings()}).
      */
     public static function all(): array {
+        self::check_cache();
         if (self::$all === null) {
             self::$all = [];
             $config = (array) get_config('theme_epure');
@@ -210,6 +214,7 @@ class entity {
         $before = self::settings($categoryid)['vocabulary'];
         $settings = self::clean($values);
         set_config(self::PREFIX . $categoryid, json_encode($settings), 'theme_epure');
+        set_config('entityrev', uniqid('', true), 'theme_epure');
         self::reset();
         if ($settings['vocabulary'] !== $before) {
             self::vocabulary_changed();
@@ -224,6 +229,7 @@ class entity {
     public static function delete(int $categoryid): void {
         $words = (bool) self::settings($categoryid)['vocabulary'];
         unset_config(self::PREFIX . $categoryid, 'theme_epure');
+        set_config('entityrev', uniqid('', true), 'theme_epure');
         $fs = get_file_storage();
         foreach (self::FILE_AREAS as $area) {
             $fs->delete_area_files(\context_system::instance()->id, 'theme_epure', $area, $categoryid);
@@ -330,8 +336,9 @@ class entity {
      */
     public static function of_user_all(int $userid): array {
         global $DB;
+        self::check_cache();
         if (!array_key_exists($userid, self::$userentities)) {
-            self::$userentities[$userid] = [];
+            $found = [];
             $map = $userid ? self::cohort_map() : [];
             if ($map) {
                 [$insql, $params] = $DB->get_in_or_equal(array_keys($map), SQL_PARAMS_NAMED);
@@ -348,8 +355,9 @@ class entity {
                     }
                 }
                 ksort($entities);
-                self::$userentities[$userid] = array_map('intval', array_keys($entities));
+                $found = array_map('intval', array_keys($entities));
             }
+            self::$userentities[$userid] = $found;
         }
         return self::$userentities[$userid];
     }
@@ -362,6 +370,7 @@ class entity {
      * @return int Category of the entity, 0 when the cohorts of the user lead to none, or to several without a choice.
      */
     public static function of_user(int $userid): int {
+        self::check_cache();
         if (!array_key_exists($userid, self::$users)) {
             $entities = self::of_user_all($userid);
             $entity = 0;
@@ -394,6 +403,7 @@ class entity {
      */
     public static function current(): ?\stdClass {
         global $PAGE, $USER;
+        self::check_cache();
         if (self::$current === null) {
             self::$current = false;
             if (self::available() && self::all()) {
@@ -611,6 +621,23 @@ class entity {
     }
 
     /**
+     * Forgets what was read when the appearances, the page or the user changed since: a change saved elsewhere (another
+     * request, a test that restored the settings) is never hidden by what this request read before.
+     */
+    protected static function check_cache(): void {
+        global $PAGE, $USER;
+        $key = get_config('theme_epure', 'entityrev') . '/' . (isset($PAGE) ? spl_object_id($PAGE) : 0) . '/'
+            . (int) ($USER->id ?? 0);
+        if ($key !== self::$cachekey) {
+            self::$cachekey = $key;
+            self::$all = null;
+            self::$current = null;
+            self::$users = [];
+            self::$userentities = [];
+        }
+    }
+
+    /**
      * Forgets what was read for the request (used by tests and after a change).
      */
     public static function reset(): void {
@@ -618,5 +645,6 @@ class entity {
         self::$current = null;
         self::$users = [];
         self::$userentities = [];
+        self::$cachekey = '';
     }
 }

@@ -1,5 +1,17 @@
 # Changes
 
+## 1.54.0 — entities: the choice of the user, e-mails and login page; live preview of the colours; formats of other plugins
+
+- Entities, a user in the cohorts of several entities (a double degree, two subsidiaries): « My entity », in their preferences, lets them choose the one they see out of the courses; else the entity with the highest priority (a new field of its appearance, 0 to 9), when no other has the same; else the site. The choice is a user preference, exported with the personal data.
+- Entities, e-mails: the e-mails to the members of the cohorts of an entity take its colour, logo, name and footer, as those of an IOMAD company.
+- Entities, login page: each has its address, /login/index.php?entity=<category>, given in its appearance; before the login it shows its appearance, logo, name, layout, tagline and text. Kept for the session, as the address of an IOMAD company; after the login, a user out of every entity keeps it.
+- Entities, CSS: a CSS added to the pages of the entity, after the styles of the theme, as the custom CSS of an IOMAD company; only the administrators of the site can change it.
+- Live preview of the colours: under the colours of the settings (Identity), of an entity and of an IOMAD company, a header, a card, a button, a link and a progress bar, in light and dark modes, follow the colours and the header as they are typed, before they are saved, with the palette and its codes (web service theme_epure_palette_preview, computed by the theme itself).
+- Course formats of other plugins: Grid, Collapsed Topics, Flexible Sections, Tiles and Section tabs are tested by the continuous integration on the versions of Moodle their branches support: the course page of a learner, in every display, with axe. Found and repaired: the sections of Collapsed Topics, items of a list given the role region, are items of the list again (RGAA 9.3); in dark mode, the active tab of Section tabs keeps its own text colour (WCAG 1.4.3).
+- CONTRIBUTING.md: how to report a problem, propose a change and run the checks. The wiki page « Réparations de Moodle »: each repair of Épure in the page, its criterion and its ticket in the tracker of Moodle, or « to report ».
+- No new setting.
+- Tests: PHPUnit (the choice and the priorities, the e-mails and the login page of an entity, its CSS that cannot close the style element; the colours of the live preview and its web service). Checked in the browser on Moodle 4.5: « My entity » (two entities, no choice, a choice), the login page of an entity and its session, the live preview in the settings and the form of an entity (IOMAD 5.2: in the form of a company), the course formats in light and dark mode; axe without error.
+
 ## 1.53.0 — several entities without IOMAD: an appearance per category, for its courses and its cohorts
 
 On a Moodle without IOMAD, a university or a group gives each faculty, school or subsidiary its own appearance, as with category and cohort themes, but without a copy of the theme: one Épure for the whole site, as for the IOMAD companies.
