@@ -136,3 +136,132 @@
 [data-region="epure-loginmodel-status"] {
     min-height: 1.5em;
 }
+
+// Live preview of the colours (theme_epure/palette_live): a header, a card, a button, a link and a progress bar, in
+// light and dark modes, with the colours the theme computes (custom properties set on the region by the script).
+.epure-palette-live {
+    margin-top: .5rem;
+}
+
+.epure-pl-modes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.epure-pl-mode {
+    --pl-surface: var(--pl-light-surface);
+    --pl-brand: var(--pl-light-brand);
+    --pl-on-brand: var(--pl-light-on-brand);
+    --pl-text: var(--pl-light-text);
+    --pl-soft: var(--pl-light-soft);
+    --pl-accent: var(--pl-light-accent);
+    --pl-header: var(--pl-light-header);
+    --pl-header-end: var(--pl-light-header-end);
+    --pl-header-on: var(--pl-light-header-on);
+    --pl-ink: #1d2125;
+    --pl-line: #dee2e6;
+    overflow: hidden;
+    border: 1px solid var(--pl-line);
+    border-radius: var(--epure-radius, .5rem);
+    background: var(--pl-surface);
+    color: var(--pl-ink);
+    font-size: .875rem;
+
+    &.epure-pl-dark {
+        --pl-surface: var(--pl-dark-surface);
+        --pl-brand: var(--pl-dark-brand);
+        --pl-on-brand: var(--pl-dark-on-brand);
+        --pl-text: var(--pl-dark-text);
+        --pl-soft: var(--pl-dark-soft);
+        --pl-accent: var(--pl-dark-accent);
+        --pl-header: var(--pl-dark-header);
+        --pl-header-end: var(--pl-dark-header-end);
+        --pl-header-on: var(--pl-dark-header-on);
+        --pl-ink: #e9ecef;
+        --pl-line: #3a4250;
+    }
+}
+
+.epure-pl-header {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: .5rem .75rem;
+    border-bottom: 1px solid var(--pl-line);
+    background: linear-gradient(90deg, var(--pl-header), var(--pl-header-end));
+    color: var(--pl-header-on);
+}
+
+.epure-pl-logo {
+    margin-right: auto;
+    font-weight: 700;
+}
+
+.epure-pl-body {
+    padding: .75rem;
+}
+
+.epure-pl-modename {
+    margin: 0 0 .5rem;
+    font-weight: 600;
+}
+
+.epure-pl-card {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    padding: .75rem;
+    border: 1px solid var(--pl-line);
+    border-radius: var(--epure-radius, .5rem);
+}
+
+.epure-pl-badge {
+    align-self: flex-start;
+    padding: .125rem .5rem;
+    border-radius: 999px;
+    background: var(--pl-soft);
+    color: var(--pl-text);
+    font-size: .75rem;
+    font-weight: 600;
+}
+
+.epure-pl-title {
+    font-weight: 700;
+}
+
+.epure-pl-progress {
+    display: block;
+    height: .5rem;
+    border-radius: 999px;
+    background: var(--pl-line);
+
+    span {
+        display: block;
+        width: 60%;
+        height: 100%;
+        border-radius: 999px;
+        background: var(--pl-accent);
+    }
+}
+
+.epure-pl-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    align-items: center;
+}
+
+.epure-pl-button {
+    padding: .375rem .75rem;
+    border-radius: var(--epure-radius-sm, .375rem);
+    background: var(--pl-brand);
+    color: var(--pl-on-brand);
+    font-weight: 600;
+}
+
+.epure-pl-link {
+    color: var(--pl-text);
+    text-decoration: underline;
+}

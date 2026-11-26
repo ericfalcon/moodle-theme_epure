@@ -71,7 +71,7 @@ if ($delete && entity::exists($category->id)) {
 
 $admin = has_capability('moodle/site:config', context_system::instance());
 $form = new entity_form($url, ['category' => $category->id, 'cohorts' => entity::cohort_options($category->id),
-    'admin' => $admin]);
+    'admin' => $admin, 'settings' => entity::settings($category->id)]);
 if ($form->is_cancelled()) {
     redirect($back);
 }

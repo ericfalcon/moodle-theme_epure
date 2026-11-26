@@ -212,6 +212,44 @@ class palette {
     }
 
     /**
+     * The colours of the live preview of the settings (theme_epure/palette_live): the header, the buttons, the links,
+     * the soft backgrounds and the progress bars, in light and dark modes, as the theme computes them.
+     *
+     * @param string|null $brand Brand colour.
+     * @param string|null $accent Accent colour; the brand colour when none.
+     * @param string $headerstyle Style of the header: light, brand or gradient.
+     * @return array<string, string> Custom properties (without --) => colours.
+     */
+    public static function preview_vars(?string $brand, ?string $accent, string $headerstyle): array {
+        $brand = self::normalise($brand) ?? self::DEFAULT_BRAND;
+        $accent = self::normalise($accent) ?? $brand;
+        $vars = [];
+        foreach (['light' => false, 'dark' => true] as $mode => $dark) {
+            $p = self::derive($brand, $dark);
+            $a = self::derive($accent, $dark);
+            $vars += [
+                "pl-{$mode}-surface" => $dark ? self::SURFACE_DARK : self::SURFACE_LIGHT,
+                "pl-{$mode}-brand" => $p['fill'],
+                "pl-{$mode}-on-brand" => $p['on'],
+                "pl-{$mode}-text" => $p['text'],
+                "pl-{$mode}-soft" => $p['soft'],
+                "pl-{$mode}-accent" => $a['fill'],
+            ];
+            if ($headerstyle === 'gradient') {
+                $g = self::header_gradient($brand, $accent);
+                [$start, $end, $on] = [$g['start'], $g['end'], $g['on']];
+            } else if ($headerstyle === 'brand') {
+                [$start, $end, $on] = [$p['fill'], $p['fill'], $p['on']];
+            } else {
+                $surface = $dark ? self::SURFACE_DARK : self::SURFACE_LIGHT;
+                [$start, $end, $on] = [$surface, $surface, $dark ? self::SURFACE_LIGHT : '#1D2125'];
+            }
+            $vars += ["pl-{$mode}-header" => $start, "pl-{$mode}-header-end" => $end, "pl-{$mode}-header-on" => $on];
+        }
+        return array_map('strtoupper', $vars);
+    }
+
+    /**
      * The palette the theme computes from the colours of the settings, for its preview under them: the colours of the
      * light and the dark modes, and those of the header, each with its role.
      *

@@ -71,6 +71,15 @@ class entity_form extends \moodleform {
             $mform->setType($name, PARAM_RAW_TRIMMED);
             $mform->addHelpButton($name, 'entitycolour', 'theme_epure');
         }
+        // The palette of these colours, in a live preview that follows them before they are saved.
+        $current = $this->_customdata['settings'] ?? [];
+        $mform->addElement('static', 'palettelive', get_string('palette', 'theme_epure'), \theme_epure\admin\palette_preview::live(
+            'epure-palette-live',
+            ($current['brandcolor'] ?? '') ?: null,
+            ($current['accentcolor'] ?? '') ?: null,
+            ($current['headerstyle'] ?? '') ?: ((string) get_config('theme_epure', 'headerstyle') ?: 'light'),
+            ['brand' => '#id_brandcolor', 'accent' => '#id_accentcolor', 'header' => '#id_headerstyle']
+        ));
         $mform->addElement('filemanager', 'entitylogo', get_string('logo', 'theme_epure'), null, self::LOGO_OPTIONS);
         $mform->addElement(
             'filemanager',
