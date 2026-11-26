@@ -1,0 +1,42 @@
+@theme @theme_epure @javascript @accessibility
+Feature: The course formats of other plugins with the Épure theme
+  In order to follow my courses whatever their format, even one of another plugin
+  As a learner
+  I need the course page of the most installed formats to work and be accessible in every display
+
+  # The formats are added to some jobs of the continuous integration, on the versions of Moodle their branches support
+  # (.github/workflows/ci.yml, « formats »): elsewhere, the scenario is skipped.
+  Scenario Outline: The course page of the format « <format> » meets accessibility standards in every display
+    Given the course format "<format>" is installed
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | learner1 | Lea       | Learner  | learner1@example.com |
+    And the following config values are set as admin:
+      | theme            | epure |
+      | enablecompletion | 1     |
+    And the following "courses" exist:
+      | fullname        | shortname | format   | numsections | enablecompletion |
+      | Course <format> | C1        | <format> | 3           | 1                |
+    And the following "activities" exist:
+      | activity | course | section | name        | completion |
+      | page     | C1     | 1       | Welcome     | 1          |
+      | assign   | C1     | 1       | Assignment  | 1          |
+      | url      | C1     | 2       | Useful link | 0          |
+      | quiz     | C1     | 3       | Final quiz  | 0          |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | learner1 | C1     | student |
+    When I log in as "learner1"
+    And I am on "Course <format>" course homepage
+    Then I should see "Course <format>"
+    And the following pages should meet accessibility standards in every display:
+      | path                            |
+      | /course/view.php?id={course C1} |
+
+    Examples:
+      | format       |
+      | grid         |
+      | topcoll      |
+      | flexsections |
+      | tiles        |
+      | sectiontabs  |

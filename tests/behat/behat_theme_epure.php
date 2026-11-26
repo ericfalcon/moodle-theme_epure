@@ -942,4 +942,17 @@ class behat_theme_epure extends behat_base {
             '".epure-longform-actions").closest("form")).entries()].filter(([, value]) => typeof value === "string")' .
             '.map(([name, value]) => name + "=" + value);');
     }
+
+    /**
+     * Skips the scenario when a course format is not installed: the course formats of other plugins are added to some
+     * jobs of the continuous integration only, those of the versions of Moodle they support.
+     *
+     * @Given /^the course format "(?P<format_string>(?:[^"]|\\")*)" is installed$/
+     * @param string $format Name of the format, without format_.
+     */
+    public function the_course_format_is_installed(string $format): void {
+        if (!\core_component::get_component_directory('format_' . $format)) {
+            throw new \Moodle\BehatExtension\Exception\SkippedException('The course format ' . $format . ' is not installed.');
+        }
+    }
 }

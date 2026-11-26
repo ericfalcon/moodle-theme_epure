@@ -184,8 +184,9 @@
         color: var(--epure-ink-muted) !important; // stylelint-disable-line declaration-no-important
     }
 
-    // Links of the page and the drawers; the header has its own colours.
-    #page a:not(.btn):not(.nav-link):not(.dropdown-item):not(.list-group-item),
+    // Links of the page and the drawers; the header has its own colours, and so have the tabs of the course format
+    // Section tabs (format_sectiontabs), whose text is chosen for their own background.
+    #page a:not(.btn):not(.nav-link):not(.dropdown-item):not(.list-group-item):not(.gtabs-tab),
     .drawer a:not(.btn):not(.nav-link):not(.dropdown-item):not(.list-group-item):not(.courseindex-link),
     .modal-body a:not(.btn):not(.nav-link):not(.dropdown-item):not(.list-group-item),
     .epure-a11y-mention a,
