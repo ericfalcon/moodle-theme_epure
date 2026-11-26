@@ -8,6 +8,11 @@ on:
     paths-ignore: ['**.md']
   pull_request:
     paths-ignore: ['**.md']
+  # Every Saturday, after the weekly releases of Moodle (Friday): the stable branches and the development version (6.0)
+  # change without any change of the theme, and what breaks is seen the same week.
+  schedule:
+    - cron: '17 5 * * 6'
+  workflow_dispatch:
 
 jobs:
   test:
