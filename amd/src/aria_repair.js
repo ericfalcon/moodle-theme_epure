@@ -751,11 +751,12 @@ const sessionNote = (text) => {
  * - a list with other children than its items (Dialogue, Buttons) is no longer given as a list (RGAA 9.3);
  * - a select without a name takes the text of its empty first choice, « Choose… » (RGAA 11.1);
  * - the button « Collapse all » left empty (Buttons) takes the name of the core button (RGAA 6.2);
+ * - a progress bar without a name (Edwiser) is named « Progress »;
  * - a table that scrolls across, without any control in it, is reached with the keyboard to scroll it (WCAG 2.1.1),
  *   named by its caption.
  *
- * @param {Object<string, string>} texts The names of « Collapse all » and « Expand all » (collapseall, expandall), and of
- *     a table that scrolls (scrolltable).
+ * @param {Object<string, string>} texts The names of « Collapse all » and « Expand all » (collapseall, expandall), of a
+ *     table that scrolls (scrolltable) and of a progress bar (progress).
  */
 const pluginRepairs = (texts) => {
     document.querySelectorAll(':is(ul, ol):not([role]):has(> :not(li, script, template))').forEach((list) => {
@@ -772,6 +773,13 @@ const pluginRepairs = (texts) => {
             select.setAttribute('aria-label', first.textContent.trim());
         }
     });
+    // A progress bar without a name (Edwiser): « Progress », its value given by the bar itself (RGAA 11.1).
+    document.querySelectorAll('[role="progressbar"]:not([aria-label]):not([aria-labelledby]):not([title])')
+        .forEach((bar) => {
+            if (!visibleText(bar)) {
+                bar.setAttribute('aria-label', texts.progress);
+            }
+        });
     document.querySelectorAll('#collapsesections:not([aria-label])').forEach((button) => {
         if (!visibleText(button)) {
             button.setAttribute('aria-label',

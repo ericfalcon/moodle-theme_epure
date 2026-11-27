@@ -1292,3 +1292,14 @@ html.epure-dark body.path-mod-dialogue #page #region-main {
         text-shadow: none;
     }
 }
+
+// Edwiser (format_remuiformat): the badge of the category of its header, light green on white (2.4:1), in the text of
+// the brand on its light tint (WCAG 1.4.3).
+body.format-remuiformat #page .header-main-section .category .badge {
+    color: var(--epure-brand-text);
+    background-color: var(--epure-brand-soft);
+
+    .text_to_html {
+        color: inherit;
+    }
+}

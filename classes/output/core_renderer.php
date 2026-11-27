@@ -399,6 +399,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
             'collapseall' => get_string('collapseall'),
             'expandall' => get_string('expandall'),
             'scrolltable' => get_string('repairscrolltable', 'theme_epure'),
+            'progress' => get_string('progress'),
         ];
         // The abbreviations of the interface, explained (WCAG 3.1.4).
         $texts['abbreviations'] = [];
