@@ -36,6 +36,11 @@ if (!getenv('EPURE_BROWSERS')) {
     cli_error('Only for the continuous integration: EPURE_BROWSERS is not set.');
 }
 
+// A site waiting for an upgrade leads every page to the administration: said in the log.
+if (moodle_needs_upgrading()) {
+    echo "The site needs an upgrade.\n";
+}
+
 \core\session\manager::set_user(get_admin());
 set_config('theme', 'epure');
 
