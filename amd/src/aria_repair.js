@@ -752,6 +752,7 @@ const sessionNote = (text) => {
  * - a select without a name takes the text of its empty first choice, « Choose… » (RGAA 11.1);
  * - the button « Collapse all » left empty (Buttons) takes the name of the core button (RGAA 6.2);
  * - a progress bar without a name (Edwiser) is named « Progress »;
+ * - a frame without a title (PDF Protect) takes the title of the page (RGAA 2.1);
  * - a table that scrolls across, without any control in it, is reached with the keyboard to scroll it (WCAG 2.1.1),
  *   named by its caption.
  *
@@ -784,6 +785,13 @@ const pluginRepairs = (texts) => {
         if (!visibleText(button)) {
             button.setAttribute('aria-label',
                 button.getAttribute('aria-expanded') === 'false' ? texts.expandall : texts.collapseall);
+        }
+    });
+    // A frame of an activity without a title (PDF Protect): the title of the page, the name of the activity (RGAA 2.1).
+    const heading = document.querySelector('#page h1, h1');
+    document.querySelectorAll('iframe:not([title]):not([aria-label]):not([aria-labelledby])').forEach((frame) => {
+        if (heading && visibleText(heading)) {
+            frame.title = visibleText(heading);
         }
     });
     scrollTables(texts);

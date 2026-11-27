@@ -1303,3 +1303,9 @@ body.format-remuiformat #page .header-main-section .category .badge {
         color: inherit;
     }
 }
+
+// VPL (mod_vpl): its version at the end of the page, in a box painted white in the page itself: on the surfaces of the
+// theme in the dark colours and yellow on black (WCAG 1.4.3).
+html.epure-dark body.path-mod-vpl div[style*="background-color: white"] {
+    background-color: transparent !important; // stylelint-disable-line declaration-no-important
+}

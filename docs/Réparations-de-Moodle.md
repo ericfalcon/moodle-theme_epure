@@ -49,6 +49,7 @@ Chaque réparation ci-dessous porte le nom de sa fonction dans `amd/src/aria_rep
 | Une liste déroulante sans nom prend le texte de son premier choix vide (« Choisir… ») | RGAA 11.1 | `pluginRepairs` | défaut du format Buttons, à signaler |
 | Le bouton « Tout replier » laissé vide par un format prend son nom | RGAA 6.2 | `pluginRepairs` | défaut du format Buttons, à signaler |
 | Une barre de progression sans nom est nommée « Progression » | RGAA 11.1 | `pluginRepairs` | défaut du format Edwiser, à signaler |
+| Un cadre sans titre prend le titre de la page, le nom de l'activité | RGAA 2.1 | `pluginRepairs` | défaut de PDF Protect, à signaler |
 | Un tableau qui défile horizontalement sans contrôle dedans se rejoint au clavier, nommé par sa légende | WCAG 2.1.1 | `scrollTables` | à signaler (Attendance register) |
 | Les liens et boutons d'une seule icône prennent le titre de l'icône pour nom | RGAA 6.2 | `iconControls` | à signaler |
 | Les graphiques des rapports sont des images nommées, leurs données dans le tableau qui suit | RGAA 1.1 | `charts` | à signaler |
