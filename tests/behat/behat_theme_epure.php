@@ -1094,7 +1094,7 @@ class behat_theme_epure extends behat_base {
                 }
             }
             // The fields some generators need and do not fill in (Offline Quiz).
-            $fields += ['offlinequiz' => ['pdfintro' => '']][$mod] ?? [];
+            $fields += ['offlinequiz' => ['pdfintro' => '', 'timeopen' => 0, 'timeclose' => 0]][$mod] ?? [];
             $created = \testing_util::get_data_generator()->create_module($mod, $fields);
             // The ID number, which some generators leave out (Scheduler).
             if (!empty($created->cmid)) {

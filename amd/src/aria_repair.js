@@ -751,7 +751,9 @@ const sessionNote = (text) => {
  * - a list with other children than its items (Dialogue, Buttons) is no longer given as a list (RGAA 9.3);
  * - a select without a name takes the text of its empty first choice, « Choose… » (RGAA 11.1);
  * - the button « Collapse all » left empty (Buttons) takes the name of the core button (RGAA 6.2);
- * - a progress bar without a name (Edwiser) is named « Progress »;
+ * - a progress bar without a name (Edwiser, Designer) is named by its text, else « Progress »;
+ * - the items of a course index drawn as a tree without their role (Designer) are items of the tree;
+ * - a field without a name (Organizer) is named by its placeholder;
  * - a frame without a title (PDF Protect) takes the title of the page (RGAA 2.1);
  * - an icon named with aria-label but without a role (Organizer) becomes an image, for its name to be read;
  * - a table that scrolls across, without any control in it, is reached with the keyboard to scroll it (WCAG 2.1.1),
@@ -777,9 +779,15 @@ const pluginRepairs = (texts) => {
     });
     // A progress bar without a name (Edwiser): « Progress », its value given by the bar itself (RGAA 11.1).
     document.querySelectorAll('[role="progressbar"]:not([aria-label]):not([aria-labelledby]):not([title])')
-        .forEach((bar) => {
-            if (!visibleText(bar)) {
-                bar.setAttribute('aria-label', texts.progress);
+        .forEach((bar) => bar.setAttribute('aria-label', visibleText(bar) || texts.progress));
+    // The items of a course index drawn as a tree without their role (Designer): items of the tree (RGAA 7.1).
+    document.querySelectorAll('[role="tree"] li:not([role]), [role="group"] > li:not([role])')
+        .forEach((item) => item.setAttribute('role', 'treeitem'));
+    // A field of a form without a name (the filter of Organizer): its placeholder, else its title (RGAA 11.1).
+    document.querySelectorAll('input:not([type="hidden"]):not([aria-label]):not([aria-labelledby]):not([title])')
+        .forEach((field) => {
+            if (!field.labels?.length && field.placeholder) {
+                field.setAttribute('aria-label', field.placeholder);
             }
         });
     // An icon named with aria-label but without a role (Organizer): an image, for its name to be read (RGAA 1.1).
