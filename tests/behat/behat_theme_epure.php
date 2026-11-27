@@ -216,7 +216,7 @@ class behat_theme_epure extends behat_base {
                 // The cream colours are an overlay, which axe does not see: their contrast is measured under it.
                 $axe = $scheme === 'cream' ? $this->cream_failure() : $this->axe_failure();
                 if ($axe !== null) {
-                    $failures[] = "{$row['path']} ({$label}): " . $axe;
+                    $failures[] = "{$row['path']} ({$label}): " . $axe . $this->pink_painter($axe);
                 }
                 // Yellow on black comes first, over the colours of the brand, of a course or of a plugin: every text at
                 // 7:1 at least (WCAG 1.4.6), which only its own colours reach.
@@ -440,7 +440,7 @@ class behat_theme_epure extends behat_base {
                 return null;
             } catch (\Exception $e) {
                 if (!preg_match('/^No data$|axe is not defined/', trim($e->getMessage()))) {
-                    return trim($e->getMessage()) . $this->pink_painter($e->getMessage()) . $this->page_error();
+                    return trim($e->getMessage()) . $this->page_error();
                 }
                 $this->getSession()->wait(1000);
             }

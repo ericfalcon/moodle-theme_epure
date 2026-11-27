@@ -319,7 +319,7 @@ jobs:
         if: ${{ failure() }}
         run: |
           [ -f "$RUNNER_TEMP/behat.log" ] || exit 0
-          grep -vE '^\s*\|' "$RUNNER_TEMP/behat.log" | grep -E '^[0-9]{3} (Scenario|Example)|^\s+(And|Then|When|Given) |failures:|\((light|dark|yellow|cream|text)[^)]*\)|violations of rule|^\s+[.#a-z\[][^ ]*$|contrast of|scrolls across|Exception|Warning|does not exist|not found' \
+          grep -vE '^\s*\|' "$RUNNER_TEMP/behat.log" | grep -E '^[0-9]{3} (Scenario|Example)|^\s+(And|Then|When|Given) |failures:|\((light|dark|yellow|cream|text)[^)]*\)|violations of rule|^\s+[.#a-z\[][^ ]*$|contrast of|scrolls across|painted by|error in the page|Exception|Warning|does not exist|not found' \
             | cut -c1-700 | awk '!seen[$0]++' | head -400
           # Each failed step with the lines of its message, whatever they say.
           echo '----- The failed steps and their messages'

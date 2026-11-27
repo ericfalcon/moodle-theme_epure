@@ -1432,3 +1432,13 @@ html.epure-dark body.format-designer [data-action="toggle-manual-completion"]:no
 html:not(.epure-a11y-scheme-yellow) body.path-mod-studentquiz .stat.badge.last-attempt-incorrect {
     background-color: #b02a37 !important; // stylelint-disable-line declaration-no-important
 }
+
+// The header of a section, with « Collapse all » and the menu of the section (Buttons): on two lines when the text is
+// large on a phone, not past the edge of the page (WCAG 1.4.10).
+#page .course-section-header.d-flex {
+    flex-wrap: wrap;
+
+    .collapseall {
+        white-space: normal;
+    }
+}
