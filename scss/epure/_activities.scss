@@ -1414,3 +1414,15 @@ body.path-mod-hotpot #region-main .QuestionText {
     white-space: normal;
     overflow-wrap: anywhere;
 }
+
+// The texts of information of Bootstrap (#008196, Organizer) reach 4.5:1 on white only, not on the light grey of the page
+// (4.35:1): darker in the light colours (5.7:1). Its icons keep theirs.
+html:not(.epure-dark) .text-info:not(.icon) {
+    color: #006d7e !important; // stylelint-disable-line declaration-no-important
+}
+
+// Designer: « Mark as done » in the blue of Moodle on the dark surfaces (3.2:1), in the colour of the links there.
+html.epure-dark body.format-designer [data-action="toggle-manual-completion"]:not(:hover),
+html.epure-dark body.format-designer [data-action="toggle-manual-completion"]:not(:hover) > span {
+    color: var(--epure-brand-text) !important; // stylelint-disable-line declaration-no-important
+}

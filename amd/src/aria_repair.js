@@ -763,6 +763,20 @@ const sessionNote = (text) => {
  *     table that scrolls (scrolltable) and of a progress bar (progress).
  */
 const pluginRepairs = (texts) => {
+    // The sections of the course index drawn by a format without their role (Designer): items of the tree, named by
+    // their title.
+    document.querySelectorAll('#course-index[role="tree"] .courseindex-section:not([role])').forEach((section) => {
+        section.setAttribute('role', 'treeitem');
+        const title = section.querySelector('[data-for="section_title"]');
+        if (title) {
+            title.id = title.id || section.id + '-title';
+            section.setAttribute('aria-labelledby', title.id);
+        }
+        const content = section.querySelector('.courseindex-item-content');
+        if (content) {
+            section.setAttribute('aria-expanded', content.classList.contains('show') ? 'true' : 'false');
+        }
+    });
     document.querySelectorAll(':is(ul, ol):not([role]):has(> :not(li, script, template))').forEach((list) => {
         if (list.closest(CONTENTS)) {
             return;

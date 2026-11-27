@@ -440,12 +440,40 @@ class behat_theme_epure extends behat_base {
                 return null;
             } catch (\Exception $e) {
                 if (!preg_match('/^No data$|axe is not defined/', trim($e->getMessage()))) {
-                    return trim($e->getMessage());
+                    return trim($e->getMessage()) . $this->pink_painter($e->getMessage());
                 }
                 $this->getSession()->wait(1000);
             }
         }
         return $this->axe_violations(true);
+    }
+
+    /**
+     * The elements that paint the pink background (#f9d5d2) that axe reads on some pages of the continuous integration
+     * only, never seen on a site: their tag, classes and position, to find what draws it.
+     *
+     * @param string $message The message of axe.
+     * @return string The elements, or nothing when the message does not name that colour.
+     */
+    protected function pink_painter(string $message): string {
+        if (stripos($message, '#f9d5d2') === false) {
+            return '';
+        }
+        $found = $this->getSession()->evaluateScript(<<<'JS'
+            return [...document.querySelectorAll('*')].filter((e) => {
+                const style = getComputedStyle(e);
+                const colour = style.backgroundColor;
+                const translucent = /^rgba\(\d+, \d+, \d+, 0?\.\d+\)$/.test(colour) && !colour.startsWith('rgba(0, 0, 0');
+                return colour.includes('249, 213, 210') || translucent;
+            }).slice(0, 8).map((e) => {
+                const r = e.getBoundingClientRect();
+                const classes = String(e.className).trim().split(/\s+/).slice(0, 4).join('.');
+                return e.tagName.toLowerCase() + (e.id ? '#' + e.id : '') + '.' + classes
+                    + ' ' + getComputedStyle(e).backgroundColor + ' ' + getComputedStyle(e).position
+                    + ' [' + [r.x, r.y, r.width, r.height].map(Math.round).join(',') + ']';
+            }).join('; ');
+        JS);
+        return "\n  The pink is painted by: " . ($found ?: 'no element (an overlay of the browser?)');
     }
 
     /**

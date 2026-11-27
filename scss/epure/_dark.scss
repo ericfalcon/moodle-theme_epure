@@ -724,6 +724,11 @@
         border-color: var(--epure-border);
     }
 
+    // Moodle 5.x writes the description of the activities in its grey (5.x), more precisely than above.
+    .activity .activity-altcontent.activity-description {
+        color: var(--epure-ink);
+    }
+
     // Toolbar of the Atto editor (Moodle 4.5); TinyMCE keeps the look of its own skin.
     .editor_atto_toolbar,
     .editor_atto_toolbar .atto_group,
