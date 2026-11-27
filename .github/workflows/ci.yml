@@ -297,8 +297,11 @@ jobs:
           # From Moodle 5.1, the files served are in public/.
           root=moodle/public; [ -d "$root" ] || root=moodle
           sed -i "s#^\$CFG->wwwroot *=.*#\$CFG->wwwroot = 'http://localhost:8010';#" moodle/config.php
-          # The site upgraded first: with a plugin waiting for its upgrade, every page leads to the administration.
-          php "$root/admin/cli/upgrade.php" --non-interactive | tail -3
+          # The site itself installed first: moodle-plugin-ci installs the sites of PHPUnit and Behat only. Its scripts of
+          # the command line stay in moodle/admin/cli from Moodle 5.1.
+          cli=moodle/admin/cli; [ -f "$cli/install_database.php" ] || cli=moodle/public/admin/cli
+          php "$cli/install_database.php" --agree-license --adminpass='Browsers-2026!' --fullname='Browsers' \
+            --shortname='Browsers' --adminemail='admin@example.com' | tail -3
           course=$(php "$root/theme/epure/tests/browsers/setup.php" | tail -1)
           (php -S localhost:8010 -t "$root" > "$RUNNER_TEMP/php.log" 2>&1 &)
           mkdir -p "$RUNNER_TEMP/pw" && cd "$RUNNER_TEMP/pw"
