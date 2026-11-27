@@ -243,7 +243,7 @@ final class content_sources_test extends \advanced_testcase {
         );
         $this->assertSame([], $texts('learningmap', (object) ['svgcode' => $svg('<![CDATA[A river]]>')]));
 
-        // A lightbox gallery: the captions in a table made for the test.
+        // A lightbox gallery: the captions in a table made for the test, or that of the plugin when it is installed.
         $dbman = $DB->get_manager();
         $table = new \xmldb_table('lightboxgallery_image_meta');
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
@@ -252,7 +252,10 @@ final class content_sources_test extends \advanced_testcase {
         $table->add_field('metatype', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, 'caption');
         $table->add_field('description', XMLDB_TYPE_TEXT);
         $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
-        $dbman->create_table($table);
+        $made = !$dbman->table_exists($table);
+        if ($made) {
+            $dbman->create_table($table);
+        }
         try {
             $file('mod_lightboxgallery', 'gallery_images', 'bus.jpg');
             $old = $file('mod_lightboxgallery', 'gallery_images', 'car.jpg');
@@ -268,7 +271,9 @@ final class content_sources_test extends \advanced_testcase {
                 $texts('lightboxgallery', (object) ['id' => 5])
             );
         } finally {
-            $dbman->drop_table($table);
+            if ($made) {
+                $dbman->drop_table($table);
+            }
         }
         // A mind map: drawn, to give as text too.
         $this->assertSame('visual', content_sources::coverage('mindmap'));
