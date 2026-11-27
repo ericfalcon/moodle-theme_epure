@@ -87,4 +87,3 @@ enrol_try_internal_enrol($course->id, $user->id, $DB->get_field('role', 'id', ['
 
 theme_reset_all_caches();
 echo $course->id, "\n";
-

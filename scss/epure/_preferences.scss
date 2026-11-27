@@ -431,6 +431,23 @@ html.epure-a11y-focusring :focus-visible {
             color: var(--epure-ink-muted);
         }
 
+        // The light backgrounds and grey texts of Bootstrap that Moodle and the plugins write in their pages (the
+        // preview of Course certificate, the boxes of Designer): yellow on black too.
+        .bg-light,
+        .bg-white,
+        .bg-body-tertiary,
+        .bg-body-secondary {
+            color: #ff0 !important; // stylelint-disable-line declaration-no-important
+            background-color: #000 !important; // stylelint-disable-line declaration-no-important
+        }
+
+        .text-muted,
+        .text-secondary,
+        .text-body-secondary,
+        .dimmed_text {
+            color: var(--epure-ink-muted) !important; // stylelint-disable-line declaration-no-important
+        }
+
         // The colours of meaning of Bootstrap (errors, warnings, success), which their words and icons carry too.
         .text-danger,
         .text-warning,

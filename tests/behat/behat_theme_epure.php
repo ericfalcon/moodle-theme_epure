@@ -1057,38 +1057,55 @@ class behat_theme_epure extends behat_base {
         global $DB;
         $cm = $DB->get_record('course_modules', ['idnumber' => $idnumber], '*', MUST_EXIST);
         $modname = $DB->get_field('modules', 'name', ['id' => $cm->module], MUST_EXIST);
-        $DB->set_field($modname, 'intro', '<p><img src="https://example.com/gloves.png"></p>', ['id' => $cm->instance]);
+        // Its description, in the column the guide reads (theme_epure\content_sources): intro, else none to change.
+        if (array_key_exists('intro', $DB->get_columns($modname))) {
+            $DB->set_field($modname, 'intro', '<p><img src="https://example.com/gloves.png"></p>', ['id' => $cm->instance]);
+        }
         rebuild_course_cache($cm->course, true);
     }
 
     /**
-     * Creates an activity of a module of another plugin, with a short description: by its generator when it has one, else as Moodle stores any activity (its record, its module of the course in the
+     * Creates an activity of a module of another plugin, with a short description: by its generator when it has one,
+     * else as Moodle stores any activity (its record, its module of the course in the
      * section 1), the columns required by its table that the step does not know left empty.
      *
-     * @Given /^the activity "(?P<modname>[a-z0-9_]+)" "(?P<name>[^"]*)" exists in "(?P<shortname>[^"]*)" as "(?P<idnumber>[^"]*)"$/
-     * @param string $modname Name of the module, without mod_.
+     * @Given /^the activity "(?P<mod>[a-z0-9_]+)" "(?P<name>[^"]*)" exists in "(?P<course>[^"]*)" as "(?P<id>[^"]*)"$/
+     * @param string $mod Name of the module, without mod_.
      * @param string $name Name of the activity.
-     * @param string $shortname Short name of the course.
-     * @param string $idnumber ID number of the activity.
+     * @param string $course Short name of the course.
+     * @param string $id ID number of the activity.
      */
-    public function the_activity_exists_in_the_course(string $modname, string $name, string $shortname, string $idnumber): void {
+    public function the_activity_exists_in_the_course(string $mod, string $name, string $course, string $id): void {
         global $CFG, $DB;
         require_once($CFG->dirroot . '/course/lib.php');
-        $course = $DB->get_record('course', ['shortname' => $shortname], '*', MUST_EXIST);
+        $courserecord = $DB->get_record('course', ['shortname' => $course], '*', MUST_EXIST);
         $intro = '<p>Read the instructions before you start.</p>';
-        $fields = ['course' => $course->id, 'name' => $name, 'intro' => $intro, 'introformat' => FORMAT_HTML,
-            'idnumber' => $idnumber, 'showdescription' => 1, 'section' => 1];
+        $fields = ['course' => $courserecord->id, 'name' => $name, 'intro' => $intro, 'introformat' => FORMAT_HTML,
+            'idnumber' => $id, 'showdescription' => 1, 'section' => 1];
         if (
-            class_exists('mod_' . $modname . '_generator')
-                || file_exists(\core_component::get_component_directory('mod_' . $modname) . '/tests/generator/lib.php')
+            class_exists('mod_' . $mod . '_generator')
+                || file_exists(\core_component::get_component_directory('mod_' . $mod) . '/tests/generator/lib.php')
         ) {
-            \testing_util::get_data_generator()->create_module($modname, $fields);
+            // Some generators call functions of the module without loading them (GeoGebra).
+            $dir = \core_component::get_component_directory('mod_' . $mod);
+            foreach (['lib.php', 'locallib.php'] as $file) {
+                if (file_exists($dir . '/' . $file)) {
+                    require_once($dir . '/' . $file);
+                }
+            }
+            // The fields some generators need and do not fill in (Offline Quiz).
+            $fields += ['offlinequiz' => ['pdfintro' => '']][$mod] ?? [];
+            $created = \testing_util::get_data_generator()->create_module($mod, $fields);
+            // The ID number, which some generators leave out (Scheduler).
+            if (!empty($created->cmid)) {
+                $DB->set_field('course_modules', 'idnumber', $id, ['id' => $created->cmid]);
+            }
             return;
         }
         // Without a generator: the record of the activity, the columns it requires empty or zero.
-        $record = ['course' => $course->id, 'name' => $name, 'intro' => $intro, 'introformat' => FORMAT_HTML,
+        $record = ['course' => $courserecord->id, 'name' => $name, 'intro' => $intro, 'introformat' => FORMAT_HTML,
             'timemodified' => time()];
-        foreach ($DB->get_columns($modname) as $column) {
+        foreach ($DB->get_columns($mod) as $column) {
             if ($column->name === 'id' || array_key_exists($column->name, $record)) {
                 continue;
             }
@@ -1096,12 +1113,12 @@ class behat_theme_epure extends behat_base {
                 $record[$column->name] = in_array($column->meta_type, ['I', 'N', 'F'], true) ? 0 : '';
             }
         }
-        $record = array_intersect_key($record, $DB->get_columns($modname));
-        $instance = $DB->insert_record($modname, (object) $record);
-        $cm = (object) ['course' => $course->id, 'module' => $DB->get_field('modules', 'id', ['name' => $modname], MUST_EXIST),
-            'instance' => $instance, 'section' => 1, 'idnumber' => $idnumber, 'visible' => 1, 'showdescription' => 1];
+        $record = array_intersect_key($record, $DB->get_columns($mod));
+        $instance = $DB->insert_record($mod, (object) $record);
+        $cm = (object) ['course' => $courserecord->id, 'module' => $DB->get_field('modules', 'id', ['name' => $mod], MUST_EXIST),
+            'instance' => $instance, 'section' => 1, 'idnumber' => $id, 'visible' => 1, 'showdescription' => 1];
         $cm->id = add_course_module($cm);
-        course_add_cm_to_section($course, $cm->id, 1);
-        rebuild_course_cache($course->id, true);
+        course_add_cm_to_section($courserecord, $cm->id, 1);
+        rebuild_course_cache($courserecord->id, true);
     }
 }

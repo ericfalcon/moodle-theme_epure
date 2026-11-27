@@ -1309,3 +1309,31 @@ body.format-remuiformat #page .header-main-section .category .badge {
 html.epure-dark body.path-mod-vpl div[style*="background-color: white"] {
     background-color: transparent !important; // stylelint-disable-line declaration-no-important
 }
+
+// The links to the previous and next sections at the bottom of a course (Buttons and other formats): their long names
+// wrap within the width of the screen, at 320 px with the text at 200 % (WCAG 1.4.10).
+#page .section-navigation {
+    flex-wrap: wrap;
+    gap: .5rem;
+
+    > * {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    a {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+}
+
+// Designer (format_designer): the type of each activity and its visits, in a light grey (2.1:1 to 2.8:1), in the muted
+// text of the theme (WCAG 1.4.3).
+body.format-designer #page {
+    .activity-type,
+    .activity-type *,
+    .mod-visits-block,
+    .mod-visits-block * {
+        color: var(--epure-ink-muted) !important; // stylelint-disable-line declaration-no-important
+    }
+}

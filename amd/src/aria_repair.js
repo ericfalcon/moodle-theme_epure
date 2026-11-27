@@ -753,6 +753,7 @@ const sessionNote = (text) => {
  * - the button « Collapse all » left empty (Buttons) takes the name of the core button (RGAA 6.2);
  * - a progress bar without a name (Edwiser) is named « Progress »;
  * - a frame without a title (PDF Protect) takes the title of the page (RGAA 2.1);
+ * - an icon named with aria-label but without a role (Organizer) becomes an image, for its name to be read;
  * - a table that scrolls across, without any control in it, is reached with the keyboard to scroll it (WCAG 2.1.1),
  *   named by its caption.
  *
@@ -781,6 +782,8 @@ const pluginRepairs = (texts) => {
                 bar.setAttribute('aria-label', texts.progress);
             }
         });
+    // An icon named with aria-label but without a role (Organizer): an image, for its name to be read (RGAA 1.1).
+    document.querySelectorAll(':is(i, span)[aria-label]:not([role])').forEach((icon) => icon.setAttribute('role', 'img'));
     document.querySelectorAll('#collapsesections:not([aria-label])').forEach((button) => {
         if (!visibleText(button)) {
             button.setAttribute('aria-label',

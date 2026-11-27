@@ -4,6 +4,7 @@ Feature: The display preferences of « Aa » in the frames of the page
   As a user with display preferences
   I need them to apply in the frames of the page too: the editor, H5P, the files shown
 
+  # TinyMCE, whose text is in a frame (the site of the tests may have Atto first, which has none).
   Scenario: The text being written in the editor takes the display preferences
     Given the following config values are set as admin:
       | theme | epure |
@@ -15,6 +16,7 @@ Feature: The display preferences of « Aa » in the frames of the page
       | learner1 | theme_epure_a11y_scheme | yellow       |
       | learner1 | theme_epure_a11y_font   | opendyslexic |
       | learner1 | theme_epure_a11y_text   | 150          |
+      | learner1 | htmleditor              | tiny         |
     When I log in as "learner1"
     And I visit "/user/edit.php"
     And I wait until ".tox-edit-area__iframe" "css_element" exists
