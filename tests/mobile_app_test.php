@@ -45,7 +45,8 @@ final class mobile_app_test extends \advanced_testcase {
         $this->assertStringContainsString("/theme/font.php/epure/theme/", $css);
 
         // Light header: the app keeps its own, with a line of the brand colour; no font for an uploaded one.
-        $css = mobile_app::css('#1C6E73', 'light', 'custom');
+        // The colours of the brand, without those of yellow on black of the display preferences.
+        $css = str_replace(mobile_app::preferences_css(), '', mobile_app::css('#1C6E73', 'light', 'custom'));
         $this->assertStringNotContainsString('--core-header-toolbar-background', $css);
         $this->assertStringNotContainsString('@font-face', $css);
     }

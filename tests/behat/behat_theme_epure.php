@@ -213,10 +213,19 @@ class behat_theme_epure extends behat_base {
                     $this->getSession()->wait(500);
                 }
                 $this->wait_for_animations();
+                $this->without_deprecation_marks();
                 // The cream colours are an overlay, which axe does not see: their contrast is measured under it.
                 $axe = $scheme === 'cream' ? $this->cream_failure() : $this->axe_failure();
                 if ($axe !== null) {
-                    $failures[] = "{$row['path']} ({$label}): " . $axe;
+                    $failures[] = "{$row['path']} ({$label}): " . $axe . $this->pink_painter($axe);
+                }
+                // Yellow on black comes first, over the colours of the brand, of a course or of a plugin: every text at
+                // 7:1 at least (WCAG 1.4.6), which only its own colours reach.
+                // The samples of other displays are left out: the live preview of the colours and the swatches of the
+                // palette show the colours of the brand in light and dark, as an image of them (at 4.5:1 above).
+                $samples = ['.epure-pl-modes', '.epure-palette-swatch', '.epure-logocolours-swatch', '.epure-management-swatch'];
+                if ($scheme === 'yellow' && ($axe = $this->axe_violations(false, ['color-contrast-enhanced'], $samples)) !== null) {
+                    $failures[] = "{$row['path']} ({$label}, 7:1): " . $axe;
                 }
                 if ($width < 1000 && ($row['except'] ?? '') !== 'wide table') {
                     $script = 'return document.scrollingElement.scrollWidth - window.innerWidth;';
@@ -269,6 +278,45 @@ class behat_theme_epure extends behat_base {
     }
 
     /**
+     * The frames of the site in the page (the editor, H5P, the files shown) have the classes of the display preferences
+     * of the page, and the style sheet that applies them (amd/src/frame_preferences.js).
+     *
+     * @Then /^the frames of the page should have the display preferences$/
+     */
+    public function the_frames_of_the_page_should_have_the_display_preferences(): void {
+        $script = <<<'JS'
+            return (() => {
+                const wanted = Array.from(document.documentElement.classList)
+                    .filter((name) => /^epure-(a11y-|dark$)/.test(name));
+                const frames = Array.from(document.querySelectorAll('iframe')).filter((frame) => {
+                    try {
+                        return frame.contentDocument && frame.contentDocument.head && !frame.contentWindow.M;
+                    } catch (e) {
+                        return false;
+                    }
+                });
+                if (!wanted.length || !frames.length) {
+                    return 'no preference or no frame: ' + wanted.length + ' ' + frames.length;
+                }
+                return frames.filter((frame) => {
+                    const doc = frame.contentDocument;
+                    return !doc.getElementById('epure-frame-preferences')
+                        || wanted.some((name) => !doc.documentElement.classList.contains(name));
+                }).map((frame) => frame.id || frame.src || 'frame').join(', ');
+            })();
+        JS;
+        // The editor draws its frame after the page: tried for ten seconds.
+        for ($try = 0; $try < 10; $try++) {
+            $missing = $this->getSession()->evaluateScript($script);
+            if ($missing === '') {
+                return;
+            }
+            $this->getSession()->wait(1000);
+        }
+        throw new ExpectationException('Frames without the display preferences: ' . $missing, $this->getSession());
+    }
+
+    /**
      * Waits for the animations of the page to end: axe reads the colours of a text that fades in on the way (the tiles of
      * the format Tiles appear with an animation of jQuery). The endless ones (the loading icons) are not waited for.
      */
@@ -281,9 +329,24 @@ class behat_theme_epure extends behat_base {
     }
 
     /**
+     * The audit of axe (WCAG 2.2 A and AA) of the page as it is, waited for: the step of Moodle reads its results for a
+     * few seconds only, and finds « No data » on the pages that take longer (the charts of the management dashboard).
+     *
+     * @Then /^the page should meet accessibility standards, the audit waited for$/
+     */
+    public function the_page_should_meet_accessibility_standards_waited_for(): void {
+        $this->wait_for_pending_js();
+        $this->without_deprecation_marks();
+        $axe = $this->axe_failure();
+        if ($axe !== null) {
+            throw new ExpectationException($axe . $this->pink_painter($axe), $this->getSession());
+        }
+    }
+
+    /**
      * The contrast of the texts of the page under the cream overlay of « Aa », which axe does not see: each text and its
      * background multiplied by the colour of the overlay, as the browser draws them. What already fails without it is
-     * left to axe; a text over an image is not measured.
+     * left to axe; a text over an image, or hidden for the eyes (read by screen readers only), is not measured.
      *
      * @return string|null The texts that no longer reach 4.5:1 (3:1 for a large text), or null.
      */
@@ -341,7 +404,7 @@ class behat_theme_epure extends behat_base {
                     const rect = element.getBoundingClientRect();
                     const style = getComputedStyle(element);
                     if (rect.width <= 1 || rect.height <= 1 || style.visibility !== 'visible' || Number(style.opacity) === 0
-                            || element.closest('[aria-hidden="true"], script, style, noscript')) {
+                            || element.closest('[aria-hidden="true"], script, style, noscript, .sr-only, .visually-hidden')) {
                         continue;
                     }
                     const under = background(element);
@@ -393,12 +456,75 @@ class behat_theme_epure extends behat_base {
                 return null;
             } catch (\Exception $e) {
                 if (!preg_match('/^No data$|axe is not defined/', trim($e->getMessage()))) {
-                    return trim($e->getMessage());
+                    return trim($e->getMessage()) . $this->page_error();
                 }
                 $this->getSession()->wait(1000);
             }
         }
         return $this->axe_violations(true);
+    }
+
+    /**
+     * The error that Moodle shows in the page, when its own step cannot read it (fewer boxes than it expects, with the
+     * error of a plugin): its text, to find the cause.
+     *
+     * @return string The text of the error, or nothing.
+     */
+    protected function page_error(): string {
+        $text = $this->getSession()->evaluateScript(<<<'JS'
+            return (() => {
+                const error = document.querySelector('[data-rel="fatalerror"]');
+                return error ? [error, ...document.querySelectorAll('.alert-danger, .alert-error, .notifytiny')]
+                    .map((e) => e.textContent.replace(/\s+/g, ' ').trim().slice(0, 400)).join(' | ') : '';
+            })();
+        JS);
+        return $text ? "\n  The error in the page: " . $text : '';
+    }
+
+    /**
+     * The page as on a site: on the sites of Behat, Moodle 5.x paints the classes of Bootstrap 4 it deprecates (.sr-only,
+     * .ml-1, .font-italic, used by plugins) in pink (deprecated.scss), which axe reads as their background. The mark is
+     * a help for developers, never shown on a site. The classes of the page are kept (Behat needs them).
+     */
+    protected function without_deprecation_marks(): void {
+        // The marked elements only (the dotted outline and the pink of deprecated.scss): their background as on a site.
+        $this->getSession()->executeScript(<<<'JS'
+            document.querySelectorAll('body *').forEach((element) => {
+                const style = getComputedStyle(element);
+                if (style.outlineStyle === 'dotted' && style.outlineWidth === '3px'
+                        && style.backgroundColor === 'rgb(249, 213, 210)') {
+                    element.style.setProperty('background-color', 'transparent', 'important');
+                }
+            });
+        JS);
+    }
+
+    /**
+     * The elements that paint the pink background (#f9d5d2) that axe reads on some pages of the continuous integration
+     * only, never seen on a site: their tag, classes and position, to find what draws it.
+     *
+     * @param string $message The message of axe.
+     * @return string The elements, or nothing when the message does not name that colour.
+     */
+    protected function pink_painter(string $message): string {
+        if (stripos($message, '#f9d5d2') === false) {
+            return '';
+        }
+        $found = $this->getSession()->evaluateScript(<<<'JS'
+            return [...document.querySelectorAll('*')].filter((e) => {
+                const style = getComputedStyle(e);
+                const colour = style.backgroundColor;
+                const translucent = /^rgba\(\d+, \d+, \d+, 0?\.\d+\)$/.test(colour) && !colour.startsWith('rgba(0, 0, 0');
+                return colour.includes('249, 213, 210') || translucent;
+            }).slice(0, 8).map((e) => {
+                const r = e.getBoundingClientRect();
+                const classes = String(e.className).trim().split(/\s+/).slice(0, 4).join('.');
+                return e.tagName.toLowerCase() + (e.id ? '#' + e.id : '') + '.' + classes
+                    + ' ' + getComputedStyle(e).backgroundColor + ' ' + getComputedStyle(e).position
+                    + ' [' + [r.x, r.y, r.width, r.height].map(Math.round).join(',') + ']';
+            }).join('; ');
+        JS);
+        return "\n  The pink is painted by: " . ($found ?: 'no element (an overlay of the browser?)');
     }
 
     /**
@@ -409,16 +535,22 @@ class behat_theme_epure extends behat_base {
      * written, and axe waits for a minute for a frame without axe.
      *
      * @param bool $moodle With the rules of Moodle's step (Section 508, ARIA, visual cues, orientation too).
+     * @param string[]|null $rules These rules of axe only, instead of the tags.
+     * @param string[] $exclude Selectors of the parts of the page left out.
      * @return string|null The violations, or null when there are none.
      */
-    protected function axe_violations(bool $moodle = false): ?string {
+    protected function axe_violations(bool $moodle = false, ?array $rules = null, array $exclude = []): ?string {
         $tags = $moodle ? ['wcag2a', 'wcag21a', 'wcag22a', 'wcag2aa', 'wcag21aa', 'wcag22aa', 'section508', 'cat.aria',
             'cat.sensory-and-visual-cues', 'wcag134'] : ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
-        $options = json_encode(['runOnly' => ['type' => 'tag', 'values' => $tags], 'iframes' => !$moodle]);
+        $only = $rules !== null ? ['type' => 'rule', 'values' => $rules] : ['type' => 'tag', 'values' => $tags];
+        $options = json_encode(['runOnly' => $only, 'iframes' => !$moodle]);
+        $context = $exclude ? json_encode(['exclude' => array_map(fn($selector) => [$selector], $exclude)]) : 'document';
         $this->getSession()->executeScript(
             "window.epureAxe = null;" .
-            "const run = () => axe.run(document, " . $options . ")" .
-            ".then((r) => { window.epureAxe = r.violations.map((v) => v.id + ' (' + v.nodes.length + ')').join(', '); })" .
+            "const run = () => axe.run(" . $context . ", " . $options . ")" .
+            ".then((r) => { window.epureAxe = r.violations.map((v) => v.id + ' (' + v.nodes.length + ': '" .
+            "+ v.nodes.slice(0, 5).map((n) => n.target.join(' ') + (n.any[0] && n.any[0].data && n.any[0].data.fgColor" .
+            " ? ' ' + n.any[0].data.fgColor + ' on ' + n.any[0].data.bgColor : '')).join('; ') + ')').join(', '); })" .
             // Moodle's step may still be running its audit, which axe does one at a time.
             ".catch((e) => { if (/already running/i.test(e.message)) { setTimeout(run, 500); } " .
             "else { window.epureAxe = 'axe: ' + e.message; } });" .
@@ -967,5 +1099,105 @@ class behat_theme_epure extends behat_base {
         if (!\core_component::get_component_directory('format_' . $format)) {
             throw new \Moodle\BehatExtension\Exception\SkippedException('The course format ' . $format . ' is not installed.');
         }
+    }
+
+    /**
+     * Skips the scenario when an activity module is not installed: the activities of other plugins are added to some jobs
+     * of the continuous integration only.
+     *
+     * @Given /^the activity module "(?P<modname_string>(?:[^"]|\\")*)" is installed$/
+     * @param string $modname Name of the module, without mod_.
+     */
+    public function the_activity_module_is_installed(string $modname): void {
+        if (!\core_component::get_component_directory('mod_' . $modname)) {
+            throw new \Moodle\BehatExtension\Exception\SkippedException('The activity module ' . $modname . ' is not installed.');
+        }
+    }
+
+    /**
+     * Opens a page by its path, which can name a course, an activity or a user ({@see self::epure_path()}).
+     *
+     * @When /^I visit the Épure page "(?P<path_string>(?:[^"]|\\")*)"$/
+     * @param string $path Path, with {course SHORTNAME} and {cm IDNUMBER}.
+     */
+    public function i_visit_the_epure_page(string $path): void {
+        $this->getSession()->visit($this->locate_path($this->epure_path($path)));
+        $this->wait_for_pending_js();
+    }
+
+    /**
+     * The description of an activity gets an image without a text alternative, for the guide « Accessibility of the
+     * course » to find (after the page of the activity is checked: the defect is the teacher's, not the theme's).
+     *
+     * @Given /^the description of the activity "(?P<idnumber>[^"]*)" has an image without a text alternative$/
+     * @param string $idnumber ID number of the activity.
+     */
+    public function the_description_has_an_image_without_a_text_alternative(string $idnumber): void {
+        global $DB;
+        $cm = $DB->get_record('course_modules', ['idnumber' => $idnumber], '*', MUST_EXIST);
+        $modname = $DB->get_field('modules', 'name', ['id' => $cm->module], MUST_EXIST);
+        // Its description, in the column the guide reads (theme_epure\content_sources): intro, else none to change.
+        if (array_key_exists('intro', $DB->get_columns($modname))) {
+            $DB->set_field($modname, 'intro', '<p><img src="https://example.com/gloves.png"></p>', ['id' => $cm->instance]);
+        }
+        rebuild_course_cache($cm->course, true);
+    }
+
+    /**
+     * Creates an activity of a module of another plugin, with a short description: by its generator when it has one,
+     * else as Moodle stores any activity (its record, its module of the course in the
+     * section 1), the columns required by its table that the step does not know left empty.
+     *
+     * @Given /^the activity "(?P<mod>[a-z0-9_]+)" "(?P<name>[^"]*)" exists in "(?P<course>[^"]*)" as "(?P<id>[^"]*)"$/
+     * @param string $mod Name of the module, without mod_.
+     * @param string $name Name of the activity.
+     * @param string $course Short name of the course.
+     * @param string $id ID number of the activity.
+     */
+    public function the_activity_exists_in_the_course(string $mod, string $name, string $course, string $id): void {
+        global $CFG, $DB;
+        require_once($CFG->dirroot . '/course/lib.php');
+        $courserecord = $DB->get_record('course', ['shortname' => $course], '*', MUST_EXIST);
+        $intro = '<p>Read the instructions before you start.</p>';
+        $fields = ['course' => $courserecord->id, 'name' => $name, 'intro' => $intro, 'introformat' => FORMAT_HTML,
+            'idnumber' => $id, 'showdescription' => 1, 'section' => 1];
+        if (
+            class_exists('mod_' . $mod . '_generator')
+                || file_exists(\core_component::get_component_directory('mod_' . $mod) . '/tests/generator/lib.php')
+        ) {
+            // Some generators call functions of the module without loading them (GeoGebra).
+            $dir = \core_component::get_component_directory('mod_' . $mod);
+            foreach (['lib.php', 'locallib.php'] as $file) {
+                if (file_exists($dir . '/' . $file)) {
+                    require_once($dir . '/' . $file);
+                }
+            }
+            // The fields some generators need and do not fill in (Offline Quiz).
+            $fields += ['offlinequiz' => ['pdfintro' => '', 'timeopen' => 0, 'timeclose' => 0]][$mod] ?? [];
+            $created = \testing_util::get_data_generator()->create_module($mod, $fields);
+            // The ID number, which some generators leave out (Scheduler).
+            if (!empty($created->cmid)) {
+                $DB->set_field('course_modules', 'idnumber', $id, ['id' => $created->cmid]);
+            }
+            return;
+        }
+        // Without a generator: the record of the activity, the columns it requires empty or zero.
+        $record = ['course' => $courserecord->id, 'name' => $name, 'intro' => $intro, 'introformat' => FORMAT_HTML,
+            'timemodified' => time()];
+        foreach ($DB->get_columns($mod) as $column) {
+            if ($column->name === 'id' || array_key_exists($column->name, $record)) {
+                continue;
+            }
+            if ($column->not_null && !$column->has_default) {
+                $record[$column->name] = in_array($column->meta_type, ['I', 'N', 'F'], true) ? 0 : '';
+            }
+        }
+        $record = array_intersect_key($record, $DB->get_columns($mod));
+        $instance = $DB->insert_record($mod, (object) $record);
+        $cm = (object) ['course' => $courserecord->id, 'module' => $DB->get_field('modules', 'id', ['name' => $mod], MUST_EXIST),
+            'instance' => $instance, 'section' => 1, 'idnumber' => $id, 'visible' => 1, 'showdescription' => 1];
+        $cm->id = add_course_module($cm);
+        course_add_cm_to_section($courserecord, $cm->id, 1);
+        rebuild_course_cache($courserecord->id, true);
     }
 }

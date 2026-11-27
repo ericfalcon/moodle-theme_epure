@@ -27,11 +27,11 @@ Feature: The management dashboard of the platform
     And I should see "Safety at work" in the ".epure-management-table" "css_element"
     And I should see "1 enrolment in the courses that track completion:"
     And I should see "Not started: 1 (100 %)"
-    And the page should meet accessibility standards
+    And the page should meet accessibility standards, the audit waited for
 
   Scenario: A manager of the site reads it without configuring the site
     Given I log in as "manager1"
     When I visit "/theme/epure/management.php"
     Then I should see "Management dashboard"
     And I should see "Courses most followed"
-    And the page should meet accessibility standards
+    And the page should meet accessibility standards, the audit waited for

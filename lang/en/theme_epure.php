@@ -1681,6 +1681,7 @@ $string['repairgradesummary'] = 'Each row is an element of the gradebook, under 
 $string['repairh5p'] = 'H5P content';
 $string['repairnewwindow'] = '(opens in a new window)';
 $string['repaironeminute'] = '1 minute left.';
+$string['repairscrolltable'] = 'Table, scroll it across with the arrow keys';
 $string['repairsession'] = 'Without any activity for {$a}, the session closes and what is not saved is lost: save before. Moodle warns you a few minutes ahead.';
 $string['repairupdates'] = 'The list is updated as soon as a choice is made.';
 $string['requiredmark'] = '(required)';

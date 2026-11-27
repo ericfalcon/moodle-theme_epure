@@ -133,6 +133,70 @@ class mobile_app {
         }
         $css .= ':root{' . self::declarations(palette::derive($brand), $headerstyle, $variables) . '}';
         $css .= ':root.dark{' . self::declarations(palette::derive($brand, true), $headerstyle) . '}';
+        return $css . self::preferences_css();
+    }
+
+    /**
+     * The display preferences of « Aa » in the app: the classes that the app puts on its html element from the profile of
+     * the user (db/mobile.php, mobile/init.js), the same as on the pages of the site. The size of the text, the reading
+     * font, the spacing, the shorter lines, the underlined links, no motion, the stronger focus; the dark colours are
+     * those of the app (its class dark, with the colours of the theme above), yellow on black over every colour, cream
+     * as an overlay.
+     *
+     * @return string CSS.
+     */
+    public static function preferences_css(): string {
+        $css = '';
+        foreach (a11y::TEXT_SIZES as $size) {
+            if ($size !== 100) {
+                $css .= "html.epure-a11y-text-{$size}{font-size:{$size}% !important;}";
+            }
+        }
+        $url = fn($file) => (new \moodle_url('/theme/font.php/epure/theme/' . theme_get_revision() . '/' . $file))->out(false);
+        foreach (a11y::FONTS as $font) {
+            $css .= fonts::font_face_css($font, $url);
+            $stack = fonts::stack($font);
+            $css .= "html.epure-a11y-font-{$font}{--ion-font-family:{$stack};}"
+                . "html.epure-a11y-font-{$font} body,html.epure-a11y-font-{$font} core-format-text{font-family:{$stack};}";
+        }
+        $css .= 'html.epure-a11y-spacing core-format-text,html.epure-a11y-spacing ion-content{line-height:1.5;'
+            . 'letter-spacing:.12em;word-spacing:.16em;}'
+            . 'html.epure-a11y-lines core-format-text :is(p,li,blockquote){max-width:70ch;}'
+            . 'html.epure-a11y-underline core-format-text a,html.epure-a11y-underline a.core-link{'
+            . 'text-decoration:underline;text-underline-offset:.15em;}'
+            . 'html.epure-a11y-motion *,html.epure-a11y-motion *::before,html.epure-a11y-motion *::after{'
+            . 'animation:none !important;transition:none !important;scroll-behavior:auto !important;}'
+            . 'html.epure-a11y-focusring :focus-visible{outline:3px solid #fff !important;outline-offset:0 !important;'
+            . 'box-shadow:0 0 0 6px #000 !important;}';
+        // Yellow on black, over the colours of the app and of the theme.
+        $yellow = [
+            '--ion-background-color' => '#000', '--ion-background-color-rgb' => '0,0,0',
+            '--ion-text-color' => '#ff0', '--ion-text-color-rgb' => '255,255,0',
+            '--ion-item-background' => '#000', '--ion-card-background' => '#000', '--ion-toolbar-background' => '#000',
+            '--ion-toolbar-color' => '#ff0', '--ion-tab-bar-background' => '#000', '--ion-tab-bar-color' => '#ff0',
+            '--ion-tab-bar-color-selected' => '#ff0', '--ion-border-color' => '#b8b800',
+            '--ion-color-primary' => '#ff0', '--ion-color-primary-base' => '#ff0', '--ion-color-primary-rgb' => '255,255,0',
+            '--ion-color-primary-contrast' => '#000', '--ion-color-primary-contrast-rgb' => '0,0,0',
+            '--ion-color-primary-shade' => '#e0e000', '--ion-color-primary-tint' => '#ffff8a',
+            '--primary' => '#ff0', '--primary-contrast' => '#000', '--primary-shade' => '#e0e000', '--primary-tint' => '#ffff8a',
+            '--core-header-toolbar-background' => '#000', '--core-header-toolbar-color' => '#ff0',
+            '--core-header-toolbar-border-color' => '#ff0', '--core-link-color' => '#8fd9ff',
+            '--core-bottom-tabs-background' => '#000', '--core-bottom-tabs-color' => '#ff0',
+            '--core-bottom-tabs-color-selected' => '#ff0', '--core-bottom-tabs-border-color-active' => '#ff0',
+            '--core-tab-color-active' => '#ff0', '--core-tab-border-color-active' => '#ff0',
+            '--core-progressbar-color' => '#ff0', '--core-progressbar-background' => '#2e2e00',
+            '--a11y-shadow-focus-boxShadowColor' => '#fff',
+        ];
+        $css .= 'html.epure-a11y-scheme-yellow,html.epure-a11y-scheme-yellow.dark{';
+        foreach ($yellow as $name => $value) {
+            $css .= "{$name}:{$value} !important;";
+        }
+        $css .= '}html.epure-a11y-scheme-yellow core-format-text *{color:#ff0 !important;background-color:transparent !important;'
+            . 'border-color:#b8b800 !important;}'
+            . 'html.epure-a11y-scheme-yellow core-format-text :is(a,a *){color:#8fd9ff !important;}';
+        // Cream: an overlay over the whole app, as on the site.
+        $css .= 'html.epure-a11y-scheme-cream body::after{position:fixed;inset:0;z-index:2147483000;content:"";'
+            . 'pointer-events:none;background-color:' . palette::CREAM . ';mix-blend-mode:multiply;}';
         return $css;
     }
 

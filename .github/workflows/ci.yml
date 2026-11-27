@@ -14,6 +14,11 @@ on:
     - cron: '17 5 * * 6'
   workflow_dispatch:
 
+# A new push to a pull request cancels the runs of its previous commits, still waiting or running.
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   test:
     runs-on: ubuntu-24.04
@@ -43,17 +48,23 @@ jobs:
       fail-fast: false
       matrix:
         include-moodle:
-          # The course formats of other plugins (tests/behat/course_formats_plugins.feature), each at the branch of the
-          # version of Moodle it supports: repository@branch, separated by spaces.
-          - { branch: MOODLE_405_STABLE, php: '8.1', formats: 'gjb2048/moodle-format_grid@MOODLE_405 gjb2048/moodle-format_topcoll@MOODLE_405 ericfalcon/moodle-format_sectiontabs@main' }
+          # The course formats (formats) and the activities (activities) of other plugins: the formats of
+          # tests/behat/course_formats_plugins.feature and the 47 activities most installed that the guide reads
+          # (tests/behat/activity_plugins.feature), each on a version of Moodle it supports, at its branch for it:
+          # repository@branch, separated by spaces.
+          - { branch: MOODLE_405_STABLE, php: '8.1', formats: 'gjb2048/moodle-format_grid@MOODLE_405 gjb2048/moodle-format_topcoll@MOODLE_405 ericfalcon/moodle-format_sectiontabs@main davidherney/moodle-format_onetopic@MOODLE_405_STABLE jrangelardila/moodle-format_buttons@4.5', activities: 'CinecaElearning/moodle-mod_attendanceregister@MOODLE_45_STABLE danmarsden/moodle-mod_dialogue@MOODLE_405_STABLE catalyst/moodle-mod_facetoface@MOODLE_403_STABLE catalyst/moodle-mod_reengagement@MOODLE_405_STABLE center-for-learning-management/moodle-mod_msteams@master' }
           # The visual regression runs on this job only (tests/behat/visual.feature).
           - { branch: MOODLE_405_STABLE, php: '8.3', certificate: MOODLE_400_STABLE, visual: true }
-          - { branch: MOODLE_500_STABLE, php: '8.3', certificate: MOODLE_500_STABLE }
-          - { branch: MOODLE_501_STABLE, php: '8.3', certificate: MOODLE_500_STABLE }
-          - { branch: MOODLE_502_STABLE, php: '8.3', certificate: MOODLE_500_STABLE, formats: 'gjb2048/moodle-format_topcoll@MOODLE_502 marinaglancy/moodle-format_flexsections@MOODLE_500_STABLE ericfalcon/moodle-format_tiles@MOODLE_502_STABLE ericfalcon/moodle-format_sectiontabs@main' }
-          - { branch: MOODLE_503_STABLE, php: '8.4', pg: '17', certificate: MOODLE_500_STABLE, formats: 'marinaglancy/moodle-format_flexsections@MOODLE_500_STABLE ericfalcon/moodle-format_sectiontabs@main' }
-          - { branch: MOODLE_405_STABLE, php: '8.3', db: mariadb }
-          - { branch: MOODLE_503_STABLE, php: '8.4', db: mariadb }
+          - { branch: MOODLE_500_STABLE, php: '8.3', certificate: MOODLE_500_STABLE, activities: 't6nis/moodle-mod_mindmap@master rwthmoodle/moodle-mod_pdfannotator@main bdecentgmbh/moodle-mod_pulse@main' }
+          # Behat in Firefox on this job; Chrome on the others.
+          - { branch: MOODLE_501_STABLE, php: '8.3', certificate: MOODLE_500_STABLE, browser: firefox, activities: 'open-lms-open-source/moodle-mod_hsuforum@MOODLE_501_STABLE bycs-lp/mod_learningmap@master bozoh/moodle-mod_simplecertificate@MOODLE_501_STABLE oliviervalentin/moodle-mod_stickynotes@MOODLE_501_STABLE studentquiz/moodle-mod_studentquiz@main' }
+          # The pages in WebKit (Safari, iPhone) and in forced colours on this job (tests/browsers).
+          - { branch: MOODLE_502_STABLE, php: '8.3', certificate: MOODLE_500_STABLE, browsers: true, formats: 'gjb2048/moodle-format_topcoll@MOODLE_502 marinaglancy/moodle-format_flexsections@MOODLE_500_STABLE ericfalcon/moodle-format_tiles@MOODLE_502_STABLE ericfalcon/moodle-format_sectiontabs@main davidherney/moodle-format_onetopic@MOODLE_502_STABLE jrangelardila/moodle-format_buttons@5.x bdecentgmbh/moodle-format_designer@main', activities: 'projectestac/moodle-mod_geogebra@master h5p/h5p-moodle-plugin@stable academic-moodle-cooperation/moodle-mod_offlinequiz@MOODLE_502_STABLE academic-moodle-cooperation/moodle-mod_organizer@MOODLE_502_STABLE academic-moodle-cooperation/moodle-mod_publication@MOODLE_502_STABLE learnweb/moodle-mod_scheduler@MOODLE_502_STABLE bdecentgmbh/moodle-mod_videotime@master' }
+          - { branch: MOODLE_503_STABLE, php: '8.4', pg: '17', certificate: MOODLE_500_STABLE, formats: 'marinaglancy/moodle-format_flexsections@MOODLE_500_STABLE ericfalcon/moodle-format_sectiontabs@main davidherney/moodle-format_onetopic@master jrangelardila/moodle-format_buttons@5.x james-cnz/moodle-format_multitopic@master', activities: 'danmarsden/moodle-mod_attendance@MOODLE_503_STABLE brickfield/moodle-mod_board@main EduardoKrausME/moodle-mod_certificatebeautiful@master davosmith/moodle-checklist@master ndunand/moodle-mod_choicegroup@master mdjnelson/moodle-mod_customcert@MOODLE_503_STABLE drachels/moodle-mod_diary@master bdaloukas/moodle-mod_game@MOODLE_20_STABLE gbateson/moodle-mod_hotpot@master drachels/moodle-mod_icontent@master sokunthearithmakara/mod_interactivevideo@main sergiocomeron/moodle-mod_jitsi@master elearningsoftware/moodle-mod_journal@master PoetOS/moodle-mod_questionnaire@MOODLE_503_STABLE grabs/moodle-mod_unilabel@main' }
+          # Questionnaire and Unilabel on PostgreSQL: on MariaDB, some of their tables are missing from the database of
+          # PHPUnit. Edwiser (format_remuiformat), from the Moodle Marketplace only: its archive is in .github/plugins (archives).
+          - { branch: MOODLE_405_STABLE, php: '8.3', db: mariadb, archives: 'format_remuiformat_2026111800.zip' }
+          - { branch: MOODLE_503_STABLE, php: '8.4', db: mariadb, archives: 'format_remuiformat_2026111800.zip', activities: 'open-lms-open-source/moodle-mod_lightboxgallery@master netspotau/moodle-mod_mediagallery@master EduardoKrausME/moodle-mod_pdfprotect@master davosmith/moodle-realtimequiz@master catalyst/moodle-mod_subcourse@MOODLE_503_STABLE EduardoKrausME/moodle-mod_supervideo@master junpataleta/moodle-mod_threesixo@main turnitin/moodle-mod_turnitintooltwo@master jcrodriguez-dis/moodle-mod_vpl@master jrchamp/moodle-mod_zoom@main Wunderbyte-GmbH/moodle-local_wunderbyte_table@main Wunderbyte-GmbH/moodle-mod_booking@main' }
           # IOMAD, whose tables and classes were renamed in 5.1 (theme_epure\iomad knows both).
           - { branch: IOMAD_405_STABLE, php: '8.3', repo: 'https://github.com/iomad/iomad.git', certificate: MOODLE_400_STABLE }
           - { branch: IOMAD_500_STABLE, php: '8.3', repo: 'https://github.com/iomad/iomad.git', certificate: MOODLE_500_STABLE }
@@ -159,10 +170,40 @@ jobs:
           for spec in ${{ matrix.include-moodle.formats }}; do
             moodle-plugin-ci add-plugin --branch "${spec#*@}" "${spec%@*}"
           done
-          # Their scenarios are not run: left out, as gherkinlint refuses those of some (names used twice). Moodle is
-          # not there yet: the course formats are the plugins added whose component starts with format_.
+
+      # The activities of other plugins read by the guide, on the jobs that list them (activities).
+      - name: Add the activities of other plugins
+        if: ${{ matrix.include-moodle.activities }}
+        run: |
+          for spec in ${{ matrix.include-moodle.activities }}; do
+            moodle-plugin-ci add-plugin --branch "${spec#*@}" "${spec%@*}"
+          done
+          # Some keep part of their code in submodules (mod_hvp: the library of H5P), which add-plugin does not fetch.
+          for dir in moodle-plugin-ci-plugins/*/; do
+            if [ -f "$dir.gitmodules" ]; then
+              git -C "$dir" submodule update --init --recursive --depth 1
+            fi
+          done
+
+      # The plugins of the Moodle Marketplace without a repository of their code: their archives, in .github/plugins, with
+      # the other plugins added, which the installation copies into Moodle.
+      - name: Add the plugins of other archives
+        if: ${{ matrix.include-moodle.archives }}
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/moodle-plugin-ci-plugins"
+          for archive in ${{ matrix.include-moodle.archives }}; do
+            unzip -q "repo/.github/plugins/$archive" -d "$GITHUB_WORKSPACE/moodle-plugin-ci-plugins"
+          done
+          echo "EXTRA_PLUGINS_DIR=$GITHUB_WORKSPACE/moodle-plugin-ci-plugins" >> "$GITHUB_ENV"
+
+      # The scenarios of the formats and activities of other plugins are not run: left out, as gherkinlint refuses those
+      # of some (names used twice). Moodle is not there yet: they are the plugins added whose component starts with
+      # format_, mod_ or local_.
+      - name: Leave out the scenarios of the other plugins
+        if: ${{ matrix.include-moodle.formats || matrix.include-moodle.activities || matrix.include-moodle.archives }}
+        run: |
           find . -maxdepth 4 -name version.php -not -path './repo/*' -not -path './ci/*' | while read -r file; do
-            if grep -qE "component *= *'format_" "$file"; then
+            if grep -qE "component *= *['\"](format|mod|local)_" "$file"; then
               find "$(dirname "$file")/tests/behat" -name '*.feature' -print -delete 2>/dev/null || true
             fi
           done
@@ -242,10 +283,52 @@ jobs:
       # comes now and then, on one job, is read from it.
       - name: Behat tests
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci behat --profile chrome --dump --tags '${{ matrix.include-moodle.repo && '@theme_epure' || '@theme_epure&&~@theme_epure_iomad' }}'
+        run: set -o pipefail; moodle-plugin-ci behat --profile ${{ matrix.include-moodle.browser || 'chrome' }} --dump --tags '${{ matrix.include-moodle.repo && '@theme_epure' || '@theme_epure&&~@theme_epure_iomad' }}' 2>&1 | tee "$RUNNER_TEMP/behat.log"
         env:
           # The visual regression: its images (new pages, differences) in this folder, on one job only.
           EPURE_VISUAL: ${{ matrix.include-moodle.visual && format('{0}/visual', github.workspace) || '' }}
+
+      # The pages of a learner in WebKit (Safari on a computer and on an iPhone), which Behat does not drive, and in the
+      # forced colours of the Windows contrast themes: no error of JavaScript, no violation of axe, nothing wider than the
+      # screen (tests/browsers/check.js). On the site of the tests, served by PHP; its images kept 30 days.
+      - name: WebKit and forced colours
+        if: ${{ !cancelled() && matrix.include-moodle.browsers }}
+        run: |
+          # From Moodle 5.1, the files served are in public/.
+          root=moodle/public; [ -d "$root" ] || root=moodle
+          sed -i "s#^\$CFG->wwwroot *=.*#\$CFG->wwwroot = 'http://localhost:8010';#" moodle/config.php
+          # The site itself installed first: moodle-plugin-ci installs the sites of PHPUnit and Behat only. Its scripts of
+          # the command line stay in moodle/admin/cli from Moodle 5.1.
+          cli=moodle/admin/cli; [ -f "$cli/install_database.php" ] || cli=moodle/public/admin/cli
+          php "$cli/install_database.php" --agree-license --adminpass='Browsers-2026!' --fullname='Browsers' \
+            --shortname='Browsers' --adminemail='admin@example.com' | tail -3
+          course=$(php "$root/theme/epure/tests/browsers/setup.php" | tail -1)
+          (php -S localhost:8010 -t "$root" > "$RUNNER_TEMP/php.log" 2>&1 &)
+          mkdir -p "$RUNNER_TEMP/pw" && cd "$RUNNER_TEMP/pw"
+          npm install --no-save --no-audit --no-fund playwright@1.49.1 axe-core@4.10.2
+          npx playwright install --with-deps webkit chromium
+          NODE_PATH="$RUNNER_TEMP/pw/node_modules" node "$GITHUB_WORKSPACE/$root/theme/epure/tests/browsers/check.js" \
+            http://localhost:8010 "$course" || { tail -40 "$RUNNER_TEMP/php.log"; grep -n "wwwroot" "$GITHUB_WORKSPACE/moodle/config.php"; exit 1; }
+        env:
+          EPURE_BROWSERS: ${{ github.workspace }}/browsers
+
+      - name: Images of WebKit and forced colours
+        if: ${{ !cancelled() && matrix.include-moodle.browsers }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: browsers
+          path: browsers/
+
+      # The failed steps of Behat at the very end of the log, without the pages dumped: read first.
+      - name: Summary of the failures of Behat
+        if: ${{ failure() }}
+        run: |
+          [ -f "$RUNNER_TEMP/behat.log" ] || exit 0
+          grep -vE '^\s*\|' "$RUNNER_TEMP/behat.log" | grep -E '^[0-9]{3} (Scenario|Example)|^\s+(And|Then|When|Given) |failures:|\((light|dark|yellow|cream|text)[^)]*\)|violations of rule|^\s+[.#a-z\[][^ ]*$|contrast of|scrolls across|painted by|error in the page|Exception|Warning|does not exist|not found' \
+            | cut -c1-700 | awk '!seen[$0]++' | head -400
+          # Each failed step with the lines of its message, whatever they say.
+          echo '----- The failed steps and their messages'
+          grep -A4 -E '^\s+(And|Then|When|Given) .*# ' "$RUNNER_TEMP/behat.log" | grep -vE '^\s*\|' | cut -c1-500 | head -150
 
       # The images of the visual regression: the pages without a reference, and those that differ, with their
       # differences in red. Kept 30 days.

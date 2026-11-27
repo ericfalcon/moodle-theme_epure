@@ -121,6 +121,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
             // On Moodle, the appearance of the entity of the page: its category, or the cohorts of the user.
             $output .= \html_writer::tag('style', $css, ['id' => 'epure-entity-style']);
         }
+        // The colour chosen for the active tab of the course format Section tabs, readable in every display.
+        if (($css = \theme_epure\format_colours::css($this->page->course ?? null)) !== '') {
+            $output .= \html_writer::tag('style', $css, ['id' => 'epure-format-colours']);
+        }
         // The installable web app: its manifest and its service worker; once turned off, the service worker is removed.
         if (\theme_epure\web_app::enabled()) {
             $output .= \theme_epure\web_app::head_html();
@@ -391,6 +395,11 @@ class core_renderer extends \theme_boost\output\core_renderer {
             'editorpath' => get_string('repaireditorpath', 'theme_epure'),
             'editorframe' => get_string('repaireditorframe', 'theme_epure'),
             'gradesummary' => get_string('repairgradesummary', 'theme_epure', 'COLUMNS'),
+            // The repairs of the pages of other plugins.
+            'collapseall' => get_string('collapseall'),
+            'expandall' => get_string('expandall'),
+            'scrolltable' => get_string('repairscrolltable', 'theme_epure'),
+            'progress' => get_string('progress'),
         ];
         // The abbreviations of the interface, explained (WCAG 3.1.4).
         $texts['abbreviations'] = [];
@@ -415,6 +424,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $json = fn($value) => json_encode($value, JSON_HEX_TAG | JSON_UNESCAPED_UNICODE);
         $arguments = implode(', ', array_map($json, [$names, $menus, $texts]));
         $this->page->requires->js_amd_inline("require(['theme_epure/aria_repair'], (repair) => repair.init({$arguments}));");
+        // The display preferences of « Aa » in the frames of the page: the editors, H5P, SCORM, the files shown.
+        $this->page->requires->js_call_amd('theme_epure/frame_preferences', 'init');
     }
 
     /**

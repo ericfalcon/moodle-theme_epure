@@ -204,7 +204,7 @@ Feature: Accessibility of the Épure theme
     And I press the ? key
     And I click on "Open this help with the key « ? »" "checkbox"
     And I press the escape key
-    And I wait "1" seconds
+    And I wait until the page is ready
     And I reload the page
     And I press the ? key
     And "#epure-shortcuts" "css_element" should not be visible
@@ -228,7 +228,7 @@ Feature: Accessibility of the Épure theme
     And I press the ? key
     And I click on "Turn on the keys of navigation (N, P, J, K, G)" "checkbox"
     And I press the escape key
-    And I wait "1" seconds
+    And I wait until the page is ready
     And I reload the page
     And I press the j key
     And the focused element is "#region-main h3[data-for='section_title']" "css_element"

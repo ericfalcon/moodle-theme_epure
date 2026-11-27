@@ -64,4 +64,12 @@ $functions = [
         'loginrequired' => true,
         'capabilities' => 'mod/resource:view',
     ],
+    'theme_epure_display_classes' => [
+        'classname' => \theme_epure\external\display_classes::class,
+        'description' => 'The classes of the display preferences of « Aa » of the current user, for the Moodle app.',
+        'type' => 'read',
+        'ajax' => true,
+        'loginrequired' => true,
+        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
 ];
