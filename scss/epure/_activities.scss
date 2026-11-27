@@ -1345,10 +1345,10 @@ body.format-designer #page {
     overflow-x: auto;
 }
 
-// The check boxes and radio buttons drawn by the browser, without the classes of Bootstrap (Organizer): 24 px at least
-// (WCAG 2.5.8).
-#region-main input[type="checkbox"]:not(.form-check-input),
-#region-main input[type="radio"]:not(.form-check-input) {
+// The check boxes and radio buttons of Organizer, drawn by the browser without the classes of Bootstrap: 24 px at least
+// (WCAG 2.5.8). Those of Moodle keep their size.
+body.path-mod-organizer #region-main input[type="checkbox"]:not(.form-check-input),
+body.path-mod-organizer #region-main input[type="radio"]:not(.form-check-input) {
     min-width: 1.5rem;
     min-height: 1.5rem;
 }
