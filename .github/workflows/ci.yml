@@ -278,7 +278,7 @@ jobs:
       # comes now and then, on one job, is read from it.
       - name: Behat tests
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci behat --profile ${{ matrix.include-moodle.browser || 'chrome' }} --dump --tags '${{ matrix.include-moodle.repo && '@theme_epure' || '@theme_epure&&~@theme_epure_iomad' }}'
+        run: set -o pipefail; moodle-plugin-ci behat --profile ${{ matrix.include-moodle.browser || 'chrome' }} --dump --tags '${{ matrix.include-moodle.repo && '@theme_epure' || '@theme_epure&&~@theme_epure_iomad' }}' 2>&1 | tee "$RUNNER_TEMP/behat.log"
         env:
           # The visual regression: its images (new pages, differences) in this folder, on one job only.
           EPURE_VISUAL: ${{ matrix.include-moodle.visual && format('{0}/visual', github.workspace) || '' }}
@@ -308,6 +308,14 @@ jobs:
         with:
           name: browsers
           path: browsers/
+
+      # The failed steps of Behat at the very end of the log, without the pages dumped: read first.
+      - name: Summary of the failures of Behat
+        if: ${{ failure() }}
+        run: |
+          [ -f "$RUNNER_TEMP/behat.log" ] || exit 0
+          grep -vE '^\s*\|' "$RUNNER_TEMP/behat.log" | grep -E '^[0-9]{3} (Scenario|Example)|^\s+(And|Then|When|Given) |failures:|\((light|dark|yellow|cream|text)[^)]*\)|violations of rule|^\s+[.#a-z\[][^ ]*$|contrast of|scrolls across|Exception|Warning|does not exist|not found' \
+            | cut -c1-300 | awk '!seen[$0]++' | head -400
 
       # The images of the visual regression: the pages without a reference, and those that differ, with their
       # differences in red. Kept 30 days.
