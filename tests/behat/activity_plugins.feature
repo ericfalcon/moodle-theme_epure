@@ -39,7 +39,6 @@ Feature: The activities of other plugins read by the guide, with the Épure them
       | modname              | guide                                  |
       | attendance           | Images without a text alternative: 1.  |
       | attendanceregister   | Images without a text alternative: 1.  |
-      | board                | Images without a text alternative: 1.  |
       | booking              | Images without a text alternative: 1.  |
       | certificatebeautiful | Images without a text alternative: 1.  |
       | checklist            | Images without a text alternative: 1.  |
@@ -72,7 +71,6 @@ Feature: The activities of other plugins read by the guide, with the Épure them
       | reengagement         | Unit reengagement                      |
       | scheduler            | Images without a text alternative: 1.  |
       | simplecertificate    | Images without a text alternative: 1.  |
-      | stickynotes          | Images without a text alternative: 1.  |
       | studentquiz          | Images without a text alternative: 1.  |
       | subcourse            | Images without a text alternative: 1.  |
       | supervideo           | Images without a text alternative: 1.  |
@@ -83,8 +81,9 @@ Feature: The activities of other plugins read by the guide, with the Épure them
       | zoom                 | Images without a text alternative: 1.  |
 
   # H5P (mod_hvp) cannot show an activity without its package of H5P, which the step does not create, nor Turnitin without
-  # an account of the service; MS Teams calls a function that Moodle removed (url_print_heading): their page is not
-  # checked, the guide reads their description.
+  # an account of the service; MS Teams calls a function that Moodle removed (url_print_heading); the scripts of Board and
+  # Sticky Notes never tell Behat they are done (their pages are checked by hand, on a site with them): their page is not
+  # checked here, the guide reads their description.
   Scenario Outline: The guide reads the description of the activity « <modname> », which cannot be shown here
     Given the activity module "<modname>" is installed
     And the following config values are set as admin:
@@ -103,6 +102,8 @@ Feature: The activities of other plugins read by the guide, with the Épure them
 
     Examples:
       | modname         |
+      | board           |
       | hvp             |
       | msteams         |
+      | stickynotes     |
       | turnitintooltwo |
