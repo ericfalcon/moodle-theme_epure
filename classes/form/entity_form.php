@@ -180,6 +180,14 @@ class entity_form extends \moodleform {
         $mform->addElement('static', 'footerintro', '', get_string('entityfooter_desc', 'theme_epure'));
         $mform->addElement('textarea', 'footertext', get_string('footertext', 'theme_epure'), ['rows' => 4, 'cols' => 60]);
         $mform->setType('footertext', PARAM_RAW);
+        // In the editor of Moodle, as the text of the footer of the site and of an IOMAD company (HTML).
+        global $CFG;
+        require_once($CFG->libdir . '/editorlib.php');
+        editors_get_preferred_editor(FORMAT_HTML)->use_editor('id_footertext', [
+            'context' => \context_coursecat::instance($this->_customdata['category']),
+            'autosave' => false,
+            'maxfiles' => 0,
+        ]);
         foreach (['footerlegalurl', 'footerprivacyurl', 'footercontacturl'] as $name) {
             $mform->addElement('text', $name, get_string($name, 'theme_epure'), ['size' => 60]);
             $mform->setType($name, PARAM_URL);
