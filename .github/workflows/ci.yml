@@ -47,10 +47,10 @@ jobs:
           # tests/behat/course_formats_plugins.feature and the 47 activities most installed that the guide reads
           # (tests/behat/activity_plugins.feature), each on a version of Moodle it supports, at its branch for it:
           # repository@branch, separated by spaces.
-          - { branch: MOODLE_405_STABLE, php: '8.1', formats: 'gjb2048/moodle-format_grid@MOODLE_405 gjb2048/moodle-format_topcoll@MOODLE_405 ericfalcon/moodle-format_sectiontabs@main davidherney/moodle-format_onetopic@MOODLE_405_STABLE jrangelardila/moodle-format_buttons@4.5', activities: 'CinecaElearning/moodle-mod_attendanceregister@MOODLE_45_STABLE danmarsden/moodle-mod_dialogue@MOODLE_405_STABLE catalyst/moodle-mod_facetoface@MOODLE_403_STABLE catalyst/moodle-mod_reengagement@MOODLE_405_STABLE' }
+          - { branch: MOODLE_405_STABLE, php: '8.1', formats: 'gjb2048/moodle-format_grid@MOODLE_405 gjb2048/moodle-format_topcoll@MOODLE_405 ericfalcon/moodle-format_sectiontabs@main davidherney/moodle-format_onetopic@MOODLE_405_STABLE jrangelardila/moodle-format_buttons@4.5', activities: 'CinecaElearning/moodle-mod_attendanceregister@MOODLE_45_STABLE danmarsden/moodle-mod_dialogue@MOODLE_405_STABLE catalyst/moodle-mod_facetoface@MOODLE_403_STABLE catalyst/moodle-mod_reengagement@MOODLE_405_STABLE center-for-learning-management/moodle-mod_msteams@master' }
           # The visual regression runs on this job only (tests/behat/visual.feature).
           - { branch: MOODLE_405_STABLE, php: '8.3', certificate: MOODLE_400_STABLE, visual: true }
-          - { branch: MOODLE_500_STABLE, php: '8.3', certificate: MOODLE_500_STABLE, activities: 't6nis/moodle-mod_mindmap@master center-for-learning-management/moodle-mod_msteams@master rwthmoodle/moodle-mod_pdfannotator@main bdecentgmbh/moodle-mod_pulse@main' }
+          - { branch: MOODLE_500_STABLE, php: '8.3', certificate: MOODLE_500_STABLE, activities: 't6nis/moodle-mod_mindmap@master rwthmoodle/moodle-mod_pdfannotator@main bdecentgmbh/moodle-mod_pulse@main' }
           # Behat in Firefox on this job; Chrome on the others.
           - { branch: MOODLE_501_STABLE, php: '8.3', certificate: MOODLE_500_STABLE, browser: firefox, activities: 'open-lms-open-source/moodle-mod_hsuforum@MOODLE_501_STABLE bycs-lp/mod_learningmap@master bozoh/moodle-mod_simplecertificate@MOODLE_501_STABLE oliviervalentin/moodle-mod_stickynotes@MOODLE_501_STABLE studentquiz/moodle-mod_studentquiz@main' }
           # The pages in WebKit (Safari, iPhone) and in forced colours on this job (tests/browsers).

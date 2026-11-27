@@ -427,6 +427,13 @@ html.epure-a11y-focusring :focus-visible {
             background-color: var(--epure-border) !important; // stylelint-disable-line declaration-no-important
         }
 
+        // The alerts of Bootstrap, in their light colours (the automatic sending of Course certificate).
+        .alert {
+            color: #ff0 !important; // stylelint-disable-line declaration-no-important
+            background-color: #000 !important; // stylelint-disable-line declaration-no-important
+            border: 1px solid #ff0 !important; // stylelint-disable-line declaration-no-important
+        }
+
         caption {
             color: var(--epure-ink-muted);
         }

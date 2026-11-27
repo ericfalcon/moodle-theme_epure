@@ -53,7 +53,6 @@ Feature: The activities of other plugins read by the guide, with the Épure them
       | geogebra             | Images without a text alternative: 1.  |
       | hotpot               | Images without a text alternative: 1.  |
       | hsuforum             | Images without a text alternative: 1.  |
-      | hvp                  | Images without a text alternative: 1.  |
       | icontent             | Images without a text alternative: 1.  |
       | interactivevideo     | Images without a text alternative: 1.  |
       | jitsi                | Images without a text alternative: 1.  |
@@ -84,3 +83,21 @@ Feature: The activities of other plugins read by the guide, with the Épure them
       | videotime            | Images without a text alternative: 1.  |
       | vpl                  | Images without a text alternative: 1.  |
       | zoom                 | Images without a text alternative: 1.  |
+
+  # H5P (mod_hvp) cannot show an activity without its package of H5P, which the step does not create: its page is not
+  # checked, the guide reads its description.
+  Scenario: The guide reads the description of an activity of H5P (mod_hvp)
+    Given the activity module "hvp" is installed
+    And the following config values are set as admin:
+      | courseaccessibility | 1 | theme_epure |
+    And the following config values are set as admin:
+      | theme | epure |
+    And the following "courses" exist:
+      | fullname | shortname | numsections |
+      | Hygiene  | HYG       | 1           |
+    And the activity "hvp" "Unit hvp" exists in "HYG" as "act1"
+    And the description of the activity "act1" has an image without a text alternative
+    When I log in as "admin"
+    And I visit the Épure page "/theme/epure/courseaccessibility.php?id={course HYG}"
+    Then I should see "Unit hvp"
+    And I should see "Images without a text alternative: 1."
