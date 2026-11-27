@@ -23,7 +23,7 @@
     Example context (json):
     {
         "resume": {"id": 2, "heading": "Pick up where you left off", "name": "Safety at work", "url": "#", "image": "", "category": "Training", "hasprogress": true,
-            "progress": 40, "next": {"name": "Quiz 1", "url": "#"}, "summary": "3 activities left · due tomorrow", "action": "Continue", "actionurl": "#"},
+            "progress": 40, "next": {"name": "Quiz 1", "url": "#"}, "place": null, "summary": "3 activities left · due tomorrow", "action": "Continue", "actionurl": "#"},
         "inprogress": [{"id": 3, "name": "First aid", "url": "#", "hasprogress": true, "progress": 10,
             "urgentstate": {"state": "soon", "icon": "fa-regular fa-clock", "text": "Due soon · 16 October"} }],
         "hasinprogress": true, "moreinprogress": "",
@@ -58,6 +58,7 @@
                         </div>
                     {{/hasprogress}}
                     {{#next}}<p class="epure-learner-resume-next">{{#str}}mycourses_next, theme_epure{{/str}} {{name}}{{#state}} {{>theme_epure/activity_state}}{{/state}}</p>{{/next}}
+                    {{#place}}<p class="epure-learner-resume-next">{{#str}}mycourses_place, theme_epure{{/str}} {{place}}</p>{{/place}}
                     {{#summary}}<p class="epure-continue-summary">{{summary}}</p>{{/summary}}
                     <a class="btn btn-primary btn-lg epure-learner-resume-action" href="{{actionurl}}">
                         {{action}}<span class="sr-only visually-hidden"> – {{name}}</span>

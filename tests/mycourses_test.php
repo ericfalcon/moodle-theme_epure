@@ -85,6 +85,38 @@ final class mycourses_test extends \advanced_testcase {
     }
 
     /**
+     * In a course of the format Section tabs without an activity to continue, « Continue » leads where the learner
+     * left off: the last section consulted and its last subsection, as the format remembers them.
+     */
+    public function test_sectiontabs_place(): void {
+        global $CFG, $PAGE;
+        $this->resetAfterTest();
+        if (
+            !\core_component::get_component_directory('format_sectiontabs')
+            || !method_exists(\format_sectiontabs::class, 'get_resume')
+        ) {
+            $this->markTestSkipped('The course format Section tabs 1.4 or later is not installed.');
+        }
+        $CFG->enablecompletion = true;
+        $generator = $this->getDataGenerator();
+        $course = $generator->create_course(['fullname' => 'Tabs', 'format' => 'sectiontabs', 'numsections' => 2,
+            'enablecompletion' => 0]);
+        $section = get_fast_modinfo($course)->get_section_info(2);
+        course_update_section($course, $section, ['name' => 'Block 2']);
+        $learner = $generator->create_and_enrol($course, 'student');
+        $this->setUser($learner);
+
+        $card = mycourses::export($PAGE->get_renderer('core'))['sections'][0]['courses'][0];
+        $this->assertNull($card['place'], 'Nothing consulted yet.');
+        $this->assertStringContainsString('/course/view.php?id=' . $course->id, $card['actionurl']);
+
+        set_user_preference('format_sectiontabs_last_' . $course->id, $section->id);
+        $card = mycourses::export($PAGE->get_renderer('core'))['sections'][0]['courses'][0];
+        $this->assertSame('Block 2', $card['place']);
+        $this->assertSame(course_get_format($course)->get_tab_url($section)->out(false), $card['actionurl']);
+    }
+
+    /**
      * A user with one role sees one list, without section headings; hidden courses stay hidden.
      */
     public function test_one_role(): void {

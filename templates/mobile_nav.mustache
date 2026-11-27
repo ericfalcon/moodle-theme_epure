@@ -17,7 +17,8 @@
 {{!
     @template theme_epure/mobile_nav
 
-    Navigation bar at the bottom of the screen on phones.
+    Navigation bar at the bottom of the screen on phones. In the course format Section tabs, a row above it offers
+    the previous and next section or subsection (theme_epure/mobile_steps fills it from the bar of the format).
 
     Example context (json):
     {
@@ -25,10 +26,25 @@
             {"key": "home", "label": "Dashboard", "url": "#", "icon": "fa-gauge", "active": true, "hascount": false},
             {"key": "messages", "label": "Messages", "url": "#", "icon": "fa-comment", "active": false,
                 "hascount": true, "count": 2, "countlabel": "2 unread"}
-        ]
+        ],
+        "steps": true
     }
 }}
 <nav class="epure-mobilenav" aria-label="{{#str}}mobilenav, theme_epure{{/str}}">
+    {{#steps}}
+        <div class="epure-mobilenav-steps" hidden>
+            <a class="epure-mobilenav-step epure-mobilenav-prev" href="#" hidden>
+                <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                <span class="sr-only visually-hidden epure-mobilenav-step-kind"></span>
+                <span class="epure-mobilenav-step-name"></span>
+            </a>
+            <a class="epure-mobilenav-step epure-mobilenav-next" href="#" hidden>
+                <span class="sr-only visually-hidden epure-mobilenav-step-kind"></span>
+                <span class="epure-mobilenav-step-name"></span>
+                <i class="fa fa-chevron-right" aria-hidden="true"></i>
+            </a>
+        </div>
+    {{/steps}}
     <ul>
         {{#items}}
             <li>

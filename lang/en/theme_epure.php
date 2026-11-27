@@ -1404,6 +1404,7 @@ $string['mycourses_nocompletion'] = 'Completion not tracked';
 $string['mycourses_nodeadline'] = 'No deadline to come';
 $string['mycourses_nomatch'] = 'No course matches the search.';
 $string['mycourses_participants'] = 'Participants';
+$string['mycourses_place'] = 'Where you left off:';
 $string['mycourses_progress'] = 'Progress';
 $string['mycourses_review'] = 'Review';
 $string['mycourses_search'] = 'Search my courses';

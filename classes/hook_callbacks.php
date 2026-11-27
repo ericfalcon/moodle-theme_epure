@@ -468,6 +468,9 @@ class hook_callbacks {
         // The navigation bar of the phones, fixed at the bottom of the screen.
         if (mobile_nav::applies($PAGE)) {
             $hook->add_html($OUTPUT->render_from_template('theme_epure/mobile_nav', mobile_nav::export($PAGE)));
+            if (mobile_nav::steps_applies($PAGE)) {
+                $PAGE->requires->js_call_amd('theme_epure/mobile_steps', 'init');
+            }
         }
         if (footer::enabled()) {
             $hook->add_html($OUTPUT->render_from_template('theme_epure/footer', footer::export()));
