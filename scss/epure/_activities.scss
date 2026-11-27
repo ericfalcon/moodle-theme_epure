@@ -1427,9 +1427,10 @@ html.epure-dark body.format-designer [data-action="toggle-manual-completion"]:no
     color: var(--epure-brand-text) !important; // stylelint-disable-line declaration-no-important
 }
 
-// StudentQuiz: the count of wrong answers, white on the red of Bootstrap 4 (4.5:1 just), under 4.5:1 under the cream
-// overlay: a darker red (6.4:1).
-html:not(.epure-a11y-scheme-yellow) body.path-mod-studentquiz .stat.badge.last-attempt-incorrect {
+// StudentQuiz: the counts of wrong answers and of disapprovals, white on the red of Bootstrap 4 (4.5:1 just), under
+// 4.5:1 under the cream overlay: a darker red (6.4:1).
+html:not(.epure-a11y-scheme-yellow) body.path-mod-studentquiz .stat.badge.last-attempt-incorrect,
+html:not(.epure-a11y-scheme-yellow) body.path-mod-studentquiz .stat.badge.disapprovals {
     background-color: #b02a37 !important; // stylelint-disable-line declaration-no-important
 }
 

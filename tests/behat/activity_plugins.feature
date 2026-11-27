@@ -56,7 +56,6 @@ Feature: The activities of other plugins read by the guide, with the Épure them
       | interactivevideo     | Images without a text alternative: 1.  |
       | jitsi                | Images without a text alternative: 1.  |
       | journal              | Images without a text alternative: 1.  |
-      | learningmap          | Images without a text alternative: 1.  |
       | lightboxgallery      | Images without a text alternative: 1.  |
       | mediagallery         | Images without a text alternative: 1.  |
       | mindmap              | Images without a text alternative: 1.  |
@@ -82,7 +81,8 @@ Feature: The activities of other plugins read by the guide, with the Épure them
 
   # H5P (mod_hvp) cannot show an activity without its package of H5P, which the step does not create, nor Turnitin without
   # an account of the service; MS Teams calls a function that Moodle removed (url_print_heading); the scripts of Board and
-  # Sticky Notes never tell Behat they are done (their pages are checked by hand, on a site with them): their page is not
+  # Sticky Notes never tell Behat they are done, Learning Map raises a warning of PHP in its own code (mapworker.php,
+  # « p1 ») that Behat turns into an error (their pages are checked by hand, on a site with them): their page is not
   # checked here, the guide reads their description.
   Scenario Outline: The guide reads the description of the activity « <modname> », which cannot be shown here
     Given the activity module "<modname>" is installed
@@ -104,6 +104,7 @@ Feature: The activities of other plugins read by the guide, with the Épure them
       | modname         |
       | board           |
       | hvp             |
+      | learningmap     |
       | msteams         |
       | stickynotes     |
       | turnitintooltwo |
