@@ -43,21 +43,21 @@ jobs:
       fail-fast: false
       matrix:
         include-moodle:
-          # The course formats of other plugins (tests/behat/course_formats_plugins.feature), each at the branch of the
-          # version of Moodle it supports: repository@branch, separated by spaces.
-          - { branch: MOODLE_405_STABLE, php: '8.1', formats: 'gjb2048/moodle-format_grid@MOODLE_405 gjb2048/moodle-format_topcoll@MOODLE_405 ericfalcon/moodle-format_sectiontabs@main' }
+          # The course formats (formats) and the activities (activities) of other plugins: the formats of
+          # tests/behat/course_formats_plugins.feature and the 47 activities most installed that the guide reads
+          # (tests/behat/activity_plugins.feature), each on a version of Moodle it supports, at its branch for it:
+          # repository@branch, separated by spaces.
+          - { branch: MOODLE_405_STABLE, php: '8.1', formats: 'gjb2048/moodle-format_grid@MOODLE_405 gjb2048/moodle-format_topcoll@MOODLE_405 ericfalcon/moodle-format_sectiontabs@main', activities: 'CinecaElearning/moodle-mod_attendanceregister@MOODLE_45_STABLE danmarsden/moodle-mod_dialogue@MOODLE_405_STABLE catalyst/moodle-mod_facetoface@MOODLE_403_STABLE catalyst/moodle-mod_reengagement@MOODLE_405_STABLE' }
           # The visual regression runs on this job only (tests/behat/visual.feature).
           - { branch: MOODLE_405_STABLE, php: '8.3', certificate: MOODLE_400_STABLE, visual: true }
-          - { branch: MOODLE_500_STABLE, php: '8.3', certificate: MOODLE_500_STABLE }
+          - { branch: MOODLE_500_STABLE, php: '8.3', certificate: MOODLE_500_STABLE, activities: 't6nis/moodle-mod_mindmap@master center-for-learning-management/moodle-mod_msteams@master rwthmoodle/moodle-mod_pdfannotator@main bdecentgmbh/moodle-mod_pulse@main' }
           # Behat in Firefox on this job; Chrome on the others.
-          - { branch: MOODLE_501_STABLE, php: '8.3', certificate: MOODLE_500_STABLE, browser: firefox }
+          - { branch: MOODLE_501_STABLE, php: '8.3', certificate: MOODLE_500_STABLE, browser: firefox, activities: 'open-lms-open-source/moodle-mod_hsuforum@MOODLE_501_STABLE bycs-lp/mod_learningmap@master bozoh/moodle-mod_simplecertificate@MOODLE_501_STABLE oliviervalentin/moodle-mod_stickynotes@MOODLE_501_STABLE studentquiz/moodle-mod_studentquiz@main' }
           # The pages in WebKit (Safari, iPhone) and in forced colours on this job (tests/browsers).
-          - { branch: MOODLE_502_STABLE, php: '8.3', certificate: MOODLE_500_STABLE, browsers: true, formats: 'gjb2048/moodle-format_topcoll@MOODLE_502 marinaglancy/moodle-format_flexsections@MOODLE_500_STABLE ericfalcon/moodle-format_tiles@MOODLE_502_STABLE ericfalcon/moodle-format_sectiontabs@main' }
-          # The activities of other plugins most installed that the guide reads (tests/behat/activity_plugins.feature), at
-          # the branch of Moodle 5.3: repository@branch, separated by spaces.
-          - { branch: MOODLE_503_STABLE, php: '8.4', pg: '17', certificate: MOODLE_500_STABLE, formats: 'marinaglancy/moodle-format_flexsections@MOODLE_500_STABLE ericfalcon/moodle-format_sectiontabs@main', activities: 'danmarsden/moodle-mod_attendance@MOODLE_503_STABLE PoetOS/moodle-mod_questionnaire@MOODLE_503_STABLE davosmith/moodle-checklist@master elearningsoftware/moodle-mod_journal@master grabs/moodle-mod_unilabel@main davosmith/moodle-realtimequiz@master drachels/moodle-mod_diary@master bdecentgmbh/moodle-mod_videotime@master mdjnelson/moodle-mod_customcert@MOODLE_503_STABLE sokunthearithmakara/mod_interactivevideo@main' }
+          - { branch: MOODLE_502_STABLE, php: '8.3', certificate: MOODLE_500_STABLE, browsers: true, formats: 'gjb2048/moodle-format_topcoll@MOODLE_502 marinaglancy/moodle-format_flexsections@MOODLE_500_STABLE ericfalcon/moodle-format_tiles@MOODLE_502_STABLE ericfalcon/moodle-format_sectiontabs@main', activities: 'projectestac/moodle-mod_geogebra@master h5p/h5p-moodle-plugin@stable academic-moodle-cooperation/moodle-mod_offlinequiz@MOODLE_502_STABLE academic-moodle-cooperation/moodle-mod_organizer@MOODLE_502_STABLE academic-moodle-cooperation/moodle-mod_publication@MOODLE_502_STABLE learnweb/moodle-mod_scheduler@MOODLE_502_STABLE bdecentgmbh/moodle-mod_videotime@master' }
+          - { branch: MOODLE_503_STABLE, php: '8.4', pg: '17', certificate: MOODLE_500_STABLE, formats: 'marinaglancy/moodle-format_flexsections@MOODLE_500_STABLE ericfalcon/moodle-format_sectiontabs@main', activities: 'danmarsden/moodle-mod_attendance@MOODLE_503_STABLE brickfield/moodle-mod_board@main EduardoKrausME/moodle-mod_certificatebeautiful@master davosmith/moodle-checklist@master ndunand/moodle-mod_choicegroup@master mdjnelson/moodle-mod_customcert@MOODLE_503_STABLE drachels/moodle-mod_diary@master bdaloukas/moodle-mod_game@master gbateson/moodle-mod_hotpot@master drachels/moodle-mod_icontent@master sokunthearithmakara/mod_interactivevideo@main sergiocomeron/moodle-mod_jitsi@master elearningsoftware/moodle-mod_journal@master' }
           - { branch: MOODLE_405_STABLE, php: '8.3', db: mariadb }
-          - { branch: MOODLE_503_STABLE, php: '8.4', db: mariadb }
+          - { branch: MOODLE_503_STABLE, php: '8.4', db: mariadb, activities: 'open-lms-open-source/moodle-mod_lightboxgallery@master netspotau/moodle-mod_mediagallery@master EduardoKrausME/moodle-mod_pdfprotect@master PoetOS/moodle-mod_questionnaire@MOODLE_503_STABLE davosmith/moodle-realtimequiz@master catalyst/moodle-mod_subcourse@MOODLE_503_STABLE EduardoKrausME/moodle-mod_supervideo@master junpataleta/moodle-mod_threesixo@main turnitin/moodle-mod_turnitintooltwo@master grabs/moodle-mod_unilabel@main jcrodriguez-dis/moodle-mod_vpl@master jrchamp/moodle-mod_zoom@main Wunderbyte-GmbH/moodle-local_wunderbyte_table@main Wunderbyte-GmbH/moodle-mod_booking@main' }
           # IOMAD, whose tables and classes were renamed in 5.1 (theme_epure\iomad knows both).
           - { branch: IOMAD_405_STABLE, php: '8.3', repo: 'https://github.com/iomad/iomad.git', certificate: MOODLE_400_STABLE }
           - { branch: IOMAD_500_STABLE, php: '8.3', repo: 'https://github.com/iomad/iomad.git', certificate: MOODLE_500_STABLE }
@@ -163,13 +163,6 @@ jobs:
           for spec in ${{ matrix.include-moodle.formats }}; do
             moodle-plugin-ci add-plugin --branch "${spec#*@}" "${spec%@*}"
           done
-          # Their scenarios are not run: left out, as gherkinlint refuses those of some (names used twice). Moodle is
-          # not there yet: the course formats are the plugins added whose component starts with format_.
-          find . -maxdepth 4 -name version.php -not -path './repo/*' -not -path './ci/*' | while read -r file; do
-            if grep -qE "component *= *'format_" "$file"; then
-              find "$(dirname "$file")/tests/behat" -name '*.feature' -print -delete 2>/dev/null || true
-            fi
-          done
 
       # The activities of other plugins read by the guide, on the jobs that list them (activities).
       - name: Add the activities of other plugins
@@ -177,6 +170,18 @@ jobs:
         run: |
           for spec in ${{ matrix.include-moodle.activities }}; do
             moodle-plugin-ci add-plugin --branch "${spec#*@}" "${spec%@*}"
+          done
+
+      # The scenarios of the formats and activities of other plugins are not run: left out, as gherkinlint refuses those
+      # of some (names used twice). Moodle is not there yet: they are the plugins added whose component starts with
+      # format_, mod_ or local_.
+      - name: Leave out the scenarios of the other plugins
+        if: ${{ matrix.include-moodle.formats || matrix.include-moodle.activities }}
+        run: |
+          find . -maxdepth 4 -name version.php -not -path './repo/*' -not -path './ci/*' | while read -r file; do
+            if grep -qE "component *= *['\"](format|mod|local)_" "$file"; then
+              find "$(dirname "$file")/tests/behat" -name '*.feature' -print -delete 2>/dev/null || true
+            fi
           done
 
       - name: Install Moodle and the plugin
