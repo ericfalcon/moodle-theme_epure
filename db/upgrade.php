@@ -202,6 +202,9 @@ function xmldb_theme_epure_upgrade($oldversion) {
         }
     }
 
+    // At each update: the style sheet of the Moodle app at a new revision, for the apps to download what changed in it.
+    \theme_epure\mobile_app::refresh();
+
     // At each update: the release installed before, from which the home of the administration tells what is new.
     \theme_epure\whatsnew::upgraded((int) $oldversion);
 
