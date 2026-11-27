@@ -419,6 +419,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $json = fn($value) => json_encode($value, JSON_HEX_TAG | JSON_UNESCAPED_UNICODE);
         $arguments = implode(', ', array_map($json, [$names, $menus, $texts]));
         $this->page->requires->js_amd_inline("require(['theme_epure/aria_repair'], (repair) => repair.init({$arguments}));");
+        // The display preferences of « Aa » in the frames of the page: the editors, H5P, SCORM, the files shown.
+        $this->page->requires->js_call_amd('theme_epure/frame_preferences', 'init');
     }
 
     /**

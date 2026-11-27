@@ -274,6 +274,45 @@ class behat_theme_epure extends behat_base {
     }
 
     /**
+     * The frames of the site in the page (the editor, H5P, the files shown) have the classes of the display preferences
+     * of the page, and the style sheet that applies them (amd/src/frame_preferences.js).
+     *
+     * @Then /^the frames of the page should have the display preferences$/
+     */
+    public function the_frames_of_the_page_should_have_the_display_preferences(): void {
+        $script = <<<'JS'
+            return (() => {
+                const wanted = Array.from(document.documentElement.classList)
+                    .filter((name) => /^epure-(a11y-|dark$)/.test(name));
+                const frames = Array.from(document.querySelectorAll('iframe')).filter((frame) => {
+                    try {
+                        return frame.contentDocument && frame.contentDocument.head && !frame.contentWindow.M;
+                    } catch (e) {
+                        return false;
+                    }
+                });
+                if (!wanted.length || !frames.length) {
+                    return 'no preference or no frame: ' + wanted.length + ' ' + frames.length;
+                }
+                return frames.filter((frame) => {
+                    const doc = frame.contentDocument;
+                    return !doc.getElementById('epure-frame-preferences')
+                        || wanted.some((name) => !doc.documentElement.classList.contains(name));
+                }).map((frame) => frame.id || frame.src || 'frame').join(', ');
+            })();
+        JS;
+        // The editor draws its frame after the page: tried for ten seconds.
+        for ($try = 0; $try < 10; $try++) {
+            $missing = $this->getSession()->evaluateScript($script);
+            if ($missing === '') {
+                return;
+            }
+            $this->getSession()->wait(1000);
+        }
+        throw new ExpectationException('Frames without the display preferences: ' . $missing, $this->getSession());
+    }
+
+    /**
      * Waits for the animations of the page to end: axe reads the colours of a text that fades in on the way (the tiles of
      * the format Tiles appear with an animation of jQuery). The endless ones (the loading icons) are not waited for.
      */
