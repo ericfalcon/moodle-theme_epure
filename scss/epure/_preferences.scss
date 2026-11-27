@@ -428,7 +428,9 @@ html.epure-a11y-focusring :focus-visible {
         }
 
         // The buttons of the forms without the classes of Bootstrap (Realtime Quiz), in their own grey.
-        input:is([type="button"], [type="submit"], [type="reset"]):not(.btn) {
+        input[type="button"]:not(.btn),
+        input[type="submit"]:not(.btn),
+        input[type="reset"]:not(.btn) {
             color: #ff0 !important; // stylelint-disable-line declaration-no-important
             background: #000 !important; // stylelint-disable-line declaration-no-important
             border: 1px solid #ff0 !important; // stylelint-disable-line declaration-no-important
