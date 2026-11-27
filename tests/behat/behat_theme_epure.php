@@ -213,6 +213,7 @@ class behat_theme_epure extends behat_base {
                     $this->getSession()->wait(500);
                 }
                 $this->wait_for_animations();
+                $this->without_deprecation_marks();
                 // The cream colours are an overlay, which axe does not see: their contrast is measured under it.
                 $axe = $scheme === 'cream' ? $this->cream_failure() : $this->axe_failure();
                 if ($axe !== null) {
@@ -335,6 +336,7 @@ class behat_theme_epure extends behat_base {
      */
     public function the_page_should_meet_accessibility_standards_waited_for(): void {
         $this->wait_for_pending_js();
+        $this->without_deprecation_marks();
         $axe = $this->axe_failure();
         if ($axe !== null) {
             throw new ExpectationException($axe . $this->pink_painter($axe), $this->getSession());
@@ -477,6 +479,24 @@ class behat_theme_epure extends behat_base {
             })();
         JS);
         return $text ? "\n  The error in the page: " . $text : '';
+    }
+
+    /**
+     * The page as on a site: on the sites of Behat, Moodle 5.x paints the classes of Bootstrap 4 it deprecates (.sr-only,
+     * .ml-1, .font-italic, used by plugins) in pink (deprecated.scss), which axe reads as their background. The mark is
+     * a help for developers, never shown on a site. The classes of the page are kept (Behat needs them).
+     */
+    protected function without_deprecation_marks(): void {
+        // The marked elements only (the dotted outline and the pink of deprecated.scss): their background as on a site.
+        $this->getSession()->executeScript(<<<'JS'
+            document.querySelectorAll('body *').forEach((element) => {
+                const style = getComputedStyle(element);
+                if (style.outlineStyle === 'dotted' && style.outlineWidth === '3px'
+                        && style.backgroundColor === 'rgb(249, 213, 210)') {
+                    element.style.setProperty('background-color', 'transparent', 'important');
+                }
+            });
+        JS);
     }
 
     /**
