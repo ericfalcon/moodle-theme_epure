@@ -411,6 +411,26 @@ const statusMessages = () => {
 const visibleText = (element) => (element.innerText || element.textContent || '').replace(/\s+/g, ' ').trim();
 
 /**
+ * Text of an element as it is shown on screen: without its texts for screen readers only (clipped to a pixel)
+ * nor its decorative symbols (aria-hidden), which a tooltip must not repeat.
+ *
+ * @param {HTMLElement} element
+ * @returns {string}
+ */
+const shownText = (element) => {
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+    const parts = [];
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        // By the classes and attributes that hide a text, not by its size: a link in a closed menu or a collapsed
+        // section has no size on screen, and its text is still the text it shows once opened.
+        if (!node.parentElement.closest('[aria-hidden="true"], .sr-only, .visually-hidden, .accesshide')) {
+            parts.push(node.nodeValue);
+        }
+    }
+    return parts.join('').replace(/\s+/g, ' ').trim();
+};
+
+/**
  * Tells the time left of the quiz at 5 minutes and at 1 minute (its timer has role timer, which is not read).
  *
  * @param {string} five Message at 5 minutes.
@@ -509,8 +529,12 @@ const linkTitles = () => document.querySelectorAll(
     }
     if (!/[\p{L}\p{N}]/u.test(text)) {
         link.setAttribute('aria-label', title);
-    } else {
-        link.title = `${text} – ${title}`;
+        return;
+    }
+    // The tooltip repeats the text seen, not the hidden texts for screen readers nor the decorative symbols.
+    const shown = shownText(link);
+    if (shown && !title.toLowerCase().includes(shown.toLowerCase())) {
+        link.title = `${shown} – ${title}`;
     }
 });
 

@@ -41,6 +41,18 @@ class mobile_nav {
     }
 
     /**
+     * Whether the bar offers the previous and next section or subsection of the course format Section tabs
+     * (format_sectiontabs): on its course pages, out of the editing mode, where the format shows its own bar.
+     *
+     * @param \moodle_page $page Page.
+     * @return bool
+     */
+    public static function steps_applies(\moodle_page $page): bool {
+        return ($page->course->format ?? '') === 'sectiontabs' && str_starts_with((string) $page->pagetype, 'course-view')
+            && !$page->user_is_editing();
+    }
+
+    /**
      * Context of the template theme_epure/mobile_nav.
      *
      * @param \moodle_page $page Page.
@@ -99,6 +111,6 @@ class mobile_nav {
             'fa-user',
             $pagetype === 'user-profile' || str_starts_with($pagetype, 'user-preferences')
         );
-        return ['items' => $items];
+        return ['items' => $items, 'steps' => self::steps_applies($page)];
     }
 }

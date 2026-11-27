@@ -6,8 +6,20 @@
 
 @media (max-width: 767.98px) {
     body.epure-has-mobilenav:not(.hasstickyfooter) {
-        --epure-mobilenav-height: calc(3.75rem + env(safe-area-inset-bottom));
+        --epure-mobilenav-safe: env(safe-area-inset-bottom);
+        --epure-mobilenav-height: calc(3.75rem + var(--epure-mobilenav-safe));
         padding-bottom: var(--epure-mobilenav-height);
+
+        // The row of the previous and next sections (Section tabs) makes the bar higher: what is fixed above it follows.
+        &.epure-has-mobilenav-steps {
+            --epure-mobilenav-height: calc(6.5rem + var(--epure-mobilenav-safe));
+
+            // The bar of the format at the end of the section goes to the same pages: shown once, in the row within
+            // reach of the thumb (theme_epure/mobile_steps still reads its links and passes the clicks to them).
+            #region-main .gnav {
+                display: none;
+            }
+        }
 
         .epure-mobilenav {
             position: fixed;
@@ -16,7 +28,7 @@
             left: 0;
             z-index: $zindex-fixed;
             display: block;
-            padding-bottom: calc(var(--epure-mobilenav-height) - 3.75rem);
+            padding-bottom: var(--epure-mobilenav-safe);
             background-color: var(--epure-surface);
             border-top: 1px solid var(--epure-border);
             box-shadow: 0 -2px 12px rgba(16, 22, 32, .08);
@@ -84,6 +96,49 @@
                 content: "";
             }
         }
+    }
+
+    // Previous and next section or subsection of Section tabs, above the buttons of the bar.
+    .epure-mobilenav-steps {
+        display: flex;
+        border-bottom: 1px solid var(--epure-border);
+
+        &[hidden] {
+            display: none;
+        }
+    }
+
+    .epure-mobilenav .epure-mobilenav-step {
+        flex: 1 1 0;
+        flex-direction: row;
+        gap: .5rem;
+        min-width: 0;
+        min-height: 2.75rem;
+        padding: .25rem .75rem;
+        color: var(--epure-brand-text);
+        font-size: .8125rem;
+        font-weight: 600;
+
+        &[hidden] {
+            display: none;
+        }
+    }
+
+    .epure-mobilenav-prev {
+        justify-content: flex-start;
+        margin-right: auto;
+    }
+
+    .epure-mobilenav-next {
+        justify-content: flex-end;
+        margin-left: auto;
+        text-align: right;
+    }
+
+    .epure-mobilenav-step-name {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 
     .epure-mobilenav-icon {

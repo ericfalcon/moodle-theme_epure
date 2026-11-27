@@ -99,7 +99,7 @@ class mycourses {
 
         // The revision of the course keys the progress kept in the caches, that of Épure and that of Moodle; whether
         // the completion is tracked, for the table of the courses the user teaches.
-        $courses = enrol_get_all_users_courses($userid, true, 'cacherev, enablecompletion');
+        $courses = enrol_get_all_users_courses($userid, true, 'cacherev, enablecompletion, format');
         $favourites = [];
         $service = \core_favourites\service_factory::get_service_for_user_context(\context_user::instance($userid));
         foreach ($service->find_favourites_by_type('core_course', 'courses') as $favourite) {
@@ -578,6 +578,8 @@ class mycourses {
             unset($next['base'], $next['due']);
         }
 
+        $place = $next ? null : self::place($course, (int) $user->id);
+
         // Start only for a course never opened, where nothing was done yet.
         // Continue as soon as the learner visited it or did something in it, even with a progress of 0 %.
         if ($completed) {
@@ -604,11 +606,41 @@ class mycourses {
             // The state of the activity to continue when it is due soon or late, for the lists of courses.
             'urgentstate' => in_array($next['state']['state'] ?? '', ['soon', 'late'], true) ? $next['state'] : null,
             'action' => $action,
-            'actionurl' => $next['url'] ?? (new \moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
+            'actionurl' => $next['url'] ?? $place['url']
+                ?? (new \moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
+            // Without an activity to continue, the place where the learner left off in a course of Section tabs.
+            'place' => $next ? null : ($place['name'] ?? null),
             // The activities added since the previous visit (« 2 new activities since your last visit »).
             'newtext' => (int) $user->id === (int) $USER->id
                 ? new_activities::count_text(count(new_activities::course($course))) : null,
         ];
+    }
+
+    /**
+     * Where a user left off in a course of the format Section tabs (format_sectiontabs 1.4 and later): the last section
+     * they consulted, and its last subsection opened, as the format remembers it for its button « Resume where I left
+     * off ». Read at each display, out of the cache of the progress: it changes at each visit.
+     *
+     * @param \stdClass $course Course.
+     * @param int $userid User.
+     * @return array|null With url and name (« Section › Subsection »); null in another format or with nothing to resume.
+     */
+    protected static function place(\stdClass $course, int $userid): ?array {
+        if (($course->format ?? '') !== 'sectiontabs') {
+            return null;
+        }
+        try {
+            $format = course_get_format($course);
+            $resume = method_exists($format, 'get_resume') ? $format->get_resume($userid) : null;
+        } catch (\Throwable $e) {
+            debugging('Épure: could not read where the user left off in Section tabs: ' . $e->getMessage(), DEBUG_DEVELOPER);
+            return null;
+        }
+        if (!$resume) {
+            return null;
+        }
+        $name = $resume['subname'] === null ? $resume['sectionname'] : $resume['sectionname'] . ' › ' . $resume['subname'];
+        return ['url' => $resume['url']->out(false), 'name' => $name];
     }
 
     /**

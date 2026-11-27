@@ -1404,6 +1404,7 @@ $string['mycourses_nocompletion'] = 'Achèvement non suivi';
 $string['mycourses_nodeadline'] = 'Aucune échéance à venir';
 $string['mycourses_nomatch'] = 'Aucun cours ne correspond à la recherche.';
 $string['mycourses_participants'] = 'Participants';
+$string['mycourses_place'] = 'Vous en étiez à :';
 $string['mycourses_progress'] = 'Progression';
 $string['mycourses_review'] = 'Revoir';
 $string['mycourses_search'] = 'Rechercher dans mes cours';
