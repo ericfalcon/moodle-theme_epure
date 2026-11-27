@@ -423,6 +423,11 @@ html.epure-a11y-focusring :focus-visible {
             border: 1px solid #ff0 !important; // stylelint-disable-line declaration-no-important
         }
 
+        // The text inside the badges, which some plugins colour themselves (Edwiser): the yellow of the badge.
+        .badge * {
+            color: inherit !important; // stylelint-disable-line declaration-no-important
+        }
+
         .divider {
             background-color: var(--epure-border) !important; // stylelint-disable-line declaration-no-important
         }
