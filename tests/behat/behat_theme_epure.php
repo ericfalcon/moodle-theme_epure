@@ -218,6 +218,11 @@ class behat_theme_epure extends behat_base {
                 if ($axe !== null) {
                     $failures[] = "{$row['path']} ({$label}): " . $axe;
                 }
+                // Yellow on black comes first, over the colours of the brand, of a course or of a plugin: every text at
+                // 7:1 at least (WCAG 1.4.6), which only its own colours reach.
+                if ($scheme === 'yellow' && ($axe = $this->axe_violations(false, ['color-contrast-enhanced'])) !== null) {
+                    $failures[] = "{$row['path']} ({$label}, 7:1): " . $axe;
+                }
                 if ($width < 1000 && ($row['except'] ?? '') !== 'wide table') {
                     $script = 'return document.scrollingElement.scrollWidth - window.innerWidth;';
                     $across = $this->getSession()->evaluateScript($script);
@@ -409,12 +414,14 @@ class behat_theme_epure extends behat_base {
      * written, and axe waits for a minute for a frame without axe.
      *
      * @param bool $moodle With the rules of Moodle's step (Section 508, ARIA, visual cues, orientation too).
+     * @param string[]|null $rules These rules of axe only, instead of the tags.
      * @return string|null The violations, or null when there are none.
      */
-    protected function axe_violations(bool $moodle = false): ?string {
+    protected function axe_violations(bool $moodle = false, ?array $rules = null): ?string {
         $tags = $moodle ? ['wcag2a', 'wcag21a', 'wcag22a', 'wcag2aa', 'wcag21aa', 'wcag22aa', 'section508', 'cat.aria',
             'cat.sensory-and-visual-cues', 'wcag134'] : ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
-        $options = json_encode(['runOnly' => ['type' => 'tag', 'values' => $tags], 'iframes' => !$moodle]);
+        $only = $rules !== null ? ['type' => 'rule', 'values' => $rules] : ['type' => 'tag', 'values' => $tags];
+        $options = json_encode(['runOnly' => $only, 'iframes' => !$moodle]);
         $this->getSession()->executeScript(
             "window.epureAxe = null;" .
             "const run = () => axe.run(document, " . $options . ")" .

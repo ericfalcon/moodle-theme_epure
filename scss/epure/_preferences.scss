@@ -367,6 +367,31 @@ html.epure-a11y-focusring :focus-visible {
         --epure-focus: #fff;
         --bs-emphasis-color: #ff0;
         --mds-text-emphasis: #ff0;
+        // Yellow on black first, over every other colour: the brand and accent of the site, of an entity or of an IOMAD
+        // company become yellow with black text, the header black with yellow text.
+        --epure-brand: #ff0;
+        --epure-brand-hover: #ffff8a;
+        --epure-on-brand: #000;
+        --epure-accent: #ff0;
+        --epure-on-accent: #000;
+        --epure-brand-soft: #1f1f00;
+        --epure-brand-soft-2: #2e2e00;
+        --epure-header-bg: #000;
+        --epure-header-end: #000;
+        --epure-header-on: #ff0;
+        --epure-header-hover: #2e2e00;
+        --epure-header-divider: #b8b800;
+        --epure-header-toggler-filter: none;
+        // The states (late, soon, done) and the types of the events: yellow too, their words and icons tell them apart.
+        --epure-state-done: #ff0;
+        --epure-state-late: #ff0;
+        --epure-state-soon: #ff0;
+        --epure-state-neutral: #ff0;
+        --epure-state-done-soft: #000;
+        --epure-state-late-soft: #000;
+        --epure-state-soon-soft: #000;
+        --epure-state-ink: #ff0;
+        --epure-state-bg: #000;
 
         a:not(.btn) {
             color: var(--epure-brand-text);
@@ -376,6 +401,90 @@ html.epure-a11y-focusring :focus-visible {
         // :not() above, which would outweigh the colours of the current item of the course index.
         .gtabs a.gtabs-tab.gtabs-active {
             color: var(--gtabs-on, var(--gtabs-active-text, #1d2125));
+        }
+
+        // The badges of the states, now yellow on black: framed, to stand out from the text.
+        .epure-state {
+            border: 1px solid currentColor;
+        }
+
+        // The colours that Moodle and the plugins give some elements, not taken from the palette: the initials of the
+        // users, the buttons of Bootstrap in their own colours (« Done » of the completion, the help), the dividers.
+        .userinitials,
+        .btn-success,
+        .btn-outline-success,
+        .btn-secondary,
+        .btn-outline-secondary,
+        .btn-light,
+        .btn-icon.bg-secondary,
+        .badge:not(:empty) {
+            color: #ff0 !important; // stylelint-disable-line declaration-no-important
+            background-color: #000 !important; // stylelint-disable-line declaration-no-important
+            border: 1px solid #ff0 !important; // stylelint-disable-line declaration-no-important
+        }
+
+        .divider {
+            background-color: var(--epure-border) !important; // stylelint-disable-line declaration-no-important
+        }
+
+        caption {
+            color: var(--epure-ink-muted);
+        }
+
+        // The colours of meaning of Bootstrap (errors, warnings, success), which their words and icons carry too.
+        .text-danger,
+        .text-warning,
+        .text-success,
+        .text-info,
+        .invalid-feedback {
+            color: #ff0 !important; // stylelint-disable-line declaration-no-important
+        }
+
+        // The bars of the editor (TinyMCE), in its own colours; the text being written is in a frame (aria_repair.js).
+        .tox.tox-tinymce {
+            border-color: var(--epure-border) !important; // stylelint-disable-line declaration-no-important
+        }
+
+        .tox .tox-editor-header,
+        .tox .tox-menubar,
+        .tox .tox-toolbar,
+        .tox .tox-toolbar__primary,
+        .tox .tox-toolbar__overflow,
+        .tox .tox-statusbar,
+        .tox .tox-tbtn,
+        .tox .tox-mbtn,
+        .tox .tox-split-button,
+        .tox .tox-statusbar a,
+        .tox .tox-statusbar__wordcount,
+        .tox .tox-statusbar__path-item {
+            color: #ff0 !important; // stylelint-disable-line declaration-no-important
+            background: #000 !important; // stylelint-disable-line declaration-no-important
+        }
+
+        .tox :is(.tox-tbtn, .tox-mbtn, .tox-split-button) svg {
+            fill: #ff0 !important; // stylelint-disable-line declaration-no-important
+        }
+
+        // The events of the calendar: the colour of their type gives way to yellow.
+        .maincalendar li[data-region="event-item"] > a,
+        .block_calendar_month li[data-region="event-item"] > a {
+            --epure-event: #ff0 !important; // stylelint-disable-line declaration-no-important
+            background-color: #000;
+        }
+
+        // The activity icons, whatever their colours (Moodle's, the brand, an IOMAD company), drawn in yellow.
+        .activityiconcontainer .activityicon,
+        .activityiconcontainer .icon:not(.fa):not([class*="fa-"]),
+        .epure-activity-nav-name .activityicon,
+        .epure-week-icon .activityicon,
+        img.epure-qs-icon,
+        img.epure-a11yguide-part-icon {
+            // stylelint-disable-next-line declaration-no-important
+            filter: brightness(0) invert(1) sepia(1) saturate(10000%) hue-rotate(5deg) !important;
+        }
+
+        .activityiconcontainer {
+            background-color: #000 !important; // stylelint-disable-line declaration-no-important
         }
 
         // The course format Section tabs: its active tab in yellow on black too, over the colour chosen for the course

@@ -746,6 +746,33 @@ const sessionNote = (text) => {
  * @param {Object<string, string>} texts The name of the path of the element of the editor (editorpath), of its frame
  *     without a label (editorframe), the summary of the user report (gradesummary, its columns as COLUMNS).
  */
+/**
+ * The text being written in an editor (TinyMCE), in its own frame, which the colours of the page do not reach: in
+ * yellow on black, the frame takes them too, over the colours of the text (WCAG 1.4.6). Called with the repairs, and
+ * when the display changes.
+ */
+const editorColours = () => {
+    const yellow = document.documentElement.classList.contains('epure-a11y-scheme-yellow');
+    document.querySelectorAll('iframe.tox-edit-area__iframe').forEach((frame) => {
+        const head = frame.contentDocument?.head;
+        if (!head) {
+            return;
+        }
+        const style = head.querySelector('#epure-editor-colours');
+        if (yellow && !style) {
+            const tag = frame.contentDocument.createElement('style');
+            tag.id = 'epure-editor-colours';
+            tag.textContent = 'html, body { color: #ff0 !important; background: #000 !important; }'
+                + ' body * { color: inherit !important; background-color: transparent !important;'
+                + ' border-color: #b8b800 !important; }'
+                + ' a, a * { color: #8fd9ff !important; }';
+            head.append(tag);
+        } else if (!yellow && style) {
+            style.remove();
+        }
+    });
+};
+
 const codeRepairs = (texts) => {
     // The sections of some course formats (Collapsed Topics) are items of a list given the role region: the list loses
     // its items (RGAA 9.3). Items of the list again, as the sections of the formats of Moodle; their name stays.
@@ -962,8 +989,10 @@ const later = (texts) => {
         abbreviations(texts.abbreviations);
         sessionNote(texts.session);
         codeRepairs(texts);
+        editorColours();
     };
     run();
+    new MutationObserver(editorColours).observe(document.documentElement, {attributes: true, attributeFilter: ['class']});
     new MutationObserver((mutations) => {
         if (mutations.some((mutation) => mutation.addedNodes.length)) {
             run();

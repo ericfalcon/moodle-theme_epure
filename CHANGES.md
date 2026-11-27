@@ -2,6 +2,7 @@
 
 ## 1.55.0 — in preparation: other browsers, forced colours, the activities of other plugins
 
+- Yellow on black comes first, everywhere: the brand and accent colours (of the site, an entity, an IOMAD company, a course) become yellow with black text, the header black with yellow text; the states (late, soon, done), the events of the calendar, the activity icons, the initials of the users, the buttons and badges of Bootstrap in their own colours (« Done » of the completion), the colours of meaning (errors, warnings), the bars of the editor and the text being written in it, in yellow on black. Behat checks every text of the pages of the pre-audit at 7:1 in this display (WCAG 1.4.6), which only its own colours reach; light, dark and cream stay checked at 4.5:1.
 - Section tabs: the colour chosen for its active tab, in the course or for the site, is kept in light and dark mode and under the cream overlay, moved as little as needed for its text to reach 4.5:1 there (a mid orange such as #d35400 reads at 4.2:1 only, with white or with the dark ink); in yellow on black, the tab takes the colours of yellow on black.
 - Forced colours (the contrast themes of Windows): the progress bars, the chosen options of « Aa » and the focus stay visible, in the system colours.
 - Guide « Accessibility of the course »: the end of a Questionnaire is read again (its column thankbody, renamed by Questionnaire).
