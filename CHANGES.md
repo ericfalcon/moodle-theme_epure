@@ -1,5 +1,11 @@
 # Changes
 
+## 1.54.1 — the title of a link without the hidden texts of the link
+
+- The title of a link begins with the text the link shows (RGAA 6.1): Épure took the text read by the screen readers, with the texts hidden for them and the decorative symbols, and the tooltip repeated them. In the tabs of Section tabs 1.3, a shortened name of a completed section read « ✓Bloc 1 (terminé) – Bloc 1 : Actes essentiels »; it reads « Bloc 1 – Bloc 1 : Actes essentiels », or keeps its title when the title holds the text shown.
+- No new setting.
+- Tests: Behat (a link with a title and a text for the screen readers). Checked in the browser on Moodle 5.3 with Section tabs 1.3.
+
 ## 1.54.0 — entities: the choice of the user, e-mails and login page; live preview of the colours; formats of other plugins
 
 - Entities, a user in the cohorts of several entities (a double degree, two subsidiaries): « My entity », in their preferences, lets them choose the one they see out of the courses; else the entity with the highest priority (a new field of its appearance, 0 to 9), when no other has the same; else the site. The choice is a user preference, exported with the personal data.

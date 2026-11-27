@@ -30,7 +30,7 @@ Chaque réparation ci-dessous porte le nom de sa fonction dans `amd/src/aria_rep
 | Un lien qui ouvre une nouvelle fenêtre le dit | RGAA 13.2 | `newWindows` | à signaler |
 | Les champs de données personnelles du profil indiquent leur nature | RGAA 11.13 | `purposes` | à signaler |
 | L'avatar qui répète un nom voisin se tait | RGAA 1.2 | `userPictures` | à signaler |
-| Le titre d'un lien commence par son texte visible | RGAA 6.1 | `linkTitles` | à signaler |
+| Le titre d'un lien commence par son texte affiché (sans ses textes pour lecteurs d'écran ni ses symboles décoratifs) | RGAA 6.1 | `linkTitles` | à signaler |
 | La colonne triée d'un tableau dit son ordre | RGAA 5.7 | `sortedColumns` | à signaler |
 | Les menus disent dès le départ s'ils sont ouverts | RGAA 7.1 | `toggles` | à signaler |
 | La navigation d'un test dit l'état de chaque question | RGAA 3.1 | `quizNavigation` | à signaler |

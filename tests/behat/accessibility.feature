@@ -435,6 +435,17 @@ Feature: Accessibility of the Épure theme
     And "nav.tertiary-navigation-selector[aria-label='Choice of the page']" "css_element" should exist
     And the page should meet accessibility standards
 
+  Scenario: The title of a link starts with the text shown, without its hidden texts for screen readers
+    Given the following "courses" exist:
+      | fullname     | shortname |
+      | Rules course | RULES     |
+    And the following "activities" exist:
+      | activity | course | name         | content                                                                                                                                                               |
+      | page     | RULES  | Centre rules | <p><a id="rules" href="https://example.com/rules" title="Internal regulations of the centre">Rules <span class="accesshide">(read before the training)</span></a></p> |
+    When I am on the "Centre rules" "page activity" page logged in as "admin"
+    Then the "title" attribute of "#rules" "css_element" should contain "Rules – Internal regulations of the centre"
+    And the "title" attribute of "#rules" "css_element" should not contain "read before"
+
   Scenario: Before saving, the content checker warns of a link alone that says nothing, never of what is right
     Given the following config values are set as admin:
       | courseaccessibility | 1 | theme_epure |
