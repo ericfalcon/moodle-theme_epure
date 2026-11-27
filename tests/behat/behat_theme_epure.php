@@ -212,6 +212,7 @@ class behat_theme_epure extends behat_base {
                     );
                     $this->getSession()->wait(500);
                 }
+                $this->wait_for_animations();
                 // The cream colours are an overlay, which axe does not see: their contrast is measured under it.
                 $axe = $scheme === 'cream' ? $this->cream_failure() : $this->axe_failure();
                 if ($axe !== null) {
@@ -265,6 +266,18 @@ class behat_theme_epure extends behat_base {
         if ($failures) {
             throw new ExpectationException(count($failures) . " failures:\n" . implode("\n", $failures), $this->getSession());
         }
+    }
+
+    /**
+     * Waits for the animations of the page to end: axe reads the colours of a text that fades in on the way (the tiles of
+     * the format Tiles appear with an animation of jQuery). The endless ones (the loading icons) are not waited for.
+     */
+    protected function wait_for_animations(): void {
+        $this->getSession()->wait(5000, <<<'JS'
+            !(window.jQuery && window.jQuery(':animated').length)
+            && !document.getAnimations().some((animation) => animation.playState === 'running'
+                && animation.effect && Number.isFinite(animation.effect.getComputedTiming().endTime))
+        JS);
     }
 
     /**
