@@ -1242,14 +1242,14 @@ table.quizreviewsummary {
 }
 
 // Tiles (format_tiles): the titles of its tiles and the labels of its progress, in light greys (2.6:1 to 3.9:1), in
-// the text and the muted text of the theme, in every display.
-#page .format-tiles,
-#page .course-content {
+// the text and the muted text of the theme, in every display. Its class is on the body of the page.
+body.format-tiles #page {
     [id^="tileTextin"] > h3 {
         color: var(--epure-ink);
     }
 
-    .progress-indic-label {
+    .progress-indic .progress-indic-label,
+    .overall-progress {
         color: var(--epure-ink-muted);
     }
 }

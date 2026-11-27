@@ -159,6 +159,13 @@ jobs:
           for spec in ${{ matrix.include-moodle.formats }}; do
             moodle-plugin-ci add-plugin --branch "${spec#*@}" "${spec%@*}"
           done
+          # Their scenarios are not run: left out, as gherkinlint refuses those of some (names used twice). Moodle is
+          # not there yet: the course formats are the plugins added whose component starts with format_.
+          find . -maxdepth 4 -name version.php -not -path './repo/*' -not -path './ci/*' | while read -r file; do
+            if grep -qE "component *= *'format_" "$file"; then
+              find "$(dirname "$file")/tests/behat" -name '*.feature' -print -delete 2>/dev/null || true
+            fi
+          done
 
       - name: Install Moodle and the plugin
         # Without the history of git: moodle-plugin-ci 4.5.12 copies the plugin back after grunt, and cannot write
