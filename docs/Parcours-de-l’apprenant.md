@@ -9,7 +9,7 @@ Pour un utilisateur qui suit des cours, le tableau de bord commence par un aper�
 - **Cette semaine** : sa semaine jour par jour dans tous ses cours (échéances des activités avec leur état, séances et événements du calendrier), les activités en retard d'abord ;
 - **Terminé** : les cours terminés, avec leur date, et un lien vers ses attestations quand la plateforme en délivre (IOMAD, Certificate, Custom certificate).
 
-Dans un cours au format **Section tabs** (1.4 ou plus) sans activité à continuer, le bouton **Continuer** du tableau de bord et de « Mes cours » mène à la dernière section et sous-section consultées (« Vous en étiez à : Bloc 1 › Exercices »). Sur téléphone, dans un tel cours, la barre de navigation d'Épure ajoute une rangée **Précédent / Suivant** qui reprend celle du format.
+Dans un cours au format **Section tabs** (1.4 ou plus) sans activité à continuer, le bouton **Continuer** du tableau de bord et de « Mes cours » mène à la dernière section et sous-section consultées (« Vous en étiez à : Bloc 1 › Exercices »). Sur téléphone, dans un tel cours, la barre de navigation d'Épure ajoute une rangée **Précédent / Suivant** qui reprend celle du format ; la barre du format, en bas de la section, n'est alors plus affichée sur téléphone, pour n'avoir qu'une paire de boutons.
 
 L'aperçu se désactive dans l'onglet Cours du thème (« Aperçu de l'apprenant sur le tableau de bord ») ; avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche. Sur téléphone, le tableau de bord peut ne montrer que l'aperçu, sans les blocs (onglet Mobile, « Tableau de bord sur téléphone »).
 

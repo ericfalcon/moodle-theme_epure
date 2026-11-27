@@ -88,8 +88,16 @@ Feature: The course formats of other plugins with the Épure theme
     And I am on "Course steps" course homepage
     Then ".epure-mobilenav-next" "css_element" should be visible
     And ".epure-mobilenav-prev" "css_element" should not be visible
+    # One pair of buttons only: the bar of the format, which goes to the same pages, is not shown on phones.
+    And "#region-main .gnav" "css_element" should not be visible
     And I click on ".epure-mobilenav-next" "css_element"
     And I wait until the page is ready
     And ".epure-mobilenav-prev" "css_element" should be visible
     And ".epure-mobilenav-next" "css_element" should be visible
+    And "#region-main .gnav" "css_element" should not be visible
+    # On a computer, the bar of the format is there, the row of Épure is not.
+    And I change viewport size to "1300x900"
+    And I reload the page
+    And "#region-main .gnav" "css_element" should be visible
+    And ".epure-mobilenav-next" "css_element" should not be visible
     And the page should meet accessibility standards, the audit waited for

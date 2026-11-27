@@ -13,6 +13,12 @@
         // The row of the previous and next sections (Section tabs) makes the bar higher: what is fixed above it follows.
         &.epure-has-mobilenav-steps {
             --epure-mobilenav-height: calc(6.5rem + var(--epure-mobilenav-safe));
+
+            // The bar of the format at the end of the section goes to the same pages: shown once, in the row within
+            // reach of the thumb (theme_epure/mobile_steps still reads its links and passes the clicks to them).
+            #region-main .gnav {
+                display: none;
+            }
         }
 
         .epure-mobilenav {
