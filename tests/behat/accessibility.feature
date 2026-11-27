@@ -441,10 +441,13 @@ Feature: Accessibility of the Épure theme
       | Rules course | RULES     |
     And the following "activities" exist:
       | activity | course | name         | content                                                                                                                                                               |
-      | page     | RULES  | Centre rules | <p><a id="rules" href="https://example.com/rules" title="Internal regulations of the centre">Rules <span class="accesshide">(read before the training)</span></a></p> |
+      | page     | RULES  | Centre rules | <p><a id="rules" href="https://example.com/rules" title="Internal regulations of the centre">Rules <span class="accesshide">(read before the training)</span></a></p><details><summary>More</summary><a id="charter" href="https://example.com/charter" title="Rules signed by every learner">Charter <span class="accesshide">(signed at the start)</span></a></details> |
     When I am on the "Centre rules" "page activity" page logged in as "admin"
     Then the "title" attribute of "#rules" "css_element" should contain "Rules – Internal regulations of the centre"
     And the "title" attribute of "#rules" "css_element" should not contain "read before"
+    # A link not shown yet (in a closed part of the page) gets its title as well.
+    And the "title" attribute of "#charter" "css_element" should contain "Charter – Rules signed by every learner"
+    And the "title" attribute of "#charter" "css_element" should not contain "signed at"
 
   Scenario: Before saving, the content checker warns of a link alone that says nothing, never of what is right
     Given the following config values are set as admin:

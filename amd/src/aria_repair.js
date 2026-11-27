@@ -421,9 +421,9 @@ const shownText = (element) => {
     const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
     const parts = [];
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-        const parent = node.parentElement;
-        const box = parent.getBoundingClientRect();
-        if (!parent.closest('[aria-hidden="true"]') && (box.width > 1 || box.height > 1)) {
+        // By the classes and attributes that hide a text, not by its size: a link in a closed menu or a collapsed
+        // section has no size on screen, and its text is still the text it shows once opened.
+        if (!node.parentElement.closest('[aria-hidden="true"], .sr-only, .visually-hidden, .accesshide')) {
             parts.push(node.nodeValue);
         }
     }

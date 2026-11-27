@@ -9,6 +9,8 @@ Pour un utilisateur qui suit des cours, le tableau de bord commence par un aper�
 - **Cette semaine** : sa semaine jour par jour dans tous ses cours (échéances des activités avec leur état, séances et événements du calendrier), les activités en retard d'abord ;
 - **Terminé** : les cours terminés, avec leur date, et un lien vers ses attestations quand la plateforme en délivre (IOMAD, Certificate, Custom certificate).
 
+Dans un cours au format **Section tabs** (1.4 ou plus) sans activité à continuer, le bouton **Continuer** du tableau de bord et de « Mes cours » mène à la dernière section et sous-section consultées (« Vous en étiez à : Bloc 1 › Exercices »). Sur téléphone, dans un tel cours, la barre de navigation d'Épure ajoute une rangée **Précédent / Suivant** qui reprend celle du format.
+
 L'aperçu se désactive dans l'onglet Cours du thème (« Aperçu de l'apprenant sur le tableau de bord ») ; avec IOMAD, chaque entreprise peut faire un autre choix dans sa fiche. Sur téléphone, le tableau de bord peut ne montrer que l'aperçu, sans les blocs (onglet Mobile, « Tableau de bord sur téléphone »).
 
 ## Page « À faire »
@@ -26,6 +28,7 @@ Avec le réglage « Ma synthèse » (onglet Cours, désactivé par défaut), l'a
 En tête de chaque cours, une **bannière** reprend l'image du cours (ou un motif généré), sa catégorie et son titre, avec le fil d'Ariane et les actions habituelles de Moodle. Ensuite, selon le rôle :
 
 - **apprenant** : sa progression, la prochaine activité à faire, la prochaine échéance, et un bouton **Continuer** qui y mène ;
+
 - **enseignant** : les participants, les apprenants actifs cette semaine, les devoirs à corriger, et des accès directs (participants, notes, paramètres), avec, sur téléphone, « Activer le mode édition » (l'interrupteur de l'en-tête peut être poussé hors de l'écran par les boutons de plugins) ;
 - **visiteur** (invité, utilisateur non inscrit) : l'image, la catégorie et le titre seulement.
 

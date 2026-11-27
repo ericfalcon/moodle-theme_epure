@@ -6,12 +6,13 @@
 
 @media (max-width: 767.98px) {
     body.epure-has-mobilenav:not(.hasstickyfooter) {
-        --epure-mobilenav-height: calc(3.75rem + env(safe-area-inset-bottom));
+        --epure-mobilenav-safe: env(safe-area-inset-bottom);
+        --epure-mobilenav-height: calc(3.75rem + var(--epure-mobilenav-safe));
         padding-bottom: var(--epure-mobilenav-height);
 
         // The row of the previous and next sections (Section tabs) makes the bar higher: what is fixed above it follows.
         &.epure-has-mobilenav-steps {
-            --epure-mobilenav-height: calc(6.5rem + env(safe-area-inset-bottom));
+            --epure-mobilenav-height: calc(6.5rem + var(--epure-mobilenav-safe));
         }
 
         .epure-mobilenav {
@@ -21,7 +22,7 @@
             left: 0;
             z-index: $zindex-fixed;
             display: block;
-            padding-bottom: env(safe-area-inset-bottom);
+            padding-bottom: var(--epure-mobilenav-safe);
             background-color: var(--epure-surface);
             border-top: 1px solid var(--epure-border);
             box-shadow: 0 -2px 12px rgba(16, 22, 32, .08);

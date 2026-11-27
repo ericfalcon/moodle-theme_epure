@@ -606,7 +606,8 @@ class mycourses {
             // The state of the activity to continue when it is due soon or late, for the lists of courses.
             'urgentstate' => in_array($next['state']['state'] ?? '', ['soon', 'late'], true) ? $next['state'] : null,
             'action' => $action,
-            'actionurl' => $next['url'] ?? ($place['url'] ?? (new \moodle_url('/course/view.php', ['id' => $course->id]))->out(false)),
+            'actionurl' => $next['url'] ?? $place['url']
+                ?? (new \moodle_url('/course/view.php', ['id' => $course->id]))->out(false),
             // Without an activity to continue, the place where the learner left off in a course of Section tabs.
             'place' => $next ? null : ($place['name'] ?? null),
             // The activities added since the previous visit (« 2 new activities since your last visit »).

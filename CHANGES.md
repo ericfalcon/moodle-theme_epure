@@ -1,10 +1,12 @@
 # Changes
 
-## 1.55.1 — the title of a link without the hidden texts of the link
+## 1.56.0 — Section tabs: where the learner left off, previous and next on phones
 
-- The title of a link begins with the text the link shows (RGAA 6.1): Épure took the text read by the screen readers, with the texts hidden for them and the decorative symbols, and the tooltip repeated them. In the tabs of Section tabs 1.3, a shortened name of a completed section read « ✓Bloc 1 (terminé) – Bloc 1 : Actes essentiels »; it now keeps its title, which holds the text shown, and elsewhere reads « Text shown – title ».
-- No new setting.
-- Tests: Behat (a link with a title and a text for the screen readers). Checked in the browser on Moodle 5.3 with Section tabs 1.3.
+- « Continue » in a course of Section tabs (1.4 and later): when no activity is to continue (the completion is not tracked, or everything is done), the button of the dashboard and of « My courses » leads to the last section and subsection the learner consulted, as the format remembers them for its own button « Resume where I left off » (format_sectiontabs::get_resume()); the card reads « Where you left off: Block 1 › Exercises ». Another format, or Section tabs before 1.4, keeps the course page.
+- Phones, in a course of Section tabs: a row above the navigation bar of Épure offers the previous and next section or subsection, within reach of the thumb. It follows the bar of the format, also when a subsection tab is chosen, and a click opens what the link of the format opens. The bar grows by the height of the row, and what is fixed above it moves up with it.
+- The title of a link begins with the text the link shows (RGAA 6.1): Épure took the text read by the screen readers, with the texts hidden for them and the decorative symbols, and the tooltip repeated them. In the tabs of Section tabs 1.3, a shortened name of a completed section read « ✓Bloc 1 (terminé) – Bloc 1 : Actes essentiels »; it now keeps its title, which holds the text shown, and elsewhere reads « Text shown – title ». The texts hidden are found by their classes and attributes, so that a link not shown yet (in a closed menu or a collapsed part of the page) gets its title as well.
+- No new setting. Section tabs 1.4 is needed for « Continue »; the row on phones works with Section tabs 1.3 too.
+- Tests: PHPUnit (« Continue » where the learner left off, with Section tabs 1.4); Behat (the row on a phone, followed to the next section, with axe; a link with a title and a text for the screen readers, shown or not yet). Checked in the browser on Moodle 5.3 with Section tabs 1.4: the row on an iPhone (course page, section, subsection), « Continue » after a visit of a subsection, axe in every display on the course, a section, the dashboard and « My courses ».
 
 ## 1.55.0 — in preparation: other browsers, forced colours, the activities of other plugins
 

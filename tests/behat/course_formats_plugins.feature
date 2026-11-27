@@ -67,3 +67,29 @@ Feature: The course formats of other plugins with the Épure theme
     And the following pages should meet accessibility standards in every display:
       | path                            |
       | /course/view.php?id={course C1} |
+
+  # On a phone, the navigation bar of Épure offers the previous and next section of the format, within reach of the
+  # thumb: it follows the bar of the format, and a click opens the section the format opens.
+  Scenario: On a phone, the navigation bar offers the previous and next section of Section tabs
+    Given the course format "sectiontabs" is installed
+    And the following "users" exist:
+      | username | firstname | lastname | email                |
+      | learner1 | Lea       | Learner  | learner1@example.com |
+    And the following config values are set as admin:
+      | theme | epure |
+    And the following "courses" exist:
+      | fullname     | shortname | format      | numsections |
+      | Course steps | C1        | sectiontabs | 3           |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | learner1 | C1     | student |
+    And I change viewport size to "390x900"
+    When I log in as "learner1"
+    And I am on "Course steps" course homepage
+    Then ".epure-mobilenav-next" "css_element" should be visible
+    And ".epure-mobilenav-prev" "css_element" should not be visible
+    And I click on ".epure-mobilenav-next" "css_element"
+    And I wait until the page is ready
+    And ".epure-mobilenav-prev" "css_element" should be visible
+    And ".epure-mobilenav-next" "css_element" should be visible
+    And the page should meet accessibility standards, the audit waited for
