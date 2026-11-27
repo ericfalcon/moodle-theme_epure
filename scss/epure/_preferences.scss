@@ -377,6 +377,17 @@ html.epure-a11y-focusring :focus-visible {
         .gtabs a.gtabs-tab.gtabs-active {
             color: var(--gtabs-on, var(--gtabs-active-text, #1d2125));
         }
+
+        // The course format Section tabs: its active tab in yellow on black too, over the colour chosen for the course
+        // or the site (theme_epure\format_colours), which the other displays keep.
+        .gtabs,
+        .gtabs-layout,
+        .gsubtabs,
+        .gnav {
+            --gtabs-active: var(--epure-ink) !important; // stylelint-disable-line declaration-no-important
+            --gtabs-active-text: #000 !important; // stylelint-disable-line declaration-no-important
+            --gtabs-active-border: var(--epure-focus) !important; // stylelint-disable-line declaration-no-important
+        }
     }
 }
 
