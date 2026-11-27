@@ -61,7 +61,6 @@ Feature: The activities of other plugins read by the guide, with the Épure them
       | lightboxgallery      | Images without a text alternative: 1.  |
       | mediagallery         | Images without a text alternative: 1.  |
       | mindmap              | Images without a text alternative: 1.  |
-      | msteams              | Images without a text alternative: 1.  |
       | offlinequiz          | Images without a text alternative: 1.  |
       | organizer            | Images without a text alternative: 1.  |
       | pdfannotator         | Images without a text alternative: 1.  |
@@ -84,7 +83,8 @@ Feature: The activities of other plugins read by the guide, with the Épure them
       | zoom                 | Images without a text alternative: 1.  |
 
   # H5P (mod_hvp) cannot show an activity without its package of H5P, which the step does not create, nor Turnitin without
-  # an account of the service: their page is not checked, the guide reads their description.
+  # an account of the service; MS Teams calls a function that Moodle removed (url_print_heading): their page is not
+  # checked, the guide reads their description.
   Scenario Outline: The guide reads the description of the activity « <modname> », which cannot be shown here
     Given the activity module "<modname>" is installed
     And the following config values are set as admin:
@@ -104,4 +104,5 @@ Feature: The activities of other plugins read by the guide, with the Épure them
     Examples:
       | modname         |
       | hvp             |
+      | msteams         |
       | turnitintooltwo |
