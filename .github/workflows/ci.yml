@@ -172,6 +172,12 @@ jobs:
           for spec in ${{ matrix.include-moodle.activities }}; do
             moodle-plugin-ci add-plugin --branch "${spec#*@}" "${spec%@*}"
           done
+          # Some keep part of their code in submodules (mod_hvp: the library of H5P), which add-plugin does not fetch.
+          for dir in moodle-plugin-ci-plugins/*/; do
+            if [ -f "$dir.gitmodules" ]; then
+              git -C "$dir" submodule update --init --recursive --depth 1
+            fi
+          done
 
       # The plugins of the Moodle Marketplace without a repository of their code: their archives, in .github/plugins, with
       # the other plugins added, which the installation copies into Moodle.
