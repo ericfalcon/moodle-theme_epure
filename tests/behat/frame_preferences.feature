@@ -12,6 +12,13 @@ Feature: The display preferences of « Aa » in the frames of the page
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | learner1 | Lea       | Learner  | learner1@example.com |
+    # The description of the profile, in the editor, is shown to the users enrolled in a course (profilesforenrolledusersonly).
+    And the following "courses" exist:
+      | fullname | shortname |
+      | Hygiene  | HYG       |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | learner1 | HYG    | student |
     And the following "user preferences" exist:
       | user     | preference              | value        |
       | learner1 | theme_epure_a11y_scheme | yellow       |
