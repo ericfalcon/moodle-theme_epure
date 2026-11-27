@@ -426,7 +426,8 @@ class content_sources {
                 $survey = reset($survey);
                 if ($survey) {
                     $add($survey->info ?? '', FORMAT_HTML, 'content', '', $edit);
-                    $add($survey->thank_body ?? '', FORMAT_HTML, 'item', $str('questionnaire_thanks'), $edit);
+                    // The text of the end of the survey: thankbody since Questionnaire 3.x renamed it, thank_body before.
+                    $add($survey->thankbody ?? $survey->thank_body ?? '', FORMAT_HTML, 'item', $str('questionnaire_thanks'), $edit);
                     $n = 0;
                     foreach ($rows('questionnaire_question', ['surveyid' => $survey->id], 'position, id') as $question) {
                         // Deleted: 1, or y in the older versions.

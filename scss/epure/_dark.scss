@@ -724,6 +724,11 @@
         border-color: var(--epure-border);
     }
 
+    // Moodle 5.x writes the description of the activities in its grey (5.x), more precisely than above.
+    .activity .activity-altcontent.activity-description {
+        color: var(--epure-ink);
+    }
+
     // Toolbar of the Atto editor (Moodle 4.5); TinyMCE keeps the look of its own skin.
     .editor_atto_toolbar,
     .editor_atto_toolbar .atto_group,
@@ -1237,5 +1242,25 @@
 @media screen and (prefers-color-scheme: dark) {
     html.epure-dark-auto {
         @include epure-dark;
+    }
+}
+
+// The colours of meaning of Bootstrap for texts (info, success, danger, warning), dark on the light surfaces: light
+// variants on the dark ones (Organizer), at 4.5:1 at least.
+html.epure-dark {
+    .text-info {
+        color: #7dd3e8 !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .text-success {
+        color: #86d6a8 !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .text-danger {
+        color: var(--epure-state-late) !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .text-warning {
+        color: #ffd866 !important; // stylelint-disable-line declaration-no-important
     }
 }

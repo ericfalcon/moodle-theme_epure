@@ -1,0 +1,52 @@
+// Windows contrast themes and the other forced colours: the browser replaces the colours of the page by those of the
+// system and drops the backgrounds and the shadows. What only a background or a shadow showed is drawn again with the
+// colours of the system (WCAG 1.4.11, 2.4.7): the progress, the choices made, the keyboard focus. The swatches, which
+// are there to show colours, keep theirs.
+@media (forced-colors: active) {
+    // Progress bars and the bars of the scores: the track outlined, the part done in the colour of the selection.
+    .progress,
+    .epure-a11yscores-figures,
+    .epure-pl-progress {
+        border: 1px solid currentColor;
+    }
+
+    .progress-bar,
+    .epure-a11yscores-fill,
+    .epure-a11yscores-figures span {
+        forced-color-adjust: none;
+        background-color: Highlight;
+        color: HighlightText;
+    }
+
+    // The choices made in « Aa » (text size, font, colours, guide), shown by their fill.
+    .epure-a11y-choice input:checked + span {
+        forced-color-adjust: none;
+        color: HighlightText;
+        background: Highlight;
+        border-color: Highlight;
+    }
+
+    // The keyboard focus: its rings of shadows are dropped; a thicker outline in the colour of the system.
+    a:focus-visible,
+    button:focus-visible,
+    .btn:focus-visible,
+    [tabindex]:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible,
+    summary:focus-visible,
+    .epure-a11y-choice input:focus-visible + span {
+        outline: 3px solid Highlight !important; // stylelint-disable-line declaration-no-important
+        outline-offset: 2px;
+    }
+
+    // What shows colours keeps them: the swatches of the palette and of the logo, the live preview of the colours,
+    // the reading guide drawn over the page.
+    .epure-palette-swatch,
+    .epure-logocolours-swatch,
+    .epure-management-swatch,
+    .epure-pl-modes,
+    .epure-a11y-reader {
+        forced-color-adjust: none;
+    }
+}

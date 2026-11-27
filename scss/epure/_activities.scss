@@ -1259,3 +1259,187 @@ body.format-tiles #page {
         visibility: hidden;
     }
 }
+
+// Dialogue (mod_dialogue), drawn with the light colours of Bootstrap 2: in the dark colours and yellow on black, its
+// boxes, menus and tabs on the surfaces of the theme, its buttons in the text of the theme, « Create » in the brand
+// colour with its text (WCAG 1.4.3). With the id of the page, over the colour of the links of the dark colours.
+html.epure-dark body.path-mod-dialogue #page #region-main {
+    .table .table,
+    .table-striped tbody > tr:nth-child(odd) > th,
+    .table-hover tbody tr:hover > th,
+    .dropdown-menu,
+    .yui3-aclist-field,
+    .nav-tabs > .active > a {
+        color: var(--epure-ink);
+        background-color: var(--epure-surface);
+        border-color: var(--epure-border);
+    }
+
+    .dropdown-menu > li > a,
+    .btn-small {
+        --bs-btn-color: var(--epure-ink);
+        --bs-btn-disabled-color: var(--epure-ink-muted);
+        color: var(--epure-ink);
+    }
+
+    .btn-small.disabled > span {
+        color: var(--epure-ink-muted);
+    }
+
+    .btn-create {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand);
+        text-shadow: none;
+    }
+}
+
+// Edwiser (format_remuiformat): the badge of the category of its header, light green on white (2.4:1), in the text of
+// the brand on its light tint (WCAG 1.4.3).
+html:not(.epure-a11y-scheme-yellow) body.format-remuiformat .header-main-section .category .badge {
+    color: var(--epure-brand-text) !important; // stylelint-disable-line declaration-no-important
+    background-color: var(--epure-brand-soft) !important; // stylelint-disable-line declaration-no-important
+
+    .text_to_html,
+    .text_to_html * {
+        color: inherit !important; // stylelint-disable-line declaration-no-important
+    }
+}
+
+// VPL (mod_vpl): its version at the end of the page, in a box painted white in the page itself: on the surfaces of the
+// theme in the dark colours and yellow on black (WCAG 1.4.3).
+html.epure-dark body.path-mod-vpl div[style*="background-color: white"] {
+    background-color: transparent !important; // stylelint-disable-line declaration-no-important
+}
+
+// The links to the previous and next sections at the bottom of a course (Buttons and other formats): their long names
+// wrap within the width of the screen, at 320 px with the text at 200 % (WCAG 1.4.10).
+#page .section-navigation {
+    flex-wrap: wrap;
+    gap: .5rem;
+
+    > * {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    a {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+}
+
+// Designer (format_designer): the type of each activity and its visits, in a light grey (2.1:1 to 2.8:1), in the muted
+// text of the theme (WCAG 1.4.3).
+body.format-designer #page {
+    .activity-type,
+    .activity-type *,
+    .mod-visits-block,
+    .mod-visits-block * {
+        color: var(--epure-ink-muted) !important; // stylelint-disable-line declaration-no-important
+    }
+}
+
+// The tables wider than the page that no frame lets scroll, put in a frame by the repairs of the page (aria_repair.js).
+.epure-table-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+// The check boxes and radio buttons of Organizer, drawn by the browser without the classes of Bootstrap: 24 px at least
+// (WCAG 2.5.8). Those of Moodle keep their size.
+body.path-mod-organizer #region-main input[type="checkbox"]:not(.form-check-input),
+body.path-mod-organizer #region-main input[type="radio"]:not(.form-check-input) {
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+}
+
+// The frames of the activities wider than the page (the preview of Certificate Beautiful, 600 px): within the page, at
+// 320 px (WCAG 1.4.10).
+#region-main iframe {
+    max-width: 100%;
+}
+
+// The name of an activity and its labels (« Current »): on several lines at 320 px with the text at 200 %.
+.activity-name-area {
+    flex-wrap: wrap;
+    min-width: 0;
+
+    .epure-current-label {
+        max-width: 100%;
+        white-space: normal;
+    }
+}
+
+// Attendance (mod_attendance): the arrows of the previous and next dates, 24 px at least (WCAG 2.5.8).
+body.path-mod-attendance .curdatecontrols > a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+}
+
+// Board (mod_board): the headers of its columns, light grey in the dark colours and yellow on black.
+html.epure-dark body.path-mod-board .board_column_header {
+    color: var(--epure-ink);
+    background-color: var(--epure-surface-raised);
+}
+
+// HotPot (mod_hotpot): the colours of the exercise, set in the page as variables (black text on a light yellow), in the
+// colours of the theme in the dark colours and yellow on black; its buttons and questions within the page at 320 px.
+html.epure-dark body.path-mod-hotpot #region-main {
+    --strTextColor: var(--epure-ink);
+    --strTitleColor: var(--epure-ink);
+    --strNavTextColor: var(--epure-ink);
+    --strLinkColor: var(--epure-brand-text);
+    --strVLinkColor: var(--epure-brand-text);
+    --strPageBGColor: var(--epure-surface);
+    --strExBGColor: var(--epure-surface-raised);
+    --strFuncLightColor: var(--epure-surface-raised);
+    --strFuncShadeColor: var(--epure-border);
+    --strNavBarColor: var(--epure-surface-muted);
+    --strNavLightColor: var(--epure-border);
+    --strNavShadeColor: var(--epure-border);
+}
+
+body.path-mod-hotpot #region-main .ExerciseContainer {
+    min-width: 0 !important; // stylelint-disable-line declaration-no-important
+    max-width: 100%;
+}
+
+body.path-mod-hotpot #region-main button,
+body.path-mod-hotpot #region-main .QuizQuestion,
+body.path-mod-hotpot #region-main .QuestionText {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+// The texts of information of Bootstrap (#008196, Organizer) reach 4.5:1 on white only, not on the light grey of the page
+// (4.35:1): darker in the light colours (5.7:1). Its icons keep theirs.
+html:not(.epure-dark) .text-info:not(.icon) {
+    color: #006d7e !important; // stylelint-disable-line declaration-no-important
+}
+
+// Designer: « Mark as done » in the blue of Moodle on the dark surfaces (3.2:1), in the colour of the links there.
+html.epure-dark body.format-designer [data-action="toggle-manual-completion"]:not(:hover),
+html.epure-dark body.format-designer [data-action="toggle-manual-completion"]:not(:hover) > span {
+    color: var(--epure-brand-text) !important; // stylelint-disable-line declaration-no-important
+}
+
+// StudentQuiz: the counts of wrong answers and of disapprovals, white on the red of Bootstrap 4 (4.5:1 just), under
+// 4.5:1 under the cream overlay: a darker red (6.4:1).
+html:not(.epure-a11y-scheme-yellow) body.path-mod-studentquiz .stat.badge.last-attempt-incorrect,
+html:not(.epure-a11y-scheme-yellow) body.path-mod-studentquiz .stat.badge.disapprovals {
+    background-color: #b02a37 !important; // stylelint-disable-line declaration-no-important
+}
+
+// The header of a section, with « Collapse all » and the menu of the section (Buttons): on two lines when the text is
+// large on a phone, not past the edge of the page (WCAG 1.4.10).
+#page .course-section-header.d-flex {
+    flex-wrap: wrap;
+
+    .collapseall {
+        white-space: normal;
+    }
+}

@@ -746,6 +746,137 @@ const sessionNote = (text) => {
  * @param {Object<string, string>} texts The name of the path of the element of the editor (editorpath), of its frame
  *     without a label (editorframe), the summary of the user report (gradesummary, its columns as COLUMNS).
  */
+/**
+ * Repairs of the pages of other plugins (formats of courses, activities), found by the continuous integration:
+ * - a list with other children than its items (Dialogue, Buttons) is no longer given as a list (RGAA 9.3);
+ * - a select without a name takes the text of its empty first choice, « Choose… » (RGAA 11.1);
+ * - the button « Collapse all » left empty (Buttons) takes the name of the core button (RGAA 6.2);
+ * - a progress bar without a name (Edwiser, Designer) is named by its text, else « Progress »;
+ * - the items of a course index drawn as a tree without their role (Designer) are items of the tree;
+ * - a field without a name (Organizer) is named by its placeholder;
+ * - a frame without a title (PDF Protect) takes the title of the page (RGAA 2.1);
+ * - an icon named with aria-label but without a role (Organizer) becomes an image, for its name to be read;
+ * - a table that scrolls across, without any control in it, is reached with the keyboard to scroll it (WCAG 2.1.1),
+ *   named by its caption.
+ *
+ * @param {Object<string, string>} texts The names of « Collapse all » and « Expand all » (collapseall, expandall), of a
+ *     table that scrolls (scrolltable) and of a progress bar (progress).
+ */
+const pluginRepairs = (texts) => {
+    // The sections of the course index drawn by a format without their role (Designer): items of the tree, named by
+    // their title.
+    const sections = 'body.format-designer #course-index[role="tree"] > .courseindex-section:not([role])';
+    document.querySelectorAll(sections).forEach((section) => {
+        section.setAttribute('role', 'treeitem');
+        const title = section.querySelector('[data-for="section_title"]');
+        if (title) {
+            title.id = title.id || section.id + '-title';
+            section.setAttribute('aria-labelledby', title.id);
+        }
+        const content = section.querySelector('.courseindex-item-content');
+        if (content) {
+            section.setAttribute('aria-expanded', content.classList.contains('show') ? 'true' : 'false');
+        }
+    });
+    document.querySelectorAll(':is(ul, ol):not([role]):has(> :not(li, script, template))').forEach((list) => {
+        if (list.closest(CONTENTS)) {
+            return;
+        }
+        list.setAttribute('role', 'none');
+        Array.from(list.children).filter((child) => child.tagName === 'LI')
+            .forEach((item) => item.setAttribute('role', 'none'));
+    });
+    document.querySelectorAll('select:not([aria-label]):not([aria-labelledby]):not([title])').forEach((select) => {
+        const first = select.options[0];
+        if (!select.labels?.length && first && first.value === '' && first.textContent.trim()) {
+            select.setAttribute('aria-label', first.textContent.trim());
+        }
+    });
+    // A progress bar without a name (Edwiser): « Progress », its value given by the bar itself (RGAA 11.1).
+    document.querySelectorAll('[role="progressbar"]:not([aria-label]):not([aria-labelledby]):not([title])')
+        .forEach((bar) => bar.setAttribute('aria-label', visibleText(bar) || texts.progress));
+    // The items of a course index drawn as a tree without their role (Designer): items of the tree (RGAA 7.1).
+    document.querySelectorAll('[role="tree"] li:not([role]), [role="group"] > li:not([role])')
+        .forEach((item) => item.setAttribute('role', 'treeitem'));
+    // A field of a form without a name (the filter of Organizer): its placeholder, else the text written just before it
+    // in the same element (RGAA 11.1).
+    document.querySelectorAll(':is(input:not([type="hidden"]), select):not([aria-label]):not([aria-labelledby]):not([title])')
+        .forEach((field) => {
+            if (field.labels?.length) {
+                return;
+            }
+            const before = Array.from(field.parentElement?.childNodes || []).filter((node) => node.nodeType === 3)
+                .map((node) => node.textContent.trim()).filter(Boolean).join(' ');
+            if (field.placeholder || before) {
+                field.setAttribute('aria-label', field.placeholder || before);
+            }
+        });
+    // The items of a list of tabs (Jitsi): presentation, the tabs being the links in them (RGAA 9.3).
+    document.querySelectorAll('[role="tablist"] > li:not([role])').forEach((item) => item.setAttribute('role', 'presentation'));
+    // The picture of a person given as decoration while it is the only content of its link (Designer): its name read.
+    document.querySelectorAll('a[href] img:is([role="presentation"], [role="none"])[alt]:not([alt=""])').forEach((img) => {
+        if (!visibleText(img.closest('a'))) {
+            img.removeAttribute('role');
+        }
+    });
+    // A link without any content (Designer): nothing to see nor to read, kept out of the keyboard and of the screen
+    // readers (RGAA 6.2).
+    document.querySelectorAll('a[href]:not([aria-label]):not([aria-labelledby]):not([title]):not([aria-hidden])')
+        .forEach((link) => {
+            if (!link.textContent.trim() && !link.querySelector('img, svg, i, [aria-label], [title]')) {
+                link.setAttribute('aria-hidden', 'true');
+                link.tabIndex = -1;
+            }
+        });
+    // An icon named with aria-label but without a role (Organizer): an image, for its name to be read (RGAA 1.1).
+    document.querySelectorAll(':is(i, span)[aria-label]:not([role])').forEach((icon) => icon.setAttribute('role', 'img'));
+    document.querySelectorAll('#collapsesections:not([aria-label])').forEach((button) => {
+        if (!visibleText(button)) {
+            button.setAttribute('aria-label',
+                button.getAttribute('aria-expanded') === 'false' ? texts.expandall : texts.collapseall);
+        }
+    });
+    // A frame of an activity without a title (PDF Protect): the title of the page, the name of the activity (RGAA 2.1).
+    const heading = document.querySelector('#page h1, h1');
+    document.querySelectorAll('iframe:not([title]):not([aria-label]):not([aria-labelledby])').forEach((frame) => {
+        if (heading && visibleText(heading)) {
+            frame.title = visibleText(heading);
+        }
+    });
+    scrollTables(texts);
+};
+
+/**
+ * The tables that scroll across without any control in them: reached with the keyboard, named by their caption.
+ * Again when the size of the text changes (the panel « Aa ») or the window.
+ *
+ * @param {Object<string, string>} texts The name of a table that scrolls (scrolltable).
+ */
+const scrollTables = (texts) => {
+    // The tables wider than the page that no frame lets scroll (Organizer): in a frame that scrolls across (WCAG 1.4.10).
+    document.querySelectorAll('#region-main table').forEach((table) => {
+        const parent = table.parentElement;
+        if (!parent || table.closest('.table-responsive, .epure-table-scroll, .no-overflow, [data-epure-cards]')
+                || table.offsetWidth <= parent.clientWidth + 1) {
+            return;
+        }
+        const box = document.createElement('div');
+        box.className = 'epure-table-scroll';
+        table.before(box);
+        box.append(table);
+    });
+    const boxes = '.table-responsive:not([tabindex]), .no-overflow:not([tabindex]), .epure-table-scroll:not([tabindex])';
+    document.querySelectorAll(boxes).forEach((box) => {
+        if (box.scrollWidth > box.clientWidth + 1
+                && !box.querySelector('a[href], button, input, select, textarea, [tabindex], .table-responsive')) {
+            const caption = box.querySelector('caption');
+            box.tabIndex = 0;
+            box.setAttribute('role', 'region');
+            box.setAttribute('aria-label', caption ? visibleText(caption) : texts.scrolltable);
+        }
+    });
+};
+
 const codeRepairs = (texts) => {
     // The sections of some course formats (Collapsed Topics) are items of a list given the role region: the list loses
     // its items (RGAA 9.3). Items of the list again, as the sections of the formats of Moodle; their name stays.
@@ -962,8 +1093,13 @@ const later = (texts) => {
         abbreviations(texts.abbreviations);
         sessionNote(texts.session);
         codeRepairs(texts);
+        pluginRepairs(texts);
     };
     run();
+    // The size of the text changed in « Aa », or the window: the tables that scroll now.
+    new MutationObserver(() => scrollTables(texts)).observe(document.documentElement,
+        {attributes: true, attributeFilter: ['class']});
+    window.addEventListener('resize', () => scrollTables(texts));
     new MutationObserver((mutations) => {
         if (mutations.some((mutation) => mutation.addedNodes.length)) {
             run();

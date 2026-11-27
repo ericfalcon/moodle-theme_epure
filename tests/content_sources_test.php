@@ -63,7 +63,7 @@ final class content_sources_test extends \advanced_testcase {
             'unilabeltype_imageboard_img' => ['imageboardid', 'title', 'alt'],
             'unilabeltype_accordion' => ['unilabelid'],
             'unilabeltype_accordion_seg' => ['accordionid', 'sortorder', 'heading', 'content'],
-            'questionnaire_survey' => ['info', 'thank_body'],
+            'questionnaire_survey' => ['info', 'thankbody'],
             'questionnaire_question' => ['surveyid', 'position', 'name', 'content', 'deleted'],
         ];
         foreach ($tables as $name => $fields) {
@@ -87,7 +87,7 @@ final class content_sources_test extends \advanced_testcase {
             $accordion = $DB->insert_record('unilabeltype_accordion', ['unilabelid' => 8]);
             $DB->insert_record('unilabeltype_accordion_seg', ['accordionid' => $accordion, 'sortorder' => 1,
                 'heading' => '<p>Rules</p>', 'content' => '<p>Read them</p>']);
-            $survey = $DB->insert_record('questionnaire_survey', ['info' => '<p>About</p>', 'thank_body' => '']);
+            $survey = $DB->insert_record('questionnaire_survey', ['info' => '<p>About</p>', 'thankbody' => '<p>Thank you</p>']);
             $DB->insert_record('questionnaire_question', ['surveyid' => $survey, 'position' => 1, 'name' => 'Age',
                 'content' => '<p>Your age?</p>', 'deleted' => 0]);
             $DB->insert_record('questionnaire_question', ['surveyid' => $survey, 'position' => 2, 'name' => 'Old',
@@ -111,10 +111,12 @@ final class content_sources_test extends \advanced_testcase {
             );
             $accordion = $texts('unilabel', (object) ['id' => 8, 'unilabeltype' => 'accordion']);
             $this->assertSame(['Rules'], array_column($accordion, 'name'));
-            // The questions not deleted, with the introduction of the survey.
+            // The questions not deleted, with the introduction and the end of the survey (column thankbody, as named by
+            // Questionnaire today).
             $read = $texts('questionnaire', (object) ['id' => 1, 'sid' => $survey]);
-            $this->assertSame(['content', 'question'], array_column($read, 'kind'));
-            $this->assertSame('Age', $read[1]['name']);
+            $this->assertSame(['content', 'item', 'question'], array_column($read, 'kind'));
+            $this->assertSame('<p>Thank you</p>', $read[1]['text']);
+            $this->assertSame('Age', $read[2]['name']);
             // A type of Unilabel whose table is missing: nothing.
             $this->assertSame([], $texts('unilabel', (object) ['id' => 9, 'unilabeltype' => 'grid']));
         } finally {
@@ -241,7 +243,7 @@ final class content_sources_test extends \advanced_testcase {
         );
         $this->assertSame([], $texts('learningmap', (object) ['svgcode' => $svg('<![CDATA[A river]]>')]));
 
-        // A lightbox gallery: the captions in a table made for the test.
+        // A lightbox gallery: the captions in a table made for the test, or that of the plugin when it is installed.
         $dbman = $DB->get_manager();
         $table = new \xmldb_table('lightboxgallery_image_meta');
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
@@ -250,7 +252,10 @@ final class content_sources_test extends \advanced_testcase {
         $table->add_field('metatype', XMLDB_TYPE_CHAR, '20', null, XMLDB_NOTNULL, null, 'caption');
         $table->add_field('description', XMLDB_TYPE_TEXT);
         $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
-        $dbman->create_table($table);
+        $made = !$dbman->table_exists($table);
+        if ($made) {
+            $dbman->create_table($table);
+        }
         try {
             $file('mod_lightboxgallery', 'gallery_images', 'bus.jpg');
             $old = $file('mod_lightboxgallery', 'gallery_images', 'car.jpg');
@@ -266,7 +271,9 @@ final class content_sources_test extends \advanced_testcase {
                 $texts('lightboxgallery', (object) ['id' => 5])
             );
         } finally {
-            $dbman->drop_table($table);
+            if ($made) {
+                $dbman->drop_table($table);
+            }
         }
         // A mind map: drawn, to give as text too.
         $this->assertSame('visual', content_sources::coverage('mindmap'));
