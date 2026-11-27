@@ -1681,6 +1681,7 @@ $string['repairgradesummary'] = 'Chaque ligne est un élément du carnet de note
 $string['repairh5p'] = 'Contenu H5P';
 $string['repairnewwindow'] = '(s’ouvre dans une nouvelle fenêtre)';
 $string['repaironeminute'] = 'Il reste 1 minute.';
+$string['repairscrolltable'] = 'Tableau, à faire défiler avec les flèches du clavier';
 $string['repairsession'] = 'Sans aucune activité pendant {$a}, la session se ferme et ce qui n’est pas enregistré est perdu : enregistrez avant. Moodle vous prévient quelques minutes avant.';
 $string['repairupdates'] = 'La liste se met à jour dès le choix.';
 $string['requiredmark'] = '(obligatoire)';

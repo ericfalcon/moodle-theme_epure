@@ -1259,3 +1259,36 @@ body.format-tiles #page {
         visibility: hidden;
     }
 }
+
+// Dialogue (mod_dialogue), drawn with the light colours of Bootstrap 2: in the dark colours and yellow on black, its
+// boxes, menus and tabs on the surfaces of the theme, its buttons in the text of the theme, « Create » in the brand
+// colour with its text (WCAG 1.4.3). With the id of the page, over the colour of the links of the dark colours.
+html.epure-dark body.path-mod-dialogue #page #region-main {
+    .table .table,
+    .table-striped tbody > tr:nth-child(odd) > th,
+    .table-hover tbody tr:hover > th,
+    .dropdown-menu,
+    .yui3-aclist-field,
+    .nav-tabs > .active > a {
+        color: var(--epure-ink);
+        background-color: var(--epure-surface);
+        border-color: var(--epure-border);
+    }
+
+    .dropdown-menu > li > a,
+    .btn-small {
+        --bs-btn-color: var(--epure-ink);
+        --bs-btn-disabled-color: var(--epure-ink-muted);
+        color: var(--epure-ink);
+    }
+
+    .btn-small.disabled > span {
+        color: var(--epure-ink-muted);
+    }
+
+    .btn-create {
+        color: var(--epure-on-brand);
+        background-color: var(--epure-brand);
+        text-shadow: none;
+    }
+}

@@ -395,6 +395,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
             'editorpath' => get_string('repaireditorpath', 'theme_epure'),
             'editorframe' => get_string('repaireditorframe', 'theme_epure'),
             'gradesummary' => get_string('repairgradesummary', 'theme_epure', 'COLUMNS'),
+            // The repairs of the pages of other plugins.
+            'collapseall' => get_string('collapseall'),
+            'expandall' => get_string('expandall'),
+            'scrolltable' => get_string('repairscrolltable', 'theme_epure'),
         ];
         // The abbreviations of the interface, explained (WCAG 3.1.4).
         $texts['abbreviations'] = [];

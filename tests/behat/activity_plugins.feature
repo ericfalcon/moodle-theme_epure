@@ -32,54 +32,55 @@ Feature: The activities of other plugins read by the guide, with the Épure them
     When I log in as "admin"
     And I visit the Épure page "/theme/epure/courseaccessibility.php?id={course HYG}"
     Then I should see "Unit <modname>"
-    And I should see "Images without a text alternative: 1."
+    And I should see "<guide>"
 
+    # Reengagement is hidden from the learners by design (its form keeps it hidden): the guide does not read it.
     Examples:
-      | modname              |
-      | attendance           |
-      | attendanceregister   |
-      | board                |
-      | booking              |
-      | certificatebeautiful |
-      | checklist            |
-      | choicegroup          |
-      | coursecertificate    |
-      | customcert           |
-      | dialogue             |
-      | diary                |
-      | facetoface           |
-      | game                 |
-      | geogebra             |
-      | hotpot               |
-      | hsuforum             |
-      | hvp                  |
-      | icontent             |
-      | interactivevideo     |
-      | jitsi                |
-      | journal              |
-      | learningmap          |
-      | lightboxgallery      |
-      | mediagallery         |
-      | mindmap              |
-      | msteams              |
-      | offlinequiz          |
-      | organizer            |
-      | pdfannotator         |
-      | pdfprotect           |
-      | publication          |
-      | pulse                |
-      | questionnaire        |
-      | realtimequiz         |
-      | reengagement         |
-      | scheduler            |
-      | simplecertificate    |
-      | stickynotes          |
-      | studentquiz          |
-      | subcourse            |
-      | supervideo           |
-      | threesixo            |
-      | turnitintooltwo      |
-      | unilabel             |
-      | videotime            |
-      | vpl                  |
-      | zoom                 |
+      | modname              | guide                                  |
+      | attendance           | Images without a text alternative: 1.  |
+      | attendanceregister   | Images without a text alternative: 1.  |
+      | board                | Images without a text alternative: 1.  |
+      | booking              | Images without a text alternative: 1.  |
+      | certificatebeautiful | Images without a text alternative: 1.  |
+      | checklist            | Images without a text alternative: 1.  |
+      | choicegroup          | Images without a text alternative: 1.  |
+      | coursecertificate    | Images without a text alternative: 1.  |
+      | customcert           | Images without a text alternative: 1.  |
+      | dialogue             | Images without a text alternative: 1.  |
+      | diary                | Images without a text alternative: 1.  |
+      | facetoface           | Images without a text alternative: 1.  |
+      | game                 | Images without a text alternative: 1.  |
+      | geogebra             | Images without a text alternative: 1.  |
+      | hotpot               | Images without a text alternative: 1.  |
+      | hsuforum             | Images without a text alternative: 1.  |
+      | hvp                  | Images without a text alternative: 1.  |
+      | icontent             | Images without a text alternative: 1.  |
+      | interactivevideo     | Images without a text alternative: 1.  |
+      | jitsi                | Images without a text alternative: 1.  |
+      | journal              | Images without a text alternative: 1.  |
+      | learningmap          | Images without a text alternative: 1.  |
+      | lightboxgallery      | Images without a text alternative: 1.  |
+      | mediagallery         | Images without a text alternative: 1.  |
+      | mindmap              | Images without a text alternative: 1.  |
+      | msteams              | Images without a text alternative: 1.  |
+      | offlinequiz          | Images without a text alternative: 1.  |
+      | organizer            | Images without a text alternative: 1.  |
+      | pdfannotator         | Images without a text alternative: 1.  |
+      | pdfprotect           | Images without a text alternative: 1.  |
+      | publication          | Images without a text alternative: 1.  |
+      | pulse                | Images without a text alternative: 1.  |
+      | questionnaire        | Images without a text alternative: 1.  |
+      | realtimequiz         | Images without a text alternative: 1.  |
+      | reengagement         | Unit reengagement                      |
+      | scheduler            | Images without a text alternative: 1.  |
+      | simplecertificate    | Images without a text alternative: 1.  |
+      | stickynotes          | Images without a text alternative: 1.  |
+      | studentquiz          | Images without a text alternative: 1.  |
+      | subcourse            | Images without a text alternative: 1.  |
+      | supervideo           | Images without a text alternative: 1.  |
+      | threesixo            | Images without a text alternative: 1.  |
+      | turnitintooltwo      | Images without a text alternative: 1.  |
+      | unilabel             | Images without a text alternative: 1.  |
+      | videotime            | Images without a text alternative: 1.  |
+      | vpl                  | Images without a text alternative: 1.  |
+      | zoom                 | Images without a text alternative: 1.  |
