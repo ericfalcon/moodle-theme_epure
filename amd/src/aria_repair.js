@@ -765,7 +765,8 @@ const sessionNote = (text) => {
 const pluginRepairs = (texts) => {
     // The sections of the course index drawn by a format without their role (Designer): items of the tree, named by
     // their title.
-    document.querySelectorAll('#course-index[role="tree"] .courseindex-section:not([role])').forEach((section) => {
+    const sections = 'body.format-designer #course-index[role="tree"] > .courseindex-section:not([role])';
+    document.querySelectorAll(sections).forEach((section) => {
         section.setAttribute('role', 'treeitem');
         const title = section.querySelector('[data-for="section_title"]');
         if (title) {
