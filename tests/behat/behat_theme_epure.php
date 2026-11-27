@@ -440,12 +440,29 @@ class behat_theme_epure extends behat_base {
                 return null;
             } catch (\Exception $e) {
                 if (!preg_match('/^No data$|axe is not defined/', trim($e->getMessage()))) {
-                    return trim($e->getMessage()) . $this->pink_painter($e->getMessage());
+                    return trim($e->getMessage()) . $this->pink_painter($e->getMessage()) . $this->page_error();
                 }
                 $this->getSession()->wait(1000);
             }
         }
         return $this->axe_violations(true);
+    }
+
+    /**
+     * The error that Moodle shows in the page, when its own step cannot read it (fewer boxes than it expects, with the
+     * error of a plugin): its text, to find the cause.
+     *
+     * @return string The text of the error, or nothing.
+     */
+    protected function page_error(): string {
+        $text = $this->getSession()->evaluateScript(<<<'JS'
+            return (() => {
+                const error = document.querySelector('[data-rel="fatalerror"]');
+                return error ? [error, ...document.querySelectorAll('.alert-danger, .alert-error, .notifytiny')]
+                    .map((e) => e.textContent.replace(/\s+/g, ' ').trim().slice(0, 400)).join(' | ') : '';
+            })();
+        JS);
+        return $text ? "\n  The error in the page: " . $text : '';
     }
 
     /**
