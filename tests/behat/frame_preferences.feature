@@ -17,4 +17,5 @@ Feature: The display preferences of « Aa » in the frames of the page
       | learner1 | theme_epure_a11y_text   | 150          |
     When I log in as "learner1"
     And I visit "/user/edit.php"
+    And I wait until ".tox-edit-area__iframe" "css_element" exists
     Then the frames of the page should have the display preferences

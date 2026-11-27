@@ -28,6 +28,7 @@ Feature: The activities of other plugins read by the guide, with the Épure them
       | path                                 |
       | /mod/<modname>/view.php?id={cm act1} |
     And I log out
+    And the description of the activity "act1" has an image without a text alternative
     When I log in as "admin"
     And I visit the Épure page "/theme/epure/courseaccessibility.php?id={course HYG}"
     Then I should see "Unit <modname>"

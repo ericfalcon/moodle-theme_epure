@@ -220,7 +220,10 @@ class behat_theme_epure extends behat_base {
                 }
                 // Yellow on black comes first, over the colours of the brand, of a course or of a plugin: every text at
                 // 7:1 at least (WCAG 1.4.6), which only its own colours reach.
-                if ($scheme === 'yellow' && ($axe = $this->axe_violations(false, ['color-contrast-enhanced'])) !== null) {
+                // The samples of other displays are left out: the live preview of the colours and the swatches of the
+                // palette show the colours of the brand in light and dark, as an image of them (at 4.5:1 above).
+                $samples = ['.epure-pl-modes', '.epure-palette-swatch', '.epure-logocolours-swatch', '.epure-management-swatch'];
+                if ($scheme === 'yellow' && ($axe = $this->axe_violations(false, ['color-contrast-enhanced'], $samples)) !== null) {
                     $failures[] = "{$row['path']} ({$label}, 7:1): " . $axe;
                 }
                 if ($width < 1000 && ($row['except'] ?? '') !== 'wide table') {
@@ -454,17 +457,21 @@ class behat_theme_epure extends behat_base {
      *
      * @param bool $moodle With the rules of Moodle's step (Section 508, ARIA, visual cues, orientation too).
      * @param string[]|null $rules These rules of axe only, instead of the tags.
+     * @param string[] $exclude Selectors of the parts of the page left out.
      * @return string|null The violations, or null when there are none.
      */
-    protected function axe_violations(bool $moodle = false, ?array $rules = null): ?string {
+    protected function axe_violations(bool $moodle = false, ?array $rules = null, array $exclude = []): ?string {
         $tags = $moodle ? ['wcag2a', 'wcag21a', 'wcag22a', 'wcag2aa', 'wcag21aa', 'wcag22aa', 'section508', 'cat.aria',
             'cat.sensory-and-visual-cues', 'wcag134'] : ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
         $only = $rules !== null ? ['type' => 'rule', 'values' => $rules] : ['type' => 'tag', 'values' => $tags];
         $options = json_encode(['runOnly' => $only, 'iframes' => !$moodle]);
+        $context = $exclude ? json_encode(['exclude' => array_map(fn($selector) => [$selector], $exclude)]) : 'document';
         $this->getSession()->executeScript(
             "window.epureAxe = null;" .
-            "const run = () => axe.run(document, " . $options . ")" .
-            ".then((r) => { window.epureAxe = r.violations.map((v) => v.id + ' (' + v.nodes.length + ')').join(', '); })" .
+            "const run = () => axe.run(" . $context . ", " . $options . ")" .
+            ".then((r) => { window.epureAxe = r.violations.map((v) => v.id + ' (' + v.nodes.length + ': '" .
+            "+ v.nodes.slice(0, 5).map((n) => n.target.join(' ') + (n.any[0] && n.any[0].data && n.any[0].data.fgColor" .
+            " ? ' ' + n.any[0].data.fgColor + ' on ' + n.any[0].data.bgColor : '')).join('; ') + ')').join(', '); })" .
             // Moodle's step may still be running its audit, which axe does one at a time.
             ".catch((e) => { if (/already running/i.test(e.message)) { setTimeout(run, 500); } " .
             "else { window.epureAxe = 'axe: ' + e.message; } });" .
@@ -1040,8 +1047,22 @@ class behat_theme_epure extends behat_base {
     }
 
     /**
-     * Creates an activity of a module of another plugin, whose description holds an image without a text alternative:
-     * by its generator when it has one, else as Moodle stores any activity (its record, its module of the course in the
+     * The description of an activity gets an image without a text alternative, for the guide « Accessibility of the
+     * course » to find (after the page of the activity is checked: the defect is the teacher's, not the theme's).
+     *
+     * @Given /^the description of the activity "(?P<idnumber>[^"]*)" has an image without a text alternative$/
+     * @param string $idnumber ID number of the activity.
+     */
+    public function the_description_has_an_image_without_a_text_alternative(string $idnumber): void {
+        global $DB;
+        $cm = $DB->get_record('course_modules', ['idnumber' => $idnumber], '*', MUST_EXIST);
+        $modname = $DB->get_field('modules', 'name', ['id' => $cm->module], MUST_EXIST);
+        $DB->set_field($modname, 'intro', '<p><img src="https://example.com/gloves.png"></p>', ['id' => $cm->instance]);
+        rebuild_course_cache($cm->course, true);
+    }
+
+    /**
+     * Creates an activity of a module of another plugin, with a short description: by its generator when it has one, else as Moodle stores any activity (its record, its module of the course in the
      * section 1), the columns required by its table that the step does not know left empty.
      *
      * @Given /^the activity "(?P<modname>[a-z0-9_]+)" "(?P<name>[^"]*)" exists in "(?P<shortname>[^"]*)" as "(?P<idnumber>[^"]*)"$/
@@ -1054,7 +1075,7 @@ class behat_theme_epure extends behat_base {
         global $CFG, $DB;
         require_once($CFG->dirroot . '/course/lib.php');
         $course = $DB->get_record('course', ['shortname' => $shortname], '*', MUST_EXIST);
-        $intro = '<p><img src="https://example.com/gloves.png"></p>';
+        $intro = '<p>Read the instructions before you start.</p>';
         $fields = ['course' => $course->id, 'name' => $name, 'intro' => $intro, 'introformat' => FORMAT_HTML,
             'idnumber' => $idnumber, 'showdescription' => 1, 'section' => 1];
         if (

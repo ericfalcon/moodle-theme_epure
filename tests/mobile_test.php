@@ -74,8 +74,9 @@ final class mobile_test extends \advanced_testcase {
      */
     public function test_css(): void {
         $css = mobile_app::css('#2559A8');
-        foreach (['epure-a11y-text-200', 'epure-a11y-font-opendyslexic', 'epure-a11y-spacing', 'epure-a11y-underline',
-                'epure-a11y-motion', 'epure-a11y-focusring', 'epure-a11y-scheme-yellow', 'epure-a11y-scheme-cream'] as $class) {
+        $classes = ['epure-a11y-text-200', 'epure-a11y-font-opendyslexic', 'epure-a11y-spacing', 'epure-a11y-underline',
+            'epure-a11y-motion', 'epure-a11y-focusring', 'epure-a11y-scheme-yellow', 'epure-a11y-scheme-cream'];
+        foreach ($classes as $class) {
             $this->assertStringContainsString('html.' . $class, $css);
         }
         $this->assertStringContainsString('--ion-background-color:#000 !important', $css);
