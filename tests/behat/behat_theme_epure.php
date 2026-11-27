@@ -330,7 +330,7 @@ class behat_theme_epure extends behat_base {
     /**
      * The contrast of the texts of the page under the cream overlay of « Aa », which axe does not see: each text and its
      * background multiplied by the colour of the overlay, as the browser draws them. What already fails without it is
-     * left to axe; a text over an image is not measured.
+     * left to axe; a text over an image, or hidden for the eyes (read by screen readers only), is not measured.
      *
      * @return string|null The texts that no longer reach 4.5:1 (3:1 for a large text), or null.
      */
@@ -388,7 +388,7 @@ class behat_theme_epure extends behat_base {
                     const rect = element.getBoundingClientRect();
                     const style = getComputedStyle(element);
                     if (rect.width <= 1 || rect.height <= 1 || style.visibility !== 'visible' || Number(style.opacity) === 0
-                            || element.closest('[aria-hidden="true"], script, style, noscript')) {
+                            || element.closest('[aria-hidden="true"], script, style, noscript, .sr-only, .visually-hidden')) {
                         continue;
                     }
                     const under = background(element);
