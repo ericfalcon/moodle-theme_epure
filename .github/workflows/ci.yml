@@ -298,7 +298,7 @@ jobs:
           npm install --no-save --no-audit --no-fund playwright@1.49.1 axe-core@4.10.2
           npx playwright install --with-deps webkit chromium
           NODE_PATH="$RUNNER_TEMP/pw/node_modules" node "$GITHUB_WORKSPACE/$root/theme/epure/tests/browsers/check.js" \
-            http://localhost:8010 "$course"
+            http://localhost:8010 "$course" || { tail -40 "$RUNNER_TEMP/php.log"; grep -n "wwwroot" "$GITHUB_WORKSPACE/moodle/config.php"; exit 1; }
         env:
           EPURE_BROWSERS: ${{ github.workspace }}/browsers
 

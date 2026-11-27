@@ -58,6 +58,11 @@ const failures = [];
         page.on('pageerror', (error) => errors.push(error.message));
 
         await page.goto(wwwroot + '/login/index.php');
+        if (!await page.locator('#username').count()) {
+            // Not the login page: what the site shows instead, for the log.
+            console.log(`${run.name}: no login form at ${page.url()} (${await page.title()}):`,
+                (await page.locator('body').innerText().catch(() => '')).slice(0, 800));
+        }
         await page.fill('#username', 'learner');
         await page.fill('#password', 'Browsers-2026!');
         await Promise.all([page.waitForNavigation(), page.click('#loginbtn')]);
