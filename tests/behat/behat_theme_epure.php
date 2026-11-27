@@ -992,4 +992,49 @@ class behat_theme_epure extends behat_base {
         $this->getSession()->visit($this->locate_path($this->epure_path($path)));
         $this->wait_for_pending_js();
     }
+
+    /**
+     * Creates an activity of a module of another plugin, whose description holds an image without a text alternative:
+     * by its generator when it has one, else as Moodle stores any activity (its record, its module of the course in the
+     * section 1), the columns required by its table that the step does not know left empty.
+     *
+     * @Given /^the activity "(?P<modname>[a-z0-9_]+)" "(?P<name>[^"]*)" exists in "(?P<shortname>[^"]*)" as "(?P<idnumber>[^"]*)"$/
+     * @param string $modname Name of the module, without mod_.
+     * @param string $name Name of the activity.
+     * @param string $shortname Short name of the course.
+     * @param string $idnumber ID number of the activity.
+     */
+    public function the_activity_exists_in_the_course(string $modname, string $name, string $shortname, string $idnumber): void {
+        global $CFG, $DB;
+        require_once($CFG->dirroot . '/course/lib.php');
+        $course = $DB->get_record('course', ['shortname' => $shortname], '*', MUST_EXIST);
+        $intro = '<p><img src="https://example.com/gloves.png"></p>';
+        $fields = ['course' => $course->id, 'name' => $name, 'intro' => $intro, 'introformat' => FORMAT_HTML,
+            'idnumber' => $idnumber, 'showdescription' => 1, 'section' => 1];
+        if (
+            class_exists('mod_' . $modname . '_generator')
+                || file_exists(\core_component::get_component_directory('mod_' . $modname) . '/tests/generator/lib.php')
+        ) {
+            \testing_util::get_data_generator()->create_module($modname, $fields);
+            return;
+        }
+        // Without a generator: the record of the activity, the columns it requires empty or zero.
+        $record = ['course' => $course->id, 'name' => $name, 'intro' => $intro, 'introformat' => FORMAT_HTML,
+            'timemodified' => time()];
+        foreach ($DB->get_columns($modname) as $column) {
+            if ($column->name === 'id' || array_key_exists($column->name, $record)) {
+                continue;
+            }
+            if ($column->not_null && !$column->has_default) {
+                $record[$column->name] = in_array($column->meta_type, ['I', 'N', 'F'], true) ? 0 : '';
+            }
+        }
+        $record = array_intersect_key($record, $DB->get_columns($modname));
+        $instance = $DB->insert_record($modname, (object) $record);
+        $cm = (object) ['course' => $course->id, 'module' => $DB->get_field('modules', 'id', ['name' => $modname], MUST_EXIST),
+            'instance' => $instance, 'section' => 1, 'idnumber' => $idnumber, 'visible' => 1, 'showdescription' => 1];
+        $cm->id = add_course_module($cm);
+        course_add_cm_to_section($course, $cm->id, 1);
+        rebuild_course_cache($course->id, true);
+    }
 }
