@@ -783,11 +783,34 @@ const pluginRepairs = (texts) => {
     // The items of a course index drawn as a tree without their role (Designer): items of the tree (RGAA 7.1).
     document.querySelectorAll('[role="tree"] li:not([role]), [role="group"] > li:not([role])')
         .forEach((item) => item.setAttribute('role', 'treeitem'));
-    // A field of a form without a name (the filter of Organizer): its placeholder, else its title (RGAA 11.1).
-    document.querySelectorAll('input:not([type="hidden"]):not([aria-label]):not([aria-labelledby]):not([title])')
+    // A field of a form without a name (the filter of Organizer): its placeholder, else the text written just before it
+    // in the same element (RGAA 11.1).
+    document.querySelectorAll(':is(input:not([type="hidden"]), select):not([aria-label]):not([aria-labelledby]):not([title])')
         .forEach((field) => {
-            if (!field.labels?.length && field.placeholder) {
-                field.setAttribute('aria-label', field.placeholder);
+            if (field.labels?.length) {
+                return;
+            }
+            const before = Array.from(field.parentElement?.childNodes || []).filter((node) => node.nodeType === 3)
+                .map((node) => node.textContent.trim()).filter(Boolean).join(' ');
+            if (field.placeholder || before) {
+                field.setAttribute('aria-label', field.placeholder || before);
+            }
+        });
+    // The items of a list of tabs (Jitsi): presentation, the tabs being the links in them (RGAA 9.3).
+    document.querySelectorAll('[role="tablist"] > li:not([role])').forEach((item) => item.setAttribute('role', 'presentation'));
+    // The picture of a person given as decoration while it is the only content of its link (Designer): its name read.
+    document.querySelectorAll('a[href] img:is([role="presentation"], [role="none"])[alt]:not([alt=""])').forEach((img) => {
+        if (!visibleText(img.closest('a'))) {
+            img.removeAttribute('role');
+        }
+    });
+    // A link without any content (Designer): nothing to see nor to read, kept out of the keyboard and of the screen
+    // readers (RGAA 6.2).
+    document.querySelectorAll('a[href]:not([aria-label]):not([aria-labelledby]):not([title]):not([aria-hidden])')
+        .forEach((link) => {
+            if (!link.textContent.trim() && !link.querySelector('img, svg, i, [aria-label], [title]')) {
+                link.setAttribute('aria-hidden', 'true');
+                link.tabIndex = -1;
             }
         });
     // An icon named with aria-label but without a role (Organizer): an image, for its name to be read (RGAA 1.1).
@@ -815,7 +838,20 @@ const pluginRepairs = (texts) => {
  * @param {Object<string, string>} texts The name of a table that scrolls (scrolltable).
  */
 const scrollTables = (texts) => {
-    document.querySelectorAll('.table-responsive:not([tabindex]), .no-overflow:not([tabindex])').forEach((box) => {
+    // The tables wider than the page that no frame lets scroll (Organizer): in a frame that scrolls across (WCAG 1.4.10).
+    document.querySelectorAll('#region-main table').forEach((table) => {
+        const parent = table.parentElement;
+        if (!parent || table.closest('.table-responsive, .epure-table-scroll, .no-overflow, [data-epure-cards]')
+                || table.offsetWidth <= parent.clientWidth + 1) {
+            return;
+        }
+        const box = document.createElement('div');
+        box.className = 'epure-table-scroll';
+        table.before(box);
+        box.append(table);
+    });
+    const boxes = '.table-responsive:not([tabindex]), .no-overflow:not([tabindex]), .epure-table-scroll:not([tabindex])';
+    document.querySelectorAll(boxes).forEach((box) => {
         if (box.scrollWidth > box.clientWidth + 1
                 && !box.querySelector('a[href], button, input, select, textarea, [tabindex], .table-responsive')) {
             const caption = box.querySelector('caption');

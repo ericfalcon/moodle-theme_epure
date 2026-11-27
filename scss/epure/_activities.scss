@@ -1338,3 +1338,79 @@ body.format-designer #page {
         color: var(--epure-ink-muted) !important; // stylelint-disable-line declaration-no-important
     }
 }
+
+// The tables wider than the page that no frame lets scroll, put in a frame by the repairs of the page (aria_repair.js).
+.epure-table-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+// The check boxes and radio buttons drawn by the browser, without the classes of Bootstrap (Organizer): 24 px at least
+// (WCAG 2.5.8).
+#region-main input[type="checkbox"]:not(.form-check-input),
+#region-main input[type="radio"]:not(.form-check-input) {
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+}
+
+// The frames of the activities wider than the page (the preview of Certificate Beautiful, 600 px): within the page, at
+// 320 px (WCAG 1.4.10).
+#region-main iframe {
+    max-width: 100%;
+}
+
+// The name of an activity and its labels (« Current »): on several lines at 320 px with the text at 200 %.
+.activity-name-area {
+    flex-wrap: wrap;
+    min-width: 0;
+
+    .epure-current-label {
+        max-width: 100%;
+        white-space: normal;
+    }
+}
+
+// Attendance (mod_attendance): the arrows of the previous and next dates, 24 px at least (WCAG 2.5.8).
+body.path-mod-attendance .curdatecontrols > a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+}
+
+// Board (mod_board): the headers of its columns, light grey in the dark colours and yellow on black.
+html.epure-dark body.path-mod-board .board_column_header {
+    color: var(--epure-ink);
+    background-color: var(--epure-surface-raised);
+}
+
+// HotPot (mod_hotpot): the colours of the exercise, set in the page as variables (black text on a light yellow), in the
+// colours of the theme in the dark colours and yellow on black; its buttons and questions within the page at 320 px.
+html.epure-dark body.path-mod-hotpot #region-main {
+    --strTextColor: var(--epure-ink);
+    --strTitleColor: var(--epure-ink);
+    --strNavTextColor: var(--epure-ink);
+    --strLinkColor: var(--epure-brand-text);
+    --strVLinkColor: var(--epure-brand-text);
+    --strPageBGColor: var(--epure-surface);
+    --strExBGColor: var(--epure-surface-raised);
+    --strFuncLightColor: var(--epure-surface-raised);
+    --strFuncShadeColor: var(--epure-border);
+    --strNavBarColor: var(--epure-surface-muted);
+    --strNavLightColor: var(--epure-border);
+    --strNavShadeColor: var(--epure-border);
+}
+
+body.path-mod-hotpot #region-main .ExerciseContainer {
+    min-width: 0 !important; // stylelint-disable-line declaration-no-important
+    max-width: 100%;
+}
+
+body.path-mod-hotpot #region-main button,
+body.path-mod-hotpot #region-main .QuizQuestion,
+body.path-mod-hotpot #region-main .QuestionText {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}

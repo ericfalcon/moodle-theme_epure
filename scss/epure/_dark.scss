@@ -1239,3 +1239,23 @@
         @include epure-dark;
     }
 }
+
+// The colours of meaning of Bootstrap for texts (info, success, danger, warning), dark on the light surfaces: light
+// variants on the dark ones (Organizer), at 4.5:1 at least.
+html.epure-dark {
+    .text-info {
+        color: #7dd3e8 !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .text-success {
+        color: #86d6a8 !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .text-danger {
+        color: var(--epure-state-late) !important; // stylelint-disable-line declaration-no-important
+    }
+
+    .text-warning {
+        color: #ffd866 !important; // stylelint-disable-line declaration-no-important
+    }
+}
