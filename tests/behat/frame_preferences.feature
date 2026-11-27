@@ -1,4 +1,4 @@
-@theme @theme_epure @javascript
+@theme @theme_epure @javascript @editor_tiny
 Feature: The display preferences of « Aa » in the frames of the page
   In order to read every part of a page as I chose to
   As a user with display preferences
@@ -7,7 +7,8 @@ Feature: The display preferences of « Aa » in the frames of the page
   # TinyMCE, whose text is in a frame (the site of the tests may have Atto first, which has none).
   Scenario: The text being written in the editor takes the display preferences
     Given the following config values are set as admin:
-      | theme | epure |
+      | theme        | epure        |
+      | texteditors  | tiny,textarea |
     And the following "users" exist:
       | username | firstname | lastname | email                |
       | learner1 | Lea       | Learner  | learner1@example.com |
