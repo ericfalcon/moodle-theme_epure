@@ -29,6 +29,7 @@
     * brandcolor, sitebrandcolor, headerstyles, fonts, coursebanners, learnerdashboards, mobilenavs, darkmodes,
       activityicons - appearance of the company
     * accentcolor, siteaccentcolor - accent colour of the company and the one used while it has none
+    * palettelive - live preview of its colours (theme_epure/palette_live), HTML
     * shapes, navigation, pages, emails, login - other settings of the site (see theme_epure/company_select)
     * fontname, fontfiles - name and files (name, label, html, draftid) of the font uploaded for the company
     * logintexts - texts of the login page: name, label, value, multiline, placeholder (value of the site)
@@ -51,6 +52,7 @@
         "certificateframe": {"preview": "data:image/png;base64,"},
         "footer": [{"name": "footerlegalurl", "label": "Legal notice", "value": "", "multiline": false, "placeholder": ""}],
         "logocolours": {"id": "epure-company-logocolours", "inputid": "id_epure_brandcolor", "logourl": null},
+        "palettelive": "",
         "languages": [{"lang": "fr", "name": "Français", "concepts": [{
             "name": "epure_vocab_fr_company", "label": "Les entreprises s'appellent",
             "options": [{"value": "", "label": "Comme la plateforme (entreprises)", "selected": true},
@@ -130,6 +132,14 @@
                     </select>
                 </div>
             </div>
+            {{#palettelive}}
+            <div class="form-group mb-3 row fitem">
+                <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
+                    <p class="mb-0 fw-bold font-weight-bold">{{#str}}palette, theme_epure{{/str}}</p>
+                </div>
+                <div class="col-md-9">{{{palettelive}}}</div>
+            </div>
+            {{/palettelive}}
             <div class="form-group mb-3 row fitem">
                 <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0 pe-md-0">
                     <label class="mb-0" for="id_epure_activityicons">{{#str}}activityicons, theme_epure{{/str}}</label>

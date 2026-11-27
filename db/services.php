@@ -40,6 +40,14 @@ $functions = [
         'ajax' => true,
         'loginrequired' => false,
     ],
+    'theme_epure_palette_preview' => [
+        'classname' => \theme_epure\external\palette_preview::class,
+        'description' => 'The colours the theme computes from a brand colour, an accent colour and a style of header, for '
+            . 'the live preview of the settings of the colours.',
+        'type' => 'read',
+        'ajax' => true,
+        'loginrequired' => true,
+    ],
     'theme_epure_view_resource' => [
         'classname' => \theme_epure\external\view_resource::class,
         'description' => 'Records the view of a resource whose file is opened in the preview of the files of a course.',

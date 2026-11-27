@@ -71,6 +71,15 @@ class entity_form extends \moodleform {
             $mform->setType($name, PARAM_RAW_TRIMMED);
             $mform->addHelpButton($name, 'entitycolour', 'theme_epure');
         }
+        // The palette of these colours, in a live preview that follows them before they are saved.
+        $current = $this->_customdata['settings'] ?? [];
+        $mform->addElement('static', 'palettelive', get_string('palette', 'theme_epure'), \theme_epure\admin\palette_preview::live(
+            'epure-palette-live',
+            ($current['brandcolor'] ?? '') ?: null,
+            ($current['accentcolor'] ?? '') ?: null,
+            ($current['headerstyle'] ?? '') ?: ((string) get_config('theme_epure', 'headerstyle') ?: 'light'),
+            ['brand' => '#id_brandcolor', 'accent' => '#id_accentcolor', 'header' => '#id_headerstyle']
+        ));
         $mform->addElement('filemanager', 'entitylogo', get_string('logo', 'theme_epure'), null, self::LOGO_OPTIONS);
         $mform->addElement(
             'filemanager',
@@ -141,6 +150,13 @@ class entity_form extends \moodleform {
             )]
         );
         $mform->addHelpButton('cohorts', 'entitycohorts', 'theme_epure');
+        $mform->addElement(
+            'select',
+            'priority',
+            get_string('entitypriority', 'theme_epure'),
+            array_combine(range(0, entity::MAX_PRIORITY), range(0, entity::MAX_PRIORITY))
+        );
+        $mform->addHelpButton('priority', 'entitypriority', 'theme_epure');
 
         // Pages and navigation.
         $mform->addElement('header', 'pages', get_string('entitypages', 'theme_epure'));
@@ -164,6 +180,14 @@ class entity_form extends \moodleform {
         $mform->addElement('static', 'footerintro', '', get_string('entityfooter_desc', 'theme_epure'));
         $mform->addElement('textarea', 'footertext', get_string('footertext', 'theme_epure'), ['rows' => 4, 'cols' => 60]);
         $mform->setType('footertext', PARAM_RAW);
+        // In the editor of Moodle, as the text of the footer of the site and of an IOMAD company (HTML).
+        global $CFG;
+        require_once($CFG->libdir . '/editorlib.php');
+        editors_get_preferred_editor(FORMAT_HTML)->use_editor('id_footertext', [
+            'context' => \context_coursecat::instance($this->_customdata['category']),
+            'autosave' => false,
+            'maxfiles' => 0,
+        ]);
         foreach (['footerlegalurl', 'footerprivacyurl', 'footercontacturl'] as $name) {
             $mform->addElement('text', $name, get_string($name, 'theme_epure'), ['size' => 60]);
             $mform->setType($name, PARAM_URL);
@@ -171,6 +195,42 @@ class entity_form extends \moodleform {
         $mform->addElement('textarea', 'footerlinks', get_string('footerlinks', 'theme_epure'), ['rows' => 3, 'cols' => 60]);
         $mform->setType('footerlinks', PARAM_TEXT);
         $mform->addHelpButton('footerlinks', 'entityfooterlinks', 'theme_epure');
+
+        // The login page of the entity: its own address, its layout and its texts.
+        $mform->addElement('header', 'login', get_string('entitylogin', 'theme_epure'));
+        $mform->addElement('static', 'loginurl', get_string('entityloginurl', 'theme_epure'), \html_writer::tag(
+            'code',
+            s(entity::login_url((int) $this->_customdata['category'])->out(false))
+        ));
+        $mform->addHelpButton('loginurl', 'entityloginurl', 'theme_epure');
+        $layouts = [];
+        foreach (company_style::CHOICES['loginlayout'] as $value) {
+            $layouts[$value] = get_string('loginlayout' . $value, 'theme_epure');
+        }
+        $sitelayout = (string) get_config('theme_epure', 'loginlayout') ?: company_style::CHOICE_DEFAULTS['loginlayout'];
+        $mform->addElement(
+            'select',
+            'loginlayout',
+            get_string('loginlayout', 'theme_epure'),
+            $site($layouts[$sitelayout] ?? $sitelayout) + $layouts
+        );
+        $mform->addElement('text', 'logintagline', get_string('logintagline', 'theme_epure'), ['size' => 60]);
+        $mform->setType('logintagline', PARAM_TEXT);
+        $mform->addElement('textarea', 'logintext', get_string('logintext', 'theme_epure'), ['rows' => 3, 'cols' => 60]);
+        $mform->setType('logintext', PARAM_TEXT);
+
+        // CSS of the entity: for the administrators of the site only, as a CSS can hide or change anything in the page.
+        if (!empty($this->_customdata['admin'])) {
+            $mform->addElement('header', 'css', get_string('entitycss', 'theme_epure'));
+            $mform->addElement(
+                'textarea',
+                'customcss',
+                get_string('entitycss', 'theme_epure'),
+                ['rows' => 6, 'cols' => 60, 'spellcheck' => 'false', 'class' => 'text-monospace font-monospace']
+            );
+            $mform->setType('customcss', PARAM_RAW);
+            $mform->addHelpButton('customcss', 'entitycss', 'theme_epure');
+        }
 
         // Words: course, student, teacher, for the members of the cohorts of the entity.
         $mform->addElement('header', 'vocabulary', get_string('entityvocabulary', 'theme_epure'));
@@ -246,7 +306,8 @@ class entity_form extends \moodleform {
         $values = [];
         foreach (
             array_merge(
-                ['brandcolor', 'accentcolor', 'headerstyle', 'font', 'darkmode', 'activityicons', 'cohorts'],
+                ['brandcolor', 'accentcolor', 'headerstyle', 'font', 'darkmode', 'activityicons', 'cohorts', 'priority',
+                    'loginlayout', 'logintagline', 'logintext', 'customcss'],
                 self::CHOICES,
                 self::SWITCHES,
                 company_style::FOOTER_FIELDS

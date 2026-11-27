@@ -642,7 +642,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
     public function epure_login_sitename(): string {
         global $SITE;
         $company = \theme_epure\company_style::current_company();
-        return format_string($company->name ?? $SITE->fullname, true, ['context' => \context_system::instance()]);
+        // The name of the entity of its login page, on Moodle ({@see \theme_epure\entity}).
+        $entity = $company ? null : \theme_epure\entity::current();
+        return format_string($company->name ?? $entity->name ?? $SITE->fullname, true, ['context' => \context_system::instance()]);
     }
 
     /**
@@ -686,8 +688,26 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return string
      */
     public function epure_login_logo_url(): string {
-        $url = $this->theme_file_url('logoonbrand') ?? \theme_epure\logos::main_url();
+        $url = $this->entity_login_logo()[0] ?? $this->theme_file_url('logoonbrand') ?? \theme_epure\logos::main_url();
         return $url ? $url->out(false) : '';
+    }
+
+    /**
+     * Logo of the entity on the login visual ({@see \theme_epure\entity}): its version for coloured backgrounds, else its
+     * logo, which then needs the white backing.
+     *
+     * @return array{0: \moodle_url, 1: bool}|null The logo and whether it needs the backing; null without one.
+     */
+    protected function entity_login_logo(): ?array {
+        $entity = \theme_epure\entity::current();
+        if (!$entity) {
+            return null;
+        }
+        if ($url = \theme_epure\entity::logo_url($entity->id, 'entitylogoonbrand')) {
+            return [$url, false];
+        }
+        $url = \theme_epure\entity::logo_url($entity->id);
+        return $url ? [$url, true] : null;
     }
 
     /**
@@ -696,6 +716,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return bool
      */
     public function epure_login_logo_backing(): bool {
+        if ($logo = $this->entity_login_logo()) {
+            return $logo[1];
+        }
         return $this->theme_file_url('logoonbrand') === null;
     }
 

@@ -738,6 +738,7 @@ const sessionNote = (text) => {
  *   interface) go, the styles do the same (RGAA 10.1); the tables written by the teachers keep theirs;
  * - on the page of the messages, the drawer of the messages, hidden, repeats the identifiers of the page (RGAA 8.2):
  *   its own get a suffix, and the attributes of the drawer that name them follow;
+ * - the sections given the role region in a list (course format Collapsed Topics) are its items again (RGAA 9.3);
  * - the tables of the summary of the retention of the data get a caption and the headers of their rows (RGAA 5.4,
  *   5.6); the user report of the gradebook gets a caption and a summary (RGAA 5.1, 5.4); a page without a title of
  *   level 1 gets one, for the screen readers (RGAA 9.1).
@@ -746,6 +747,9 @@ const sessionNote = (text) => {
  *     without a label (editorframe), the summary of the user report (gradesummary, its columns as COLUMNS).
  */
 const codeRepairs = (texts) => {
+    // The sections of some course formats (Collapsed Topics) are items of a list given the role region: the list loses
+    // its items (RGAA 9.3). Items of the list again, as the sections of the formats of Moodle; their name stays.
+    document.querySelectorAll(':is(ul, ol) > li[role="region"]').forEach((item) => item.removeAttribute('role'));
     document.querySelectorAll('.tox svg:not([aria-hidden])').forEach((svg) => svg.setAttribute('aria-hidden', 'true'));
     document.querySelectorAll('.tox-statusbar__path[role="navigation"]:not([aria-label])')
         .forEach((nav) => nav.setAttribute('aria-label', texts.editorpath));

@@ -105,6 +105,10 @@ html.epure-a11y-contrast {
         color: var(--epure-brand-text);
     }
 
+    .gtabs a.gtabs-tab.gtabs-active {
+        color: var(--gtabs-on, var(--gtabs-active-text, #1d2125));
+    }
+
     // The placeholders of the fields, grey for the browser, in the muted text (WCAG 1.4.6).
 
     ::placeholder {
@@ -366,6 +370,12 @@ html.epure-a11y-focusring :focus-visible {
 
         a:not(.btn) {
             color: var(--epure-brand-text);
+        }
+
+        // The active tab of the course format Section tabs keeps its text, chosen for its own background; without a
+        // :not() above, which would outweigh the colours of the current item of the course index.
+        .gtabs a.gtabs-tab.gtabs-active {
+            color: var(--gtabs-on, var(--gtabs-active-text, #1d2125));
         }
     }
 }

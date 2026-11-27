@@ -184,6 +184,12 @@
         color: var(--epure-ink-muted) !important; // stylelint-disable-line declaration-no-important
     }
 
+    // The active tab of the course format Section tabs (format_sectiontabs) keeps its text, chosen for its own
+    // background (the rule of the links below, with its id, would give it the brand text).
+    #page .gtabs a.gtabs-tab.gtabs-active {
+        color: var(--gtabs-on, var(--gtabs-active-text, #1d2125)) !important; // stylelint-disable-line declaration-no-important
+    }
+
     // Links of the page and the drawers; the header has its own colours.
     #page a:not(.btn):not(.nav-link):not(.dropdown-item):not(.list-group-item),
     .drawer a:not(.btn):not(.nav-link):not(.dropdown-item):not(.list-group-item):not(.courseindex-link),

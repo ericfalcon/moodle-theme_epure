@@ -43,13 +43,15 @@ jobs:
       fail-fast: false
       matrix:
         include-moodle:
-          - { branch: MOODLE_405_STABLE, php: '8.1' }
+          # The course formats of other plugins (tests/behat/course_formats_plugins.feature), each at the branch of the
+          # version of Moodle it supports: repository@branch, separated by spaces.
+          - { branch: MOODLE_405_STABLE, php: '8.1', formats: 'gjb2048/moodle-format_grid@MOODLE_405 gjb2048/moodle-format_topcoll@MOODLE_405 ericfalcon/moodle-format_sectiontabs@main' }
           # The visual regression runs on this job only (tests/behat/visual.feature).
           - { branch: MOODLE_405_STABLE, php: '8.3', certificate: MOODLE_400_STABLE, visual: true }
           - { branch: MOODLE_500_STABLE, php: '8.3', certificate: MOODLE_500_STABLE }
           - { branch: MOODLE_501_STABLE, php: '8.3', certificate: MOODLE_500_STABLE }
-          - { branch: MOODLE_502_STABLE, php: '8.3', certificate: MOODLE_500_STABLE }
-          - { branch: MOODLE_503_STABLE, php: '8.4', pg: '17', certificate: MOODLE_500_STABLE }
+          - { branch: MOODLE_502_STABLE, php: '8.3', certificate: MOODLE_500_STABLE, formats: 'gjb2048/moodle-format_topcoll@MOODLE_502 marinaglancy/moodle-format_flexsections@MOODLE_500_STABLE ericfalcon/moodle-format_tiles@MOODLE_502_STABLE ericfalcon/moodle-format_sectiontabs@main' }
+          - { branch: MOODLE_503_STABLE, php: '8.4', pg: '17', certificate: MOODLE_500_STABLE, formats: 'marinaglancy/moodle-format_flexsections@MOODLE_500_STABLE ericfalcon/moodle-format_sectiontabs@main' }
           - { branch: MOODLE_405_STABLE, php: '8.3', db: mariadb }
           - { branch: MOODLE_503_STABLE, php: '8.4', db: mariadb }
           # IOMAD, whose tables and classes were renamed in 5.1 (theme_epure\iomad knows both).
@@ -149,6 +151,21 @@ jobs:
       - name: Add the activity Course certificate
         if: ${{ matrix.include-moodle.certificate && matrix.include-moodle.branch != 'MOODLE_503_STABLE' }}
         run: moodle-plugin-ci add-plugin --branch ${{ matrix.include-moodle.certificate }} ericfalcon/moodle-mod_coursecertificate
+
+      # The course formats of other plugins, on the jobs that list them (formats).
+      - name: Add the course formats of other plugins
+        if: ${{ matrix.include-moodle.formats }}
+        run: |
+          for spec in ${{ matrix.include-moodle.formats }}; do
+            moodle-plugin-ci add-plugin --branch "${spec#*@}" "${spec%@*}"
+          done
+          # Their scenarios are not run: left out, as gherkinlint refuses those of some (names used twice). Moodle is
+          # not there yet: the course formats are the plugins added whose component starts with format_.
+          find . -maxdepth 4 -name version.php -not -path './repo/*' -not -path './ci/*' | while read -r file; do
+            if grep -qE "component *= *'format_" "$file"; then
+              find "$(dirname "$file")/tests/behat" -name '*.feature' -print -delete 2>/dev/null || true
+            fi
+          done
 
       - name: Install Moodle and the plugin
         # Without the history of git: moodle-plugin-ci 4.5.12 copies the plugin back after grunt, and cannot write

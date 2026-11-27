@@ -2,7 +2,7 @@ A modern, clean and accessible theme for **Moodle 4.5 LTS to 5.3** and **IOMAD 4
 
 ### One colour, an accessible palette
 
-Choose a brand colour (or click one in your logo): Épure derives the whole palette and keeps text at 4.5:1 at least, in light and dark mode. White, coloured or gradient header.
+Choose a brand colour (or click one in your logo): Épure derives the whole palette and keeps text at 4.5:1 at least, in light and dark mode. White, coloured or gradient header, with a live preview as you type.
 
 ### Accessibility built in
 
@@ -35,11 +35,11 @@ Choose a brand colour (or click one in your logo): Épure derives the whole pale
 
 Universities, groups, networks: each faculty, school or subsidiary has its own colours, logo, header, footer and vocabulary, with one Épure for the whole site.
 
-- **Without IOMAD**: the entity is a course category. Its courses take it, as with a category theme; out of the courses, the members of its cohorts take it, as with a cohort theme. Épure recognises the categories and cohorts whose theme is Épure, and helps leave the copies of category themes.
+- **Without IOMAD**: the entity is a course category. Its courses take it, as with a category theme; out of the courses, the members of its cohorts take it, as with a cohort theme. Épure recognises the categories and cohorts whose theme is Épure, and helps leave the copies of category themes. Each entity also has its e-mails and its login page; a user of several entities chooses theirs.
 - **With IOMAD**: each company also has its own font, login page, accessibility statement and management dashboard.
 
 ### Compatibility
 
-Moodle 4.5 to 5.3, IOMAD 4.5 to 5.2, PHP 8.1 to 8.4, PostgreSQL and MariaDB, tested in continuous integration. Privacy API; fonts and libraries bundled.
+Moodle 4.5 to 5.3, IOMAD 4.5 to 5.2, PHP 8.1 to 8.4, PostgreSQL and MariaDB, tested in continuous integration, with the course formats Grid, Collapsed Topics, Flexible Sections, Tiles and Section tabs. Privacy API; fonts and libraries bundled.
 
 An automated pre-audit does not replace a manual audit. Épure is independent, not affiliated with Moodle HQ or IOMAD. Documentation: <https://github.com/ericfalcon/moodle-theme_epure>

@@ -191,6 +191,14 @@ class company_form {
         // The status of the own accessibility statement of the company.
         $a11ystatus = \theme_epure\accessibility_statement::status($companyid) ?? 'unpublished';
         return [
+            // The palette of the colours of the company, in a live preview that follows them before they are saved.
+            'palettelive' => \theme_epure\admin\palette_preview::live(
+                'epure-palette-live',
+                $brand ?: null,
+                $accent ?: null,
+                $header ?: ((string) get_config('theme_epure', 'headerstyle') ?: 'light'),
+                ['brand' => '#id_epure_brandcolor', 'accent' => '#id_epure_accentcolor', 'header' => '#id_epure_headerstyle']
+            ),
             'accentcolor' => $accent,
             'siteaccentcolor' => $siteaccent ?? ($brand ?: $sitebrand),
             'shapes' => [$choices('radius') + ['help' => get_string('radius_desc', 'theme_epure')]],

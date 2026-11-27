@@ -69,12 +69,20 @@ if ($delete && entity::exists($category->id)) {
     exit;
 }
 
-$form = new entity_form($url, ['category' => $category->id, 'cohorts' => entity::cohort_options($category->id)]);
+$admin = has_capability('moodle/site:config', context_system::instance());
+$form = new entity_form($url, ['category' => $category->id, 'cohorts' => entity::cohort_options($category->id),
+    'admin' => $admin, 'settings' => entity::settings($category->id)]);
 if ($form->is_cancelled()) {
     redirect($back);
 }
 if ($data = $form->get_data()) {
-    entity::save($category->id, entity_form::values($data, entity::settings($category->id)['vocabulary']));
+    $before = entity::settings($category->id);
+    $values = entity_form::values($data, $before['vocabulary']);
+    // The CSS of the entity is set by the administrators of the site only: the others keep it as it is.
+    if (!$admin) {
+        $values['customcss'] = $before['customcss'];
+    }
+    entity::save($category->id, $values);
     foreach (entity::FILE_AREAS as $area) {
         file_save_draft_area_files(
             $data->$area,

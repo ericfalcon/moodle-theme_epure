@@ -2,7 +2,7 @@ Un thème moderne, sobre et accessible pour **Moodle 4.5 LTS à 5.3** et **IOMAD
 
 ### Une couleur, une palette accessible
 
-Choisissez une couleur de marque (ou cliquez-la dans votre logo) : Épure en déduit toute la palette et garde le texte à 4,5:1 au moins, en clair comme en sombre. En-tête blanc, coloré ou en dégradé.
+Choisissez une couleur de marque (ou cliquez-la dans votre logo) : Épure en déduit toute la palette et garde le texte à 4,5:1 au moins, en clair comme en sombre. En-tête blanc, coloré ou en dégradé, avec un aperçu en direct pendant la saisie.
 
 ### L'accessibilité intégrée
 
@@ -35,11 +35,11 @@ Choisissez une couleur de marque (ou cliquez-la dans votre logo) : Épure en dé
 
 Universités, groupes, réseaux : chaque composante, école ou filiale a ses couleurs, son logo, son en-tête, son pied de page et son vocabulaire, avec un seul Épure pour tout le site.
 
-- **Sans IOMAD** : l'entité est une catégorie de cours. Ses cours la prennent, comme avec un thème de catégorie ; hors des cours, les membres de ses cohortes la prennent, comme avec un thème de cohorte. Épure reconnaît les catégories et cohortes dont le thème est Épure, et aide à quitter les copies de thèmes de catégorie.
+- **Sans IOMAD** : l'entité est une catégorie de cours. Ses cours la prennent, comme avec un thème de catégorie ; hors des cours, les membres de ses cohortes la prennent, comme avec un thème de cohorte. Épure reconnaît les catégories et cohortes dont le thème est Épure, et aide à quitter les copies de thèmes de catégorie. Chaque entité a aussi ses e-mails et sa page de connexion ; un utilisateur de plusieurs entités choisit la sienne.
 - **Avec IOMAD** : chaque entreprise a aussi sa police, sa page de connexion, sa déclaration d'accessibilité et son tableau de bord de gestion.
 
 ### Compatibilité
 
-Moodle 4.5 à 5.3, IOMAD 4.5 à 5.2, PHP 8.1 à 8.4, PostgreSQL et MariaDB, testés en intégration continue. API de confidentialité ; polices et bibliothèques fournies.
+Moodle 4.5 à 5.3, IOMAD 4.5 à 5.2, PHP 8.1 à 8.4, PostgreSQL et MariaDB, testés en intégration continue, avec les formats de cours Grid, Collapsed Topics, Flexible Sections, Tiles et Section tabs. API de confidentialité ; polices et bibliothèques fournies.
 
 Un pré-audit automatisé ne remplace pas un audit manuel. Épure est indépendant, sans lien avec Moodle HQ ni IOMAD. Documentation : <https://github.com/ericfalcon/moodle-theme_epure>

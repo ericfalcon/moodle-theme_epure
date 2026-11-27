@@ -54,4 +54,37 @@ class palette_preview {
         }
         return $html;
     }
+
+    /**
+     * The live preview of the colours: a header, a card, a button, a link and a progress bar in light and dark modes,
+     * with the swatches of the palette, that follow the fields of the colours as they change (theme_epure/palette_live).
+     *
+     * @param string $id Identifier of the region.
+     * @param string|null $brand Brand colour shown first.
+     * @param string|null $accent Accent colour shown first.
+     * @param string $headerstyle Style of the header shown first.
+     * @param array $selectors Selectors of the fields: brand, accent, header.
+     * @return string HTML.
+     */
+    public static function live(string $id, ?string $brand, ?string $accent, string $headerstyle, array $selectors): string {
+        global $OUTPUT, $PAGE, $SITE;
+        $palette = \theme_epure\palette::class;
+        $brand = $palette::normalise($brand) ?? $palette::normalise(get_config('theme_epure', 'brandcolor'));
+        $accent = $palette::normalise($accent) ?? $palette::normalise(get_config('theme_epure', 'accentcolor')) ?? $brand;
+        $style = '';
+        foreach (\theme_epure\palette::preview_vars($brand, $accent, $headerstyle) as $name => $value) {
+            $style .= '--' . $name . ': ' . $value . '; ';
+        }
+        $PAGE->requires->js_call_amd('theme_epure/palette_live', 'init', [$id, $selectors]);
+        return $OUTPUT->render_from_template('theme_epure/palette_live', [
+            'id' => $id,
+            'style' => trim($style),
+            'sitename' => format_string($SITE->shortname, true, ['context' => \context_system::instance()]),
+            'modes' => [
+                ['mode' => 'light', 'label' => get_string('palette_light', 'theme_epure')],
+                ['mode' => 'dark', 'label' => get_string('palette_dark', 'theme_epure')],
+            ],
+            'swatches' => self::html(\theme_epure\palette::preview($brand, $accent, $headerstyle)),
+        ]);
+    }
 }

@@ -1221,3 +1221,41 @@ table.quizreviewsummary {
         }
     }
 }
+
+// Course formats of other plugins, in the colours of the brand where their own colours do not read (WCAG 1.4.3).
+// Collapsed Topics (format_topcoll): its toggles, light blue under light grey by default (3.9:1), in the brand colour
+// and the text that reads on it; the id outweighs the colours the format writes in the page.
+#page .course-content ul.ctopics li.section .content .toggle {
+    background-color: var(--epure-brand);
+
+    &:hover,
+    &:focus {
+        background-color: var(--epure-brand-hover);
+    }
+
+    .the_toggle,
+    .no_toggle,
+    .cttoggle,
+    .sectionname {
+        color: var(--epure-on-brand);
+    }
+}
+
+// Tiles (format_tiles): the titles of its tiles and the labels of its progress, in light greys (2.6:1 to 3.9:1), in
+// the text and the muted text of the theme, in every display. Its class is on the body of the page.
+body.format-tiles #page {
+    [id^="tileTextin"] > h3 {
+        color: var(--epure-ink);
+    }
+
+    .progress-indic .progress-indic-label,
+    .overall-progress {
+        color: var(--epure-ink-muted);
+    }
+
+    // Its section 0 folded is only transparent: still read by the screen readers and reached by the keyboard, unseen.
+    // Hidden as well, as a folded part (WCAG 1.3.1, 2.4.7).
+    .collapsiblesec0.collapsed li#section-0 {
+        visibility: hidden;
+    }
+}

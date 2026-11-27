@@ -96,6 +96,9 @@ class a11y {
         // The page « My courses »: the courses the user teaches as cards or as a table.
         $definitions[mycourses::VIEW_PREFERENCE] = ['type' => PARAM_ALPHA, 'null' => NULL_NOT_ALLOWED,
             'default' => 'cards', 'choices' => ['cards', 'table'], 'permissioncallback' => $own];
+        // The entity chosen by a user in the cohorts of several entities (theme_epure\entity): one of them, or none.
+        $definitions[entity::PREFERENCE] = ['type' => PARAM_INT, 'null' => NULL_NOT_ALLOWED, 'default' => 0,
+            'permissioncallback' => $own];
         return $definitions;
     }
 
