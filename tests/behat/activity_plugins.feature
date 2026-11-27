@@ -78,16 +78,15 @@ Feature: The activities of other plugins read by the guide, with the Épure them
       | subcourse            | Images without a text alternative: 1.  |
       | supervideo           | Images without a text alternative: 1.  |
       | threesixo            | Images without a text alternative: 1.  |
-      | turnitintooltwo      | Images without a text alternative: 1.  |
       | unilabel             | Images without a text alternative: 1.  |
       | videotime            | Images without a text alternative: 1.  |
       | vpl                  | Images without a text alternative: 1.  |
       | zoom                 | Images without a text alternative: 1.  |
 
-  # H5P (mod_hvp) cannot show an activity without its package of H5P, which the step does not create: its page is not
-  # checked, the guide reads its description.
-  Scenario: The guide reads the description of an activity of H5P (mod_hvp)
-    Given the activity module "hvp" is installed
+  # H5P (mod_hvp) cannot show an activity without its package of H5P, which the step does not create, nor Turnitin without
+  # an account of the service: their page is not checked, the guide reads their description.
+  Scenario Outline: The guide reads the description of the activity « <modname> », which cannot be shown here
+    Given the activity module "<modname>" is installed
     And the following config values are set as admin:
       | courseaccessibility | 1 | theme_epure |
     And the following config values are set as admin:
@@ -95,9 +94,14 @@ Feature: The activities of other plugins read by the guide, with the Épure them
     And the following "courses" exist:
       | fullname | shortname | numsections |
       | Hygiene  | HYG       | 1           |
-    And the activity "hvp" "Unit hvp" exists in "HYG" as "act1"
+    And the activity "<modname>" "Unit <modname>" exists in "HYG" as "act1"
     And the description of the activity "act1" has an image without a text alternative
     When I log in as "admin"
     And I visit the Épure page "/theme/epure/courseaccessibility.php?id={course HYG}"
-    Then I should see "Unit hvp"
+    Then I should see "Unit <modname>"
     And I should see "Images without a text alternative: 1."
+
+    Examples:
+      | modname         |
+      | hvp             |
+      | turnitintooltwo |

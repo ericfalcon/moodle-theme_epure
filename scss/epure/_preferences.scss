@@ -427,6 +427,13 @@ html.epure-a11y-focusring :focus-visible {
             background-color: var(--epure-border) !important; // stylelint-disable-line declaration-no-important
         }
 
+        // The buttons of the forms without the classes of Bootstrap (Realtime Quiz), in their own grey.
+        input:is([type="button"], [type="submit"], [type="reset"]):not(.btn) {
+            color: #ff0 !important; // stylelint-disable-line declaration-no-important
+            background: #000 !important; // stylelint-disable-line declaration-no-important
+            border: 1px solid #ff0 !important; // stylelint-disable-line declaration-no-important
+        }
+
         // The alerts of Bootstrap, in their light colours (the automatic sending of Course certificate).
         .alert {
             color: #ff0 !important; // stylelint-disable-line declaration-no-important
