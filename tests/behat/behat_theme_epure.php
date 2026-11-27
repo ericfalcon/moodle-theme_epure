@@ -328,6 +328,20 @@ class behat_theme_epure extends behat_base {
     }
 
     /**
+     * The audit of axe (WCAG 2.2 A and AA) of the page as it is, waited for: the step of Moodle reads its results for a
+     * few seconds only, and finds « No data » on the pages that take longer (the charts of the management dashboard).
+     *
+     * @Then /^the page should meet accessibility standards, the audit waited for$/
+     */
+    public function the_page_should_meet_accessibility_standards_waited_for(): void {
+        $this->wait_for_pending_js();
+        $axe = $this->axe_failure();
+        if ($axe !== null) {
+            throw new ExpectationException($axe . $this->pink_painter($axe), $this->getSession());
+        }
+    }
+
+    /**
      * The contrast of the texts of the page under the cream overlay of « Aa », which axe does not see: each text and its
      * background multiplied by the colour of the overlay, as the browser draws them. What already fails without it is
      * left to axe; a text over an image, or hidden for the eyes (read by screen readers only), is not measured.
