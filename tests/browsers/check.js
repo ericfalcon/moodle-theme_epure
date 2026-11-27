@@ -55,7 +55,13 @@ const failures = [];
         const page = await context.newPage();
         page.setDefaultTimeout(60000);
         const errors = [];
-        page.on('pageerror', (error) => errors.push(error.message));
+        // The requests that the browser stops when the page goes to another one (WebKit says « due to access control
+        // checks »): not an error of the page.
+        page.on('pageerror', (error) => {
+            if (!/due to access control checks/.test(error.message)) {
+                errors.push(error.message);
+            }
+        });
 
         await page.goto(wwwroot + '/login/index.php');
         if (!await page.locator('#username').count()) {
