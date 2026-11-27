@@ -8,7 +8,7 @@
 - Section tabs: the colour chosen for its active tab, in the course or for the site, is kept in light and dark mode and under the cream overlay, moved as little as needed for its text to reach 4.5:1 there (a mid orange such as #d35400 reads at 4.2:1 only, with white or with the dark ink); in yellow on black, the tab takes the colours of yellow on black.
 - Forced colours (the contrast themes of Windows): the progress bars, the chosen options of « Aa » and the focus stay visible, in the system colours.
 - Guide « Accessibility of the course »: the end of a Questionnaire is read again (its column thankbody, renamed by Questionnaire).
-- Course formats of other plugins: Onetopic, Buttons, Multitopic and Designer tested too, with Grid, Collapsed Topics, Flexible Sections, Tiles and Section tabs: nine formats of other plugins and the four of Moodle, the course page of a learner in every display, with axe.
+- Course formats of other plugins: Onetopic, Buttons, Multitopic, Designer and Edwiser (from its archive of the Marketplace, in .github/plugins) tested too, with Grid, Collapsed Topics, Flexible Sections, Tiles and Section tabs: ten formats of other plugins and the four of Moodle, the course page of a learner in every display, with axe.
 - Tests: the continuous integration runs Behat in Firefox on one job, and the pages of a learner in WebKit (Safari, iPhone) and in forced colours; the 47 activities of other plugins most installed that the guide reads, each on a version of Moodle it supports; Section tabs with a colour of its own in every display; the preferences in the frame of the editor.
 
 ## 1.54.0 — entities: the choice of the user, e-mails and login page; live preview of the colours; formats of other plugins

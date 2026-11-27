@@ -44,6 +44,7 @@ Feature: The course formats of other plugins with the Épure theme
       | buttons      |
       | multitopic   |
       | designer     |
+      | remuiformat  |
 
   # A colour chosen for the course, that neither white nor the dark ink reads at 4.5:1: Épure moves it as little as
   # needed, in light and dark mode and under the cream overlay; yellow on black puts its own colours.
