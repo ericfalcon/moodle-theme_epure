@@ -101,9 +101,18 @@
     justify-content: center;
 }
 
-// (No attribute selector inside :has(): the compiler of Moodle 6.0 fails on it with an @extend of Moodle.)
-body:has(.epure-activity-nav-completion) .activity-header [data-action="toggle-manual-completion"] {
-    display: none;
+// The header is hidden too when it held nothing else (no dates, no description). (No attribute selector inside :has():
+// the compiler of Moodle 6.0 fails on it with an @extend of Moodle.)
+body:has(.epure-activity-nav-completion) .activity-header {
+    .completion-info,
+    > .sr-only,
+    > .visually-hidden {
+        display: none !important; // stylelint-disable-line declaration-no-important
+    }
+
+    &:not(:has(.activity-dates)):not(:has(.activity-description)) {
+        display: none;
+    }
 }
 
 .epure-activity-nav-card {
