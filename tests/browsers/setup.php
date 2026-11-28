@@ -43,6 +43,10 @@ if (moodle_needs_upgrading()) {
 
 \core\session\manager::set_user(get_admin());
 set_config('theme', 'epure');
+// The user tours off: a tour shown for the first time resets itself and reloads the page, which stops its requests
+// under way; WebKit reports them as errors of the page, and Moodle as exceptions.
+$DB->set_field('tool_usertours_tours', 'enabled', 0);
+\tool_usertours\cache::notify_tour_change();
 
 // The learner.
 $user = core_user::get_user_by_username('learner');
