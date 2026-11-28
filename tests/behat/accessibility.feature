@@ -103,7 +103,7 @@ Feature: Accessibility of the Épure theme
     And I should see "Safety at work" in the ".epure-learner-resume" "css_element"
     And the page should meet accessibility standards
 
-  # From Moodle 6.0, Moodle's own bar of the previous and next activities (« linear navigation » of the format) takes
+  # From Moodle 5.3, Moodle's own bar of the previous and next activities (« linear navigation » of the format) takes
   # the place of the cards of Épure: turned off here, for the cards to be tested on every version.
   Scenario: The pages of the activities lead to the next one, with a reading mode
     Given the following config values are set as admin:
@@ -156,7 +156,7 @@ Feature: Accessibility of the Épure theme
       | path                               |
       | /mod/page/view.php?id={cm welcome} |
 
-  # Moodle 6.0: its bar at the bottom of the page, with « Mark as done », instead of the cards of Épure; on a phone,
+  # Moodle 5.3 and later: its bar at the bottom of the page, with « Mark as done », instead of the cards of Épure; on a phone,
   # the navigation bar of Épure under it.
   Scenario: With Moodle's bar of the previous and next activities, the cards of Épure give way to it
     Given Moodle has its own bar of the previous and next activities

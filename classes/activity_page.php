@@ -98,7 +98,7 @@ class activity_page {
     }
 
     /**
-     * Whether Moodle shows its own bar of the previous and next activities at the bottom of the page (Moodle 6.0 and
+     * Whether Moodle shows its own bar of the previous and next activities at the bottom of the page (Moodle 5.3 and
      * later, « linear navigation » of the course format): it holds the button « Mark as done » too, and the cards of
      * Épure, which would repeat it, give way to it.
      *

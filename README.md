@@ -105,7 +105,7 @@ With IOMAD, the companies are the entities: the entities of categories are not o
 
 ### Compatibility
 
-- Moodle 4.5 to 5.3, IOMAD 4.5 to 5.2, PHP 8.1 to 8.4, PostgreSQL and MariaDB: all tested in continuous integration (PHPUnit, Behat, code checks). Moodle 6.0: its development version is tested too, every week, and on a site; its new bar of the previous and next activities is used on its pages.
+- Moodle 4.5 to 5.3, IOMAD 4.5 to 5.2, PHP 8.1 to 8.4, PostgreSQL and MariaDB: all tested in continuous integration (PHPUnit, Behat, code checks). Moodle 6.0: its development version is tested too, every week, and on a site. From Moodle 5.3, Moodle's bar of the previous and next activities is used on the pages of the activities.
 - Optional: tool_certificate and mod_coursecertificate for certificates.
 - Privacy: user preferences, the « My summary » documents issued and the points of accessibility confirmed by the teachers, exported and deleted with the privacy API (and when a user is deleted); the points of accessibility confirmed in a course are backed up and restored with it. No external service is called; the fonts are bundled (SIL Open Font License). One cookie: `theme_epure_a11y`, the display preferences « Aa » of a visitor not logged in (a year, in their browser only, nothing on the server); set only when the visitor chooses a preference, it is a cookie of a service the user asked for, exempt from consent (as the CNIL counts it), to name in the cookie notice of the site.
 
@@ -139,7 +139,7 @@ The same list is shown on the vocabulary page and in the Identity tab of the the
 
 What changes for an existing site, version by version (every change is in [CHANGES.md](CHANGES.md)):
 
-- **1.58.0**: no new setting; upgrade the site. « Mark as done » in the cards of the previous and next activities. Ready for Moodle 6.0: its new bar of the previous and next activities takes the place of the cards, the navigation bar of the phones stays under it.
+- **1.58.0**: no new setting; upgrade the site. « Mark as done » in the cards of the previous and next activities. Moodle 5.3 and 6.0: their bar of the previous and next activities takes the place of the cards; ready for Moodle 6.0, the navigation bar of the phones stays under it.
 - **1.57.0**: a new setting with IOMAD, « The custom CSS of the companies » (Courses tab), ticked by default. The custom CSS of the entities and of the IOMAD companies can no longer send the content of the page to another site (@import and the addresses of other sites taken out).
 - **1.56.0**: no new setting; upgrade the site. Section tabs: « Continue » leads where the learner left off (Section tabs 1.4), and on phones the navigation bar offers the previous and next section. The title of a link no longer repeats the hidden texts of the link.
 - **1.55.0**: no new setting; upgrade the site. Yellow on black first everywhere, over the colours of the brand, the entities, the companies, the courses and the plugins; the display preferences of « Aa » in the frames of the page too (the editor, H5P, SCORM) and in the Moodle app, with their page in its menu. Section tabs: the colour of a course readable in every display. Forced colours of Windows. Tests in Firefox, WebKit (Safari, iPhone) and of the 47 activities of other plugins most installed.

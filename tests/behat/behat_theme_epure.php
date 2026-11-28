@@ -53,14 +53,14 @@ class behat_theme_epure extends behat_base {
     }
 
     /**
-     * Skips the scenario before Moodle 6.0, without its own bar of the previous and next activities at the bottom of the
+     * Skips the scenario before Moodle 5.3, without its own bar of the previous and next activities at the bottom of the
      * pages of the activities (« linear navigation » of the course formats).
      *
      * @Given /^Moodle has its own bar of the previous and next activities$/
      */
     public function moodle_has_linear_navigation(): void {
         if (!class_exists('\\core_courseformat\\local\\linearnavigationsettings')) {
-            throw new SkippedException('Moodle has no linear navigation before 6.0.');
+            throw new SkippedException('Moodle has no linear navigation before 5.3.');
         }
     }
 

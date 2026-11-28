@@ -334,7 +334,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
      *
      * Moodle shows none when the course index is there; Épure always shows them, without the menu
      * to jump to an activity, which the course index replaces, and with the button « Mark as done » of a manual
-     * completion. From Moodle 6.0, Moodle's own bar at the bottom of the page does the same: Épure shows nothing then.
+     * completion. From Moodle 5.3, Moodle's own bar at the bottom of the page does the same: Épure shows nothing then.
      *
      * @return string HTML.
      */
@@ -348,7 +348,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if (!\theme_epure\activity_page::applies($this->page)) {
             return parent::activity_navigation();
         }
-        // Moodle 6.0 and later: its own bar at the bottom of the page goes to the same activities, with « Mark as done ».
+        // Moodle 5.3 and later: its own bar at the bottom of the page goes to the same activities, with « Mark as done ».
         if (\theme_epure\activity_page::core_footer($this->page)) {
             return '';
         }
