@@ -1,4 +1,6 @@
-A modern, clean and accessible theme for **Moodle 4.5 LTS to 5.3**, ready for **Moodle 6.0**, and **IOMAD 4.5 to 5.2**, child of Boost. Few settings: choose an identity, Épure computes the rest. A **getting started** guides the first settings. **Free and open source** (GNU GPL v3): no paid version.
+<!-- Marketplace listing: name « Épure – accessibility theme »; short description « Accessibility-first theme for Moodle and IOMAD: accessible by design (WCAG 2.2 AA, RGAA), display preferences for everyone (dyslexia font, low vision, yellow on black, dark mode) and an accessibility guide for teachers. » The search of the Marketplace finds the exact word only: « accessibility » and « accessible » are both written. -->
+
+An **accessibility**-first theme, modern, clean and accessible, for **Moodle 4.5 LTS to 5.3**, ready for **Moodle 6.0**, and **IOMAD 4.5 to 5.2**, child of Boost. Few settings: choose an identity, Épure computes the rest. A **getting started** guides the first settings. **Free and open source** (GNU GPL v3): no paid version.
 
 ### One colour, an accessible palette
 
