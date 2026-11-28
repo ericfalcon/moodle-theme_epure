@@ -48,6 +48,7 @@ L'onglet se termine par les **e-mails** aux couleurs de la marque (voir E-mails 
 |---|---|
 | Mes cours par rôle | Voir Page Mes cours, ci-dessous. |
 | Toutes les entreprises dans Mes cours (IOMAD) | Décoché : comme IOMAD, seulement les cours de l’entreprise où l’utilisateur est connecté. Coché : un apprenant de plusieurs entreprises voit tous ses cours, ceux de ses autres entreprises avec le nom de l’entreprise, et chaque cours s’ouvre dans son entreprise (à ses couleurs, son activité comptée pour elle). Pas pour les gestionnaires ni les administrateurs. |
+| Le CSS personnalisé des entreprises (IOMAD) | Coché (par défaut) : le CSS personnalisé de chaque entreprise s’applique à ses pages, sans ce qui pourrait envoyer le contenu de la page vers un autre site (règles `@import`, adresses d’autres sites dans `url()` et les fonctions qui chargent une ressource). Décoché : aucun CSS d’entreprise n’est appliqué. Ses gestionnaires l’écrivent : la capacité « Modifier l’apparence de l’entreprise » est la leur par défaut. |
 | Catalogue des cours | Voir [Parcours de l'apprenant](Parcours-de-l%E2%80%99apprenant.md). |
 | Bannière des cours | Voir [Parcours de l'apprenant](Parcours-de-l%E2%80%99apprenant.md). |
 | Progression des sections | Sur la page du cours, combien de ses activités l'apprenant a terminées dans chaque section et sous-section. |

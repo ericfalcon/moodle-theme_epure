@@ -35,7 +35,9 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
       # MariaDB 11.4 meets the requirements of Moodle 4.5 to 5.3 (5.3 requires 11.4).
       mariadb:
-        image: mariadb:11.4
+        # 11.4.13: the image of 11.4.14 (28 November 2026) refuses its own health check (« Access denied for user
+        # 'healthcheck' »), and the job stops before it starts. To move to the next 11.4 once fixed.
+        image: mariadb:11.4.13
         env:
           MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 'yes'
           MARIADB_CHARACTER_SET_SERVER: utf8mb4

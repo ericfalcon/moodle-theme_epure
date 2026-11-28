@@ -203,6 +203,14 @@ if ($ADMIN->fulltree) {
             get_string('iomadallcourses_desc', 'theme_epure'),
             0
         ));
+
+        // The custom CSS of the companies, which their managers write: applied, made safe, or not at all.
+        $page->add(new admin_setting_configcheckbox(
+            'theme_epure/iomadcompanycss',
+            get_string('iomadcompanycss', 'theme_epure'),
+            get_string('iomadcompanycss_desc', 'theme_epure'),
+            1
+        ));
     }
 
     // Catalogue of the courses, and presentation of a course on its enrolment page.

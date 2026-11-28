@@ -481,8 +481,9 @@ class entity {
         }
         $settings = self::settings($entity->id);
         $css = company_style::appearance_css($settings, $settings['brandcolor'] ?: null);
-        // The CSS of the entity, as that of an IOMAD company: a closing style tag would end the style element early.
-        return $css . str_ireplace('</style', '<\\/style', $settings['customcss']);
+        // The CSS of the entity, as that of an IOMAD company, made safe (css_filter): it cannot load anything from
+        // another site, nor end the style element early.
+        return $css . css_filter::clean($settings['customcss']);
     }
 
     /**
