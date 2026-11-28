@@ -10,7 +10,7 @@ Une entité est une **catégorie de cours** qui a son apparence :
 - pages et navigation : bannière des cours, aperçu de l'apprenant, barre de navigation mobile, catalogue, recherche rapide, pages d'activité, progression des sections, Mes cours par rôle, guide « Accessibilité du cours », fil d'Ariane, blocs et tableau de bord sur téléphone, vue simplifiée ;
 - pied de page : texte, mentions légales, données personnelles, contact, liens ;
 - page de connexion : sa propre adresse, sa disposition, son accroche et son texte (voir plus bas) ;
-- CSS de l'entité : ajouté à ses pages après les styles du thème, comme le CSS d'une entreprise IOMAD ; seuls les administrateurs du site peuvent le modifier, car un CSS peut masquer ou changer n'importe quoi dans la page ;
+- CSS de l'entité : ajouté à ses pages après les styles du thème, comme le CSS d'une entreprise IOMAD ; seuls les administrateurs du site peuvent le modifier, car un CSS peut masquer ou changer n'importe quoi dans la page ; Les règles `@import` et les adresses d'autres sites dans `url()` en sont retirées.
 - priorité : départage un utilisateur des cohortes de plusieurs entités (voir plus bas) ;
 - vocabulaire : ses mots pour les cours, les étudiants et les enseignants (« parcours », « apprenti », « formateur »…), en français et en anglais, comme une entreprise IOMAD (voir [Vocabulaire](Vocabulaire.md)).
 

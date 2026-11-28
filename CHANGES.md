@@ -1,5 +1,12 @@
 # Changes
 
+## 1.57.0 — the custom CSS made safe
+
+- The custom CSS of an entity and of an IOMAD company can no longer send the content of the page to another site. A CSS can read the page (an attribute selector on the hidden key of the session, `input[value^="a"]`) and load a picture from another site for each guess: the value leaves the site one letter at a time. Épure now takes out the `@import` rules and every address of another site in `url()`, `src()`, `image-set()`, `image()` and `cross-fade()`, written plainly or hidden by the escapes of CSS, the comments, the backslashes or the tabs; the pictures of the site, the relative addresses and the `data:` addresses stay, and the rest of the CSS is kept as written (theme_epure\css_filter). In IOMAD, the managers of a company (and the client administrators) write its CSS: the capability « Edit company appearance » is theirs by default.
+- New setting, IOMAD only: « The custom CSS of the companies (IOMAD) » (Courses tab), ticked by default; unticked, no custom CSS of a company is applied.
+- The version numbers keep the date of 8 December 2026 and grow by their last two digits until the calendar reaches it (docs, Développement).
+- Tests: PHPUnit (the filter, 36 cases: what stays, what goes — import, escapes, comments, backslashes, tabs, other schemes, the site as a prefix or in a path, image-set, cross-fade, src, a closing style tag, a text not in UTF-8; the CSS of a company filtered, and none with the setting unticked).
+
 ## 1.56.0 — Section tabs: where the learner left off, previous and next on phones
 
 - « Continue » in a course of Section tabs (1.4 and later): when no activity is to continue (the completion is not tracked, or everything is done), the button of the dashboard and of « My courses » leads to the last section and subsection the learner consulted, as the format remembers them for its own button « Resume where I left off » (format_sectiontabs::get_resume()); the card reads « Where you left off: Block 1 › Exercises ». Another format, or Section tabs before 1.4, keeps the course page.

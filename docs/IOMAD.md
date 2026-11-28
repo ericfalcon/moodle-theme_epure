@@ -8,7 +8,7 @@
 |---|---|
 | Couleur des titres (à défaut, couleur des liens) | Devient la couleur de marque de l'entreprise : la palette accessible est recalculée pour elle (en-tête, boutons, liens, contrastes AA). |
 | Logo de l'entreprise | Remplace le logo d'Épure pour les utilisateurs de l'entreprise, dans l'en-tête des téléphones aussi. |
-| CSS personnalisé | Ajouté aux pages des utilisateurs de l'entreprise. |
+| CSS personnalisé | Ajouté aux pages des utilisateurs de l'entreprise, sans ce qui pourrait envoyer le contenu de la page vers un autre site (règles `@import`, adresses d'autres sites dans `url()` et les fonctions qui chargent une ressource) : ses gestionnaires l'écrivent. Le réglage « Le CSS personnalisé des entreprises (IOMAD) » permet de n'en appliquer aucun. |
 
 Ces réglages s'appliquent aux utilisateurs rattachés à l'entreprise, et à l'administrateur qui a sélectionné l'entreprise dans le tableau de bord IOMAD. Seuls les codes couleur hexadécimaux sont pris en compte. La couleur principale (fond de page) d'IOMAD n'est pas appliquée, pour préserver la lisibilité.
 

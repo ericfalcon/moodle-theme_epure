@@ -458,10 +458,10 @@ class company_style {
     public static function css(\stdClass $company): string {
         $companyid = (int) ($company->id ?? 0);
         $css = self::appearance_css(self::settings($companyid), self::brand_colour($company), $companyid);
-        if (!empty($company->customcss)) {
-            // The custom CSS of the company, as IOMAD's own theme applies it. A closing style
-            // tag would end the style element early, so it is neutralised.
-            $css .= str_ireplace('</style', '<\/style', (string) $company->customcss);
+        if (!empty($company->customcss) && get_config('theme_epure', 'iomadcompanycss') !== '0') {
+            // The custom CSS of the company, as IOMAD's own theme applies it, made safe (css_filter): the managers of
+            // a company write it, and it cannot load anything from another site, nor end the style element early.
+            $css .= css_filter::clean((string) $company->customcss);
         }
         return $css;
     }
