@@ -1,4 +1,6 @@
-Un thème moderne, sobre et accessible pour **Moodle 4.5 LTS à 5.3** et **IOMAD 4.5 à 5.2**, enfant de Boost. Peu de réglages : choisissez une identité, Épure calcule le reste. Un **démarrage guidé** accompagne les premiers réglages. **Libre et gratuit** (GNU GPL v3) : aucune version payante.
+<!-- Fiche du Marketplace : nom « Épure – accessibility theme » ; description courte (en anglais, comme la recherche) « Accessibility-first theme for Moodle and IOMAD: accessible by design (WCAG 2.2 AA, RGAA), display preferences for everyone (dyslexia font, low vision, yellow on black, dark mode) and an accessibility guide for teachers. » La recherche du Marketplace ne trouve que le mot exact : « accessibility » et « accessible » sont écrits tous les deux. -->
+
+Un thème pensé d'abord pour l'**accessibilité** (accessibility), moderne, sobre et accessible, pour **Moodle 4.5 LTS à 5.3**, prêt pour **Moodle 6.0**, et **IOMAD 4.5 à 5.2**, enfant de Boost. Peu de réglages : choisissez une identité, Épure calcule le reste. Un **démarrage guidé** accompagne les premiers réglages. **Libre et gratuit** (GNU GPL v3) : aucune version payante.
 
 ### Une couleur, une palette accessible
 
@@ -40,6 +42,6 @@ Universités, groupes, réseaux : chaque composante, école ou filiale a ses cou
 
 ### Compatibilité
 
-Moodle 4.5 à 5.3, IOMAD 4.5 à 5.2, PHP 8.1 à 8.4, PostgreSQL et MariaDB, testés en intégration continue, avec les formats de cours Grid, Collapsed Topics, Flexible Sections, Tiles et Section tabs. API de confidentialité ; polices et bibliothèques fournies.
+Moodle 4.5 à 5.3 et la version de développement de Moodle 6.0, IOMAD 4.5 à 5.2, PHP 8.1 à 8.4, PostgreSQL et MariaDB, testés en intégration continue, avec les formats de cours Grid, Collapsed Topics, Flexible Sections, Tiles et Section tabs. API de confidentialité ; polices et bibliothèques fournies.
 
 Un pré-audit automatisé ne remplace pas un audit manuel. Épure est indépendant, sans lien avec Moodle HQ ni IOMAD. Documentation : <https://github.com/ericfalcon/moodle-theme_epure>

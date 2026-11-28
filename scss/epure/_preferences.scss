@@ -425,6 +425,12 @@ html.epure-a11y-focusring :focus-visible {
         .btn-secondary,
         .btn-outline-secondary,
         .btn-light,
+        .btn-subtle-success,
+        .btn-subtle-secondary,
+        .btn-subtle-primary,
+        .btn-subtle-danger,
+        .btn-subtle-warning,
+        .btn-subtle-info,
         .btn-icon.bg-secondary,
         .badge:not(:empty) {
             color: #ff0 !important; // stylelint-disable-line declaration-no-important

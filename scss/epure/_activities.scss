@@ -93,6 +93,28 @@
     grid-column: 1 / -1;
 }
 
+// « Mark as done » above the previous and next activities, where the learner is once the activity is done; the button
+// under the title of the activity is then not shown (one button only).
+.epure-activity-nav-completion {
+    display: flex;
+    grid-column: 1 / -1;
+    justify-content: center;
+}
+
+// The header is hidden too when it held nothing else (no dates, no description). (No attribute selector inside :has():
+// the compiler of Moodle 6.0 fails on it with an @extend of Moodle.)
+body:has(.epure-activity-nav-completion) .activity-header {
+    .completion-info,
+    > .sr-only,
+    > .visually-hidden {
+        display: none !important; // stylelint-disable-line declaration-no-important
+    }
+
+    &:not(:has(.activity-dates)):not(:has(.activity-description)) {
+        display: none;
+    }
+}
+
 .epure-activity-nav-card {
     display: flex;
     align-items: center;
@@ -176,7 +198,8 @@
 }
 
 // Button « Mark as done » of the activities with manual completion: larger, in the brand colour.
-.activity-header [data-action="toggle-manual-completion"] {
+.activity-header [data-action="toggle-manual-completion"],
+.epure-activity-nav-completion [data-action="toggle-manual-completion"] {
     padding: .5rem 1rem;
     font-size: .9375rem;
     font-weight: 600;
@@ -1440,6 +1463,22 @@ html:not(.epure-a11y-scheme-yellow) body.path-mod-studentquiz .stat.badge.disapp
     flex-wrap: wrap;
 
     .collapseall {
+        white-space: normal;
+    }
+}
+
+// The switches of the tertiary navigation (« Subscribe to forum »), with the large gap of Moodle 6.0 and their label
+// on one line: on two lines when the text is large on a phone, not past the edge of the page (WCAG 1.4.10).
+.tertiary-navigation .navitem {
+    min-width: 0;
+    max-width: 100%;
+
+    .form-switch {
+        flex-wrap: wrap;
+        max-width: 100%;
+    }
+
+    .form-check-label {
         white-space: normal;
     }
 }

@@ -1,5 +1,14 @@
 # Changes
 
+## 1.58.0 — « Mark as done » in the cards of the activities; ready for Moodle 6.0
+
+- « Mark as done » in the cards of the previous and next activities, at the bottom of the page of an activity with manual completion: where the learner is once the activity is done. It is Moodle's own button (core_course/completion_manual), and the one under the title of the activity is then not shown. The box under the title is then hidden when it held nothing else (no dates, no description). An automatic completion keeps its conditions under the title.
+- Moodle 5.3 and later (and so 6.0): their bar of the previous and next activities at the bottom of the pages of the activities (« linear navigation » of the course formats, on by default), with « Mark as done », takes the place of the cards of Épure, which would repeat it; with linear navigation turned off for the format, the cards are shown, with « Mark as done ». On a phone, the navigation bar of Épure stays, under Moodle's bar, which it used to give way to.
+- Moodle 6.0: the switch « Subscribe to forum » of the tertiary navigation, with the large gap of 6.0, wraps with a large text on a phone instead of going past the edge of the page.
+- Supported: Moodle 4.5 to 6.0 ($plugin->supported). Moodle 6.0 is not released yet: its development version is tested every week by the continuous integration, and on a site with the fork of Moodle (dashboard, My courses, the course, 11 activities, preferences, grades, calendar, catalogue, the guide « Accessibility of the course », in every display).
+- No new setting.
+- Tests: Behat (« Mark as done » in the cards, once, saved, in every display; on Moodle 5.3 and later, Moodle's bar instead of the cards and the navigation bar of Épure under it on a phone, skipped before 5.3). The keys N and P follow Moodle's bar where it takes the place of the cards.
+
 ## 1.57.0 — the custom CSS made safe
 
 - The custom CSS of an entity and of an IOMAD company can no longer send the content of the page to another site. A CSS can read the page (an attribute selector on the hidden key of the session, `input[value^="a"]`) and load a picture from another site for each guess: the value leaves the site one letter at a time. Épure now takes out the `@import` rules and every address of another site in `url()`, `src()`, `image-set()`, `image()` and `cross-fade()`, written plainly or hidden by the escapes of CSS, the comments, the backslashes or the tabs; the pictures of the site, the relative addresses and the `data:` addresses stay, and the rest of the CSS is kept as written (theme_epure\css_filter). In IOMAD, the managers of a company (and the client administrators) write its CSS: the capability « Edit company appearance » is theirs by default.

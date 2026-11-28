@@ -40,15 +40,18 @@ const NAV_STORAGE = 'theme_epure_navkeys';
 const PAGES = {d: '/my/', c: '/my/courses.php', a: '/calendar/view.php?view=upcoming', f: '/theme/epure/todo.php'};
 
 /**
- * Follows the link of the next or the previous activity of the page (Épure's, else Moodle's).
+ * Follows the link of the next or the previous activity of the page: Épure's, else that of the bar of Moodle at the
+ * bottom of the page (« linear navigation », Moodle 5.3 and later), else that of Moodle's own navigation.
  *
  * @param {boolean} next Next, or previous.
  * @return {boolean} Whether there was one.
  */
 const followActivity = (next) => {
     const link = document.querySelector(next
-        ? '.epure-activity-nav-next[href], #next-activity-link'
-        : '.epure-activity-nav-previous[href], #prev-activity-link');
+        ? '.epure-activity-nav-next[href], [data-for="course-linear-navigation-footer"] > a.course-linear-navigation-link,'
+            + ' #next-activity-link'
+        : '.epure-activity-nav-previous[href], .course-linear-navigation-footer-content > a.course-linear-navigation-link,'
+            + ' #prev-activity-link');
     if (!link?.href) {
         return false;
     }

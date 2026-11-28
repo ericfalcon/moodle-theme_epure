@@ -103,8 +103,12 @@ Feature: Accessibility of the Épure theme
     And I should see "Safety at work" in the ".epure-learner-resume" "css_element"
     And the page should meet accessibility standards
 
+  # From Moodle 5.3, Moodle's own bar of the previous and next activities (« linear navigation » of the format) takes
+  # the place of the cards of Épure: turned off here, for the cards to be tested on every version.
   Scenario: The pages of the activities lead to the next one, with a reading mode
-    Given the following "courses" exist:
+    Given the following config values are set as admin:
+      | enablelinearnav | 0 | format_topics |
+    And the following "courses" exist:
       | fullname       | shortname |
       | Safety at work | SAFE      |
     And the following "activities" exist:
@@ -123,6 +127,59 @@ Feature: Accessibility of the Épure theme
     And I click on "Reading mode" "button"
     And the "class" attribute of "html" "css_element" should contain "epure-focus"
     And the page should meet accessibility standards
+
+  Scenario: « Mark as done » is in the cards of the previous and next activities, once
+    Given the following config values are set as admin:
+      | enablecompletion | 1 |
+    And the following config values are set as admin:
+      | enablelinearnav | 0 | format_topics |
+    And the following "courses" exist:
+      | fullname       | shortname | enablecompletion |
+      | Safety at work | SAFE      | 1                |
+    And the following "activities" exist:
+      | activity | course | name    | idnumber | completion |
+      | page     | SAFE   | Welcome | welcome  | 1          |
+      | page     | SAFE   | Risks   | risks    | 1          |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | learner1 | SAFE   | student |
+    When I am on the "Welcome" "page activity" page logged in as "learner1"
+    Then "Mark as done" "button" should exist in the ".epure-activity-nav-completion" "css_element"
+    And ".activity-header [data-action='toggle-manual-completion']" "css_element" should not be visible
+    And the page should meet accessibility standards
+    And I click on "Mark as done" "button" in the ".epure-activity-nav-completion" "css_element"
+    And I wait until the page is ready
+    And "Done" "button" should exist in the ".epure-activity-nav-completion" "css_element"
+    And I reload the page
+    And "Done" "button" should exist in the ".epure-activity-nav-completion" "css_element"
+    And the following pages should meet accessibility standards in every display:
+      | path                               |
+      | /mod/page/view.php?id={cm welcome} |
+
+  # Moodle 5.3 and later: its bar at the bottom of the page, with « Mark as done », instead of the cards of Épure; on a phone,
+  # the navigation bar of Épure under it.
+  Scenario: With Moodle's bar of the previous and next activities, the cards of Épure give way to it
+    Given Moodle has its own bar of the previous and next activities
+    And the following config values are set as admin:
+      | enablecompletion | 1 |
+    And the following "courses" exist:
+      | fullname       | shortname | enablecompletion |
+      | Safety at work | SAFE      | 1                |
+    And the following "activities" exist:
+      | activity | course | name    | idnumber | completion |
+      | page     | SAFE   | Welcome | welcome  | 1          |
+      | page     | SAFE   | Risks   | risks    | 1          |
+    And the following "course enrolments" exist:
+      | user     | course | role    |
+      | learner1 | SAFE   | student |
+    And I change viewport size to "390x900"
+    When I am on the "Welcome" "page activity" page logged in as "learner1"
+    Then ".course-linear-navigation" "css_element" should be visible
+    And ".epure-activity-nav" "css_element" should not exist
+    And ".epure-mobilenav" "css_element" should be visible
+    And the following pages should meet accessibility standards in every display:
+      | path                               |
+      | /mod/page/view.php?id={cm welcome} |
 
   Scenario: The catalogue shows the courses as cards and presents a course before enrolment
     Given the following "categories" exist:

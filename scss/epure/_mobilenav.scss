@@ -1,11 +1,13 @@
 // Navigation bar at the bottom of the screen on phones. Pages with a sticky footer of their own
-// (save bars of the forms of grading, for instance) keep it instead.
+// (save bars of the forms of grading, for instance) keep it instead; but the bar of the previous and next activities
+// of Moodle 5.3 and later (« linear navigation »), on every page of an activity, goes above it.
 .epure-mobilenav {
     display: none;
 }
 
 @media (max-width: 767.98px) {
-    body.epure-has-mobilenav:not(.hasstickyfooter) {
+    body.epure-has-mobilenav:not(.hasstickyfooter),
+    body.epure-has-mobilenav.hasstickyfooter:has(#sticky-footer .course-linear-navigation) {
         --epure-mobilenav-safe: env(safe-area-inset-bottom);
         --epure-mobilenav-height: calc(3.75rem + var(--epure-mobilenav-safe));
         padding-bottom: var(--epure-mobilenav-height);
@@ -32,6 +34,11 @@
             background-color: var(--epure-surface);
             border-top: 1px solid var(--epure-border);
             box-shadow: 0 -2px 12px rgba(16, 22, 32, .08);
+        }
+
+        // The bar of the previous and next activities of Moodle 5.3 and later above that of Épure.
+        #sticky-footer {
+            bottom: var(--epure-mobilenav-height);
         }
 
         // The buttons fixed at the bottom of the screen go above the bar.

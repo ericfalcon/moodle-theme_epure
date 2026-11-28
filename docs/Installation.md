@@ -1,6 +1,6 @@
 ## Prérequis
 
-- Moodle 4.5 LTS, 5.0, 5.1, 5.2 ou 5.3, PHP 8.1 à 8.4. Avec PHP 8.2 et plus, le PDF de « Ma synthèse » est balisé pour les lecteurs d'écran (PDF/UA), par la bibliothèque tc-lib-pdf fournie avec le thème ; avec PHP 8.1, il est produit par la bibliothèque PDF de Moodle, non balisé.
+- Moodle 4.5 LTS, 5.0, 5.1, 5.2 ou 5.3, PHP 8.1 à 8.4 ; Moodle 6.0 dès sa sortie (sa version de développement est testée chaque semaine). Avec PHP 8.2 et plus, le PDF de « Ma synthèse » est balisé pour les lecteurs d'écran (PDF/UA), par la bibliothèque tc-lib-pdf fournie avec le thème ; avec PHP 8.1, il est produit par la bibliothèque PDF de Moodle, non balisé.
 - Le cron de Moodle doit tourner : les scores d'accessibilité des cours du [tableau de bord de gestion](Tableau-de-bord-de-gestion.md) et l'effacement des documents « Ma synthèse » expirés sont des tâches du cron.
 - Base de données : PostgreSQL, MariaDB ou MySQL, dans les versions exigées par votre version de Moodle (par exemple pour Moodle 5.3 : PostgreSQL 17, MariaDB 11.4, MySQL 8.4). Le thème n'utilise que l'API base de données de Moodle.
 - Tests automatiques : Moodle 4.5 à 5.3 sur PostgreSQL, Moodle 4.5 et 5.3 sur MariaDB 11.4. MySQL n'est pas testé séparément.

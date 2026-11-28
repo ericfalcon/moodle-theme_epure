@@ -25,11 +25,11 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'theme_epure';
-$plugin->version   = 2026120801;
-$plugin->release   = '1.57.0';
+$plugin->version   = 2026120802;
+$plugin->release   = '1.58.0';
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->requires  = 2024100700; // Moodle 4.5.
-$plugin->supported = [405, 503];
+$plugin->supported = [405, 600];
 $plugin->dependencies = [
     'theme_boost' => 2024100700,
     'tool_customlang' => ANY_VERSION,
