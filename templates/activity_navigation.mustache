@@ -19,16 +19,19 @@
 
     Previous and next activities of the course, as cards at the bottom of the page of an activity, or previous and next
     sections at the bottom of the page of a section (navlabel, endlabel), with the next activity after the section,
-    in whichever section it is (nextactivity); after the last one, a card back to the course.
+    in whichever section it is (nextactivity); after the last one, a card back to the course. Above them, the button
+    « Mark as done » of a manual completion, as Moodle draws it (completion).
 
     Example context (json):
     {
         "previous": {"name": "Introduction", "url": "#", "icon": "", "section": "Week 1"},
         "next": {"name": "Quiz 1", "url": "#", "icon": "", "section": "Week 1"},
-        "courseurl": "#"
+        "courseurl": "#",
+        "completion": ""
     }
 }}
 <nav class="epure-activity-nav" aria-label="{{#navlabel}}{{navlabel}}{{/navlabel}}{{^navlabel}}{{#str}}activitynavigation, theme_epure{{/str}}{{/navlabel}}">
+    {{#completion}}<div class="epure-activity-nav-completion">{{{completion}}}</div>{{/completion}}
     {{#previous}}
         <a class="epure-activity-nav-card epure-activity-nav-previous" href="{{url}}">
             <i class="fa fa-chevron-left epure-activity-nav-arrow" aria-hidden="true"></i>

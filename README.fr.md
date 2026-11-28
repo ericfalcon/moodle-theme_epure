@@ -1,6 +1,6 @@
 # Épure (theme_epure)
 
-Thème moderne, sobre et accessible pour **Moodle 4.5 LTS à 5.3** et **IOMAD 4.5 à 5.2**. Enfant de Boost, il garde les pages de Moodle et ajoute ce qui manque aux apprenants, aux formateurs et aux administrateurs, avec trois petites tables à lui (les chaînes écrites par le vocabulaire, les documents « Ma synthèse » émis, les points d'accessibilité confirmés par les enseignants).
+Thème moderne, sobre et accessible pour **Moodle 4.5 LTS à 5.3**, prêt pour **Moodle 6.0** (testé chaque semaine sur sa version de développement), et **IOMAD 4.5 à 5.2**. Enfant de Boost, il garde les pages de Moodle et ajoute ce qui manque aux apprenants, aux formateurs et aux administrateurs, avec trois petites tables à lui (les chaînes écrites par le vocabulaire, les documents « Ma synthèse » émis, les points d'accessibilité confirmés par les enseignants).
 
 ## Présentation
 
@@ -105,7 +105,7 @@ Avec IOMAD, les entreprises sont les entités : les entités par catégorie n'y 
 
 ### Compatibilité
 
-- Moodle 4.5 à 5.3, IOMAD 4.5 à 5.2, PHP 8.1 à 8.4, PostgreSQL et MariaDB : tous testés en intégration continue (PHPUnit, Behat, contrôles du code).
+- Moodle 4.5 à 5.3, IOMAD 4.5 à 5.2, PHP 8.1 à 8.4, PostgreSQL et MariaDB : tous testés en intégration continue (PHPUnit, Behat, contrôles du code). Moodle 6.0 : sa version de développement est testée aussi, chaque semaine, et sur un site ; sa nouvelle barre des activités précédente et suivante est reprise sur ses pages.
 - Facultatif : tool_certificate et mod_coursecertificate pour les attestations.
 - Données personnelles : les préférences des utilisateurs, les documents « Ma synthèse » émis et les points d'accessibilité confirmés par les enseignants, exportés et supprimés par l'API de confidentialité (et à la suppression d'un utilisateur) ; les points d'accessibilité confirmés dans un cours sont sauvegardés et restaurés avec lui. Aucun service externe n'est appelé ; les polices sont fournies avec le thème (licence SIL Open Font). Un cookie : `theme_epure_a11y`, les préférences d'affichage « Aa » d'un visiteur non connecté (un an, dans son seul navigateur, rien sur le serveur) ; posé seulement quand le visiteur choisit une préférence, c'est un cookie d'un service qu'il a demandé, exempté de consentement (selon la CNIL), à citer dans la mention des cookies du site.
 
@@ -139,6 +139,7 @@ La même liste s'affiche sur la page du vocabulaire et dans l'onglet Identité d
 
 Ce qui change pour un site existant, version par version (tous les changements sont dans [CHANGES.md](CHANGES.md), en anglais) :
 
+- **1.58.0** : aucun nouveau réglage ; mettez le site à jour. « Marquer comme fait » dans les cartes des activités précédente et suivante. Prêt pour Moodle 6.0 : sa nouvelle barre des activités précédente et suivante prend la place des cartes, la barre de navigation des téléphones reste en dessous.
 - **1.57.0** : un nouveau réglage avec IOMAD, « Le CSS personnalisé des entreprises » (onglet Cours), coché par défaut. Le CSS personnalisé des entités et des entreprises IOMAD ne peut plus envoyer le contenu de la page vers un autre site (@import et adresses d'autres sites retirés).
 - **1.56.0** : aucun nouveau réglage ; mettez le site à jour. Section tabs : « Continuer » mène là où l'apprenant s'était arrêté (Section tabs 1.4), et sur téléphone la barre de navigation propose la section précédente et la suivante. Le titre d'un lien ne reprend plus ses textes masqués.
 - **1.55.0** : aucun nouveau réglage ; mettez le site à jour. Jaune sur noir prioritaire partout, par-dessus les couleurs de la marque, des entités, des entreprises, des cours et des plugins ; les préférences d'affichage « Aa » aussi dans les cadres de la page (éditeur, H5P, SCORM) et dans l'application Moodle, avec leur page dans son menu. Section tabs : la couleur d'un cours lisible dans tous les affichages. Couleurs forcées de Windows. Tests dans Firefox, WebKit (Safari, iPhone) et des 47 activités d'autres plugins les plus installées.

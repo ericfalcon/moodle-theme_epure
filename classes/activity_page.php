@@ -93,7 +93,42 @@ class activity_page {
             'previous' => $card($activities[$position - 1] ?? null),
             'next' => $card($activities[$position + 1] ?? null),
             'courseurl' => course_get_url($current->course, $section ? $section->section : $current->sectionnum)->out(false),
+            'completion' => self::manual_completion($current),
         ];
+    }
+
+    /**
+     * Whether Moodle shows its own bar of the previous and next activities at the bottom of the page (Moodle 6.0 and
+     * later, « linear navigation » of the course format): it holds the button « Mark as done » too, and the cards of
+     * Épure, which would repeat it, give way to it.
+     *
+     * @param \moodle_page $page Page.
+     * @return bool
+     */
+    public static function core_footer(\moodle_page $page): bool {
+        $settings = '\\core_courseformat\\local\\linearnavigationsettings';
+        return class_exists($settings) && $settings::show_navigation_footer($page);
+    }
+
+    /**
+     * The button « Mark as done » of an activity with manual completion, as Moodle draws it (core_course/completion_manual,
+     * with its script), for the cards at the bottom of the page: it is at hand once the activity is done. The button
+     * at the top of the page, under the title, is then not shown. Nothing for an automatic completion, or without it.
+     *
+     * @param \cm_info $cm Activity.
+     * @return string|null HTML.
+     */
+    public static function manual_completion(\cm_info $cm): ?string {
+        global $OUTPUT, $USER;
+        if (!isloggedin() || isguestuser()) {
+            return null;
+        }
+        $details = \core_completion\cm_completion_details::get_instance($cm, (int) $USER->id);
+        if (!$details->has_completion() || !$details->is_manual() || !$details->is_tracked_user()) {
+            return null;
+        }
+        $data = (new \core_course\output\activity_completion($cm, $details))->export_for_template($OUTPUT);
+        return $OUTPUT->render_from_template('core_course/completion_manual', $data);
     }
 
     /**

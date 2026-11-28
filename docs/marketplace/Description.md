@@ -1,4 +1,4 @@
-A modern, clean and accessible theme for **Moodle 4.5 LTS to 5.3** and **IOMAD 4.5 to 5.2**, child of Boost. Few settings: choose an identity, Épure computes the rest. A **getting started** guides the first settings. **Free and open source** (GNU GPL v3): no paid version.
+A modern, clean and accessible theme for **Moodle 4.5 LTS to 5.3**, ready for **Moodle 6.0**, and **IOMAD 4.5 to 5.2**, child of Boost. Few settings: choose an identity, Épure computes the rest. A **getting started** guides the first settings. **Free and open source** (GNU GPL v3): no paid version.
 
 ### One colour, an accessible palette
 
@@ -40,6 +40,6 @@ Universities, groups, networks: each faculty, school or subsidiary has its own c
 
 ### Compatibility
 
-Moodle 4.5 to 5.3, IOMAD 4.5 to 5.2, PHP 8.1 to 8.4, PostgreSQL and MariaDB, tested in continuous integration, with the course formats Grid, Collapsed Topics, Flexible Sections, Tiles and Section tabs. Privacy API; fonts and libraries bundled.
+Moodle 4.5 to 5.3 and the development version of Moodle 6.0, IOMAD 4.5 to 5.2, PHP 8.1 to 8.4, PostgreSQL and MariaDB, tested in continuous integration, with the course formats Grid, Collapsed Topics, Flexible Sections, Tiles and Section tabs. Privacy API; fonts and libraries bundled.
 
 An automated pre-audit does not replace a manual audit. Épure is independent, not affiliated with Moodle HQ or IOMAD. Documentation: <https://github.com/ericfalcon/moodle-theme_epure>
